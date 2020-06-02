@@ -22,6 +22,8 @@ class Items_Ordered(admin.ModelAdmin):
 
 class CouponDisplay(admin.ModelAdmin):
     list_display = ('code', 'valid')
+    list_filter = ['valid']
+
 
 
 admin.site.register(Item)
