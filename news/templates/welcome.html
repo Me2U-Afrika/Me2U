@@ -1,0 +1,189 @@
+{% load bootstrap3 %}
+{% load static %}
+
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Me2U</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	 {% block styles %}
+    {% bootstrap_css %}
+		    <link rel="stylesheet" href="{% static 'css/smaddict.css' %}" >
+<!--		  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">-->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    {% endblock %}
+
+	</head>
+
+	<body>
+
+		<!-- Header -->
+			<header id="header">
+				<nav class="left">
+					<a href="#menu"><span>Menu</span></a>
+				</nav>
+				<a href="{% url 'homepage' %}" class="logo">Me2U</a>
+				<nav class="right">
+					{% if user.is_authenticated %}
+						<a href="{% url 'me2ushop:home' %}" class="button alt">Market</a>
+						<a href="{% url 'profile' %}" class="button alt">Profile</a>
+						<a href="{% url 'logout' %}" class="button alt">Logout</a>
+
+					{% else %}
+						<a href="{% url 'me2ushop:home' %}" class="button alt">Market</a>
+						<a href="{% url 'login' %}" class="button alt">Log In</a>
+						<a href="{% url 'register' %}" class="button alt">Register</a>
+					{% endif %}
+				</nav>
+			</header>
+
+		<!-- Menu -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href="{% url 'homepage' %}">Home</a></li>
+					<li><a href="{% url 'newsoftoday' %}">About US</a></li>
+					<li><a href="{% url 'me2ushop:market' %}">Services</a></li>
+				</ul>
+				<ul class="actions vertical">
+					<li><a href="{% url 'login' %}" class="button fit">Login</a></li>
+				</ul>
+			</nav>
+
+		<!-- Banner -->
+			<section id="banner">
+				<div class="content">
+					<h1>Become an Influencer Today</h1>
+					<p> Welcome to the world's largest online shopping center where consumers are your advertisers. Do you have a product to sell, a service to offer the community,
+					Sign up today and have a chance to be your own boss. For verifications, business registration forms are required.</p>
+						<p>Welcome to Me--> 2 -->U where we sort to bridge the gap between us by ensuring smooth running of our day to day activities. In me 2 u , we hope to solve:</p>
+							<p>
+								<ul>
+									<li>Your transport troubles are now forgotten</li>
+									<li>Your financial transactions are taken care of</li>
+									<li>Make money while online in any social media platform</li>
+									<li>Buy and sell in our shops and get free delivery to your doorstep</li>
+									<li>Showcase your talent and offer services around you.</li>
+								</ul>
+							</p>
+					<p>SM-AddICT is a Social Media advertising Tech platform that ensures you get paid for the time you spend online.<br> We take into account various stakeholders from individuals, both public and private agencies <br />and any other organization/individual that depends on public marketing/ads to gain traction.</p>
+
+					<p>Don't let your stories go without returns, earn per view, click and start using your networks to improve your lifestlyle. <br>
+					Influence to earn more. </p>
+					<p>ps.fellow SmAddICT:-)</p>
+					<ul class="actions">
+						<li><a href="#one" class="button scrolly">Get Started</a></li>
+					</ul>
+				</div>
+			</section>
+
+		<!-- One -->
+			<section id="one" class="wrapper">
+				<div class="inner flex flex-3">
+					<div class="flex-item left">
+						<div>
+							<h3>PROMOTE YOUR COMPANY/BUSINESS</h3>
+							<p>Easy registration for both Private and Public companies/businesses. <br /> Demo available for all willing members.</p>
+						</div>
+						<div>
+							<h3>DELIVER ANY SERVICE SWIFTLY</h3>
+							<p>Get ready means of transport around your area from our trusted and verified drivers at affordable rates! <br /> Get your transport means in a click anywhere.</p>
+						</div>
+					</div>
+					<div class="flex-item image fit round">
+						<img src="images/woman.jpg" alt="" />
+					</div>
+					<div class="flex-item right">
+						<div>
+							<h3>INDIVIDUAL ADVERTISING/EARNING</h3>
+							<p>Use your available networks to get the word out and earn while at it.<br /> The more the clicks the better the returns. Every product bought from our shops through your link, you get a commission!</p>
+						</div>
+						<div>
+							<h3>TROUBLE SENDING MONEY?</h3>
+							<p>Use our cashless platforms and send money anywhere right from your phone.<br /> Use our available mobile money app, QuiqPay and transact easy.</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+		<!-- Two -->
+			<section id="two" class="wrapper style1 special">
+				<div class="inner">
+					<h2>Quote of the day</h2>
+					<figure>
+					    <blockquote>
+									"Innovation comes only from readily and seamlessly sharing information rather than hoarding it."
+
+									<p>"SeeIT BelieveIT SpreadIT...Always in my Element"</p>
+					    </blockquote>
+					    <footer>
+					        <cite class="author">Daniel Ogechi</cite>
+					        <cite class="company">CEO, Me2U, LeBoA</cite>
+					    </footer>
+					</figure>
+				</div>
+			</section>
+
+		<!-- Three -->
+			<section id="three" class="wrapper">
+				<div class="inner flex flex-3">
+					<div class="flex-item box">
+						<div class="image fit">
+							<img src="images/whatsapp-status.jpg" alt="" />
+						</div>
+						<div class="content">
+							<h3>WhatsApp Status Views</h3>
+							<p>Status allows you to share text, photo, video and GIF updates that disappear after 24 hours. Every user will receive their payments at the end of the day depending on how many clicks, views the link received.</p>
+						</div>
+					</div>
+					<div class="flex-item box">
+						<div class="image fit">
+							<img src="images/tik-tok.jpg" alt="" />
+						</div>
+						<div class="content">
+							<h3>Tik Tok short videos</h3>
+							<p>Being a destination for short videos, users are welcome to tailor the ads and embed the liks in their well thought spread of the brand at hand.</p>
+						</div>
+					</div>
+					<div class="flex-item box">
+						<div class="image fit">
+							<img src="images/business-dog.jpg" alt="" />
+						</div>
+						<div class="content">
+							<h3>Be creative!</h3>
+							<p> Leverage on all available modern techniques to capture the viewer's attention. Catchy and well thought out spreads will be featured on our blog.</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+					<h2>Get In Touch</h2>
+					<ul class="actions">
+						<li><span class="icon fa-phone"></span> <a href="#">(254) 796055290</a></li>
+						<li><span class="icon fa-envelope"></span> <a href="#">SpreadIT@gmail.com</a></li>
+						<li><span class="icon fa-map-marker"></span> 123 Upperhill Road, Nairobi,Kenya</li>
+					</ul>
+				</div>
+				<div class="copyright">
+					&copy; Daniel Ogechi. CEO <a href="">SM-AddICT</a> and <a href="#"> LeBoA</a>. We are Hiring! <a href="">Careers</a>.
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+	{% block scripts %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+     {% bootstrap_javascript %}
+    {% endblock %}
+
+	</body>
+</html>

@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block content %}
+     {{block.super}}
+
+<body>
+
+  <h2>Your Order Summary</h2>
+    <div class="table-responsive">
+      <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Item Title</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Total Item Price</th>
+        </tr>
+      </thead>
+      <tbody>
+
+       {% for order_item in object.items.all %}
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td><a href="{% url 'me2ushop:product' order_item.item.slug %}"> {{ order_item.item.title }} </td>
+              <td>{{ order_item.item.price }}</td>
+              <td><a href="{% url 'me2ushop:remove_single_item_cart' order_item.item.slug %}"><i class="fas fa-minus-circle mr-2"></i></a>
+                {{ order_item.quantity }}
+                <a href="{% url 'me2ushop:add_cart' order_item.item.slug %}"><i class="fas fa-plus-circle ml-2"></i></a>
+              </td>
+
+              <td>
+
+            {% if order_item.item.discount_price %}
+
+              ${{ order_item.get_total_discount_price }}
+             <a class="btn btn-green btn-sm my-0 p">Saving ${{ order_item.get_total_saved }}</a>
+
+             {% else %}
+
+              ${{ order_item.get_total_price }}
+
+             {% endif %}
+
+             <a style="color:orange" href="{% url 'me2ushop:remove_cart' order_item.item.slug %}">
+                <i class="fas fa-toilet-paper ml-3"></i>
+               </a>
+             </td>
+            </tr>
+       {% empty %}
+           <tr>
+             <td colspan="5"> Your cart is Empty</td>
+           </tr>
+           <tr>
+            <td colspan="5">
+              <!--Call to action-->
+              <div class="pt-4 text-center font-small mt-4 wow fadeIn">
+               <a class="btn btn-outline-orange" href="{% url 'me2ushop:home'%}"
+                   role="button">Continue Shopping<i class="fas fa-hand-holding-usd"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+      {% endfor %}
+
+       <tr>
+         <td colspan="4"><b>Total</b></td>
+         <td><b>${{ object.get_total }}</b></td>
+       </tr>
+
+      <tr>
+        <td colspan="5">
+          <!--Call to action-->
+          <div class="pt-4 text-center font-small mt-4 wow fadeIn">
+            <a class="btn btn-outline-orange" href="{% url 'me2ushop:home'%}"
+               role="button">Continue Shopping<i class="fas fa-hand-holding-usd"></i>
+            </a>
+            <a class="btn btn-outline-green" href="{% url 'me2ushop:checkout' %}" role="button" target="_blank">Proceed to checkout
+              <i class="fas fa-hand-holding-usd"></i><i class="fas fa-hand-lizard"></i>
+            </a>
+
+          </div>
+    <!--/.Call to action-->
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <!--Footer-->
+  <footer class="page-footer text-center font-small mt-4 wow fadeIn">
+    <hr class="my-4">
+
+    <!-- Social icons -->
+    <div class="pb-4">
+      <a href="https://www.facebook.com/mdbootstrap" target="_blank">
+        <i class="fab fa-facebook-f mr-3"></i>
+      </a>
+
+      <a href="https://twitter.com/MDBootstrap" target="_blank">
+        <i class="fab fa-twitter mr-3"></i>
+      </a>
+
+      <a href="https://www.youtube.com/watch?v=7MUISDJ5ZZ4" target="_blank">
+        <i class="fab fa-youtube mr-3"></i>
+      </a>
+
+      <a href="https://plus.google.com/u/0/b/107863090883699620484" target="_blank">
+        <i class="fab fa-google-plus-g mr-3"></i>
+      </a>
+
+      <a href="https://dribbble.com/mdbootstrap" target="_blank">
+        <i class="fab fa-dribbble mr-3"></i>
+      </a>
+
+      <a href="https://pinterest.com/mdbootstrap" target="_blank">
+        <i class="fab fa-pinterest mr-3"></i>
+      </a>
+
+      <a href="https://github.com/mdbootstrap/bootstrap-material-design" target="_blank">
+        <i class="fab fa-github mr-3"></i>
+      </a>
+
+      <a href="http://codepen.io/mdbootstrap/" target="_blank">
+        <i class="fab fa-codepen mr-3"></i>
+      </a>
+    </div>
+    <!-- Social icons -->
+
+    <!--Copyright-->
+    <div class="footer-copyright py-3">
+      © 2019 Copyright:
+      <a href="https://mdbootstrap.com/education/bootstrap/" target="_blank"> MDBootstrap.com </a>
+    </div>
+    <!--/.Copyright-->
+
+  </footer>
+
+</body>
+{% endblock %}

@@ -1,0 +1,11 @@
+
+{% extends 'all-news/base.html' %}
+
+    {% block content %}
+    <h2> You have been logged out!</h2>
+            <div class="border-top pt-3">
+                <small class="text-muted">
+                    We miss you already!<a class="ml-2" href="{% url 'login'%}">Log In</a> <a class="ml-2" href="{% url 'homepage'%}">Home</a>
+                </small>
+            </div>
+    {%  endblock content %}
