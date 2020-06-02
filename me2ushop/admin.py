@@ -26,6 +26,8 @@ class CouponDisplay(admin.ModelAdmin):
 
 
 
+
+
 admin.site.register(Item)
 admin.site.register(OrderItem, Items_Ordered)
 admin.site.register(Order, Ordered)
