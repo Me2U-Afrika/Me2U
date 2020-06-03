@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from .forms import CheckoutForm, CouponForm, CartAddProductForm
+from .forms import CheckoutForm, CouponForm, CartAddProductForm, RefundForm
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from .models import Item, OrderItem, Order, BillingAddress, StripePayment, Coupon
@@ -226,6 +226,14 @@ class PaymentView(View):
                 return redirect("me2ushop:home")
 
         return redirect("me2ushop:home")
+
+
+class RefundView(View):
+    def post(self, *args, **kwargs):
+        form = RefundForm(self.request.POST)
+        if form.is_valid():
+            ref_code = form.cleaned_data.get('ref_code')
+            message = form.cleaned_data.get('message')
 
 
 def product_page(request):
