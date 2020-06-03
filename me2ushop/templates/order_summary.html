@@ -5,8 +5,8 @@
 
 <body>
 
-  <h2>Your Order Summary</h2>
     <div class="table-responsive">
+        <h2>Your Order Summary</h2>
       <table class="table">
       <thead>
         <tr>
@@ -63,6 +63,7 @@
           </tr>
       {% endfor %}
 
+       {% if object.get_total %}
        <tr>
          <td colspan="4"><b>Total</b></td>
          <td><b>${{ object.get_total }}</b></td>
@@ -83,6 +84,7 @@
     <!--/.Call to action-->
         </td>
       </tr>
+      {% endif %}
       </tbody>
     </table>
 

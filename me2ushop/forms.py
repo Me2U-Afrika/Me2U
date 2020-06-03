@@ -50,7 +50,15 @@ class CartAddProductForm(forms.Form):
 
 
 class RefundForm(forms.Form):
-    ref_code = forms.CharField()
-    message = forms.Textarea()
+    ref_code = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control col-md-12 mb-4"'
+    }))
+    message = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control col-md-12 mb-4"'
+    }))
+    email = forms.EmailField(widget=forms.TextInput(attrs={
+        'class': 'form-control col-md-12 mb-4"'
+    }))
+    
 
 

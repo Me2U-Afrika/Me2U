@@ -6,7 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from .forms import CheckoutForm, CouponForm, CartAddProductForm, RefundForm
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
-from .models import Item, OrderItem, Order, BillingAddress, StripePayment, Coupon
+# from .models import Item, OrderItem, Order, BillingAddress, StripePayment, Coupon, RequestRefund
+from .models import *
 from django.views.generic import ListView, DetailView, View
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -93,12 +94,13 @@ class Checkout_page(View):
                 # save_info = form.cleaned_data.get('save_info')
 
                 payment_option = form.cleaned_data.get('payment_option')
-                billing_address = BillingAddress(
+                billing_address = Address(
                     user=self.request.user,
                     street_address=street_address,
                     apartment_address=apartment_address,
                     country=country,
-                    zip=zip
+                    zip=zip,
+                    address_type='B'
                 )
 
                 billing_address.save()
@@ -229,11 +231,46 @@ class PaymentView(View):
 
 
 class RefundView(View):
+    def get(self, *args, **kwargs):
+        form = RefundForm()
+
+        context = {
+            'RefundForm': form
+        }
+        return render(self.request, "refund_view.html", context)
+
     def post(self, *args, **kwargs):
         form = RefundForm(self.request.POST)
         if form.is_valid():
             ref_code = form.cleaned_data.get('ref_code')
             message = form.cleaned_data.get('message')
+            email = form.cleaned_data.get('email')
+
+            #             assign refund request to order
+            try:
+                order = Order.objects.get(ref_code=ref_code)
+                order.refund_requested = True
+                order.save()
+
+                #         record the refund
+
+                refund = RequestRefund()
+                refund.order = order
+                refund.reason = message
+                refund.email = email
+                refund.ref_code = ref_code
+                refund.save()
+
+                messages.info(self.request, " Your Request has been recoreded succcessfully.")
+                return redirect("me2ushop:home")
+
+            except ObjectDoesNotExist:
+                messages.info(self.request,
+                             "We were unable to find the order for the refund requested, please call customer care toll free number for clarification.")
+                messages.info(self.request,
+                             "Asante kwa kuchagua mtandao wetu. Samahani tumekosa ombi lako. Tafadhali pigia wahuduma wetu kupata usaidizi.")
+
+                return redirect("me2ushop:request_refund")
 
 
 def product_page(request):

@@ -27,6 +27,11 @@ LABEL_CHOICES = (
     ('D', 'danger')
 
 )
+ADDRESS_CHOICES = (
+    ('B', 'Billing'),
+    ('S', 'Shipping')
+
+)
 
 
 class Item(models.Model):
@@ -98,7 +103,10 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     order_date = models.DateTimeField(auto_now=True)
     ordered = models.BooleanField(default=False)
-    billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
+    billing_address = models.ForeignKey('Address', related_name='billing_address', on_delete=models.SET_NULL,
+                                        blank=True, null=True)
+    shipping_address = models.ForeignKey('Address', related_name='shipping_address', on_delete=models.SET_NULL,
+                                         blank=True, null=True)
     payment = models.ForeignKey('StripePayment', on_delete=models.SET_NULL, blank=True, null=True)
     coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
     being_delivered = models.BooleanField(default=False)
@@ -132,14 +140,15 @@ class Order(models.Model):
         return self.get_total() - self.get_coupon_total()
 
 
-class BillingAddress(models.Model):
+class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
     country = CountryField(multiple=False)
     zip = models.CharField(max_length=100)
-    same_shipping_address = models.CharField(max_length=100)
+    address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
     payment_option = models.CharField(max_length=10)
+    default = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.country)
@@ -168,6 +177,8 @@ class RequestRefund(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     reason = models.TextField()
     accepted = models.BooleanField(default=False)
+    email = models.EmailField()
+    ref_code = models.CharField(max_length=20)
 
     def __str__(self):
         return f"{self.pk}"

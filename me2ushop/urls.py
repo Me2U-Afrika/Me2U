@@ -18,6 +18,7 @@ urlpatterns = [
     url('checkout/', views.Checkout_page.as_view(), name='checkout'),
     url('order_summary/', views.Order_summary_view.as_view(), name='order_summary'),
     url('add_coupon/', views.add_coupon, name='add_coupon'),
+    url('request_refund/', views.RefundView.as_view(), name='request_refund'),
     url('add_cart_qty/(?P<slug>[\w-]+)/$', views.add_cart_qty, name='add_cart_qty'),
     url('payment/(?P<payment_option>[\w-]+)/$', views.PaymentView.as_view(), name='payment'),
 
