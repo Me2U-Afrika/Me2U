@@ -153,6 +153,9 @@ class Address(models.Model):
     def __str__(self):
         return str(self.country)
 
+    class Meta:
+        verbose_name_plural = 'Addresses'
+
 
 class StripePayment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)

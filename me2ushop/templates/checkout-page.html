@@ -22,54 +22,54 @@
             <!--Card content-->
             <form method="POST" class="card-body">
               {% csrf_token %}
+
+                <h3>Shipping Address</h3>
+                <div class="hideable_shipping_form">
               <!--address-->
-              <div class="md-form mb-5">
-<!--                <input type="text" id="address" class="form-control" placeholder="1234 Main St">-->
-                <label for="address" class="">Address</label>
-                {{ form.street_address }}
-              </div>
-
-              <!--address-2-->
-              <div class="md-form mb-5">
-<!--                <input type="text" id="address-2" class="form-control" placeholder="Apartment or suite">-->
-                <label for="address-2" class="">Address 2 (optional)</label>
-                {{ form.apartment_address }}
-              </div>
-
-              <!--Grid row-->
-              <div class="row">
-
-                <!--Grid column-->
-                <div class="col-lg-4 col-md-12 mb-4">
-
-                  <label for="country">Country</label>
-<!--                  <select class="custom-select d-block w-100" id="country" required>-->
-<!--                    <option value="">Choose...</option>-->
-<!--                    <option></option>-->
-<!--                  </select>-->
-                  {{ form.country }}
-                  <div class="invalid-feedback">
-                    Please select a valid country.
+                  <div class="md-form mb-5">
+                    <input type="text" id="shipping_address" class="form-control" name="shipping_address" placeholder="1234 Main St">
+                    <label for="shipping_address" class="">Address</label>
                   </div>
 
-                </div>
-                <!--Grid column-->
-
-                <!--Grid column-->
-                <div class="col-lg-4 col-md-6 mb-4">
-                  <label for ="zip">Zip</label>
-<!--                  <input type="text" class="form-control" id="zip" placeholder="" required>-->
-                  {{ form.zip }}
-                  <div class="invalid-feedback">
-                    Zip Code Required
+                  <!--address-2-->
+                  <div class="md-form mb-5">
+                    <input type="text" id="shipping_address2" class="form-control" placeholder="Apartment or suite">
+                    <label for="shipping_address2" class="">Address 2 (optional)</label>
+<!--                    {{ form.apartment_address }}-->
                   </div>
-                </div>
-                <!--Grid column-->
 
-              </div>
-              <!--Grid row-->
+                  <!--Grid row-->
+                  <div class="row">
+                    <!--Grid column-->
+                    <div class="col-lg-4 col-md-12 mb-4">
 
-              <hr>
+                      <label for="country">Country</label>
+    <!--                  <select class="custom-select d-block w-100" id="country" required>-->
+    <!--                    <option value="">Choose...</option>-->
+    <!--                    <option></option>-->
+    <!--                  </select>-->
+                      {{ form.shipping_country }}
+                        <div class="invalid-feedback">
+                        Please select a valid country.
+                      </div>
+
+                    </div>
+                  </div>
+                    <!--Grid column-->
+
+                    <!--Grid column-->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                      <label for ="shipping_zip">Zip</label>
+                      <input type="text" class="form-control" id="shipping_zip" placeholder="Zip Code" required>
+<!--                      {{ form.zip }}-->
+                      <div class="invalid-feedback">
+                        Zip Code Required
+                      </div>
+                    </div>
+                    <!--Grid column-->
+                  </div>
+                  <!--Grid row-->
+                  <hr>
 
               <div class="custom-control custom-checkbox">
                 <input {% if form.same_shipping_address.value %} checked {% endif %} type="checkbox" class="custom-control-input" name="same_billing_address" id="same-address">
@@ -82,8 +82,55 @@
                 <label class="custom-control-label" for="save-info">Save this information for next time</label>
               </div>
 
+                  <h3>Shipping Address</h3>
+                <div class="hideable_shipping_form">
+              <!--address-->
+                  <div class="md-form mb-5">
+                    <input type="text" id="shipping_address" class="form-control" name="shipping_address" placeholder="1234 Main St">
+                    <label for="shipping_address" class="">Address</label>
+                  </div>
+
+                  <!--address-2-->
+                  <div class="md-form mb-5">
+                    <input type="text" id="shipping_address2" class="form-control" placeholder="Apartment or suite">
+                    <label for="shipping_address2" class="">Address 2 (optional)</label>
+<!--                    {{ form.apartment_address }}-->
+                  </div>
+
+                  <!--Grid row-->
+                  <div class="row">
+                    <!--Grid column-->
+                    <div class="col-lg-4 col-md-12 mb-4">
+
+                      <label for="country">Country</label>
+    <!--                  <select class="custom-select d-block w-100" id="country" required>-->
+    <!--                    <option value="">Choose...</option>-->
+    <!--                    <option></option>-->
+    <!--                  </select>-->
+                      {{ form.shipping_country }}
+                        <div class="invalid-feedback">
+                        Please select a valid country.
+                      </div>
+
+                    </div>
+                  </div>
+                    <!--Grid column-->
+
+                    <!--Grid column-->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                      <label for ="shipping_zip">Zip</label>
+                      <input type="text" class="form-control" id="shipping_zip" placeholder="Zip Code" required>
+<!--                      {{ form.zip }}-->
+                      <div class="invalid-feedback">
+                        Zip Code Required
+                      </div>
+                    </div>
+                    <!--Grid column-->
+                  </div>
+
               <hr>
 
+                <h3>Payment Options</h3>
               <div class="d-block my-3">
                 {% for value, name in form.fields.payment_option.choices %}
                 <div class="custom-control custom-radio">
@@ -94,22 +141,18 @@
               </div>
               <hr class="mb-4">
               <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
-
             </form>
-
           </div>
           <!--/.Card-->
 
         </div>
         <!--Grid column-->
-    <div class="col-md-4 mb-4">
+        <div class="col-md-4 mb-4">
         {% include 'order_snippet.html' %}
+        </div>
       </div>
-
-      </div>
-      <!--Grid row-->
-
     </div>
+      <!--Grid row-->
   </main>
   <!--Main layout-->
 
