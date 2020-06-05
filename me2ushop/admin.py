@@ -63,8 +63,6 @@ class AddressAdmin(admin.ModelAdmin):
     ]
 
 
-
-
 class Items_Ordered(admin.ModelAdmin):
     list_display = ('user', 'item', 'quantity', 'ordered')
 
@@ -86,4 +84,4 @@ admin.site.register(Order, Ordered)
 admin.site.register(StripePayment, Payment)
 admin.site.register(Coupon, CouponDisplay)
 admin.site.register(RequestRefund, RefundDisplay)
-admin.site.register(Address, AddressAdmin )
+admin.site.register(Address, AddressAdmin)
