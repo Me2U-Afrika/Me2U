@@ -43,7 +43,7 @@
                     <!--Grid column-->
                     <div class="col-lg-4 col-md-12 mb-4">
 
-                      <label for="country">Country</label>
+                      <label>Country</label>
     <!--                  <select class="custom-select d-block w-100" id="country" required>-->
     <!--                    <option value="">Choose...</option>-->
     <!--                    <option></option>-->
@@ -59,15 +59,9 @@
                     <!--Grid column-->
                     <div class="col-lg-4 col-md-6 mb-4">
                       <label for ="shipping_zip">Zip</label>
-                          {% if default_shipping_address %}
 
-                      <input type="text" class="form-control" name="shipping_zip" id="shipping_zip" placeholder="Zip Code" >
+                      <input type="text" class="form-control" name="shipping_zip" id="shipping_zip" placeholder="Zip Code">
 
-                      {% else %}
-
-                      <input type="text" class="form-control" name="shipping_zip" id="shipping_zip" placeholder="Zip Code" required>
-
-                      {% endif %}
 <!--                      {{ form.zip }}-->
                       <div class="invalid-feedback">
                         Zip Code Required
@@ -93,15 +87,15 @@
                  <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" name="use_default_shipping" id="use_default_shipping">
   <!--                {{ form.save_info}}-->
-                    <label class="custom-control-label" for="use_default_shipping">Use default shipping Address: {{ default_shipping_address.address|truncatechars:10 }}</label>
+                    <label class="custom-control-label" for="use_default_shipping">Use default shipping Address: {{ default_shipping_address.street_address|truncatechars:10 }}</label>
                   </div>
               {% endif %}
                   <!--Grid row-->
               <hr>
 
-                  <h3>Billing Address</h3>
 
-                  <div class="hideable_shipping_form">
+                <h3>Billing Address</h3>
+              <div class="hideable_billing_form" id="hideable_billing_form">
                     <div class="md-form mb-5">
                       <input type="text" id="billing_address" class="form-control" name="billing_address" placeholder="1234 Main St">
                       <label for="billing_address" class="">Address</label>
@@ -118,7 +112,7 @@
                     <!--Grid column-->
                       <div class="col-lg-4 col-md-12 mb-4">
 
-                        <label for="country">Country</label>
+                        <label>Country</label>
     <!--                   <select class="custom-select d-block w-100" id="country" required>-->
     <!--                    <option value="">Choose...</option>-->
     <!--                    <option></option>-->
@@ -145,17 +139,14 @@
       <!--                {{ form.save_info}}-->
                       <label class="custom-control-label" for="set_default_billing">Save as default billing</label>
                     </div>
-
-                    {% if default_billing_address %}
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" name="use_default_billing" id="use_default_billing">
-    <!--                {{ form.save_info}}-->
-                      <label class="custom-control-label" for="use_default_billing">Use default billing Address: {{ default_billing_address.address|truncatechars:10 }}</label>
-                    </div>
-                    {% endif %}
-
                   </div>
-
+                  {% if default_billing_address %}
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="use_default_billing" id="use_default_billing">
+  <!--                {{ form.save_info}}-->
+                    <label class="custom-control-label" for="use_default_billing">Use default billing Address: {{ default_billing_address.street_address|truncatechars:10 }}</label>
+                  </div>
+                  {% endif %}
               <hr>
 
                 <h3>Payment Options</h3>
@@ -186,6 +177,41 @@
       <!--Grid row-->
   </main>
   <!--Main layout-->
+
+    <script type="text/javascript" nonce="">
+
+    var hideable_billing_form = $('.hideable_billing_form');
+    var hideable_shipping_form = $('.hideable_shipping_form');
+
+    var use_default_shipping = document.querySelector("input[name='use_default_shipping']");
+    // var use_default_billing = document.querySelector("input[name='use_default_billing']");
+
+
+    use_default_shipping.addEventListener('change', function(event) {
+      event.preventDefault();
+
+        if (use_default_shipping.checked) {
+          hideable_shipping_form.hide();
+        } else {
+          hideable_shipping_form.show();
+        };
+    });
+  
+    var form = document.getElementById('use_default_billing');
+    form.addEventListener('change', function(event) {
+
+    // use_default_billing.addEventListener('change', function(event) {
+      event.preventDefault();
+
+        if (form.checked) {
+          hideable_billing_form.hide();
+        } else {
+          hideable_billing_form.show();
+        };
+    });
+
+
+</script>
 
   <!--Footer-->
   <footer class="page-footer text-center font-small mt-4 wow fadeIn">
@@ -250,3 +276,4 @@
 
 </body>
 {% endblock %}
+

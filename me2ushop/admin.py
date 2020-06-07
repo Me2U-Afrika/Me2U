@@ -14,6 +14,13 @@ def make_refund_accepted(modelAdmin, request, queryset):
 make_refund_accepted.short_description = 'Update orders to refund granted'
 
 
+def make_coupon_accepted(modelAdmin, request, queryset):
+    queryset.update(valid=True)
+
+
+make_coupon_accepted.short_description = 'Update coupon to valid'
+
+
 class Ordered(admin.ModelAdmin):
     list_display = (
         'user', 'start_date',
@@ -70,6 +77,7 @@ class Items_Ordered(admin.ModelAdmin):
 class CouponDisplay(admin.ModelAdmin):
     list_display = ('code', 'valid')
     list_filter = ['valid']
+    actions = [make_coupon_accepted]
 
 
 class RefundDisplay(admin.ModelAdmin):

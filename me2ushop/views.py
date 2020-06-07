@@ -441,8 +441,6 @@ def product_page(request):
 
 # @login_required()
 def add_cart(request, slug):
-    # if request.user.is_anonymous:
-    messages.info(request, "You in the add cart but not add cart qty")
     try:
         item = get_object_or_404(Item, slug=slug)
         order_item, created = OrderItem.objects.get_or_create(
@@ -684,16 +682,16 @@ def add_coupon(request):
                 order = Order.objects.get(user=request.user, ordered=False)
 
                 if order.total_items() > 0:
-                    print("The number of orders in the cart:", order.total_items())
+                    # print("The number of orders in the cart:", order.total_items())
 
                     # Get code coupon provided online
                     code = form.cleaned_data.get('code')
 
-                    print("coode:", code)
+                    # print("coode:", code)
 
                     # Get existing coupons we have in the system if they match
                     coupon_id = get_coupon(request, code)
-                    print("coupon id:", coupon_id)
+                    # print("coupon id:", coupon_id)
 
                     order.coupon = coupon_id
                     messages.success(request,
@@ -709,7 +707,7 @@ def add_coupon(request):
                     return redirect('me2ushop:order_summary')
 
             except Exception:
-                messages.warning(request, 'Ticket used already')
+                messages.warning(request, 'Ticket not available or no order provided')
                 return redirect('me2ushop:checkout')
 
         # order.coupon = coupon_id
