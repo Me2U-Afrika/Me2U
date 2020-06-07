@@ -93,8 +93,8 @@
                   <!--Grid row-->
               <hr>
 
-
-                <h3>Billing Address</h3>
+             <div class="same_as_shipping">   
+              <h3>Billing Address</h3>
               <div class="hideable_billing_form" id="hideable_billing_form">
                     <div class="md-form mb-5">
                       <input type="text" id="billing_address" class="form-control" name="billing_address" placeholder="1234 Main St">
@@ -147,6 +147,7 @@
                     <label class="custom-control-label" for="use_default_billing">Use default billing Address: {{ default_billing_address.street_address|truncatechars:10 }}</label>
                   </div>
                   {% endif %}
+                </div>
               <hr>
 
                 <h3>Payment Options</h3>
@@ -178,13 +179,28 @@
   </main>
   <!--Main layout-->
 
-    <script type="text/javascript" nonce="">
+    <script type="text/javascript">
 
     var hideable_billing_form = $('.hideable_billing_form');
     var hideable_shipping_form = $('.hideable_shipping_form');
+    var same_as_shipping = $('.same_as_shipping')
+
 
     var use_default_shipping = document.querySelector("input[name='use_default_shipping']");
-    // var use_default_billing = document.querySelector("input[name='use_default_billing']");
+    var use_default_billing = document.querySelector("input[name='use_default_billing']");
+
+    
+    var form = document.getElementById('same_billing_address');
+    form.addEventListener('change', function(event){
+      event.preventDefault();
+
+      if (form.checked) {
+          same_as_shipping.hide();
+        } else {
+          same_as_shipping.show();
+
+        };
+    });
 
 
     use_default_shipping.addEventListener('change', function(event) {
@@ -197,13 +213,13 @@
         };
     });
   
-    var form = document.getElementById('use_default_billing');
-    form.addEventListener('change', function(event) {
+    // var form = document.getElementById('use_default_billing');
+    // form.addEventListener('change', function(event) {
 
-    // use_default_billing.addEventListener('change', function(event) {
+    use_default_billing.addEventListener('change', function(event) {
       event.preventDefault();
 
-        if (form.checked) {
+        if (use_default_billing.checked) {
           hideable_billing_form.hide();
         } else {
           hideable_billing_form.show();

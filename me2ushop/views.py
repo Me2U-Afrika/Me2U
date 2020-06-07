@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from .forms import CheckoutForm, CouponForm, CartAddProductForm, RefundForm
+from .forms import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 # from .models import Item, OrderItem, Order, BillingAddress, StripePayment, Coupon, RequestRefund
@@ -286,28 +286,83 @@ class PaymentView(View):
                 'DISPLAY_COUPON_FORM': False
 
             }
+            # userprofile = self.request.user.userprofile
+            #
+            # if userprofile.one_click_purchasing:
+            #     # fetch users card list
+            #     cards = stripe.Customer.list_sources(
+            #         userprofile.stripe_customer_id,
+            #         limit=3,
+            #         object='card'
+            #     )
+            #
+            #     card_list = cards['data']
+            #     if len(card_list) > 0:
+            #         # we have an existing card
+            #         context.update({
+            #             'card': card_list[0]
+            #         })
+
             return render(self.request, 'payment.html', context)
+
         else:
             messages.warning(self.request, "Please fill in your shipping address prior to payment")
             return redirect("me2ushop:checkout")
 
     def post(self, *args, **kwargs):
         # `source` is obtained with Stripe.js; see https://stripe.com/docs/payments/accept-a-payment-charges#web-create-token
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        form = PaymentForm(self.request.POST)
+        userprofile = UserProfile.objects.get(user=self.request.user)
 
-        if self.request.method == 'POST':
-
-            order = Order.objects.get(user=self.request.user, ordered=False)
-
-            amount = int(order.get_total() * 100)  # get in ksh
+        if form.is_valid():
+            # token = form.cleaned_data.get('stripeToken')
             token = self.request.POST['stripeToken']
-            # token = self.request.POST.get('stripeToken')
+
+            use_default = form.cleaned_data.get('use_default')
+            save = form.cleaned_data.get('use_default')
+
+            if save:
+                # allow fetch cards
+                if not userprofile.stripe_customer_id:
+                    customer = stripe.Customer.create(
+                        email=self.request.user.email,
+                        source=token
+                    )
+
+                    userprofile.stripe_customer_id = customer['id']
+                    userprofile.one_click_purchasing = True
+                    userprofile.save()
+
+                else:
+                    stripe.Customer.create_source(
+                        userprofile.stripe_customer_id,
+                        source=token
+                    )
+
+            # if self.request.method == 'POST':
+            #
+            #     order = Order.objects.get(user=self.request.user, ordered=False)
+            #
+            amount = int(order.get_total() * 100)  # get in ksh
+            #     token = self.request.POST['stripeToken']
+            #     # token = self.request.POST.get('stripeToken')
 
             try:
-                charge = stripe.Charge.create(
-                    amount=amount,
-                    currency="usd",
-                    source=token,
-                )
+
+                if use_default:
+                    charge = stripe.Charge.create(
+                        amount=amount,
+                        currency='usd',
+                        customer=userprofile.stripe_customer_id
+                    )
+
+                else:
+                    charge = stripe.Charge.create(
+                        amount=amount,
+                        currency="usd",
+                        source=token,
+                    )
 
                 # create payment
                 payment = StripePayment()

@@ -70,3 +70,9 @@ class RefundForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs={
         'class': 'form-control col-md-12 mb-4"'
     }))
+
+
+class PaymentForm(forms.Form):
+    use_default = forms.BooleanField(required=False)
+    save = forms.BooleanField(required=False)
+
