@@ -82,7 +82,7 @@
 
       <!-- Brand -->
                 <a class="navbar-brand waves-effect" href="{% url 'homepage' %}">
-                    <strong class="blue-text">Me2U | Africa</strong>
+                    <strong class="blue-text">Me2U |Africa</strong>
                 </a>
 
       <!-- Collapse -->
@@ -102,13 +102,21 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="">QuiqPay</a>
+                            <a class="nav-link waves-effect" href="">Sell On Me2U</a>
                         </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect" href="{% url 'me2ushop:market' %}"
-                            target="_blank">QuiqStores</a>
-                        </li>
+                                <!-- Dropdown -->
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                          aria-haspopup="true" aria-expanded="false">Product Categories</a>
+                        <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="">Gloceries</a>
+                            <a class="dropdown-item" href="">Get Dry Cleaning & Laundry Services</a>
+                            <a class="dropdown-item" href="">Delivery Services</a>
+                            <a class="dropdown-item" href="">Taxi/Motorbike Transport</a>
+                            <a class="dropdown-item" href="">Household, Repair & Maintainance Services</a>
+                            <a class="dropdown-item" href="">Rent/Lend Me2U Products</a>
+                        </div>
+                      </li>
                         <li class="nav-item">
                             <a class="nav-link waves-effect" href="{% url 'me2ushop:checkout' %}">Checkout</a>
                         </li>
