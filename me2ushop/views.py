@@ -440,7 +440,7 @@ class RefundView(View):
         context = {
             'RefundForm': form
         }
-        return render(self.request, "refund_view.html", context)
+        return render(self.request, "test.html", context)
 
     def post(self, *args, **kwargs):
         form = RefundForm(self.request.POST)

@@ -5,10 +5,10 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 Examples:
 Function views
     1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.MaDriversWetu, name='MaDriversWetu')
+    2. Add a URL to urlpatterns:  url(r'^$', views.MaServiceProvider, name='MaServiceProvider')
 Class-based views
     1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='MaDriversWetu')
+    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='MaServiceProvider')
 Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
@@ -19,7 +19,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url('MaDriversWetu/', include('MaDriversWetu.urls')),
+    url('MaServiceProvider/', include('MaServiceProvider.urls')),
     url('register/', include('users.urls')),
     url('me2ushop/', include('me2ushop.urls', namespace='me2ushop')),
     url('swiftsuppliers', include('swiftsuppliers.urls')),

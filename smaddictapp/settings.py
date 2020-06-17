@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'MaDriversWetu',
+    'MaServiceProvider',
     'bootstrap3',
     'users.apps.UsersConfig',
     'swiftsuppliers.apps.SwiftsuppliersConfig',

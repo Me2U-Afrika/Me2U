@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('MaDriversWetu', '0001_initial'),
+        ('MaServiceProvider', '0001_initial'),
     ]
 
     operations = [

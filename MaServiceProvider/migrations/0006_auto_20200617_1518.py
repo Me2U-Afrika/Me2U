@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('MaDriversWetu', '0005_auto_20200617_1433'),
+        ('MaServiceProvider', '0005_auto_20200617_1433'),
     ]
 
     operations = [

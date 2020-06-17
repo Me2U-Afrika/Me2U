@@ -49,21 +49,21 @@ def our_drivers(request):
 #     day = days[day_number]
 #     return day
 
-@login_required()
-def past_days_news(request, past_date):
-    # pass
-    try:
-        # convert data from string to url
-        date = dt.datetime.strptime(past_date, '%Y-%m-%d').date()
-    
-    except ValueError:
-        # raise 404 error when valueerror is thrown
-        raise Http404()
-        # assert False
-    
-    # day = convert_dates(date)
-    
-    if date == dt.date.today():
-        return redirect(news_of_day)
-    
-    return render(request, 'all-MaDriversWetu/past-MaDriversWetu.html', {"date": date})
+# @login_required()
+# def past_days_news(request, past_date):
+#     # pass
+#     try:
+#         # convert data from string to url
+#         date = dt.datetime.strptime(past_date, '%Y-%m-%d').date()
+#
+#     except ValueError:
+#         # raise 404 error when valueerror is thrown
+#         raise Http404()
+#         # assert False
+#
+#     # day = convert_dates(date)
+#
+#     if date == dt.date.today():
+#         return redirect(news_of_day)
+#
+#     return render(request, 'all-MaServiceProvider/past-MaServiceProvider.html', {"date": date})

@@ -10,6 +10,6 @@ urlpatterns = [
 
     # adding dynamic url
 
-    url(r'^archive/(\d{4}-\d{2}-\d{2})/$', views.past_days_news)
+    # url(r'^archive/(\d{4}-\d{2}-\d{2})/$', views.past_days_news)
 
 ]

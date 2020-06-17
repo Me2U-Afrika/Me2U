@@ -31,8 +31,8 @@ class MaDere(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     image_Ndai = models.ImageField(upload_to='Ma_Ndai', blank=True, null=True)
     license_verified = models.BooleanField(default=False)
-    AINA_YA_NDAI = models.CharField(choices=AINA_YA_NDAI, max_length=2)
-    WATEJA = models.CharField(choices=WATEJA, max_length=1)
+    type_of_automobile = models.CharField(choices=AINA_YA_NDAI, max_length=2)
+    customers = models.CharField(choices=WATEJA, max_length=1)
 
     def __str__(self):
         return self.name

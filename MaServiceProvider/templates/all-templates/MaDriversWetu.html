@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{block.super}}
+
+    <h1>Available Drivers</h1>
+    <ul>
+        {% for driver in madriver %}
+
+        <li> Name: {{ driver.name }}</li>
+        <li> Price Per Km: {{ driver.price_per_km }} rwf  </li>
+        <li> Availabile now: {{ driver.availability }} </li>
+        <li>Call: {{ driver.Namba }}</li>
+
+        {% endfor %}
+    </ul>
+{% endblock %}
