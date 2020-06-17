@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 import datetime as dt
 from django.contrib.auth.decorators import login_required
+from .models import MaDere
+
 
 
 # Create your views here.
@@ -24,12 +26,15 @@ def aboutus(request):
 # the context variables that are rendered inside the template.
 
 @login_required()
-def news_of_day(request):
-    # pass
-    date = dt.date.today()
+def our_drivers(request):
     # day = convert_dates(date)
-    return render(request, 'all-news/today-news.html',
-                  {"date": date})
+    date = dt.date.today()
+
+    context = {
+        'madriver': MaDere.objects.all()
+    }
+
+    return render(request, 'all-templates/MaDriversWetu.html', context)
 
 
 # the convert dates function is now being taken care of by the date filter in the base html
@@ -61,4 +66,4 @@ def past_days_news(request, past_date):
     if date == dt.date.today():
         return redirect(news_of_day)
     
-    return render(request, 'all-news/past-news.html', {"date": date})
+    return render(request, 'all-MaDriversWetu/past-MaDriversWetu.html', {"date": date})

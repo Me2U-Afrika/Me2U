@@ -311,58 +311,56 @@ class PaymentView(View):
 
     def post(self, *args, **kwargs):
         # `source` is obtained with Stripe.js; see https://stripe.com/docs/payments/accept-a-payment-charges#web-create-token
+
         order = Order.objects.get(user=self.request.user, ordered=False)
         form = PaymentForm(self.request.POST)
-        userprofile = UserProfile.objects.get(user=self.request.user)
+        # userprofile = UserProfile.objects.get(user=self.request.user)
 
         if form.is_valid():
-            # token = form.cleaned_data.get('stripeToken')
             token = self.request.POST['stripeToken']
 
             use_default = form.cleaned_data.get('use_default')
-            save = form.cleaned_data.get('use_default')
+            save = form.cleaned_data.get('save')
 
-            if save:
-                # allow fetch cards
-                if not userprofile.stripe_customer_id:
-                    customer = stripe.Customer.create(
-                        email=self.request.user.email,
-                        source=token
-                    )
-
-                    userprofile.stripe_customer_id = customer['id']
-                    userprofile.one_click_purchasing = True
-                    userprofile.save()
-
-                else:
-                    stripe.Customer.create_source(
-                        userprofile.stripe_customer_id,
-                        source=token
-                    )
+            # if save:
+            #     # allow fetch cards
+            #     if not userprofile.stripe_customer_id:
+            #         customer = stripe.Customer.create(
+            #             email=self.request.user.email,
+            #             source=token
+            #         )
+            #
+            #         userprofile.stripe_customer_id = customer['id']
+            #         userprofile.one_click_purchasing = True
+            #         userprofile.save()
+            #
+            #     else:
+            #         stripe.Customer.create_source(
+            #             userprofile.stripe_customer_id,
+            #             source=token
+            #         )
 
             # if self.request.method == 'POST':
             #
             #     order = Order.objects.get(user=self.request.user, ordered=False)
             #
             amount = int(order.get_total() * 100)  # get in ksh
-            #     token = self.request.POST['stripeToken']
-            #     # token = self.request.POST.get('stripeToken')
 
             try:
 
-                if use_default:
-                    charge = stripe.Charge.create(
-                        amount=amount,
-                        currency='usd',
-                        customer=userprofile.stripe_customer_id
-                    )
-
-                else:
-                    charge = stripe.Charge.create(
-                        amount=amount,
-                        currency="usd",
-                        source=token,
-                    )
+                # if use_default:
+                #     charge = stripe.Charge.create(
+                #         amount=amount,
+                #         currency='usd',
+                #         customer=userprofile.stripe_customer_id
+                #     )
+                #
+                # else:
+                charge = stripe.Charge.create(
+                    amount=amount,
+                    currency="usd",
+                    source=token,
+                )
 
                 # create payment
                 payment = StripePayment()
@@ -370,13 +368,12 @@ class PaymentView(View):
                 payment.user = self.request.user
                 payment.amount = amount
                 payment.save()
-                #
-                #     # Assign payment to user
+
+                # Assign payment to user
 
                 order_items = order.items.all()
                 order_items.update(ordered=True)
                 for item in order_items:
-                    print('item:', item)
                     item.save()
 
                 order.ordered = True
@@ -393,7 +390,7 @@ class PaymentView(View):
 
                 messages.success(self.request, " CONGRATULATIONS YOUR ORDER WAS SUCCESSFUL")
                 return redirect("me2ushop:home")
-            #
+
             except stripe.error.CardError as e:
                 # Since it's a decline, stripe.error.CardError will be caught
                 body = e.json_body

@@ -6,7 +6,7 @@ urlpatterns = [
     # url(r'^$', views.index),
     url(r'^$', views.welcome, name='homepage'),
     url('aboutus/', views.aboutus, name='aboutus'),
-    url('newsoftoday/', views.news_of_day, name='newsoftoday'),
+    url('ourdrivers/', views.our_drivers, name='ourdrivers'),
 
     # adding dynamic url
 

@@ -3,23 +3,40 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 
-class Addicts(models.Model):
+
+AINA_YA_NDAI = (
+    ('BI', 'Baiskeli'),
+    ('MK', 'MotorBike'),
+    ('CR', 'Car'),
+    ('LO', 'Lorry')
+
+)
+
+WATEJA = (
+    ('A', 'Passengers'),
+    ('M', 'Mizigo')
+
+)
+
+
+class MaDere(models.Model):
     name = models.CharField(max_length=255)
-    price = models.FloatField()
-    age = models.IntegerField()
+    Namba = models.CharField(max_length=13)
+    price_per_km = models.FloatField()
     location = models.CharField(max_length=255)
     availability = models.BooleanField()
-    image_url = models.CharField(max_length=2083)
+    image_url = models.CharField(max_length=2083, blank=True, null=True)
     description = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    # addicts_image = models.ImageField(upload_to='')
-
+    image_Ndai = models.ImageField(upload_to='Ma_Ndai', blank=True, null=True)
+    license_verified = models.BooleanField(default=False)
+    AINA_YA_NDAI = models.CharField(choices=AINA_YA_NDAI, max_length=2)
+    WATEJA = models.CharField(choices=WATEJA, max_length=1)
 
     def __str__(self):
-        return self.name, self.age, self.availability
-#
-#
+        return self.name
+
 # class Referrals(models.Model):
 #     link = models.CharField(max_length=2083)
 #     description = models.CharField(max_length=255)

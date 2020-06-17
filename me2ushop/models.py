@@ -19,7 +19,7 @@ CATEGORY_CHOICES = (
     ('Ca', 'Cell Phones & Accessories'),
     ('El', 'Electronics'),
     ('Fa', 'Fashion'),
-    ('Furniture', 'Furniture'),
+    ('Fu', 'Furniture'),
 
 )
 LABEL_CHOICES = (
@@ -35,26 +35,29 @@ ADDRESS_CHOICES = (
 )
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-    stripe_customer_id = models.CharField(max_length=50, blank=True, null=True)
-    one_click_purchasing = models.BooleanField()
-
-    def __str__(self):
-        return self.user.username
-
-
-# post save signal to create the above user
-
-def userprofile_receiver(sender, instance, created, *args, **kwargs):
-    if created:
-        userprofile = UserProfile.objects.create(user=instance)
+#
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(
+#         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+#
+#     #     stripe_customer_id = models.CharField(max_length=50, blank=True, null=True)
+#     #     one_click_purchasing = models.BooleanField()
+#     #
+#     def __str__(self):
+#         return self.user.username
 
 
 #
-post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
+#
+# # post save signal to create the above user
+#
+# def userprofile_receiver(sender, instance, created, *args, **kwargs):
+#     if created:
+#         userprofile = UserProfile.objects.create(user=instance)
+#
+#
+# #
+# post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
 
 
 class Item(models.Model):
