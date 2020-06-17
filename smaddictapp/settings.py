@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+import django_heroku
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -132,7 +133,7 @@ STATICFILES_DIRS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL = 'homepage'
+LOGIN_REDIRECT_URL = 'me2ushop:home'
 LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
@@ -147,3 +148,7 @@ if DEBUG:
 else:
     STRIPE_PUBLISHABLE_kEY = 'pk_test_9or5EaMyoLjRYXOXKfQp16ab00YxYjqkzO'
     STRIPE_SECRET_KEY = 'sk_test_zI4rsVZHDZLSyWxazI986czl00mW4RjtRt'
+
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
