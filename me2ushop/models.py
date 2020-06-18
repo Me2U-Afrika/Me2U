@@ -79,6 +79,9 @@ class Item(models.Model):
     def get_absolute_url(self):
         return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
+    def get_image_absolute_url(self):
+        return reverse('me2ushop:market')
+
     def get_add_cart_url(self):
         return reverse('me2ushop:add_cart', kwargs={'slug': self.slug})
 

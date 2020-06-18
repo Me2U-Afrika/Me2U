@@ -15,7 +15,13 @@
         <!--Grid column-->
         <div class="col-md-6 mb-4">
 
-          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/14.jpg" class="img-fluid" alt="">
+            <div class="view overlay">
+                  <img src=" {{ item.image.url }}" class="car id-img-top">
+<!--                  <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/14.jpg" class="card-img-top" alt="">-->
+                <a href="{{ item.get_absolute_url }}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
+              </div>
 
         </div>
         <!--Grid column-->
