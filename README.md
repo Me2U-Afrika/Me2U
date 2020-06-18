@@ -25,7 +25,8 @@ hisreference number, which is assigned during registration. One reference number
 He
 
 3. Dropping Agents - They only concentrate in picking up goods from our available all round agents across
-the regions and deliver to customers. Each delivery attracts a commission depending on the weight and type of goods.
+the regions and deliver to customers. Each delivery attracts a commission depending on the weight, distance of the retailer
+to the customer.
 the goods have to be signed as received by the customer. Each delivery earns no less than 800 rwf. To become a 
 dropping agent, one has to have a verified government ID, means of transport and License verified by our administrators.
 
@@ -52,3 +53,28 @@ confirmed. The customer has to have this in order to receive the goods/service i
 
 This will change the recoreds to delivered = True in our records for further confirmation, we give a follow up call
 to ensure receipt of goods. 
+
+# Checkour delivery choice
+
+Express delivery - during checkout, the customer is able to choose the time taken for a product to be delivered.
+If they pick express delivery, the order is processed and packaged within the same day and made ready for shippment/delivery
+within the same day. All gloceries shops and restaurants use express delivery.
+
+Express delivery will cost more than normal delivery service. The amount is calculated depending on the customer location
+and store of order. Express delivery order takes a day to 3 days maximum depending on location of customer.
+
+Normal delivery - if custom delivery, once the order is received, our agent warehouses near are notified and picks up the 
+product for packaging, processing and made ready for delivery. The order can take between 5 to 7 days. This will ensure 
+amble time to pick up goods and process them.
+
+A customer places an online order.
+
+The application verifies the order in a separate environment.
+
+Once the app verifies the order, the payment processing application charges the customer.
+
+After the payment is processed, the warehouse receives the order and picks, packages, and ships the order.
+
+The software records the workflow history in a database and the workflow ends with a successful delivery event.
+
+ 
