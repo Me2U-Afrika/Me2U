@@ -20,6 +20,7 @@ CATEGORY_CHOICES = (
     ('El', 'Electronics'),
     ('Fa', 'Fashion'),
     ('Fu', 'Furniture'),
+    ('So', 'Sokoni'),
 
 )
 LABEL_CHOICES = (

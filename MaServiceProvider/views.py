@@ -34,7 +34,7 @@ def our_drivers(request):
         'madriver': MaDere.objects.all()
     }
 
-    return render(request, 'all-templates/MaDriversWetu.html', context)
+    return render(request, 'MaDriversWetu.html', context)
 
 
 # the convert dates function is now being taken care of by the date filter in the base html

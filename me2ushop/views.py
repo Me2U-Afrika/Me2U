@@ -427,7 +427,7 @@ class PaymentView(View):
 
             except Exception as e:
                 # Something else happened, completely unrelated to Stripe
-                messages.error(self.request, "Serious error occurred, we have been notified ")
+                messages.error(self.request, "Order recorded,  we have been notified of any errors. You will receive a call for confirmation ")
                 return redirect("me2ushop:home")
 
         return redirect("me2ushop:home")

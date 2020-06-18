@@ -3,7 +3,7 @@ import os
 import sys
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "smaddictapp.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Me2U.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError:
