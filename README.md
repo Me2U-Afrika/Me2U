@@ -2,7 +2,27 @@
 Me2U Africa is a vast master of material transformation project that
  aims to bridge the gaps and challenges we face in the ecommerce 
  world we live in today.  We hope to transform every human life and 
- enrich our beautiful continent in this amazing world.
+ enrich our beautiful continent in this amazing world.The website will be fully rounded,
+ we will offer first hand products from both large and small scale retailers. We will also incooperate
+rental services for certain products that are usually in demand and only needed for a short period. Save you
+some cash as compared to buying the real product. This can be a place to also test out a product befored deciding
+to buy it finally. 
+
+We will also incooperate window shopping where a customer can save a collection of products for future buying or 
+share the list with someone to pay on their behalf. This will also help us to automate orders for frequently used
+products such gloceries and end of month shopping list for household items.
+
+# Me2U investment
+At Me2U, our buyers can invest in us for monthly and weekly returns on investment. The investment will be used
+ to empower small scale businesses to fund themselves mainly for restocking. The invested money from buyers will only
+ be used in the platform even after gaining the expected interest. The money can be exchanged for a wide range of
+ products and services we shall be offering in the platform.
+ 
+ - Interested borrowers(retailers), will only be able to restock from our trusted wholesalers and suppliers. All the 
+ money rent out, will be tracked to the last cent spending which will be mainly restocking their businesses.
+ 
+
+
  
 # Me2U Agents
 
@@ -10,7 +30,8 @@ Would you like to become our ambassador. At Me2U we about customer service
 and ensuring on-time delivery service. To become an agent, one has to have means of 
 transport in order to pick goods from our retailers near him/her.
 The agent is responsible for packaging and preprocessing of the received goods from a retailer.
-They ensure quality of the goods before dispatch and proper packaging.
+They ensure quality of the goods before dispatch and proper packaging. All our agents are our employees and
+applicable for monthly pay on amount of goods delivered and total distance covered. 
 
 We have different forms of agents:
 1. All round Agent - They comprise of our retailers and wholesalers.
