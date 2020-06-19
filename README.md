@@ -41,6 +41,7 @@ and they show proof of security/storage facility available for safe keeping of g
 for dispatching goods and services bought from their stores to dropping agents. They keep a book of records
 of goods bought. The books will be audited by our team on a monthly basis to ensure compliance.
 
+
 if using our dropping agents to dispatch goods, all round agent assigns the task to a dropping agent through 
 hisreference number, which is assigned during registration. One reference number equates to one dropping agent.
 He
@@ -55,25 +56,30 @@ dropping agent, one has to have a verified government ID, means of transport and
 
 # Retail Owners
 
-All our verified retailers act as our all rounded Agents as they posses the goods and services. If delivering through our 
-agents, the goods are insured of any damage that may occur during transit. If they decide to deliver through their own
-means of delivery, the retailer is sorely reliable for any damages during delivery of the goods. In case of 
-damage through out picking agent, we will ensure a refund to the retailer and the customer as well.
+All our verified retailers act as our all rounded Agents as they posses the goods and services. 
+If Retail owner chooses to delivering through our agents, the goods are insured of any damage that may 
+occur during transit. If they decide to deliver through their own
+means of delivery, the retailer is sorely reliable for any damages during delivery of the goods 
+from their stores. 
+In case of damage occurs while using our picking agents, we will ensure a refund to the customer. Customers and retailers
+can also send a request refund form where necessary.
 
-Retailers can locate our dropping agents around them using our swift suppliers platform that has 1000s of registered
-users or simply post the goods pick up request at our swift suppliers page and available agents can accept the request if 
-near the premises. 
-If the retailer decides to deliver the products, they earn the 800 rwf commission. 
+Retailers can locate our dropping agents around them using our Me2U|Swift-suppliers taxi platform.
+Once they request, our agents are notified and choose to accept the drop and pick. The retailers have to 
+identify the picking agents who are instructed to provide their Me2U Agent Card. 
+If the retailer decides to deliver the products, they earn a commission on complete deliveries. 
 
 # Customers
 
-Upon receiving the goods, they have to digitally sign the receipt of goods/service by providing sending a toll free
-text with the delivering agent code in order for the delivery fees to be sent to the delivering agent. This requires no 
-smart phone and can be completed using a simple code #182#productID#agentCode#. Product ID is issued once an order has been
-confirmed. The customer has to have this in order to receive the goods/service intended.
+Upon receiving the goods, they have to digitally sign the receipt of goods/service by using ussd code or agent phone.
+This requires no smart phone and can be completed using a simple code #182#productID#agentCode#. 
+Product ID is issued once an order has been confirmed. The ID is only known to our customers and only means
+to ensure they receive the intended ordered items. The customer has to have this in order to receive 
+the goods/service intended. The code will be sent both in text and email. Thus will always be available 
+for the customer.
 
-This will change the recoreds to delivered = True in our records for further confirmation, we give a follow up call
-to ensure receipt of goods. 
+Once we receive the confirmation, order will be marked as completed in our systems. Follow up is done within 3days 
+by our customer service. 
 
 # Checkour delivery choice
 
