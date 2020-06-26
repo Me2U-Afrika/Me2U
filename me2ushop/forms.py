@@ -1,6 +1,7 @@
 from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
+from .models import OrderItem
 
 PAYMENT_CHOICES = {
 
@@ -52,12 +53,41 @@ class CouponForm(forms.Form):
 
 
 class CartAddProductForm(forms.Form):
+
     quantity = forms.IntegerField(widget=forms.TextInput(attrs={
-        'placeholder': 'Quantity',
+        'placeholder': 'Qty',
+        'value': '1',
         'class': 'form-control',
         'aria-label': 'Recipient\'s username',
         'aria-describedby': 'basic-addon2'
     }))
+
+
+# class CartAddProductForm(forms.Form):
+#     quantity = forms.IntegerField(widget=forms.TextInput(attrs={
+#         'size': '9',
+#         'value': '1',
+#         'placeholder': 'Quantity',
+#         'class': '[form-control, quantity]',
+#         'aria-label': 'Recipient\'s username',
+#         'aria-describedby': 'basic-addon2',
+#         'max_length': '5'}),
+#         error_messages={'invalid': 'Please enter a valid quantity.'},
+#         min_value=1)
+#
+#     product_slug = forms.CharField(widget=forms.HiddenInput())
+#
+#     # override the default __init__ so we can set the request
+#     def __init__(self, request=None, *args, **kwargs):
+#         self.request = request
+#         super(CartAddProductForm, self).__init__(*args, **kwargs)
+#
+#     # custom validation to check for cookie
+#     def clean(self):
+#         if self.request:
+#             if not self.request.session.test_cookie_worked():
+#                 raise forms.ValidationError("Cookies Must be Enabled")
+#         return self.changed_data()
 
 
 class RefundForm(forms.Form):
@@ -75,4 +105,3 @@ class RefundForm(forms.Form):
 class PaymentForm(forms.Form):
     use_default = forms.BooleanField(required=False)
     save = forms.BooleanField(required=False)
-

@@ -3,15 +3,18 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+
 from .forms import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
-# from .models import Item, OrderItem, Order, BillingAddress, StripePayment, Coupon, RequestRefund
+
 from .models import *
+
 from django.views.generic import ListView, DetailView, View
 from django.utils import timezone
+
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.template import RequestContext
 
 import random
 import string
@@ -25,21 +28,40 @@ def create_ref_code():
 
 
 class HomeView(ListView):
-    model = Item
+    model = Product
     paginate_by = 12
     template_name = 'home-page.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
 
-class ItemDetailedView(DetailView):
-    model = Item
+        return context
+
+
+class ProductDetailedView(DetailView):
+    model = Product
     template_name = 'product-page.html'
     query_pk_and_slug = True
 
     def get_context_data(self, **kwargs):
-        context = super(ItemDetailedView, self).get_context_data(**kwargs)
+        context = super(ProductDetailedView, self).get_context_data(**kwargs)
         cart_product_form = CartAddProductForm()
         context['cart_product_form'] = cart_product_form
+        # categories = Item.objects.values_list('product_category__category_name', flat=True).distinct()
+        # context['categories'] = categories
+
         return context
+
+
+def _generate_cart_id():
+    cart_id = random.choices(string.ascii_lowercase + string.digits, k=50)
+    return cart_id
+
+
+def _cart_id_request(request):
+    if 'cart_id' in request.session:
+        request.session['cart_id'] = _generate_cart_id()
+    return request.session['cart_id']
 
 
 class Order_summary_view(LoginRequiredMixin, View):
@@ -53,6 +75,8 @@ class Order_summary_view(LoginRequiredMixin, View):
         except ObjectDoesNotExist:
             messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
             return redirect("me2ushop:home")
+
+
 
 
 def is_valid_form(values):
@@ -73,41 +97,47 @@ class Checkout_page(View):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
             order_query_set = Order.objects.filter(user=self.request.user, ordered=False)
+            order_items = order.total_items()
 
             if order_query_set.exists():
+                if order_items > 0:
 
-                context = {
-                    'object': order,
-                    'form': form,
-                    'couponform': CouponForm,
-                    'DISPLAY_COUPON_FORM': True,
-                }
+                    context = {
+                        'object': order,
+                        'form': form,
+                        'couponform': CouponForm,
+                        'DISPLAY_COUPON_FORM': True,
+                    }
 
-                shipping_address_qs = Address.objects.filter(
-                    user=self.request.user,
-                    address_type='S',
-                    default=True
-                )
+                    shipping_address_qs = Address.objects.filter(
+                        user=self.request.user,
+                        address_type='S',
+                        default=True
+                    )
 
-                if shipping_address_qs.exists():
-                    context.update({'default_shipping_address': shipping_address_qs[0]})
+                    if shipping_address_qs.exists():
+                        context.update({'default_shipping_address': shipping_address_qs[0]})
 
-                billing_address_qs = Address.objects.filter(
-                    user=self.request.user,
-                    address_type='B',
-                    default=True
-                )
+                    billing_address_qs = Address.objects.filter(
+                        user=self.request.user,
+                        address_type='B',
+                        default=True
+                    )
 
-                if billing_address_qs.exists():
-                    context.update({'default_billing_address': billing_address_qs[0]})
+                    if billing_address_qs.exists():
+                        context.update({'default_billing_address': billing_address_qs[0]})
 
-                return render(self.request, 'checkout-page.html', context)
+                    return render(self.request, 'checkout-page.html', context)
+
+                else:
+                    messages.info(self.request, "Your Cart is Empty, Continue shopping before checkout ")
+                    return redirect("me2ushop:order_summary")
+            else:
+                messages.info(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
+                return redirect("me2ushop:home")
+
         except ObjectDoesNotExist:
             messages.info(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
-            return redirect("me2ushop:home")
-
-        except Exception:
-            messages.info(self.request, 'Login to perform function ')
             return redirect("me2ushop:home")
 
     def post(self, *args, **kwargs):
@@ -260,12 +290,15 @@ class Checkout_page(View):
                 else:
                     messages.warning(self.request, 'Invalid Payment Option. Select mode of payment to continue')
                     return redirect("me2ushop:checkout")
+
+            messages.warning(self.request, 'Invalid form')
             return redirect("me2ushop:checkout")
         #
         except ObjectDoesNotExist:
             messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
             return redirect("me2ushop:home")
         except Exception:
+            messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
             return redirect("me2ushop:checkout")
 
 
@@ -300,7 +333,7 @@ class PaymentView(View):
             return render(self.request, 'payment.html', context)
 
         else:
-            messages.warning(self.request, "Please fill in your shipping address prior to payment")
+            messages.warning(self.request, "Please fill in your valid delivery address prior to payment")
             return redirect("me2ushop:checkout")
 
     def post(self, *args, **kwargs):
@@ -316,40 +349,10 @@ class PaymentView(View):
             use_default = form.cleaned_data.get('use_default')
             save = form.cleaned_data.get('save')
 
-            # if save:
-            #     # allow fetch cards
-            #     if not userprofile.stripe_customer_id:
-            #         customer = stripe.Customer.create(
-            #             email=self.request.user.email,
-            #             source=token
-            #         )
-            #
-            #         userprofile.stripe_customer_id = customer['id']
-            #         userprofile.one_click_purchasing = True
-            #         userprofile.save()
-            #
-            #     else:
-            #         stripe.Customer.create_source(
-            #             userprofile.stripe_customer_id,
-            #             source=token
-            #         )
-
-            # if self.request.method == 'POST':
-            #
-            #     order = Order.objects.get(user=self.request.user, ordered=False)
-            #
             amount = int(order.get_total() * 100)  # get in ksh
 
             try:
 
-                # if use_default:
-                #     charge = stripe.Charge.create(
-                #         amount=amount,
-                #         currency='usd',
-                #         customer=userprofile.stripe_customer_id
-                #     )
-                #
-                # else:
                 charge = stripe.Charge.create(
                     amount=amount,
                     currency="usd",
@@ -364,25 +367,26 @@ class PaymentView(View):
                 payment.save()
 
                 # Assign payment to user
+                order.payment = payment
+                if order.payment:
+                    order.ordered = True
+                    # Assigning the order a ref code during checkout payment
+                    order.ref_code = create_ref_code()
+                    order.save()
 
-                order_items = order.items.all()
-                order_items.update(ordered=True)
-                for item in order_items:
-                    item.save()
-
-                order.ordered = True
-                order.stripe_payment = payment
-
-                # Assigning the order a ref code during checkout payment
-
-                order.ref_code = create_ref_code()
-                order.save()
+                    # Changing order_items in cart to ordered
+                    order_items = order.items.all()
+                    order_items.update(ordered=True)
+                    for item in order_items:
+                        item.save()
 
                 if order.ordered:
-                    order.coupon.valid = False
-                    order.coupon.save()
+                    if order.coupon:
+                        order.coupon.valid = False
+                        order.coupon.save()
+                        messages.success(self.request, "Coupon was SUCCESSFUL")
 
-                messages.success(self.request, " CONGRATULATIONS YOUR ORDER WAS SUCCESSFUL")
+                    messages.success(self.request, " CONGRATULATIONS YOUR ORDER WAS SUCCESSFUL")
                 return redirect("me2ushop:home")
 
             except stripe.error.CardError as e:
@@ -419,12 +423,15 @@ class PaymentView(View):
                                "Something went wrong. You were not charged. Please try again or contact us")
                 return redirect("me2ushop:home")
 
-            except Exception as e:
+            except Exception:
                 # Something else happened, completely unrelated to Stripe
-                messages.error(self.request, "Order recorded,  we have been notified of any errors. You will receive a call for confirmation ")
+                messages.error(self.request,
+                               "Order recorded,  we have been notified. You will receive a call for order confirmation ")
                 return redirect("me2ushop:home")
 
-        return redirect("me2ushop:home")
+        else:
+            messages.error(self.request, "Invalid form ")
+            return redirect("me2ushop:home")
 
 
 class RefundView(View):
@@ -434,7 +441,7 @@ class RefundView(View):
         context = {
             'RefundForm': form
         }
-        return render(self.request, "test.html", context)
+        return render(self.request, "Me2U_home.html", context)
 
     def post(self, *args, **kwargs):
         form = RefundForm(self.request.POST)
@@ -463,74 +470,109 @@ class RefundView(View):
 
             except ObjectDoesNotExist:
                 messages.info(self.request,
-                              "We were unable to find the order for the refund requested, please call customer care toll free number for clarification.")
+                              "We were unable to find the order for the refund requested, please call customer care "
+                              "toll free number for clarification.")
                 messages.info(self.request,
-                              "Asante kwa kuchagua mtandao wetu. Samahani tumekosa ombi lako. Tafadhali pigia wahuduma wetu kupata usaidizi.")
+                              "Asante kwa kuchagua mtandao wetu. Samahani tumekosa ombi lako. Tafadhali pigia "
+                              "wahuduma wetu kupata usaidizi.")
 
                 return redirect("me2ushop:request_refund")
 
 
-def product_page(request):
-    try:
-        order = Order.objects.get(user=request.user, ordered=False)
-        # order_item = OrderItem.objects.get(user=request.user, ordered=False)
-
-        context = {
-            'item': Item.objects.all(),
-            'object': order,
-            'order_item': OrderItem.objects.all()
-        }
-        return render(request, 'product-page.html', context)
-    except Exception:
-        return render(request, 'product-page.html')
-
-
-# @login_required()
 def add_cart(request, slug):
-    try:
-        item = get_object_or_404(Item, slug=slug)
-        order_item, created = OrderItem.objects.get_or_create(
-            item=item,
-            user=request.user,
-            ordered=False
-        )
-        order_query_set = Order.objects.filter(user=request.user, ordered=False)
 
-        if order_query_set.exists():
-            order = order_query_set[0]
+    if request.method == "POST":
+        form = CartAddProductForm(request.POST or None)
+        if form.is_valid():
+            try:
+                # Get quantity from useronline
+                quantity = form.cleaned_data.get('quantity')
+                print("qty:", quantity)
+                item = get_object_or_404(Product, slug=slug)
+                order_item, created = OrderItem.objects.get_or_create(
+                    item=item,
+                    user=request.user,
+                    ordered=False
+                )
+                order_query_set = Order.objects.filter(user=request.user, ordered=False)
 
-            # check if the order item is in the order
+                # This code returns the user who ordered an item
+                if order_query_set.exists():
+                    order = order_query_set[0]
 
-            if order.items.filter(item__slug=item.slug).exists():
-                order_item.quantity += 1
-                order_item.save()
-                messages.info(request, 'This item quantity was updated.')
-                return redirect("me2ushop:order_summary")
-            else:
-                messages.info(request, 'This item has been added to your cart.')
-                order.items.add(order_item)
-                order_item.quantity = 1
-                order_item.save()
-                return redirect("me2ushop:order_summary")
-        else:
-            order_date = timezone.now()
-            order = Order.objects.create(user=request.user, order_date=order_date)
-            order.items.add(order_item)
-            order_item.quantity = 1
-            order_item.save()
-            messages.info(request, 'This item has been added to your cart.')
-            return redirect("me2ushop:order_summary")
+                    # check if the order item is in the order
+                    if order.items.filter(item__slug=item.slug).exists():
+                        if quantity > 1:
+                            order_item.quantity = quantity
+                        else:
+                            order_item.quantity += 1
 
-    except Exception:
-        messages.warning(request, 'Order not recorded, Login to continue. QuiQ and Eazzay')
-        # add_cart_product(request, slug)
+                        order_item.save()
+                        messages.info(request, 'This item quantity was updated.')
+                        return redirect("me2ushop:order_summary")
+                    else:
+                        messages.info(request, 'This item has been added to your cart.')
+                        order.items.add(order_item)
+                        if quantity > 1:
+                            order_item.quantity = quantity
+                        else:
+                            order_item.quantity = 1
+                        order_item.save()
+                        return redirect("me2ushop:order_summary")
+                else:
+                    order_date = timezone.now()
+                    order = Order.objects.create(user=request.user, order_date=order_date)
+                    order.items.add(order_item)
+                    if quantity > 1:
+                        order_item.quantity = quantity
+                    else:
+                        order_item.quantity = 1
+
+                    order_item.save()
+                    messages.info(request, 'This item has been added to your cart.')
+                    return redirect("me2ushop:order_summary")
+
+            except Exception:
+                messages.warning(request, 'error:')
+                # add_cart_product(request, slug)
+                return redirect("me2ushop:product", slug=slug)
+
+        messages.info(request, 'Invalid form')
         return redirect("me2ushop:product", slug=slug)
 
+    else:
+        try:
+            item = get_object_or_404(Product, slug=slug)
+            order_item, created = OrderItem.objects.get_or_create(
+                item=item,
+                user=request.user,
+                ordered=False
+            )
+            order_query_set = Order.objects.filter(user=request.user, ordered=False)
 
-# @login_required()
+            # This code returns the user who ordered an item
+            if order_query_set.exists():
+                order = order_query_set[0]
+
+                # check if the order item is in the order
+                if order.items.filter(item__slug=item.slug).exists():
+                    order_item.quantity += 1
+                    order_item.save()
+                    messages.info(request, 'This item quantity was updated.')
+                    return redirect("me2ushop:order_summary")
+
+        except Exception:
+            messages.warning(request, 'error:')
+            # add_cart_product(request, slug)
+            return redirect("me2ushop:product", slug=slug)
+
+    messages.warning(request, "Something went wrong, we have been notified of any errors")
+    return redirect("me2ushop:product", slug=slug)
+
+
 def remove_cart(request, slug):
     try:
-        item = get_object_or_404(Item, slug=slug)
+        item = get_object_or_404(Product, slug=slug)
 
         order_query_set = Order.objects.filter(
             user=request.user,
@@ -570,9 +612,8 @@ def remove_cart(request, slug):
         return redirect("me2ushop:product", slug=slug)
 
 
-@login_required()
 def remove_single_item_cart(request, slug):
-    item = get_object_or_404(Item, slug=slug)
+    item = get_object_or_404(Product, slug=slug)
 
     order_query_set = Order.objects.filter(
         user=request.user,
@@ -605,6 +646,193 @@ def remove_single_item_cart(request, slug):
 
     return redirect("me2ushop:product", slug=slug)
 
+
+def get_coupon(request, code):
+    try:
+        # we take the online provided code and run it through our available coupons in order to determine it's value
+        coupon = Coupon.objects.get(code=code)
+
+        print("coupon from get method:", coupon)
+        if coupon.valid:
+            return coupon
+        else:
+            messages.info(request, 'This coupon is already depleted. Tafuta ingine mazee')
+            return redirect('me2ushop:checkout')
+
+    except ObjectDoesNotExist:
+        messages.warning(request, 'Tumekosa hii ticket kwa system')
+        return redirect('me2ushop:checkout')
+
+
+def add_coupon(request):
+    if request.method == "POST":
+        form = CouponForm(request.POST or None)
+        if form.is_valid():
+            try:
+                # get the order
+                order = Order.objects.get(user=request.user, ordered=False)
+
+                if order.total_items() > 0:
+                    # print("The number of orders in the cart:", order.total_items())
+
+                    # Get code coupon provided online
+                    code = form.cleaned_data.get('code')
+
+                    # print("coode:", code)
+
+                    # Get existing coupons we have in the system if they match
+                    coupon_id = get_coupon(request, code)
+                    # print("coupon id:", coupon_id)
+
+                    order.coupon = coupon_id
+                    messages.success(request,
+                                     'Coupon was successful, thank you for joining Me2U Africa. KARIBU')
+                    order.save()
+
+                    # item.valid = False
+                    # item.save()
+                    return redirect('me2ushop:checkout')
+
+                else:
+                    messages.info(request, 'You don\'t have an active order')
+                    return redirect('me2ushop:order_summary')
+
+            except Exception:
+                messages.warning(request, 'Ticket not available or no order provided')
+                return redirect('me2ushop:checkout')
+
+        # order.coupon = coupon_id
+        # print(" Coupon ID FETCHED", coupon_id)
+        # order.save()
+        # coupon_validity = Coupon.objects.all()
+        # print("couponvalidty:", coupon_validity)
+        # for item in coupon_validity:
+        #     print("item:", item)
+        #     if item == coupon_id:
+        #         if item.valid:
+        #             order.coupon = coupon_id
+        #             messages.success(request,
+        #                              'Coupon was successful, thank you for joining Me2U Africa. KARIBU')
+        #             order.save()
+        #             # Change coupon to invalid
+        #             item.valid = False
+        #             item.save()
+        #             return redirect('me2ushop:checkout')
+        #         else:
+        #             messages.warning(request, 'The coupon has been already utilized')
+        #             return redirect('me2ushop:checkout')
+        #     else:
+        #         messages.warning(request, 'The coupon code is invalid')
+        #         return redirect('me2ushop:checkout')
+    #             return redirect('me2ushop:checkout')
+    #         except ObjectDoesNotExist:
+    #             messages.info(request, 'You do have an active order')
+    #             return redirect('me2ushop:order_summary')
+    #     return redirect('me2ushop:checkout')
+    # return redirect('me2ushop:checkout')
+
+# def add_cart_qty(request, slug):
+#     if request.method == "POST":
+#
+#         form = CartAddProductForm(request.POST or None)
+#         if form.is_valid():
+#
+#             try:
+#                 # Get quantity from useronline
+#                 qty = form.cleaned_data.get('quantity')
+#                 print("qty:", qty)
+#
+#                 # Determine the item and assign quantity provieded by user to their cart.
+#                 item = get_object_or_404(Product, slug=slug)
+#                 order_item, created = OrderItem.objects.get_or_create(
+#                     item=item,
+#                     user=request.user,
+#                     ordered=False,
+#                 )
+#
+#                 order_query_set = Order.objects.filter(user=request.user, ordered=False)
+#                 if order_query_set.exists():
+#                     order = order_query_set[0]
+#
+#                     # check if this specific order item is in the order in order to increment it or update it
+#
+#                     if order.items.filter(item__slug=item.slug).exists():
+#                         order_item.quantity = qty
+#                         order_item.save()
+#                         messages.info(request, 'This item quantity has been updated.')
+#                         return redirect("me2ushop:order_summary")
+#                     else:
+#                         messages.info(request, 'This item has been added to your cart.')
+#                         order.items.add(order_item)
+#                         order_item.quantity = qty
+#                         order_item.save()
+#                         return redirect("me2ushop:order_summary")
+#                 else:
+#                     order_date = timezone.now()
+#                     order = Order.objects.create(user=request.user, order_date=order_date)
+#                     order.items.add(order_item)
+#                     order_item.quantity = qty
+#                     order_item.save()
+#                     messages.info(request, 'This item has been added to your cart.')
+#                     return redirect("me2ushop:order_summary")
+#
+#             except Exception:
+#                 messages.warning(request, 'no data yet')
+#                 return redirect('me2ushop.order_summary')
+#
+#     messages.warning(request, "Something is a miss here!")
+#     return redirect('me2ushop:home')
+#
+#     # form = CartAddProductForm(request.POST or None)
+#     # if form.is_valid():
+#     #
+#     #     try:
+#     #
+#     #         # Get quantity from useronline
+#     #         qty = form.cleaned_data.get('code')
+#     #         print("qty:", qty)
+#     #
+#     #         # post to our database
+#     #         recored_qty = post_cart_qty(request, qty)
+#     #         print("recorded_qty:", recored_qty)
+#     #
+#     #         item = get_object_or_404(Item, slug=slug)
+#     #         order_item, created = OrderItem.objects.get_or_create(
+#     #             item=item,
+#     #             user=request.user,
+#     #             ordered=False
+#     #         )
+#     #         order_query_set = Order.objects.filter(user=request.user, ordered=False)
+#     #
+#     #         if order_query_set.exists():
+#     #             order = order_query_set[0]
+#     #
+#     #             # check if the order item is in the order
+#     #
+#     #             if order.items.filter(item__slug=item.slug).exists():
+#     #                 order_item.quantity += recored_qty
+#     #                 order_item.save()
+#     #                 messages.info(request, 'This item quantity was updated.')
+#     #                 return redirect("me2ushop:order_summary")
+#     #             else:
+#     #                 messages.info(request, 'This item has been added to your cart.')
+#     #                 order.items.add(order_item)
+#     #                 order_item.quantity = recored_qty
+#     #                 order_item.save()
+#     #                 return redirect("me2ushop:order_summary")
+#     #         else:
+#     #             order_date = timezone.now()
+#     #             order = Order.objects.create(user=request.user, order_date=order_date)
+#     #             order.items.add(order_item)
+#     #             order_item.quantity = recored_qty
+#     #             order_item.save()
+#     #             messages.info(request, 'This item has been added to your cart.')
+#     #             return redirect("me2ushop:order_summary")
+#     #
+#     #     except Exception:
+#     #         messages.warning(request, 'no data yet')
+#     #         return redirect('me2ushop.order_summary')
+#     #
 
 # def add_cart_product(request, slug):
 #     if request.method == "POST":
@@ -701,200 +929,3 @@ def remove_single_item_cart(request, slug):
 #             return query_set[0].items.count()
 #
 #     return 0
-
-def get_coupon(request, code):
-    try:
-        # we take the online provided code and run it through our available coupons in order to determine it's value
-        coupon = Coupon.objects.get(code=code)
-
-        print("coupon from get method:", coupon)
-        if coupon.valid:
-            return coupon
-        else:
-            messages.info(request, 'This coupon is already depleted. Tafuta ingine mazee')
-            return redirect('me2ushop:checkout')
-
-    except ObjectDoesNotExist:
-        messages.warning(request, 'Tumekosa hii ticket kwa system')
-        return redirect('me2ushop:checkout')
-
-
-def add_coupon(request):
-    if request.method == "POST":
-        form = CouponForm(request.POST or None)
-        if form.is_valid():
-            try:
-                # get the order
-                order = Order.objects.get(user=request.user, ordered=False)
-
-                if order.total_items() > 0:
-                    # print("The number of orders in the cart:", order.total_items())
-
-                    # Get code coupon provided online
-                    code = form.cleaned_data.get('code')
-
-                    # print("coode:", code)
-
-                    # Get existing coupons we have in the system if they match
-                    coupon_id = get_coupon(request, code)
-                    # print("coupon id:", coupon_id)
-
-                    order.coupon = coupon_id
-                    messages.success(request,
-                                     'Coupon was successful, thank you for joining Me2U Africa. KARIBU')
-                    order.save()
-
-                    # item.valid = False
-                    # item.save()
-                    return redirect('me2ushop:checkout')
-
-                else:
-                    messages.info(request, 'You don\'t have an active order')
-                    return redirect('me2ushop:order_summary')
-
-            except Exception:
-                messages.warning(request, 'Ticket not available or no order provided')
-                return redirect('me2ushop:checkout')
-
-        # order.coupon = coupon_id
-        # print(" Coupon ID FETCHED", coupon_id)
-        # order.save()
-        # coupon_validity = Coupon.objects.all()
-        # print("couponvalidty:", coupon_validity)
-        # for item in coupon_validity:
-        #     print("item:", item)
-        #     if item == coupon_id:
-        #         if item.valid:
-        #             order.coupon = coupon_id
-        #             messages.success(request,
-        #                              'Coupon was successful, thank you for joining Me2U Africa. KARIBU')
-        #             order.save()
-        #             # Change coupon to invalid
-        #             item.valid = False
-        #             item.save()
-        #             return redirect('me2ushop:checkout')
-        #         else:
-        #             messages.warning(request, 'The coupon has been already utilized')
-        #             return redirect('me2ushop:checkout')
-        #     else:
-        #         messages.warning(request, 'The coupon code is invalid')
-        #         return redirect('me2ushop:checkout')
-    #             return redirect('me2ushop:checkout')
-    #         except ObjectDoesNotExist:
-    #             messages.info(request, 'You do have an active order')
-    #             return redirect('me2ushop:order_summary')
-    #     return redirect('me2ushop:checkout')
-    # return redirect('me2ushop:checkout')
-
-
-def add_cart_qty(request, slug):
-    # messages.info(request, "we came here and still here")
-
-    if request.method == "POST":
-        # messages.info(request, "we in the add_cart function, working so far")
-
-        form = CartAddProductForm(request.POST or None)
-        if form.is_valid():
-
-            try:
-                # Get quantity from useronline
-
-                qty = form.cleaned_data.get('quantity')
-                # print("qty:", qty)
-
-                # Determine the item and assign quantity provieded by user to their cart.
-
-                item = get_object_or_404(Item, slug=slug)
-                order_item, created = OrderItem.objects.get_or_create(
-                    item=item,
-                    user=request.user,
-                    ordered=False,
-                )
-
-                # print("order_item:", order_item)
-
-                order_query_set = Order.objects.filter(user=request.user, ordered=False)
-                # print("This user has the following orders:", order_query_set)
-                #
-                if order_query_set.exists():
-                    order = order_query_set[0]
-
-                    # check if this specific order item is in the order in order to increment it or update it
-
-                    if order.items.filter(item__slug=item.slug).exists():
-                        order_item.quantity = qty
-                        order_item.save()
-                        messages.info(request, 'This item quantity has been updated.')
-                        return redirect("me2ushop:order_summary")
-                    else:
-                        messages.info(request, 'This item has been added to your cart.')
-                        order.items.add(order_item)
-                        order_item.quantity = qty
-                        order_item.save()
-                        return redirect("me2ushop:order_summary")
-                else:
-                    order_date = timezone.now()
-                    order = Order.objects.create(user=request.user, order_date=order_date)
-                    order.items.add(order_item)
-                    order_item.quantity = qty
-                    order_item.save()
-                    messages.info(request, 'This item has been added to your cart.')
-                    return redirect("me2ushop:order_summary")
-
-            except Exception:
-                messages.warning(request, 'no data yet')
-                return redirect('me2ushop.order_summary')
-
-    messages.warning(request, "Something is a miss here!")
-    return redirect('me2ushop:home')
-
-    # form = CartAddProductForm(request.POST or None)
-    # if form.is_valid():
-    #
-    #     try:
-    #
-    #         # Get quantity from useronline
-    #         qty = form.cleaned_data.get('code')
-    #         print("qty:", qty)
-    #
-    #         # post to our database
-    #         recored_qty = post_cart_qty(request, qty)
-    #         print("recorded_qty:", recored_qty)
-    #
-    #         item = get_object_or_404(Item, slug=slug)
-    #         order_item, created = OrderItem.objects.get_or_create(
-    #             item=item,
-    #             user=request.user,
-    #             ordered=False
-    #         )
-    #         order_query_set = Order.objects.filter(user=request.user, ordered=False)
-    #
-    #         if order_query_set.exists():
-    #             order = order_query_set[0]
-    #
-    #             # check if the order item is in the order
-    #
-    #             if order.items.filter(item__slug=item.slug).exists():
-    #                 order_item.quantity += recored_qty
-    #                 order_item.save()
-    #                 messages.info(request, 'This item quantity was updated.')
-    #                 return redirect("me2ushop:order_summary")
-    #             else:
-    #                 messages.info(request, 'This item has been added to your cart.')
-    #                 order.items.add(order_item)
-    #                 order_item.quantity = recored_qty
-    #                 order_item.save()
-    #                 return redirect("me2ushop:order_summary")
-    #         else:
-    #             order_date = timezone.now()
-    #             order = Order.objects.create(user=request.user, order_date=order_date)
-    #             order.items.add(order_item)
-    #             order_item.quantity = recored_qty
-    #             order_item.save()
-    #             messages.info(request, 'This item has been added to your cart.')
-    #             return redirect("me2ushop:order_summary")
-    #
-    #     except Exception:
-    #         messages.warning(request, 'no data yet')
-    #         return redirect('me2ushop.order_summary')
-    #

@@ -48,10 +48,13 @@ He
 
 3. Dropping Agents - They only concentrate in picking up goods from our available all round agents across
 the regions and deliver to customers. Each delivery attracts a commission depending on the weight, distance of the retailer
-to the customer.
-the goods have to be signed as received by the customer. Each delivery earns no less than 800 rwf. To become a 
+to the customer. 
+the goods have to be signed as received by the customer. Each delivery earns no less than 700 rwf. To become a 
 dropping agent, one has to have a verified government ID, means of transport and License verified by our administrators.
 
+4. Different Automobiles are assigned different types of products that they can deliver. To ensure safety and quick transport
+all automobiles will have a descriptive list of cargo that they can handle. Please checkout our Deliver on Me2U for more
+details.
 
 
 # Retail Owners
@@ -81,17 +84,17 @@ for the customer.
 Once we receive the confirmation, order will be marked as completed in our systems. Follow up is done within 3days 
 by our customer service. 
 
-# Checkour delivery choice
+# Checkout delivery choice
 
 Express delivery - during checkout, the customer is able to choose the time taken for a product to be delivered.
 If they pick express delivery, the order is processed and packaged within the same day and made ready for shippment/delivery
 within the same day. All gloceries shops and restaurants use express delivery.
 
 Express delivery will cost more than normal delivery service. The amount is calculated depending on the customer location
-and store of order. Express delivery order takes a day to 3 days maximum depending on location of customer.
+and store of order. Express delivery order takes a day to 2 days maximum depending on location of customer.
 
 Normal delivery - if custom delivery, once the order is received, our agent warehouses near are notified and picks up the 
-product for packaging, processing and made ready for delivery. The order can take between 5 to 7 days. This will ensure 
+product for packaging, processing and made ready for delivery. The order can take between 3 to 5 days. This will ensure 
 amble time to pick up goods and process them.
 
 A customer places an online order.
@@ -105,3 +108,36 @@ After the payment is processed, the warehouse receives the order and picks, pack
 The software records the workflow history in a database and the workflow ends with a successful delivery event.
 
  
+#Me2U Blog
+
+Uder Me2U Africa News, we will majorly focus in publishing articles that portray the hidden potential of the 
+55 African Nations. Unique talented writers out their can sign up to write on our different topics that aim
+to make it kown to the world of the untold African heritage. The aim is to spread love, African culture and Unique talents
+we have within us. We hope to encourage all Africans to realize how unique we are and invite them back home where they
+really belong. Visit Africa with Me2U|Africa. Each successful participant gets a discount shopping coupon in our Me2U Market 
+and free shipping of their goods and services. No effort goes unrewarded. 
+
+To participate, send as an email with two of your recent written articles. Once accepted, we will send you 
+a confirmation email accompanied by an excel sheet of different topics you can write about. Each article submitted
+is reviewed by our Editor team to ascertain originality and proof of research prior to publishing. The writer
+gets acknowledged in the platform and a good way to put their work out for the world. A link to their blogs or any online 
+social media is linked to their name. What a better way to advertise yourself!
+
+The blog will be fully tailored on African content, where writers will majorly focus on the untold African history
+and it's rich content. For a while we have consumed knowledge from outside and completely scrapped out how unique Africa 
+is and it's rich in history. We welcome volunteer writers across Africa to majorly report on topics that paints
+the real picture of our continent. It's high time we embraced our own content and improve our trade relations,
+among us and the outside world.
+
+#Partnership With Alibaba
+
+At Me2U, we aim to partner with major leading online trade platforms to better serve our customers with a variety ,
+of affordable goods and services. Alibaba, is one of the biggest B2B online trading platform and our traders
+can benefit by getting goods we could not get easily on a normal day due to limitations in the manufacturing 
+industries in Africa. In turn we will also aim to use their vast market to resell purely African origin categories.
+At Me2U we shall introduce a line of african originated products that can be sold out their. As we bring the world to 
+Africa, We hope to take Africa to the world as well. We only import what we can produce locally, all our products,
+are majorly of african origin and we hope to empower products from all the 55 nations. Tell us about your country in 
+our Blog. 
+
+

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'navigation.html' %}
 
 {% block content %}
      {{block.super}}
@@ -26,6 +26,7 @@
           <th scope="col">Price</th>
           <th scope="col">Quantity</th>
           <th scope="col">Total Item Price</th>
+
         </tr>
       </thead>
       <tbody>
@@ -33,41 +34,37 @@
        {% for order_item in object.items.all %}
             <tr>
               <th scope="row">{{ forloop.counter }}</th>
-              <td><a href="{% url 'me2ushop:product' order_item.item.slug %}"> {{ order_item.item.title }} </td>
-              <td>{{ order_item.item.price }}</td>
-              <td><a href="{% url 'me2ushop:remove_single_item_cart' order_item.item.slug %}"><i class="fas fa-minus-circle mr-2"></i></a>
-                {{ order_item.quantity }}
-                <a href="{% url 'me2ushop:add_cart' order_item.item.slug %}"><i class="fas fa-plus-circle ml-2"></i></a>
-              </td>
+                <td><a href="{% url 'me2ushop:product' order_item.item.slug %}"> {{ order_item.item.title }} </a></td>
+                <td>{{ order_item.item.price }}</td>
+                <td><a href="{% url 'me2ushop:remove_single_item_cart' order_item.item.slug %}"><i class="fas fa-minus-circle mr-2"></i></a>
+                    {{ order_item.quantity }}
+                    <a href="{% url 'me2ushop:add_cart' order_item.item.slug %}"><i class="fas fa-plus-circle ml-2"></i></a></td>
+                <td>
+                    {% if order_item.item.discount_price %}
 
-              <td>
+                    ${{ order_item.get_total_discount_price }}
+                    <a class="btn btn-green btn-sm my-0 p">Saving ${{ order_item.get_total_saved }}</a>
 
-            {% if order_item.item.discount_price %}
+                    {% else %}
 
-              ${{ order_item.get_total_discount_price }}
-             <a class="btn btn-green btn-sm my-0 p">Saving ${{ order_item.get_total_saved }}</a>
+                    ${{ order_item.get_total_price }}
 
-             {% else %}
+                    {% endif %}
 
-              ${{ order_item.get_total_price }}
-
-             {% endif %}
-
-             <a style="color:orange" href="{% url 'me2ushop:remove_cart' order_item.item.slug %}">
-                <i class="fas fa-toilet-paper ml-3"></i>
-               </a>
-             </td>
+                    <a style="color:orange" href="{% url 'me2ushop:remove_cart' order_item.item.slug %}">
+                    <i class="fas fa-toilet-paper ml-3"></i></a></td>
             </tr>
-       {% empty %}
-           <tr>
-             <td colspan="5"> Your cart is Empty</td>
-           </tr>
-           <tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="5"> Your cart is Empty</td>
+            </tr>
+            <tr>
             <td colspan="5">
               <!--Call to action-->
               <div class="pt-4 text-center font-small mt-4 wow fadeIn">
                <a class="btn btn-outline-orange" href="{% url 'me2ushop:home'%}"
-                   role="button">Continue Shopping<i class="fas fa-hand-holding-usd"></i>
+                   role="button">WndowShop<i class="fas fa-hand-holding-usd"></i>
                 </a>
               </div>
             </td>
@@ -80,26 +77,20 @@
          <td><b>${{ object.get_total }}</b></td>
        </tr>
 
-      <tr>
-        <td colspan="5">
-          <!--Call to action-->
-          <div class="pt-4 text-center font-small mt-4 wow fadeIn">
-            <a class="btn btn-outline-orange" href="{% url 'me2ushop:home'%}"
-               role="button">Continue Shopping<i class="fas fa-hand-holding-usd"></i>
-            </a>
-            <a class="btn btn-outline-green" href="{% url 'me2ushop:checkout' %}" role="button" target="_blank">Proceed to checkout
-              <i class="fas fa-hand-holding-usd"></i><i class="fas fa-hand-lizard"></i>
-            </a>
-
-          </div>
-    <!--/.Call to action-->
-        </td>
-      </tr>
       {% endif %}
       </tbody>
     </table>
 
   </div>
+
+    <div class="pt-4 text-center font-small mt-4 wow fadeIn">
+        <a class="btn btn-outline-orange" href="{% url 'me2ushop:home'%}"
+           role="button">Continue Shopping<i class="fas fa-hand-holding-usd"></i>
+        </a>
+        <a class="btn btn-outline-green" href="{% url 'me2ushop:checkout' %}" role="button" target="_blank">Proceed to checkout
+          <i class="fas fa-hand-holding-usd"></i><i class="fas fa-hand-lizard"></i>
+        </a>
+   </div>
 
 
 </body>

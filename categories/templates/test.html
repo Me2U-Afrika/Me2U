@@ -1,0 +1,23 @@
+{% extends 'navigation.html' %}
+
+{% block content %}
+<style>
+    h1{
+    margin-top:200px;
+    }
+</style>
+<h1>{{ object.category_name }}</h1>
+    {{ object.description }}
+    <br>
+
+        {% for p in object.item_set.all %}
+    <div class="product_thumbnail">
+        <a href="{{ p.get_absolute_url }}">
+            <img src="{{ STATIC_URL }}{{ p.image }}"alt="{{ p.title }}" class="bn"/>
+    <br>
+            {{ p.title }}
+        </a>
+    </div>
+{% endfor %}
+
+{% endblock %}

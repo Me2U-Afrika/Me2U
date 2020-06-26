@@ -86,7 +86,21 @@ class RefundDisplay(admin.ModelAdmin):
     list_display_links = ['order', 'ref_code']
 
 
-admin.site.register(Item)
+class ProductAdmin(admin.ModelAdmin):
+    # form = ProductAdminForm()
+    list_display = ('title', 'price', 'old_price', 'created_at', 'updated_at',)
+    list_display_links = ('title',)
+    list_per_page = 50
+    ordering = ['-created_at']
+
+    search_fields = ['title', 'description', 'meta_keywords', 'meta_description']
+    exclude = ('created_at', 'updated_at',)
+
+    prepopulated_fields = {'slug': ('title',)}
+
+
+admin.site.register(CartItem)
+admin.site.register(Product, ProductAdmin)
 admin.site.register(OrderItem, Items_Ordered)
 admin.site.register(Order, Ordered)
 admin.site.register(StripePayment, Payment)

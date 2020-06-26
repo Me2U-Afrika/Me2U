@@ -1,14 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'navigation.html' %}
 
 {% block content %}
-     {{block.super}}
-
 <style>
 
 </style>
-
-<body>
-
+    <body>
   <!--Main layout-->
   <main class="mt-5 pt-4">
     <div class="container dark-grey-text mt-5">
@@ -20,9 +16,8 @@
         <div class="col-md-6 mb-4">
 
             <div class="view overlay">
-                  <img src=" {{ item.image.url }}" class="card-img-top">
-<!--                  <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/14.jpg" class="card-img-top" alt="">-->
-                <a href="{{ item.get_absolute_url }}">
+                <img src="{{ STATIC_URL }}{{ object.image }} " alt="{{ object.title }}" class="card-img-top"/>
+                <a href="{{ object.get_absolute_url }}">
                   <div class="mask rgba-white-slight"></div>
                 </a>
               </div>
@@ -42,51 +37,59 @@
               </a>
             </div>
 
+            <h1>{{ object.title }}</h1>
+
             <p class="lead">
-                {% if object.discount_price %}
+                {% if object.sale_price %}
                   <span class="mr-1">
-                    <del>{{ object.price}}</del>
-                </span>
-              <span>${{ object.discount_price }}</span>
+                    Was:<del>{{ object.old_price}}</del></span>
+                <br>
+                    Now:<span>${{ object.price }}</span>
 
                 {% else %}
-                  <span>${{ object.price }}</span>
-              {% endif %}
+                    <span>${{ object.price }}</span>
+                {% endif %}
             </p>
 
             <p class="lead font-weight-bold">Description</p>
 
               <p>{{ object.description }}</p>
 
-<!--                <p>Quantity:<a href="{{ object.get_remove_cart_url }}" > <i class="fas fa-minus-circle mr-2"></i></a>-->
+                Brand: <em>{{ object.brand }}</em>
+                <br>
+                In categor{{ object.product_categories.count|pluralize:"y,ies" }}:
+                        {% for c in object.product_categories.all %}
+                                <a href="{{ c.get_absolute_url }}">{{ c }}</a>
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
 
-<!--                  <div class="input-group">-->
-<!--                  <a> {{ cart_product_form.quantity }} </a>-->
-<!--                  </div>-->
+                 <br>
 
-<!--                  <a href="{{ object.get_add_cart_url }}"><i class="fas fa-plus-circle ml-2"></i></a>-->
-<!--                </p>-->
-                    <form action="{{ object.add_cart_qty }}" method="POST">
-                    {% csrf_token %}
-                      <div class="input-group" id="id_long_desc"><a href="" > <i class="fas fa-minus-circle mr-2"></i></a>
-        <!--          <input type="text" class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">-->
+              <form action="{{ object.get_add_cart_url }}" method="POST">
+                  {% csrf_token %}
+<!--                      <div class="input-group" id="id_long_desc"><a href="" > <i class="fas fa-minus-circle mr-2"></i></a>-->
+                    <div class="mt-3 pl-1 col-xs-2">
                       {{ cart_product_form.quantity }}
-                      <div class="input-group-append">
-                     <a href="{{ object.get_add_cart_url_product }}"><i class="fas fa-plus-circle ml-2"></i></a>
-                  </div>
-                        <button class="btn btn-secondary btn-md waves-effect float:left mr-3" type="submit">Submit Qty</button>
-                </div>
-              </form>
+                    </div>
+                  <br>
+<!--                      <div class="input-group-append">-->
+<!--                     <a href="{{ object.get_add_cart_url_product }}"><i class="fas fa-plus-circle ml-2"></i></a>-->
+<!--                  </div>-->
+<!--                        <button class="btn btn-secondary btn-md waves-effect float:left mr-3" type="submit">Submit Qty</button>-->
+<!--                </div>-->
+                 <div class="mt-5">
+                    <button class="btn btn-primary btn-md waves-effect float:left mr-3" type="submit">
+                         Add to Cart<i class="fas fa-shopping-cart ml-1"></i>
+                    </button>
+                      <a href="{{ object.get_remove_cart_url }}" class="btn btn-danger btn-md my-0 p">
+                          Remove from cart
+                      </a>
+                      <a href="{{ object.get_order_summary_url }}" class="btn btn-secondary btn-md my-0 p">
+                          Order Summary
+                      </a>
+                    </div>
+                </form>
 
-               <a href="{{ object.get_add_cart_url }}" class="btn btn-primary btn-md my-3 p">Add to cart
-                <i class="fas fa-shopping-cart ml-1"></i>
-              </a>
-              <a href="{{ object.get_remove_cart_url }}" class="btn btn-danger btn-md my-0 p">
-               Remove from cart
-              </a>
-              <a href="{{ object.get_order_summary_url }}" class="btn btn-secondary btn-md my-0 p">
-               Order Summary
-              </a>
           </div>
           <!--Content-->
 

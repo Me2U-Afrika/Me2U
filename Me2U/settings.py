@@ -36,14 +36,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'MaServiceProvider',
+    'Me2UAfricaMain',
     'bootstrap3',
     'users.apps.UsersConfig',
     'swiftsuppliers.apps.SwiftsuppliersConfig',
+    'categories',
     'me2ushop',
     'crispy_forms',
     'django_countries',
     'stripe',
+    'utils',
+    'cart',
+
 ]
 
 MIDDLEWARE = [
@@ -54,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'Me2U.urls'
@@ -69,6 +74,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'utils.context_processors.me2u'
             ],
 
         },
@@ -125,6 +133,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+SITE_NAME = 'Me2U|Africa'
+META_KEYWORDS = 'ONLINE MARKET, RWANDA ECOMMERCE, OLANDO, SHYPT,IKUKU,BUY ONLINE'
+META_DESCRIPTION = 'Me2U|Africa is an online self sustaining ecommerce tailored towards delivering best services and ' \
+                   'products' \
+                   'Across the globe with a major focus in African markets.'
+
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATICFILES_DIRS = [
@@ -136,7 +150,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'me2ushop:home'
 LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
+
+TIME_ZONE = 'America/Chicago'
 
 # stripe settings
 

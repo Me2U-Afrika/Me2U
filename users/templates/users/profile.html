@@ -1,6 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'navigation.html' %}
 {% load crispy_forms_tags %}
 
 {% block content %}
+<style>
+    h1{
+    margin-top:100px
+    }
+</style>
     <h1>{{ user.username }}</h1>
 {% endblock %}
