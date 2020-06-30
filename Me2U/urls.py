@@ -24,9 +24,7 @@ urlpatterns = [
     url('me2ushop/', include('me2ushop.urls', namespace='me2ushop')),
 
     url('categories/', include('categories.urls', namespace='categories')),
-    # url(r'^cart/', include('cart.urls')),
 
-    url('swiftsuppliers', include('swiftsuppliers.urls')),
     url('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     url('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
 

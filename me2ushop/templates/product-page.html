@@ -72,6 +72,7 @@
                       {{ cart_product_form.quantity }}
                     </div>
                   <br>
+
 <!--                      <div class="input-group-append">-->
 <!--                     <a href="{{ object.get_add_cart_url_product }}"><i class="fas fa-plus-circle ml-2"></i></a>-->
 <!--                  </div>-->
@@ -81,15 +82,18 @@
                     <button class="btn btn-primary btn-md waves-effect float:left mr-3" type="submit">
                          Add to Cart<i class="fas fa-shopping-cart ml-1"></i>
                     </button>
-                      <a href="{{ object.get_remove_cart_url }}" class="btn btn-danger btn-md my-0 p">
-                          Remove from cart
-                      </a>
+                 </div>
+              </form>
+
+              <br>
+              <div class="mt-3">
+                  <a href="{{ object.get_remove_cart_url }}" class="btn btn-danger btn-md my-0 p">
+                      Remove from cart
+                  </a>
                       <a href="{{ object.get_order_summary_url }}" class="btn btn-secondary btn-md my-0 p">
                           Order Summary
                       </a>
-                    </div>
-                </form>
-
+              </div>
           </div>
           <!--Content-->
 
@@ -157,6 +161,37 @@
     </div>
   </main>
   <!--Main layout-->
+     {% block extra_scripts %}
+  <script type="text/javascript">
+      function get_cookie(name):{
+        //split cookies string and get all individual name=value pairs in an array
+        var cookieArr = document.cookie.split(';');
+
+        //loop through the array elements
+        for(var i=0; i < coookieArr.length; i++){
+          var cookiePair = cookieArr[i].split("=");
+
+          /* remove whitespaces at the begining of the cookie name
+           and compare it with the given string */
+           if (name==cookiePair[0].trim()){
+             return dedodeURIComponent(cookiePair[1]);
+
+
+           }
+
+        }
+        //return null if not found
+
+        return null;
+      }
+
+      var cart_id = JSON.parse(getCookies('cart_id'))
+      console.log('Cart:',cart_id)
+
+  </script>
+
+        {% endblock extra_scripts %}
+
 
 </body>
 {% endblock %}

@@ -37,30 +37,6 @@ ADDRESS_CHOICES = (
 )
 
 
-# class UserProfile(models.Model):
-#     user = models.OneToOneField(
-#         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-#
-#     #     stripe_customer_id = models.CharField(max_length=50, blank=True, null=True)
-#     #     one_click_purchasing = models.BooleanField()
-#     #
-#     def __str__(self):
-#         return self.user.username
-
-
-#
-#
-# # post save signal to create the above user
-#
-# def userprofile_receiver(sender, instance, created, *args, **kwargs):
-#     if created:
-#         userprofile = UserProfile.objects.create(user=instance)
-#
-#
-# #
-# post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
-
-
 class Product(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,
@@ -108,9 +84,6 @@ class Product(models.Model):
     def get_add_cart_url(self):
         return reverse('me2ushop:add_cart', kwargs={'slug': self.slug})
 
-        # def get_add_cart_url_product(self):
-        #     return reverse('me2ushop:add_cart_product', kwargs={'slug': self.slug})
-
     def add_cart_qty(self):
         return reverse('me2ushop:add_cart_qty', kwargs={'slug': self.slug})
 
@@ -149,38 +122,10 @@ class OrderItem(models.Model):
         return self.get_total_price()
 
 
-class CartItem(models.Model):
-    cart_id = models.CharField(max_length=50)
-    date_added = models.DateTimeField(auto_now_add=True)
-    quantity = models.IntegerField(default=1)
-    product = models.ForeignKey('me2ushop.Product', unique=False, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'cart_items'
-        ordering = ['-date_added']
-
-    def total(self):
-        return self.quantity * self.product.price
-
-    def name(self):
-        return self.product.title
-
-    def price(self):
-
-        return self.product.price
-
-    def get_absolute_url(self):
-        return self.product.get_absolute_url()
-
-    def augument_quantity(self, quantity):
-        self.quantity += int(quantity)
-        self.save()
-
-
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ref_code = models.CharField(max_length=20)
-    items = models.ManyToManyField(OrderItem)
+    items = models.ManyToManyField('OrderItem')
     start_date = models.DateTimeField(auto_now_add=True)
     order_date = models.DateTimeField(auto_now=True)
     ordered = models.BooleanField(default=False)

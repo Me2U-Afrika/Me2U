@@ -23,7 +23,8 @@ make_coupon_accepted.short_description = 'Update coupon to valid'
 
 class Ordered(admin.ModelAdmin):
     list_display = (
-        'user', 'start_date',
+        'user',
+        'start_date',
         'order_date',
         'ordered',
         'payment',
@@ -99,7 +100,6 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
 
-admin.site.register(CartItem)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(OrderItem, Items_Ordered)
 admin.site.register(Order, Ordered)

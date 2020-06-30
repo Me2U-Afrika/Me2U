@@ -39,14 +39,13 @@ INSTALLED_APPS = [
     'Me2UAfricaMain',
     'bootstrap3',
     'users.apps.UsersConfig',
-    'swiftsuppliers.apps.SwiftsuppliersConfig',
     'categories',
     'me2ushop',
     'crispy_forms',
     'django_countries',
     'stripe',
     'utils',
-    'cart',
+
 
 ]
 
@@ -152,7 +151,6 @@ LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 
-TIME_ZONE = 'America/Chicago'
 
 # stripe settings
 
