@@ -1,18 +1,19 @@
 {% extends 'navigation.html' %}
+{% load search_tags %}
+
 
  {% block content %}
 
 
     <!--Main layout-->
     <main>
-
-      <div class="container mt-5">
+        <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
 
         <!--Navbar-->
-        <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
+        <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-5 mb-5">
 
           <!-- Navbar brand -->
-          <span class="navbar-brand">{{ object.category_name }}:</span>
+          <span class="navbar-brand"> Results for {{ object.category_name }}</span>
 
           <!-- Collapse button -->
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
@@ -25,17 +26,7 @@
 
             <!-- Links -->
             <ul class="navbar-nav mr-auto">
-              <!-- Dropdown -->
-              <li class="nav-item active dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">All</a>
-                    <span class="sr-only">(current)</span>
-                <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
 
-                  {% include "tags/categoryTag.html" %}
-
-                </div>
-              </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Gloceries</a>
               </li>
@@ -48,79 +39,40 @@
             </ul>
             <!-- Links -->
 
-            <form class="form-inline">
-              <div class="md-form my-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-              </div>
-            </form>
+                      {% search_box request %}
+
           </div>
           <!-- Collapsible content -->
 
         </nav>
         <!--/.Navbar-->
+        </div>
 
-        <!--Section: Products v.3-->
-        <section class="text-center mb-4">
+        <div class="row">
+          <div class="col-md-1">
+              <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
 
-          <!--Grid row-->
-          <div class="row wow fadeIn">
+              </div>
+          </div>
 
-            <!--Grid column-->
+        <div class="col-md-10">
+            <div class="container">
 
-              {% for item in object.product_set.all %}
-              <div class="col-lg-3 col-md-6 mb-4">
+            <!--Section: Products v.3-->
+            <section class="text-center">
 
-              <!--Card-->
-              <div class="card" style="height:320px;">
+              <!--Grid row-->
+              <div class="row wow fadeIn">
 
-                <!--Card image-->
-                <div class="view overlay">
-                    <img src=" {{ STATIC_URL }}{{ item.image }}" class="card-img-top">
-  <!--                  <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/14.jpg" class="card-img-top" alt="">-->
-                  <a href="{{ item.get_absolute_url }}">
-                    <div class="mask rgba-white-slight"></div>
-                  </a>
-                </div>
-                <!--Card image-->
-
-                <!--Card content-->
-                <div class="card-body text-center">
-                  <!--Category & Title-->
-                  <a href="" class="grey-text">
-                    <h5> {{ object.category_name }}</h5>
-                  </a>
-                  <h5>
-                    <strong>
-                      <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ item.title }}
-                        <span class="badge badge-pill {{ item.get_label_display }}-color">NEW</span>
-                      </a>
-                    </strong>
-                  </h5>
-
-                  <h4 class="font-weight-bold blue-text">
-                    <strong>$
-                      {% if item.old_price %}
-                        <span> <del>{{ item.old_price}}</del></span>
-                         <br>
-                        <span>${{ item.price }}</span>
-                      {% else %}
-                        {{ item.price }}
-                      {% endif %}
-                    </strong>
-                  </h4>
-
-                </div>
-                <!--Card content-->
+                <!--Grid column-->
+                  {% for item in object.product_set.all %}
+                    {% include 'tags/product_snippet.html' %}
+                  {% endfor %}
 
               </div>
 
-            </div>
-            {% endfor %}
-
-          </div>
-
-        </section>
-        <!--Section: Products v.3-->
+            </section>
+            <!--Section: Products v.3-->
 
         <!--Pagination-->
         {% if is_paginated %}
@@ -158,6 +110,14 @@
         {% endif %}
 
       </div>
+        </div>
+
+        <div class="col-md-1">
+              <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
+
+              </div>
+          </div>
+    </div>
     </main>
     <!--Main layout-->
 

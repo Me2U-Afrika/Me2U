@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django_countries',
     'stripe',
     'utils',
-
+    'search',
+    'stdimage',
 
 ]
 
@@ -161,6 +162,9 @@ if DEBUG:
 else:
     STRIPE_PUBLISHABLE_kEY = 'pk_test_9or5EaMyoLjRYXOXKfQp16ab00YxYjqkzO'
     STRIPE_SECRET_KEY = 'sk_test_zI4rsVZHDZLSyWxazI986czl00mW4RjtRt'
+
+PRODUCTS_PER_PAGE = 12
+PRODUCTS_PER_ROW = 4
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())

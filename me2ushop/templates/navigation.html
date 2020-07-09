@@ -1,11 +1,24 @@
 {% extends 'base.html' %}
 {% load cart_template_tag %}
+{% load search_tags %}
 
 {% block site_wrapper %}
 <style>
     .nav-line-1{
      display: block;
     }
+    .card-img-top {
+    width: 100%;
+    height: 10vw;
+    object-fit: contain;
+
+}
+    .card-thumbnail {
+    width: 11vw;
+    height: 35vh;
+    object-fit: contain;
+
+}
 
 </style>
 
@@ -42,11 +55,6 @@
                                 <span class="nav-line-1">Me2U</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect" href="" style="">Deliver
-                                <span class="nav-line-1">On Me2U</span>
-                            </a>
-                        </li>
                                 <!-- Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -72,14 +80,19 @@
                           {% include "tags/categoryTag.html" %}
                         </div>
                       </li>
+                      <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Africa|Made</a>
+                          <span class="sr-only">(current)</span>
+                          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+
+                            {% include "tags/AfricaMade.html" %}
+
+                          </div>
+                     </li>
                     </ul>
 
-                    <form class="form-inline">
-                      <div class="md-form my-0">
-                        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                      </div>
-
-                    </form>
+                    {% search_box request %}
 
                     <!-- Right -->
 

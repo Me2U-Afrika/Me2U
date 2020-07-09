@@ -1,0 +1,49 @@
+<div class="col-lg-3 col-md-6 mb-4 mt-4">
+<!--Card-->
+  <div class="card h-100">
+    <!--Card image-->
+    <div class="view overlay zoom">
+        <img src="{{ STATIC_URL }}{{ item.image }}" class="card-img-top img-fluid"/>
+          <a href="{{ item.get_absolute_url }}">
+            <div class="mask flex-center rgba-black-strong">
+          <p class="green-text">Click For More</p>
+        </div>
+      </a>
+    </div>
+    <!--Card image-->
+
+    <!--Card content-->
+    <div class="card-body text-center">
+<!--      Category & Title-->
+      <a href="{{ item.get_absolute_url }}" class="dark-grey-text"><h5 class="grey-text"> {{ item.get_category_choice_display }}</h5></a>
+      <h5>
+        <strong>
+          <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ item.title }}
+            <span class="badge badge-pill {{ item.get_label_display }}-color">NEW</span>
+          </a>
+        </strong>
+      </h5>
+
+      <h4 class="font-weight-bold blue-text">
+        <strong>
+          {% if item.old_price %}
+            <span style="font-size:14px" class="grey-text"><del>${{ item.old_price}}</del></span>
+             <br>
+            <span>${{ item.price }}</span>
+          {% else %}
+            ${{ item.price }}
+          {% endif %}
+        </strong>
+      </h4>
+       <a class="btn btn-primary btn-md waves-effect" href="{{ item.get_add_cart_url }}"
+          role="button">Add To Cart<i class="fas fa-hand-holding-usd"></i>
+       </a>
+
+    </div>
+    <!--Card content-->
+
+  </div>
+
+
+</div>
+

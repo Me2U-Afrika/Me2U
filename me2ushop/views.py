@@ -8,6 +8,7 @@ from .forms import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse
+from categories.models import Category
 
 from .models import *
 
@@ -31,11 +32,13 @@ def create_ref_code():
 
 class HomeView(ListView):
     model = Product
-    paginate_by = 12
+    paginate_by = 8
     template_name = 'home-page.html'
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
+        categories = Category.objects.all()
+        context['categories'] = categories
 
         return context
 
@@ -55,6 +58,7 @@ class ProductDetailedView(DetailView):
 
 def add_cart(request, slug):
     if request.user.is_authenticated:
+        print('checking out this function')
         if request.method == "POST":
             form = CartAddProductForm(request.POST or None)
             if form.is_valid():
@@ -119,16 +123,19 @@ def add_cart(request, slug):
 
             messages.info(request, 'Invalid form')
             return redirect("me2ushop:product", slug=slug)
-
         else:
+            print('we came here')
             try:
                 item = get_object_or_404(Product, slug=slug)
+                print('item:', item)
+
                 order_item, created = OrderItem.objects.get_or_create(
                     item=item,
                     user=request.user,
                     ordered=False
                 )
                 order_query_set = Order.objects.filter(user=request.user, ordered=False)
+                print('qs:', order_query_set)
 
                 # This code returns the user who ordered an item
                 if order_query_set.exists():
@@ -140,11 +147,27 @@ def add_cart(request, slug):
                         order_item.save()
                         messages.info(request, 'This item quantity was updated.')
                         return redirect("me2ushop:order_summary")
+                    else:
+                        messages.info(request, 'This item has been added to your cart.')
+                        order.items.add(order_item)
+                        order_item.quantity = 1
+                        return redirect("me2ushop:order_summary")
+                else:
+                    print("order not in cart")
+                    order_date = timezone.now()
+                    order = Order.objects.create(user=request.user, order_date=order_date)
+                    order.items.add(order_item)
+                    order_item.quantity = 1
+                    order_item.save()
+                    messages.info(request, 'This item has been added to your cart.')
+                    return redirect("me2ushop:order_summary")
 
             except Exception:
                 messages.warning(request, 'error:')
-                # add_cart_product(request, slug)
                 return redirect("me2ushop:product", slug=slug)
+
+    messages.warning(request, "Please login to continue shopping")
+    return redirect("me2ushop:product", slug=slug)
 
     # else:
     #     # user is anonymous
@@ -220,9 +243,6 @@ def add_cart(request, slug):
     #
     #         messages.info(request, 'Invalid form')
     #         return redirect("me2ushop:product", slug=slug)
-
-    messages.warning(request, "Please login to continue shopping")
-    return redirect("me2ushop:product", slug=slug)
 
 
 def remove_cart(request, slug):

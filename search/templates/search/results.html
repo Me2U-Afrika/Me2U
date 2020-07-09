@@ -1,0 +1,83 @@
+{% extends 'navigation.html' %}
+{% load search_tags %}
+
+{% block content %}
+<style>
+
+</style>
+
+      <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
+     <!--Navbar-->
+           <!--Navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-5 mb-5">
+
+          <!-- Navbar brand -->
+          <span class="navbar-brand nav-item active">
+            Search Results for {{ q }}:
+         </span>
+
+          <!-- Collapse button -->
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+            aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Collapsible content -->
+          <div class="collapse navbar-collapse" id="basicExampleNav">
+
+            <!-- Links -->
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Gloceries</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Restaurants</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Fitness & wellness Center</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link waves-effect" href="" style="">Deliver On Me2U</a>
+              </li>
+            </ul>
+            <!-- Links -->
+              {% search_box request %}
+          </div>
+          <!-- Collapsible content -->
+
+        </nav>
+        <!--/.Navbar-->
+
+      </div>
+
+<div class="row">
+      <div class="col-md-1">
+              <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
+
+              </div>
+      </div>
+    <div class="col-md-10">
+        <div class="container">
+        <section class="text-center">
+            <div class="row wow fadeIn">
+                {% for item in results %}
+                    {% include 'tags/product_snippet.html' %}
+                {% empty %}
+                    No products were found matching those search terms.
+                {% endfor %}
+            </div>
+        </section>
+            <div class="cb">&nbsp;</div>
+            {% pagination_links request paginator %}
+    </div>
+    </div>
+
+     <div class="col-md-1">
+              <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
+
+              </div>
+      </div>
+
+</div>
+
+    {% endblock %}

@@ -3,6 +3,7 @@
 {% block content %}
 <style>
 
+
 </style>
     <body>
   <!--Main layout-->
@@ -14,9 +15,8 @@
 
         <!--Grid column-->
         <div class="col-md-6 mb-4">
-
-            <div class="view overlay">
-                <img src="{{ STATIC_URL }}{{ object.image }} " alt="{{ object.title }}" class="card-img-top"/>
+            <div class="view overlay zoom">
+                <img src="{{ STATIC_URL }}{{ object.image }} " alt="{{ object.title }}" class="img-fluid"/>
                 <a href="{{ object.get_absolute_url }}">
                   <div class="mask rgba-white-slight"></div>
                 </a>
@@ -30,12 +30,6 @@
 
           <!--Content-->
           <div class="p-4">
-
-            <div class="mb-3">
-              <a href="">
-                <span class="badge purple mr-1">{{ object.get_category_display }}</span>
-              </a>
-            </div>
 
             <h1>{{ object.title }}</h1>
 
@@ -73,11 +67,6 @@
                     </div>
                   <br>
 
-<!--                      <div class="input-group-append">-->
-<!--                     <a href="{{ object.get_add_cart_url_product }}"><i class="fas fa-plus-circle ml-2"></i></a>-->
-<!--                  </div>-->
-<!--                        <button class="btn btn-secondary btn-md waves-effect float:left mr-3" type="submit">Submit Qty</button>-->
-<!--                </div>-->
                  <div class="mt-5">
                     <button class="btn btn-primary btn-md waves-effect float:left mr-3" type="submit">
                          Add to Cart<i class="fas fa-shopping-cart ml-1"></i>
@@ -127,37 +116,21 @@
 
       </div>
       <!--Grid row-->
-
+        <hr>
       <!--Grid row-->
-      <div class="row wow fadeIn">
+        <div class="row d-flex justify-content-center wow fadeIn">
 
-        <!--Grid column-->
-        <div class="col-lg-4 col-md-12 mb-4">
-
-          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid" alt="">
-
+            <div class="col-md-12 text-center">
+                <h3>Related Products</h3>
+                {% for item in object.cross_sells_hybrid %}
+                    {% include 'tags/product_snippet.html' %}
+                {% empty %}
+                    No related products.
+                {% endfor %}
+            </div>
         </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-lg-4 col-md-6 mb-4">
-
-          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid" alt="">
-
-        </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-lg-4 col-md-6 mb-4">
-
-          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid" alt="">
-
-        </div>
-        <!--Grid column-->
-
-      </div>
+        <hr>
       <!--Grid row-->
-
     </div>
   </main>
   <!--Main layout-->

@@ -1,0 +1,19 @@
+<div class="col-lg-2 col-md-3 mb-4">
+      <!--Card-->
+      <div class="card card-thumbnail">
+        <!--Card image-->
+        <div class="view overlay zoom">
+            <img src=" {{ STATIC_URL }}{{ item.image.thumbnail }}" class="card-img-thumbnail img-fluid">
+                <a href="{{ item.get_absolute_url }}">
+                    <div class="mask rgba-white-slight"></div>
+                </a>
+        </div>
+                          {{ item.title }}
+
+      </div>
+
+        <!--Card image-->
+</div>
+
+
+

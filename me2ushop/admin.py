@@ -89,12 +89,12 @@ class RefundDisplay(admin.ModelAdmin):
 
 class ProductAdmin(admin.ModelAdmin):
     # form = ProductAdminForm()
-    list_display = ('title', 'price', 'old_price', 'created_at', 'updated_at',)
+    list_display = ('title', 'price', 'old_price', 'made_in_africa', 'created_at', 'updated_at',)
     list_display_links = ('title',)
     list_per_page = 50
     ordering = ['-created_at']
 
-    search_fields = ['title', 'description', 'meta_keywords', 'meta_description']
+    search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'made_in_africa']
     exclude = ('created_at', 'updated_at',)
 
     prepopulated_fields = {'slug': ('title',)}

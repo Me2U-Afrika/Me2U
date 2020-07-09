@@ -1,10 +1,15 @@
 from django.conf import settings
+from Me2U.settings import PRODUCTS_PER_ROW
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils import timezone
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
 from categories.models import Category
+from PIL import Image
+from django.db import models
+from stdimage import StdImageField, JPEGField
+import collections
 
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
@@ -37,6 +42,16 @@ ADDRESS_CHOICES = (
 )
 
 
+# class ActiveProductManager(models.Manager):
+#     def get_query_set(self):
+#         return super(ActiveProductManager, self).get_query_set().filter(is_active=True)
+
+
+class ActiveProductManager(models.Manager):
+    def get_query_set(self):
+        return super(ActiveProductManager, self).get_query_set().filter(is_active=True)
+
+
 class Product(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,
@@ -47,8 +62,18 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=9, decimal_places=2)
     old_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, default=0.00)
     image_url = models.CharField(max_length=200, blank=True, null=True)
-    image = models.ImageField(upload_to='images/products/main')
+    # image = models.ImageField(upload_to='images/products/main')
+    image_thumbnail = models.ImageField(upload_to='images/products/thumbnail', blank=True, null=True)
+
+    # image = StdImageField(upload_to='images/products/main',blank=True, null=True)
+
+    # creates a thumbnail resized to maximum size to fit a 100x75 area
+    image = StdImageField(upload_to='images/products/thumbnail', blank=True, null=True, variations={
+        'thumbnail': (150, 150, True),
+    }, delete_orphans=True)
+
     is_active = models.BooleanField(default=True)
+    made_in_africa = models.BooleanField(default=False)
     is_bestseller = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
     description = models.TextField()
@@ -61,8 +86,17 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
-    label = models.CharField(choices=LABEL_CHOICES, max_length=1)
-    product_categories = models.ManyToManyField(Category)
+    label = models.CharField(choices=LABEL_CHOICES, max_length=1, blank=True, null=True, help_text='tags the product '
+                                                                                                   'with NEW, '
+                                                                                                   'primary blue, '
+                                                                            'danger red, secondary')
+    product_categories = models.ManyToManyField(Category, help_text='input the category above and any other where the '
+                                                                    'product falls under.')
+
+    objects = models.Manager()
+    active = ActiveProductManager()
+
+    # made_in_africa = ActiveAfricaProductManager()
 
     def __str__(self):
         return self.title
@@ -95,6 +129,53 @@ class Product(models.Model):
 
     def get_order_summary_url(self):
         return reverse('me2ushop:order_summary')
+
+    def cross_sells(self):
+        orders = Order.objects.filter(items__item=self)
+        order_items = OrderItem.objects.filter(order__in=orders).exclude(item=self)
+        products = Product.active.filter(orderitem__in=order_items).distinct()
+        return products
+
+    # def save_image(self, *args, **kwargs):
+    #     product = Product.objects.get(title=self)
+    #     product.image.open()
+    #     imag = Image.open(product.image)
+    #     if imag.width > 340 or imag.height > 300:
+    #         output_size = (340, 300)
+    #         imag.thumbnail(output_size)
+    #         imag.save()
+
+    def cross_sells_user(self):
+        from django.contrib.auth.models import User
+        users = User.objects.filter(order__items__item=self)
+        items = OrderItem.objects.filter(order__user__in=users).exclude(item=self)
+        products = Product.active.filter(orderitem__in=items).distinct()
+        return products
+
+    def cross_sells_hybrid(self):
+        from django.contrib.auth.models import User
+        from django.db.models import Q
+        orders = Order.objects.filter(items__item=self)
+        users = User.objects.filter(order__items__item=self)
+        items = OrderItem.objects.filter(Q(order__user__in=users,
+                                           ordered=True)).exclude(item=self)
+        products = Product.active.filter(orderitem__in=items)
+
+        matching = []
+
+        for product in products:
+            matching.append(product)
+
+        most_products = []
+
+        c = collections.Counter(matching)
+
+        for product, count in c.most_common(4):
+            print('%s: %7d' % (product, count))
+            most_products.append(product)
+        print('most_products:', most_products)
+
+        return most_products
 
 
 class OrderItem(models.Model):

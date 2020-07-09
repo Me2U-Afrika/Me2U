@@ -10,6 +10,7 @@ app_name = 'categories'
 urlpatterns = [
     url(r'^$', views.categoriesHomePage, name='categoriesHome'),
     url(r'^categoryView/(?P<slug>[\w-]+)/$', views.CategoryDetailedView.as_view(), name='categoryView'),
+    url(r'^categoryView_africa_made/(?P<slug>[\w-]+)/$', views.CategoryDetailedView_africa_made.as_view(), name='categoryView_africa_made'),
 
     # url('categoryView/(?P<slug>[\w-]+)/$', views.CategoryDetailedView, name='categoryView'),
 

@@ -1,0 +1,125 @@
+{% extends 'navigation.html' %}
+{% load search_tags %}
+
+
+ {% block content %}
+
+
+    <!--Main layout-->
+
+      <div class="row">
+         <div class="col-md-12">
+          <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
+        <!--Navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-5 mb-5">
+
+          <!-- Navbar brand -->
+          <span class="navbar-brand">{{ object.category_name }} | African </span>
+
+          <!-- Collapse button -->
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+            aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Collapsible content -->
+          <div class="collapse navbar-collapse" id="basicExampleNav">
+
+            <!-- Links -->
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Gloceries</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Restaurants</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Fitness & wellness Center</a>
+              </li>
+            </ul>
+            <!-- Links -->
+
+                        {% search_box request %}
+
+          </div>
+          <!-- Collapsible content -->
+
+        </nav>
+        <!--/.Navbar-->
+          </div>
+        </div>
+
+
+      <div class="col-md-1">
+              <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
+
+              </div>
+      </div>
+        <div class="col-md-10">
+          <div class="container mt-4">
+
+        <!--Section: Products v.3-->
+          <section class="text-center ">
+
+            <!--Grid row-->
+            <div class="row wow fadeIn">
+
+              <!--Grid column-->
+
+                {% for item in object.product_set.all %}
+                  {% if item.made_in_africa %}
+                    {% include 'tags/product_snippet.html' %}
+                  {% endif %}
+              {% endfor %}
+
+            </div>
+
+          </section>
+        <!--Section: Products v.3-->
+
+        <!--Pagination-->
+        {% if is_paginated %}
+        <nav class="d-flex justify-content-center wow fadeIn">
+          <ul class="pagination pg-blue">
+
+            <!--Arrow left-->
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            {% endif %}
+
+            <li class="page-item active">
+              <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+        <!--Pagination-->
+
+        {% endif %}
+
+      </div>
+        </div>
+        <div class="col-md-1">
+          <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
+          </div>
+      </div>
+      </div>
+    <!--Main layout-->
+
+
+    {% endblock content%}

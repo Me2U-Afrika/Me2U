@@ -2,39 +2,24 @@
 
  {% block content %}
 <style>
- .p{
- margin-top : 200px
- }
+
 </style>
-  <p class="p">
-   Categories page. Welcome
-   {% include "tags/categoryTag.html" %}
 
-        {% for category in product_categories %}
-        <h1>{{ object.category.name }}</h1>
-        {% for product in category.products_set.all %}
-            <p>{{ product }}</p>
-        {% endfor %}
-    {% endfor %}
-    <div class="product_thumbnail">
-        <a href="{{ p.get_absolute_url }}">
-            <img src="{{ MEDIA_URL }}images/products/thumbnails/{{ p.image }}"alt="{{ p.name }}" class="bn"/>
-    <br>
-            {{ p.name }}
-        </a>
-    </div>
-
-  </p>
      {% block main_content %}
+
     <!--Main layout-->
-    <main>
-      <div class="container">
-
-        <!--Navbar-->
-        <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
-
+    <div class="col-12">
+         <!--Navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-5 mb-5">
           <!-- Navbar brand -->
-          <span class="navbar-brand">Categories:</span>
+          <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                  <a class="nav-link waves-effect" href="{% url 'me2ushop:home' %}">
+                      Me2U|Market
+                    <span class="sr-only">(current)</span>
+                  </a>
+              </li>
+          </ul>
 
           <!-- Collapse button -->
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
@@ -50,7 +35,7 @@
               <!-- Dropdown -->
               <li class="nav-item active dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">All</a>
+                  aria-haspopup="true" aria-expanded="false">All Categories</a>
                     <span class="sr-only">(current)</span>
                 <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
 
@@ -79,67 +64,53 @@
 
         </nav>
         <!--/.Navbar-->
+    </div>
+      <div class="container">
 
         <!--Section: Products v.3-->
         <section class="text-center mb-4">
-
           <!--Grid row-->
           <div class="row wow fadeIn">
 
             <!--Grid column-->
+              {% for category in active_categories %}
 
-             {% for item in item_list %}
-              <div class="col-lg-3 col-md-6 mb-4">
+               <div class="col-lg-3 col-md-6 mb-4 mt-4">
+                <!--Card-->
+                  <div class="card" style="height:300px;">
 
-              <!--Card-->
-              <div class="card" style="height:280px;">
-
-                <!--Card image-->
-                <div class="view overlay">
-                    <img src=" {{ STATIC_URL }}{{ item.image }}" class="card-img-top">
-  <!--                  <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/14.jpg" class="card-img-top" alt="">-->
-                  <a href="{{ item.get_absolute_url }}">
-                    <div class="mask rgba-white-slight"></div>
-                  </a>
-                </div>
-                <!--Card image-->
-
-                <!--Card content-->
-                <div class="card-body text-center">
-                  <!--Category & Title-->
-                  <a href="" class="grey-text">
-                    <h5> {{ item.get_category_display }}</h5>
-                  </a>
-                  <h5>
-                    <strong>
-                      <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ item.title }}
-                        <span class="badge badge-pill {{ item.get_label_display }}-color">NEW</span>
+                    <!--Card image-->
+                    <div class="view overlay zoom">
+                        <img src="{{ STATIC_URL }}{{ category.image }}" alt="{{ category }}" class="card-img-top" >
+                      <a href="{{ category.get_absolute_url }}">
+                         <div class="mask flex-center rgba-black-strong">
+                          <p class="green-text">Shop Now</p>
+                        </div>
                       </a>
-                    </strong>
-                  </h5>
+                    </div>
+                    <!--Card image-->
 
-                  <h4 class="font-weight-bold blue-text">
-                    <strong>$
-                      {% if item.discount_price %}
-                        {{ item.discount_price}}
-                      {% else %}
-                        {{ item.price }}
-                      {% endif %}
-                    </strong>
-                  </h4>
+                    <!--Card content-->
+                    <div class="card-body text-center">
+                      <!--Category & Title-->
+                      <h5>
+                        <strong>
+                          <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ category }}
+                            <span class="badge badge-pill primary-color">Shop Now</span>
+                          </a>
+                        </strong>
+                      </h5>
+
+                    </div>
+                    <!--Card content-->
+
+                  </div>
 
                 </div>
-                <!--Card content-->
 
-              </div>
-
-            </div>
-            {% endfor %}
-
-
+              {% endfor %}
 
           </div>
-
         </section>
         <!--Section: Products v.3-->
 

@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('Me2UAfricaMain/', include('Me2UAfricaMain.urls')),
     url('register/', include('users.urls')),
+    url('search/', include('search.urls')),
+
     url('me2ushop/', include('me2ushop.urls', namespace='me2ushop')),
 
     url('categories/', include('categories.urls', namespace='categories')),
