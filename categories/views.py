@@ -4,17 +4,29 @@ from me2ushop.models import Product
 from django.views.generic import ListView, DetailView, View
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
+from stats import stats
+from Me2U.settings import PRODUCTS_PER_ROW
+from django.http import HttpResponse
+from django.core import serializers
 
 
 # from django.template import RequestContext
 # from me2ushop.forms import CartAddProductForm
 #
 #
+def get_json_products(request):
+    products = Product.active.all()
+    json_products = serializers.serialize("json", products)
+    return HttpResponse(json_products, content_type='application/javascript; charset=utf-8')
+
 def categoriesHomePage(request):
     page_title = 'Categories'
     site_name = 'Me2U|Market'
     template_name = 'index.html'
+
     return render(request, template_name, locals())
+
+
 
 
 class CategoryDetailedView(DetailView):
@@ -25,6 +37,8 @@ class CategoryDetailedView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(CategoryDetailedView, self).get_context_data(**kwargs)
+
+
         # c = Category.active.all()
         # print('c:', c)
         # category_list = {'c': []}

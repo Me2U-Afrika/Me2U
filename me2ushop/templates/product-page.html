@@ -5,7 +5,7 @@
 
 
 </style>
-    <body>
+<body>
   <!--Main layout-->
   <main class="mt-5 pt-4">
     <div class="container dark-grey-text mt-5">
@@ -15,13 +15,25 @@
 
         <!--Grid column-->
         <div class="col-md-6 mb-4">
-            <div class="view overlay zoom">
+            <div class="view overlay">
                 <img src="{{ STATIC_URL }}{{ object.image }} " alt="{{ object.title }}" class="img-fluid"/>
-                <a href="{{ object.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
+                    <a href="{{ object.get_absolute_url }}">
+                        <div class="mask rgba-white-slight"></div>
+                    </a>
+                    <div class="cb"><br/><br/></div>
+                    <h3>Mostly Ordered With</h3>
+                    <br>
+                <div class="row">
+                    {% for item in object.cross_sells_hybrid %}
+                        <div class="col-lg-4 col-md-3 mb-4">
+                        {% include 'tags/product_thumbnail.html' %}
+                        </div>
+                    {% empty %}
+                    <p class="text-center">No related orders.</p>
+                    {% endfor %}
+                </div>
               </div>
-
+            <hr>
         </div>
         <!--Grid column-->
 
@@ -65,27 +77,71 @@
                     <div class="mt-3 pl-1 col-xs-2">
                       {{ cart_product_form.quantity }}
                     </div>
-                  <br>
+                <div class="cb"><br/><br/></div>
 
-                 <div class="mt-5">
+                 <div class="">
                     <button class="btn btn-primary btn-md waves-effect float:left mr-3" type="submit">
                          Add to Cart<i class="fas fa-shopping-cart ml-1"></i>
                     </button>
-                 </div>
-              </form>
 
-              <br>
-              <div class="mt-3">
-                  <a href="{{ object.get_remove_cart_url }}" class="btn btn-danger btn-md my-0 p">
+                     <a href="{{ object.get_remove_cart_url }}" class="btn btn-danger btn-md my-0 p">
                       Remove from cart
                   </a>
                       <a href="{{ object.get_order_summary_url }}" class="btn btn-secondary btn-md my-0 p">
                           Order Summary
                       </a>
-              </div>
+                 </div>
+              </form>
+              <br>
           </div>
-          <!--Content-->
+            <div class="cb"><br/><br/></div>
+            <h3>Product Reviews</h3>
+            {% if request.user.is_authenticated %}
+                    <a id="add_review">Write a Review</a>
 
+                    {% if approved %}
+                    <div id="review_form">
+                        <div id="review_errors">
+                        </div>
+                        <table>
+                            {{ review_form.as_table }}
+                            <tr>
+                                <td colspan="2">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="id_slug" value="{{ object.slug }}"/>
+                                    <input type="submit" id="submit_review" value="Submit"/>
+                                    <input type="submit" id="cancel_review" value="Cancel|Close"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    {% else %}
+                     <div id="first_time">
+                         Only previous buyers of this product can review.
+                         <br>
+                         Your First Order!!Order today with FIRST_TIME coupon and get 5% off!!
+                     </div>
+                    {% endif %}
+                {% else %}
+                <a href="{% url 'login' %}?next={{ request.path }}">
+                    Log in to write your own review.
+                </a>
+                {% endif %}
+                <div class="cb"><br/><br/>
+                </div>
+                <div id="reviews">
+                    {% for review in product_reviews %}
+                        {% include 'tags/product_review.html' %}
+                    {% empty %}
+                    <div id="no_reviews">
+                        No product reviews yet. Be the First!
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="cb">
+                    <br /><br />
+                </div>
+          <!--Content-->
         </div>
         <!--Grid column-->
 
@@ -121,11 +177,11 @@
         <div class="row d-flex justify-content-center wow fadeIn">
 
             <div class="col-md-12 text-center">
-                <h3>Related Products</h3>
-                {% for item in object.cross_sells_hybrid %}
+                <h3>Recommended for You</h3>
+                {% for item in view_recs %}
                     {% include 'tags/product_snippet.html' %}
                 {% empty %}
-                    No related products.
+                    No related orders.
                 {% endfor %}
             </div>
         </div>
@@ -136,30 +192,6 @@
   <!--Main layout-->
      {% block extra_scripts %}
   <script type="text/javascript">
-      function get_cookie(name):{
-        //split cookies string and get all individual name=value pairs in an array
-        var cookieArr = document.cookie.split(';');
-
-        //loop through the array elements
-        for(var i=0; i < coookieArr.length; i++){
-          var cookiePair = cookieArr[i].split("=");
-
-          /* remove whitespaces at the begining of the cookie name
-           and compare it with the given string */
-           if (name==cookiePair[0].trim()){
-             return dedodeURIComponent(cookiePair[1]);
-
-
-           }
-
-        }
-        //return null if not found
-
-        return null;
-      }
-
-      var cart_id = JSON.parse(getCookies('cart_id'))
-      console.log('Cart:',cart_id)
 
   </script>
 

@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^categoryView/(?P<slug>[\w-]+)/$', views.CategoryDetailedView.as_view(), name='categoryView'),
     url(r'^categoryView_africa_made/(?P<slug>[\w-]+)/$', views.CategoryDetailedView_africa_made.as_view(), name='categoryView_africa_made'),
 
-    # url('categoryView/(?P<slug>[\w-]+)/$', views.CategoryDetailedView, name='categoryView'),
+    url('get_products/$', views.get_json_products, name='get_products'),
 
 ]
 

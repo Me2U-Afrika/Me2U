@@ -3,9 +3,69 @@
 
 {% block content %}
 <style>
-    h1{
+    .mg-t{
     margin-top:100px
     }
+    fieldset.my_account{
+        padding:10px;
+        }
+    fieldset.my_account legend{
+        font-weight:bold;
+        }
+    fieldset.my_account ul{
+         list-style:none;
+         }
+    fieldset.my_account ul li{
+        margin-bottom:5px;
+        }
 </style>
-    <h1>{{ user.username }}</h1>
+<!--    <h1>{{ user.username }}</h1>-->
+<div class="container mg-t">
+    <div class="row">
+        <div class="col-lg-6">
+            <h1>My Account</h1>
+                <strong>Welcome, {{ name|capfirst }}!</strong>
+                <br/><br />
+        </div>
+        <div class="col-lg-6">
+            <section class="text-right">
+                <fieldset class="my_account">
+                    <legend>Account Settings</legend>
+                    <ul>
+                        <li><a href="{% url 'password-change' %}">Change Password</a></li>
+                        <li><a href="{% url 'users:order-info' %}">Edit Billing/Shipping Information</a></li>
+                    </ul>
+                </fieldset>
+            </section>
+        </div>
+    </div>
+    <h3>Order History</h3>
+
+        <div class="table-responsive tb">
+              <table class="table" id="order_id">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Order #ID</th>
+                      <th scope="col">Order Date</th>
+                      <th scope="col">More Details </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for order in orders %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                            <td> order #{{ order.id }} </td>
+                            <td> {{ order.order_date|date }} </td>
+                            <td><a href="{{ order.get_absolute_url }}">View Order</a></td>
+                        </tr>
+                    {% empty %}
+                        You have no past orders.
+                    {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        <br/>
+</div>
 {% endblock %}

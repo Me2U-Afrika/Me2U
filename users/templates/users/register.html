@@ -1,10 +1,8 @@
-
 {% extends 'navigation.html' %}
 {% load crispy_forms_tags %}
-
 {% block content %}
 
-        <div class="content-section">
+        <div class=" container content-section mt-5">
             <form method="POST">
 <!--                protect form from attacks-->
                 {% csrf_token %}

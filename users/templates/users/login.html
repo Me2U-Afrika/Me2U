@@ -1,8 +1,5 @@
-
 {% extends 'navigation.html' %}
 {% load crispy_forms_tags %}
-
-
 
 {% if messages %}
     {% for message in messages %}
@@ -14,7 +11,7 @@
 
 {% block content %}
 
-        <div class="content-section">
+        <div class="container content-section mt-5">
             <form method="POST">
 <!--                protect form from attacks-->
                 {% csrf_token %}
@@ -30,7 +27,7 @@
             </form>
             <div class="border-top pt-3">
                 <small class="text-muted">
-                    Need An Account? <a class="ml-2" href="{% url 'register'%}">Sign Up</a>
+                    Need An Account? <a class="ml-2" href="{% url 'users:register'%}">Sign Up</a>
                 </small>
             </div>
 

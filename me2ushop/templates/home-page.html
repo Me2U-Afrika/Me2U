@@ -1,5 +1,7 @@
 {% extends 'navigation.html' %}
 {% load search_tags %}
+{% load catalog_filters %}
+
 
 {% block content %}
 <style>
@@ -16,9 +18,6 @@
 
   <div class="row">
     <div class="col-lg-2 mt-5">
-      Ads here
-      <div class="vl">
-      </div>
 
     </div>
 
@@ -55,7 +54,7 @@
 
                   <p class="mb-4 d-none d-md-block">
                     <strong>
-                      Empowering African Products And Culture Across the Globe.
+                      Empowering African Products And Culture Across the Globe through Trade.
                     </strong>
                   </p>
 
@@ -233,6 +232,7 @@
       </div>
       <!--/.Carousel Wrapper-->
       </div>
+
     <div class="col-lg-2 mt-5">
       Ads here
     </div>
@@ -267,16 +267,7 @@
             <ul class="navbar-nav mr-auto">
 
               <li class="nav-item">
-                <a class="nav-link" href="#">Gloceries</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Restaurants</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Fitness & wellness Center</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link waves-effect" href="" style="">Deliver On Me2U</a>
+                <h5 class="white-text">Welcome to Me2U|Market Shopping Window</h5>
               </li>
             </ul>
             <!-- Links -->
@@ -288,32 +279,26 @@
         <!--/.Navbar-->
           </div>
       </div>
-    <div class="row">
-      <div class="col-md-1">
-              <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
-
-              </div>
-      </div>
 
         <!--Section: Products v.3-->
-      <div class="col-md-10">
-
-        <div class="container">
 
           <section class="text-center">
 
-            <!--Grid row-->
-            <div class="row wow fadeIn">
-              <!--Grid column-->
 
-              {% for item in object_list %}
-                {% include 'tags/product_snippet.html' %}
-              {% endfor %}
-
-            </div>
+                {% product_list recently_viewed 'Your Recently Viewed' %}
+                            <hr>
+                {% product_list view_recs 'Similar Products' %}
+                            <hr>
+                {% product_list featured 'Featured Products' %}
+                            <hr>
+                {% product_list bestseller 'Bestseller Products' %}
+                            <hr>
+                {% product_list search_recs 'Recommended For You' %}
 
           </section>
+
           <!--Section: Products v.3-->
+
           <hr>
           <!--Pagination-->
           {% if is_paginated %}
@@ -347,19 +332,11 @@
             </ul>
           </nav>
           <!--Pagination-->
-
           {% endif %}
 
-        </div>
-      </div>
 
-      <div class="col-md-1">
-            <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
 
-            </div>
-      </div>
 
-      </div>
     </main>
     <!--Main layout-->
     <hr>
@@ -369,9 +346,9 @@
     {% block extra_scripts %}
 
     <script>
-      const cnt = document.getElementById('container');
-      const reset = document.querySelector('.reset');
-      const img = "https://unsplash.it/1900/1680/?random";
+   //   const cnt = document.getElementById('container');
+   //   const reset = document.querySelector('.reset');
+   //   const img = "https://unsplash.it/1900/1680/?random";
 
       const n = 10;
       const m = 10;

@@ -15,18 +15,55 @@
 }
     .card-thumbnail {
     width: 11vw;
-    height: 35vh;
-    object-fit: contain;
+    height: 33vh;
+    object-fit: scale-down;
 
 }
+.product-snippet{
+    float:left;
+}
+.cb {
+    clear:both;
+}
+
+.card-height{
+    height: 45vh;
+}
+
+#add_review{
+    cursor:pointer;
+    }
+.hidden{
+    display:block;
+    }
+.visible{
+    display:block;
+    }
+.new_review{
+        background-color:Pink;
+    }
+
+#loading{
+    display:none;
+    position:fixed;
+    top:0;
+    left:45%;
+    background-color:Pink;
+    width: 200px;
+    font-size:medium;
+    color:Black;
+    font-weight:bold;
+    padding:2px;
+    border:solid 1px Red;
+    text-align: center;
+    z-index:100;
+
+
 
 </style>
-
         {% block Navbar %}
         <!-- Navbar -->
         <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
-            <div class="container">
-
                 <!-- Brand -->
                 <a class="navbar-brand waves-effect" href="{% url 'homepage' %}">
                     <strong class="blue-text">Me2U|Africa</strong>
@@ -96,7 +133,6 @@
 
                     <!-- Right -->
 
-                    {% if user.is_authenticated %}
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item">
                              <a href="{% url 'me2ushop:order_summary'%}" class="nav-link waves-effect">
@@ -105,6 +141,8 @@
                                 <span class="clearfix d-none d-sm-inline-block"> Cart </span>
                              </a>
                         </li>
+
+                        {% if user.is_authenticated %}
                          <li class="nav-item">
                             <a class="nav-link waves-effect" href="{% url 'me2ushop:checkout' %}">Checkout</a>
                         </li>
@@ -120,7 +158,7 @@
                             </a>
                         </li>
                         <li class="nav-item mt-2">
-                            <a href="{% url 'profile' %}" class="button alt">Profile</a>
+                            <a href="{% url 'users:profile' %}" class="button alt">Profile</a>
                         </li>
                          <li class="nav-item ml-3 mt-2">
                               <a href="{% url 'logout' %}" class="button alt">LogTFOut</a>
@@ -135,13 +173,12 @@
 
                          <li class="nav-item">
                             <div class="ml-3 mt-4">
-                              <a href="{% url 'register' %}" class="button alt">Register</a>
+                              <a href="{% url 'users:register' %}" class="button alt">Register</a>
                             </div>
                          </li>
                     </ul>
                     {% endif %}
                 </div>
-            </div>
          </nav>
          <!-- Navbar -->
         {% endblock Navbar %}
@@ -192,6 +229,14 @@
                 </a>
             </div>
             <!-- Social icons -->
+            <div class="cb">
+                <br>
+            </div>
+            <ul>
+                <li><a href="/privacy-policy/">Privacy</a></li>
+                <li><a href="/contact/">Contact</a></li>
+                <li><a href="{% url 'users:profile' %}">My Account</a></li>
+            </ul>
 
             <!--Copyright-->
             <div class="footer-copyright py-3">

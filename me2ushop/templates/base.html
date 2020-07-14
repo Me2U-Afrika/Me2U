@@ -23,22 +23,18 @@
               <!-- Bootstrap core CSS -->
               <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css ">
               <!-- Material Design Bootstrap -->
-              <link rel="stylesheet" href=" {{ STATIC_URL }} css/mdb.min.css">
-              <!-- Your custom styles (optional) -->
-<!--              <link rel="stylesheet" href="{% static 'css/style.css ' %} ">-->
-              <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
-
-              <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-            <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+              <link rel="stylesheet" href=" {{ STATIC_URL }}css/mdb.min.css">
+                  <!-- Your custom styles (optional) -->
+              <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
           <!-- Bootstrap core CSS -->
           <link href= "{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
           <!-- Material Design Bootstrap -->
           <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
           <!-- Your custom styles (optional) -->
-          <link href="{% static 'css/style.min.css'}" rel="stylesheet">
+          <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+
+
             <style type="text/css">
         html,
         body,
@@ -74,10 +70,27 @@
         width: 300px;
         height: 50px;
         }
-        .ms{
-        font-color:red;
 
+.SearchBar {
+    width: 320px;
         }
+.SearchBar input {
+     height: 30px;
+     width: 300px;
+}
+#noscript{
+     position:fixed;
+     top:0;left:0;
+     width:100%;
+     background-color:Red;
+     color:White;
+     font-weight:bold;
+     padding:5px;
+     text-align:center;
+  }
+#noscript_padder{
+    height:30px;
+    }
 
 
       </style>
@@ -94,9 +107,17 @@
             </button>
         </div>
     </div>
-
         {% endfor %}
         {% endif %}
+
+<!--    Javascript requirement status update-->
+<!--    <a href="#content" class="skip_link">-->
+<!--        Skip to main content</a>-->
+    <noscript>
+        <div id="noscript">Some parts of {{ site_name }} require Javascript</div>
+        <div id="noscript_padder"></div>
+    </noscript>
+    <div id="banner">
 
       {% block site_wrapper %}
 
@@ -108,17 +129,21 @@
         {% endblock extra_scripts %}
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js'}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
   <!-- Bootstrap tooltips -->
-      <script type="text/javascript" src="{% static 'js/popper.min.js'}"></script>
+      <script type="text/javascript" src="{% static 'js/popper.min.js'%}"></script>
       <!-- Bootstrap core JavaScript -->
       <script type="text/javascript" src="{% static 'js/bootstrap.min.js'}"></script>
       <!-- MDB core JavaScript -->
       <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+
     <script type="text/javascript" >
         $('.alert').alert()
         $(".alert").alert('close')

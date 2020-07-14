@@ -6,6 +6,8 @@ from django.utils import timezone
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
 from categories.models import Category
+from users.models import Profile
+
 from PIL import Image
 from django.db import models
 from stdimage import StdImageField, JPEGField
@@ -15,18 +17,16 @@ CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
     ('Bk', 'Books'),
     ('Bb', 'Baby Care'),
-    ('Be', 'Beautiful2'),
+    ('Be', 'Beautiful 2'),
     ('Ca', 'Camera & Photo'),
     ('S', 'Shirt'),
     ('Sw', 'Sport wear'),
     ('Ow', 'Outwear'),
-    ('At', 'Arts, Crafts'),
     ('Am', 'Automotive & Motorcycle'),
     ('Ca', 'Cell Phones & Accessories'),
     ('El', 'Electronics'),
     ('Fa', 'Fashion'),
     ('Fu', 'Furniture'),
-    ('So', 'Sokoni'),
 
 )
 LABEL_CHOICES = (
@@ -38,13 +38,17 @@ LABEL_CHOICES = (
 ADDRESS_CHOICES = (
     ('B', 'Billing'),
     ('S', 'Shipping')
-
 )
 
 
-# class ActiveProductManager(models.Manager):
-#     def get_query_set(self):
-#         return super(ActiveProductManager, self).get_query_set().filter(is_active=True)
+class FeaturedProductManager(models.Manager):
+    def all(self):
+        return super(FeaturedProductManager, self).all().filter(is_active=True).filter(is_featured=True)
+
+
+class BestsellerProductManager(models.Manager):
+    def all(self):
+        return super(BestsellerProductManager, self).all().filter(is_active=True).filter(is_bestseller=True)
 
 
 class ActiveProductManager(models.Manager):
@@ -76,6 +80,7 @@ class Product(models.Model):
     made_in_africa = models.BooleanField(default=False)
     is_bestseller = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
+
     description = models.TextField()
     meta_keywords = models.CharField("Meta Keywords",
                                      max_length=255,
@@ -85,16 +90,20 @@ class Product(models.Model):
                                         help_text='Content for description meta tag')
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
-    category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
+                                       help_text='Choose the main category for the product'
+                                       )
     label = models.CharField(choices=LABEL_CHOICES, max_length=1, blank=True, null=True, help_text='tags the product '
-                                                                                                   'with NEW, '
                                                                                                    'primary blue, '
-                                                                            'danger red, secondary')
+                                                                                                   'danger red, '
+                                                                                                   'secondary purple')
     product_categories = models.ManyToManyField(Category, help_text='input the category above and any other where the '
-                                                                    'product falls under.')
+                                                                    'product can be found in.')
 
     objects = models.Manager()
     active = ActiveProductManager()
+    featured = FeaturedProductManager()
+    bestseller = BestsellerProductManager()
 
     # made_in_africa = ActiveAfricaProductManager()
 
@@ -113,6 +122,7 @@ class Product(models.Model):
             return None
 
     def get_absolute_url(self):
+
         return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
     def get_add_cart_url(self):
@@ -133,7 +143,7 @@ class Product(models.Model):
     def cross_sells(self):
         orders = Order.objects.filter(items__item=self)
         order_items = OrderItem.objects.filter(order__in=orders).exclude(item=self)
-        products = Product.active.filter(orderitem__in=order_items).distinct()
+        products = Product.active.filter(orderitem__in=order_items).filter().distinct()
         return products
 
     # def save_image(self, *args, **kwargs):
@@ -158,7 +168,8 @@ class Product(models.Model):
         orders = Order.objects.filter(items__item=self)
         users = User.objects.filter(order__items__item=self)
         items = OrderItem.objects.filter(Q(order__user__in=users,
-                                           ordered=True)).exclude(item=self)
+                                           ordered=True) |
+                                         Q(order__in=orders)).exclude(item=self)
         products = Product.active.filter(orderitem__in=items)
 
         matching = []
@@ -170,10 +181,10 @@ class Product(models.Model):
 
         c = collections.Counter(matching)
 
-        for product, count in c.most_common(4):
-            print('%s: %7d' % (product, count))
+        for product, count in c.most_common(3):
+            # print('%s: %7d' % (product, count))
             most_products.append(product)
-        print('most_products:', most_products)
+        # print('most_products:', most_products)
 
         return most_products
 
@@ -187,6 +198,12 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.quantity} of {self.item.title}"
 
+    def get_absolute_url(self):
+        return reverse('users:order-details', kwargs={'order_id': self.id})
+
+    def get_absolute_re_order_url(self):
+        return reverse('users:re-order', kwargs={'order_id': self.id})
+
     def get_total_price(self):
         return self.quantity * self.item.price
 
@@ -199,7 +216,7 @@ class OrderItem(models.Model):
     def get_final_price(self):
         # if self.item.discount_price:
         #     return self.get_total_discount_price()
-        # else:
+        # else:ord
         return self.get_total_price()
 
 
@@ -224,6 +241,10 @@ class Order(models.Model):
     def __str__(self):
         return self.user.username
 
+    def get_absolute_url(self):
+
+        return reverse('users:order-details', kwargs={'order_id': self.id})
+
     def get_coupon_total(self):
         total = 0
         for order_item in self.items.all():
@@ -247,6 +268,30 @@ class Order(models.Model):
         return self.get_total() - self.get_coupon_total()
 
 
+class ActiveProductReviewManager(models.Manager):
+    def all(self):
+        return super(ActiveProductReviewManager, self) \
+            .all().filter(is_approved=True)
+
+
+class ProductReview(models.Model):
+    RATINGS = ((5, 5), (4, 4), (3, 3), (2, 2), (1, 1))
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    # ordered_by_user = models.ForeignKey(Order, ordered=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=50)
+    date = models.DateTimeField(auto_now_add=True)
+    rating = models.PositiveSmallIntegerField(default=5, choices=RATINGS)
+    is_approved = models.BooleanField(default=True)
+    content = models.TextField()
+
+    objects = models.Manager()
+    approved = ActiveProductReviewManager()
+
+    def __str__(self):
+        return self.content
+
+
 class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
@@ -256,6 +301,10 @@ class Address(models.Model):
     address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
     payment_option = models.CharField(max_length=10)
     default = models.BooleanField(default=False)
+    email = models.EmailField(max_length=50, blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+
+    # contact info
 
     def __str__(self):
         return str(self.country)
@@ -280,7 +329,7 @@ class Coupon(models.Model):
     valid = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.code
+        return str(self.code)
 
 
 class RequestRefund(models.Model):

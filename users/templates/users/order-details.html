@@ -1,0 +1,58 @@
+{% extends 'navigation.html' %}
+
+{% block content %}
+
+
+<style>
+
+      html,
+    body,
+    header,
+    .tb {
+      margin-top: 20px;
+      height:300px;
+    }
+
+</style>
+
+<body>
+
+    <div class="table-responsive tb">
+        <h2>Details for Order # {{ order.id }}</h2>
+      <table class="table" id="receipt">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Item Title</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total Item Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order_item in order_items %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="{% url 'me2ushop:product' order_item.item.slug %}"> {{ order_item.item.title }} </a></td>
+                    <td>${{ order_item.item.price }}</td>
+                    <td>{{ order_item.quantity }}</td>
+                    <td>${{ order_item.get_total_price }}</td>
+                </tr>
+            {% endfor %}
+               <tr>
+                 <td colspan="4"><b>Total</b></td>
+                 <td><b>${{ order.get_total }}</b></td>
+               </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+    <div class="pt-4 text-center font-small mt-4 wow fadeIn">
+        <a class="btn btn-outline-orange" href="{% url 'users:re-order' order.id %}" role="button">Re-Order<i class="fas fa-hand-holding-usd"></i>
+        </a>
+   </div>
+
+</body>
+{% endblock %}
+

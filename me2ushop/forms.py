@@ -2,7 +2,7 @@ from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 from .models import OrderItem
-
+from .models import ProductReview
 
 PAYMENT_CHOICES = {
 
@@ -61,6 +61,12 @@ class CartAddProductForm(forms.Form):
         'aria-label': 'Recipient\'s username',
         'aria-describedby': 'basic-addon2'
     }))
+
+
+class ProductReviewForm(forms.ModelForm):
+    class Meta:
+        model = ProductReview
+        exclude = ('user', 'product', 'is_approved')
 
 
 class RefundForm(forms.Form):

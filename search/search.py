@@ -1,17 +1,20 @@
 from .models import SearchTerm
 from me2ushop.models import Product
 from django.db.models import Q
+from stats import stats
 
 STRIP_WORDS = ['a', 'an', 'am', 'and', 'by', 'for', 'from', 'in', 'no', 'not',
-               'of', 'on', 'or', 'that', 'the', 'to', 'with', 'is', ',']
+               'of', 'on', 'or', 'that', 'the', 'to', 'with', 'is', ',', 'Search', 'search']
 
 
 def store(request, q):
+    # print('request search:', request)
     # if search term is at least three chars long, store in db
     if len(q) > 2:
         term = SearchTerm()
         term.q = q
         term.ip_address = request.META.get('REMOTE_ADDR')
+        term.tracking_id = stats.tracking_id(request)
         term.user = None
         if request.user.is_authenticated:
             term.user = request.user
@@ -21,24 +24,26 @@ def store(request, q):
 # get products matching the search text
 def productSearched(search_text):
     words = _prepare_words(search_text)
-    print('words:', words)
+    # print('words:', words)
 
     products = Product.active.all()
-    print('products:', products)
+    # print('products:', products)
 
     results = {'products': []}
 
     for word in words:
-        print('word:', word)
+        # print('word:', word)
         products = products.filter(Q(title__icontains=word) |
                                    Q(description__icontains=word) |
                                    Q(brand__icontains=word) |
                                    Q(meta_description__icontains=word) |
-                                   Q(meta_keywords__icontains=word))
+                                   Q(product_categories__category_name__icontains=word) |
+                                   Q(category_choice__icontains=word) |
+                                   Q(meta_keywords__icontains=word)).distinct()
         if products:
-            print('found:', products)
+            # print('found:', products)
             results['products'].append(products)
-    print(results)
+    # print(results)
 
     return results
 

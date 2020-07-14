@@ -23,9 +23,8 @@ def search_results(request, template_name="search/results.html"):
     paginator = Paginator(matching, settings.PRODUCTS_PER_PAGE)
     try:
         result = paginator.page(page).object_list
-        print('results', result)
         for product in result:
-            print('results', product)
+            # print('results', product)
             results = product
             # return results
             # for item in product:

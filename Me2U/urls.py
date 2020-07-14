@@ -20,7 +20,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('Me2UAfricaMain/', include('Me2UAfricaMain.urls')),
-    url('register/', include('users.urls')),
+    url('users/', include('users.urls')),
     url('search/', include('search.urls')),
 
     url('me2ushop/', include('me2ushop.urls', namespace='me2ushop')),
@@ -29,6 +29,8 @@ urlpatterns = [
 
     url('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     url('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-
+    url('password-change/', auth_views.PasswordChangeView.as_view(template_name='users/password_change.html'), name='password-change'),
+    url('password_change_done/', auth_views.PasswordChangeDoneView.as_view(template_name='users/password_change_done.html'),
+        name='password_change_done'),
 
 ]

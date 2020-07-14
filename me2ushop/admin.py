@@ -21,6 +21,26 @@ def make_coupon_accepted(modelAdmin, request, queryset):
 make_coupon_accepted.short_description = 'Update coupon to valid'
 
 
+class ProductReviewAdmin(admin.ModelAdmin):
+    list_display = (
+        'product',
+        'user',
+        'title',
+        'date',
+
+        'rating',
+        'is_approved'
+    )
+    list_display_links = [
+        'user']
+    list_filter = ['user', 'rating']
+
+    search_fields = [
+        'user',
+        'product'
+    ]
+
+
 class Ordered(admin.ModelAdmin):
     list_display = (
         'user',
@@ -101,6 +121,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Product, ProductAdmin)
+admin.site.register(ProductReview, ProductReviewAdmin)
 admin.site.register(OrderItem, Items_Ordered)
 admin.site.register(Order, Ordered)
 admin.site.register(StripePayment, Payment)

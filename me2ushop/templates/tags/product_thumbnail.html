@@ -1,19 +1,35 @@
-<div class="col-lg-2 col-md-3 mb-4">
+
       <!--Card-->
       <div class="card card-thumbnail">
         <!--Card image-->
         <div class="view overlay zoom">
-            <img src=" {{ STATIC_URL }}{{ item.image.thumbnail }}" class="card-img-thumbnail img-fluid">
-                <a href="{{ item.get_absolute_url }}">
-                    <div class="mask rgba-white-slight"></div>
-                </a>
+            <img src=" {{ STATIC_URL }}{{ item.image.thumbnail }}" class="card-img-top img-fluid">
+                <div class="mask rgba-white-slight">
+                    <a class="btn btn-primary btn-md waves-effect" href="{{ item.get_add_cart_url }}"
+                        role="button">Add To Cart<i class="fas fa-hand-holding-usd" ></i>
+                    </a>
+                </div>
         </div>
-                          {{ item.title }}
+          <div class="card-body text-center">
+              <a href="{{ item.get_absolute_url }}">
+                  <h6> {{ item.title }}</h6>
 
+                  <h6 class="font-weight-bold blue-text">
+                  <strong>
+                  {% if item.old_price %}
+                      <span style="font-size:8px" class="grey-text"><del>${{ item.old_price}}</del></span>
+                     <br>
+                    <span>${{ item.price }}</span>
+                  {% else %}
+                    ${{ item.price }}
+                  {% endif %}
+                </strong>
+              </h6>
+                  </a>
+          </div>
       </div>
-
         <!--Card image-->
-</div>
+
 
 
 

@@ -1,0 +1,11 @@
+{% extends 'navigation.html' %}
+{% load catalog_filters %}
+
+{% block content %}
+    <h1>Welcome to Me2U Market</h1>
+    {% product_list recently_viewed 'Your Recently Viewed' %}
+    {% product_list view_recs 'Similar Products' %}
+    {% product_list featured 'Featured Products' %}
+    {% product_list search_recs 'Recommended For You' %}
+
+{% endblock content %}

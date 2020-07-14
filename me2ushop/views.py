@@ -3,7 +3,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-
+from django.template.loader import render_to_string
+# from django.utils import simplejson as json
+import json
 from .forms import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
@@ -19,6 +21,10 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.template import RequestContext
 
+from stats import stats
+from Me2U.settings import PRODUCTS_PER_ROW, PRODUCTS_PER_PAGE
+
+
 import random
 import string
 import stripe
@@ -32,15 +38,76 @@ def create_ref_code():
 
 class HomeView(ListView):
     model = Product
-    paginate_by = 8
+    site_name = 'Me2U|Market'
     template_name = 'home-page.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(HomeView, self).get_context_data(**kwargs)
-        categories = Category.objects.all()
-        context['categories'] = categories
+    def get_context_data(self, *, object_list=None, **kwargs):
+        super(HomeView, self).get_context_data(**kwargs)
+        search_recored = stats.recommended_from_search(self.request)
+        if search_recored:
+            for record in search_recored:
+                search_recs = record
+                context = {
+                    'search_recs': search_recs,
+                }
+                return context
+
+        featured = Product.featured.all()[0:PRODUCTS_PER_ROW]
+        bestseller = Product.bestseller.all()[0:PRODUCTS_PER_ROW]
+        recently_viewed = stats.get_recently_viewed(self.request)
+        view_recored = stats.recommended_from_views(self.request)
+        if view_recored:
+            view_recs = view_recored[0:PRODUCTS_PER_ROW]
+            context = {
+                'view_recs': view_recs,
+            }
+            return context
+
+        context = {
+            'featured': featured,
+            'bestseller': bestseller,
+            'recently_viewed': recently_viewed,
+        }
 
         return context
+
+
+def homeView(request):
+    site_name = 'Me2U|Market'
+    template_name = 'home-page.html'
+
+    search_recored = stats.recommended_from_search(request)
+    if search_recored:
+        for record in search_recored:
+            search_recs = record
+            top_search = [search_recs[0]]
+
+    featuring = Product.featured.all()
+    bestselling = Product.bestseller.all()[0:PRODUCTS_PER_ROW]
+    recently_viewed = stats.get_recently_viewed(request)
+    view_recored = stats.recommended_from_views(request)
+    if view_recored:
+        view_recs = view_recored[0:PRODUCTS_PER_ROW]
+
+    if featuring or bestselling:
+        featured = featuring[0:PRODUCTS_PER_ROW]
+        bestseller = bestselling[0:PRODUCTS_PER_ROW]
+        if bestseller:
+            top_bestseller = [bestseller[0]]
+
+    # print('view recs:', view_recs)
+
+    return render(request, template_name, locals())
+    # model = Product
+    # paginate_by = 8
+    # template_name = 'home-page.html'
+    #
+    # def get_context_data(self, **kwargs):
+    #     context = super(HomeView, self).get_context_data(**kwargs)
+    #     categories = Category.objects.all()
+    #     context['categories'] = categories
+    #
+    #     return context
 
 
 class ProductDetailedView(DetailView):
@@ -52,32 +119,99 @@ class ProductDetailedView(DetailView):
         context = super(ProductDetailedView, self).get_context_data(**kwargs)
         cart_product_form = CartAddProductForm()
         context['cart_product_form'] = cart_product_form
+        from stats import stats
+        product = Product.objects.filter(title=kwargs['object'])[0]
+
+        stats.log_product_view(self.request, product)
 
         return context
+
+    # def get(self, *args, **kwargs):
+    #     from stats import stats
+    #     product = Product.objects.filter(slug=kwargs['slug'])[0]
+    #
+    #     stats.log_product_view(self.request, product)
+    #
+    #     return render(self.request, template_name='product-page.html')
+
+
+def show_product(request, slug):
+    # print('person:', request.user)
+    product = get_object_or_404(Product, slug=slug)
+    # print('product:', product)
+    product_reviews = ProductReview.approved.filter(product=product).order_by('-date')[0:PRODUCTS_PER_ROW]
+    # print('productreviews:', product_reviews)
+    review_form = ProductReviewForm()
+    approved = Order.objects.filter(user__username=request.user, ordered=True, items__item=product)
+
+    cart_product_form = CartAddProductForm()
+    from stats import stats
+    stats.log_product_view(request, product)
+
+    context = {
+        'cart_product_form': cart_product_form,
+        'object': product,
+        'review_form': review_form,
+        'product_reviews': product_reviews,
+        'approved': approved
+    }
+
+    return render(request, 'product-page.html', context)
+
+
+@login_required
+def add_review(request):
+    # print('request sent:', request)
+    form = ProductReviewForm(request.POST)
+    # print('form_data:', form)
+    if form.is_valid():
+        review = form.save(commit=False)
+
+        slug = request.POST.get('slug')
+        # print('slug:', slug)
+        product = Product.active.get(slug=slug)
+        # ordered_by_user = Order.objects.filter(user=request.user, ordered=True)
+        review.user = request.user
+        # print('user:', review.user)
+        review.product = product
+        # review.ordered_by_user = ordered_by_user
+        review.save()
+        # print('reviewed_form:', review)
+
+        template = "tags/product_review.html"
+        html = render_to_string(template, {'review': review})
+        response = json.dumps({'success': 'True', 'html': html})
+        # print('response:', response)
+
+    else:
+        html = form.errors.as_ul()
+        response = json.dumps({'success': 'False', 'html': html})
+
+    return HttpResponse(response, content_type='application/javascript; charset=utf-8')
 
 
 def add_cart(request, slug):
     if request.user.is_authenticated:
-        print('checking out this function')
+        # print('checking out this function')
         if request.method == "POST":
             form = CartAddProductForm(request.POST or None)
             if form.is_valid():
                 try:
                     # Get quantity from useronline
                     quantity = form.cleaned_data.get('quantity')
-                    print("qty:", quantity)
+                    # print("qty:", quantity)
                     item = get_object_or_404(Product, slug=slug)
-                    print("item:", item)
+                    # print("item:", item)
 
                     order_item, created = OrderItem.objects.get_or_create(
                         item=item,
                         user=request.user,
                         ordered=False
                     )
-                    print("order_item:", order_item)
+                    # print("order_item:", order_item)
 
                     order_query_set = Order.objects.filter(user=request.user, ordered=False)
-                    print("user:", order_query_set)
+                    # print("user:", order_query_set)
 
                     # This code returns the user who ordered an item
                     if order_query_set.exists():
@@ -103,7 +237,7 @@ def add_cart(request, slug):
                             order_item.save()
                             return redirect("me2ushop:order_summary")
                     else:
-                        print("order not in cart")
+                        # print("order not in cart")
                         order_date = timezone.now()
                         order = Order.objects.create(user=request.user, order_date=order_date)
                         order.items.add(order_item)
@@ -124,10 +258,10 @@ def add_cart(request, slug):
             messages.info(request, 'Invalid form')
             return redirect("me2ushop:product", slug=slug)
         else:
-            print('we came here')
+            # print('we came here')
             try:
                 item = get_object_or_404(Product, slug=slug)
-                print('item:', item)
+                # print('item:', item)
 
                 order_item, created = OrderItem.objects.get_or_create(
                     item=item,
@@ -135,7 +269,7 @@ def add_cart(request, slug):
                     ordered=False
                 )
                 order_query_set = Order.objects.filter(user=request.user, ordered=False)
-                print('qs:', order_query_set)
+                # print('qs:', order_query_set)
 
                 # This code returns the user who ordered an item
                 if order_query_set.exists():
@@ -153,7 +287,7 @@ def add_cart(request, slug):
                         order_item.quantity = 1
                         return redirect("me2ushop:order_summary")
                 else:
-                    print("order not in cart")
+                    # print("order not in cart")
                     order_date = timezone.now()
                     order = Order.objects.create(user=request.user, order_date=order_date)
                     order.items.add(order_item)
@@ -304,7 +438,7 @@ def remove_single_item_cart(request, slug):
                 user=request.user,
                 ordered=False
             )[0]
-            print('order_item:', order_item)
+            # print('order_item:', order_item)
 
             if order_item.quantity >= 1:
                 order_item.quantity -= 1
@@ -448,7 +582,7 @@ class Checkout_page(View):
 
                         set_default_shipping = form.cleaned_data.get('set_default_shipping')
                         if set_default_shipping:
-                            print('default is:', set_default_shipping)
+                            # print('default is:', set_default_shipping)
                             shipping_address.default = True
                             shipping_address.save()
                             messages.info(self.request, "Information saved successfully")
@@ -579,11 +713,31 @@ def add_coupon(request):
                     code = form.cleaned_data.get('code')
 
                     coupon_id = get_coupon(request, code)
+                    # print('id:', str(coupon_id))
+                    if str(coupon_id) == 'FIRST_TIME':
+                        # print('yeah true')
+                        used_before = Order.objects.filter(user=request.user, coupon=coupon_id)
+                        # print('used before:', used_before)
+                        if used_before:
+                            # print('we in here')
+                            messages.warning(request, 'You have already benefited through this offer')
+                            return redirect('me2ushop:checkout')
+                        else:
+                            # print('not used yet')
+                            order.coupon = coupon_id
+                            order.coupon.valid = False
+                            order.coupon.save()
+                            messages.success(request,
+                                             'Coupon was successful, thank you for joining Me2U Africa. KARIBU')
+                            order.save()
 
-                    order.coupon = coupon_id
-                    messages.success(request,
-                                     'Coupon was successful, thank you for joining Me2U Africa. KARIBU')
-                    order.save()
+                    else:
+                        order.coupon = coupon_id
+                        order.coupon.valid = False
+                        order.coupon.save()
+                        messages.success(request,
+                                         'Coupon was successful, Asante Kwa kuchagua Me2U Africa. KARIBU')
+                        order.save()
                     return redirect('me2ushop:checkout')
 
                 else:
@@ -657,11 +811,11 @@ class PaymentView(View):
                     for item in order_items:
                         item.save()
 
-                if order.ordered:
-                    if order.coupon:
-                        order.coupon.valid = False
-                        order.coupon.save()
-                        messages.success(self.request, "Coupon was SUCCESSFUL")
+                # if order.ordered:
+                #     if order.coupon:
+                #         order.coupon.valid = False
+                #         order.coupon.save()
+                #         messages.success(self.request, "Coupon was SUCCESSFUL")
 
                     messages.success(self.request, " CONGRATULATIONS YOUR ORDER WAS SUCCESSFUL")
                 return redirect("me2ushop:home")
