@@ -2,10 +2,11 @@
   <div class="card card-height">
     <!--Card image-->
     <div class="view overlay zoom">
-        <img src="/static/{{ item.image }}" class="card-img-top img-fluid"/>
+        <img src="/static/{{ item.image.medium }}" class="card-img-top img-fluid"/>
           <a href="{{ item.get_absolute_url }}">
             <div class="mask flex-center rgba-black-strong">
-          <p class="green-text">Click For More</p>
+          <p class="btn btn-primary btn-md waves-effect"
+          role="button">View</p>
         </div>
       </a>
     </div>
@@ -14,11 +15,11 @@
     <!--Card content-->
     <div class="card-body text-center">
 <!--      Category & Title-->
-<!--      <a href="{{ item.get_absolute_url }}" class="dark-grey-text"><h5 class="grey-text"> {{ item.get_category_choice_display }}</h5></a>-->
+      <a href="{{ item.get_absolute_url }}" class="dark-grey-text"><h5 class="grey-text"> {{ item.get_category_choice_display }}</h5></a>
       <h6>
         <strong>
           <a href="{{ item.get_absolute_url }}" class="dark-grey-text" style="font-size:16px">{{ item.title }}
-            <span class="badge badge-pill {{ item.get_label_display }}-color">{{ item.get_category_choice_display }}</span>
+            <span class="badge badge-pill {{ item.get_label_display }}-color">NEW</span>
           </a>
         </strong>
       </h6>
@@ -34,14 +35,13 @@
           {% endif %}
         </strong>
       </h5>
-       <a class="btn btn-primary btn-md waves-effect" href="{{ item.get_add_cart_url }}"
-          role="button">Add To Cart<i class="fas fa-hand-holding-usd"></i>
-       </a>
+
 
     </div>
     <!--Card content-->
 
   </div>
+
 
 
 

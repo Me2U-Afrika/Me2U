@@ -19,41 +19,65 @@ def tracking_id(request):
 
 
 def recommended_from_search(request):
+    from search import search
+
     # Get the common words from the stored searches
     common_words = frequent_search_words(request)
-    from search import search
+    # print('common words:', common_words)
+
     matching = []
-    for words in common_words:
-        results = search.productSearched(words).get('products', [])
-        # print('results for common:', results)
+    for words in range(len(common_words)):
+        # print(words)
+        while words < len(common_words):
+            results = search.productSearched(common_words[words]).get('products', [])
+            # print('results for common:', results)
 
-        for r in results:
-            if len(matching) < PRODUCTS_PER_ROW and not r in matching:
-                matching.append(r)
+            for r in results:
+                for product in r:
+                    if len(matching) < PRODUCTS_PER_ROW and not product in matching:
+                        matching.append(product)
+            words += 1
 
-        # print('matching found:', matching)
-        return matching
+    # print('matching found:', matching)
+
+    # c = collections.Counter(matching)
+    # for product, count in c.most_common():
+        # print('%s: %7d' % (product, count))
+        # most_words.append(word)
+    # print('most_products:', most_words)
+
+    # return the top three most common words in the searches
+
+    # return most_words
+    return matching
 
 
 def frequent_search_words(request):
     # get the ten most recent searches from the database.
-    searches = SearchTerm.objects.filter(tracking_id=tracking_id(request)).values('q').order_by('-search_date')[0:10]
+    if request.user.is_authenticated:
+        searches = SearchTerm.objects.filter(user=request.user).values('q').order_by('-search_date')[0:10]
+        # print(searches)
+    else:
+        searches = SearchTerm.objects.filter(tracking_id=tracking_id(request)).values('q').order_by('-search_date')[0:10]
     # print('searches found:', searches)
 
     # Join all searches together into a single string
     search_string = ' '.join([search['q'] for search in searches])
+    # print('q.string:', search_string)
     words = search_string.split()
-    most_products = []
+    most_words = []
 
     c = collections.Counter(words)
+    # print('common:', c)
 
-    for product, count in c.most_common(4):
+    for word, count in c.most_common(10):
         # print('%s: %7d' % (product, count))
-        most_products.append(product)
-    # print('most_products:', most_products)
+        most_words.append(word)
+    # print('most_products:', most_words)
 
     # return the top three most common words in the searches
-    return most_products
+
+    return most_words
 
 
 def log_product_view(request, product):
@@ -111,7 +135,7 @@ def recommended_from_views(request):
 def get_recently_viewed(request):
     track_id = tracking_id(request)
     # print("looked up id:", track_id)
-    views = ProductView.objects.filter(tracking_id=track_id).values('product_id').order_by('-date')[0:PRODUCTS_PER_ROW]
+    views = ProductView.objects.filter(tracking_id=track_id).values('product_id').order_by('-date')
 
     product_ids = [view['product_id'] for view in views]
     # print('product_ids', product_ids)

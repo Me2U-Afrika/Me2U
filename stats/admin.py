@@ -9,13 +9,14 @@ class TrackingAdmin(admin.ModelAdmin):
         'user',
         'product',
         'tracking_id',
+        'valid_tracker',
         'ip_address',
         'date'
     )
     list_display_links = [
         'user'
     ]
-    list_filter = ['user', 'tracking_id']
+    list_filter = ['user', 'valid_tracker']
 
     search_fields = [
         'user__username',

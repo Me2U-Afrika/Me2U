@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.template.loader import render_to_string
 # from django.utils import simplejson as json
 import json
@@ -14,7 +15,7 @@ from categories.models import Category
 
 from .models import *
 
-from django.views.generic import ListView, DetailView, View
+from django.views.generic import ListView, DetailView, View, CreateView, UpdateView, DeleteView
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
 
@@ -22,12 +23,15 @@ from django.contrib.auth.models import User
 from django.template import RequestContext
 
 from stats import stats
-from Me2U.settings import PRODUCTS_PER_ROW, PRODUCTS_PER_PAGE
+from stats.models import ProductView
 
+from Me2U.settings import PRODUCTS_PER_ROW, PRODUCTS_PER_PAGE
 
 import random
 import string
 import stripe
+import tagging
+from tagging.models import Tag, TaggedItem
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -36,38 +40,123 @@ def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
 
 
+class SellerView(ListView):
+    model = Product
+    site_name = 'Me2U|Seller'
+    template_name = 'seller-page.html'
+    paginate_by = 8
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        print('user:', user)
+
+        return Product.active.filter(seller=user).order_by('-created_at')
+
+
 class HomeView(ListView):
     model = Product
     site_name = 'Me2U|Market'
     template_name = 'home-page.html'
+    paginate_by = 4
 
     def get_context_data(self, *, object_list=None, **kwargs):
         super(HomeView, self).get_context_data(**kwargs)
+
+        context = {}
+
         search_recored = stats.recommended_from_search(self.request)
-        if search_recored:
-            for record in search_recored:
-                search_recs = record
-                context = {
-                    'search_recs': search_recs,
-                }
-                return context
-
-        featured = Product.featured.all()[0:PRODUCTS_PER_ROW]
-        bestseller = Product.bestseller.all()[0:PRODUCTS_PER_ROW]
+        featuring = Product.featured.all()
+        bestselling = Product.bestseller.all()
         recently_viewed = stats.get_recently_viewed(self.request)
-        view_recored = stats.recommended_from_views(self.request)
-        if view_recored:
-            view_recs = view_recored[0:PRODUCTS_PER_ROW]
-            context = {
-                'view_recs': view_recs,
-            }
-            return context
+        view_recommendation = stats.recommended_from_views(self.request)
 
-        context = {
-            'featured': featured,
-            'bestseller': bestseller,
-            'recently_viewed': recently_viewed,
-        }
+        if search_recored:
+            try:
+                page = int(self.request.GET.get('page', 1))
+
+            except ValueError:
+                page = 1
+            paginator = Paginator(search_recored, settings.PRODUCTS_PER_PAGE)
+            try:
+                search_recored = paginator.page(page).object_list
+                context.update({'search_recs': search_recored,
+                                'paginator': paginator
+                                })
+
+            except (InvalidPage, EmptyPage):
+                results = paginator.page(1).object_list
+                context.update({'search_recs': results})
+
+        if featuring:
+            try:
+                page = int(self.request.GET.get('page', 1))
+
+            except ValueError:
+                page = 1
+            paginator = Paginator(featuring, settings.PRODUCTS_PER_PAGE)
+            try:
+                featuring = paginator.page(page).object_list
+                context.update({'featured': featuring,
+                                'paginator': paginator
+                                })
+
+            except (InvalidPage, EmptyPage):
+                results = paginator.page(1).object_list
+                context.update({'featured': results})
+
+        if recently_viewed:
+
+            # Recently viewed
+            try:
+                page = int(self.request.GET.get('page', 1))
+
+            except ValueError:
+                page = 1
+            paginator = Paginator(recently_viewed, 6)
+            try:
+                view_recently = paginator.page(page).object_list
+                context.update({'recently_viewed': view_recently,
+                                'paginator': paginator
+                                })
+
+            except (InvalidPage, EmptyPage):
+                results = paginator.page(1).object_list
+                context.update({'recently_viewed': results})
+
+                # Recommended
+        if view_recommendation:
+            try:
+                page = int(self.request.GET.get('page', 1))
+
+            except ValueError:
+                page = 1
+            paginator = Paginator(view_recommendation, settings.PRODUCTS_PER_PAGE)
+            try:
+                view_recommendation = paginator.page(page).object_list
+                context.update({'view_recs': view_recommendation,
+                                'paginator': paginator
+                                })
+
+            except (InvalidPage, EmptyPage):
+                results = paginator.page(1).object_list
+                context.update({'view_recs': results})
+
+        if bestselling:
+            try:
+                page = int(self.request.GET.get('page', 1))
+
+            except ValueError:
+                page = 1
+            paginator = Paginator(bestselling, settings.PRODUCTS_PER_PAGE)
+            try:
+                bestselling = paginator.page(page).object_list
+                context.update({'bestseller': bestselling,
+                                'paginator': paginator
+                                })
+
+            except (InvalidPage, EmptyPage):
+                results = paginator.page(1).object_list
+                context.update({'bestseller': results})
 
         return context
 
@@ -118,9 +207,24 @@ class ProductDetailedView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProductDetailedView, self).get_context_data(**kwargs)
         cart_product_form = CartAddProductForm()
-        context['cart_product_form'] = cart_product_form
-        from stats import stats
+
         product = Product.objects.filter(title=kwargs['object'])[0]
+
+        # print('product:', product)
+        product_reviews = ProductReview.approved.filter(product=product).order_by('-date')[0:PRODUCTS_PER_ROW]
+        # print('productreviews:', product_reviews)
+        review_form = ProductReviewForm()
+        approved = Order.objects.filter(user__username=self.request.user, ordered=True, items__item=product)
+        # tags_product =
+
+        context.update({
+            'cart_product_form': cart_product_form,
+            'object': product,
+            'review_form': review_form,
+            'product_reviews': product_reviews,
+            'approved': approved
+        })
+        from stats import stats
 
         stats.log_product_view(self.request, product)
 
@@ -135,6 +239,92 @@ class ProductDetailedView(DetailView):
     #     return render(self.request, template_name='product-page.html')
 
 
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    model = Product
+    fields = ['title', 'slug', 'brand', 'price', 'old_price', 'stock', 'made_in_africa', 'description',
+              'additional_information',
+              'meta_keywords',
+              'meta_description',
+              'category_choice', 'product_categories', 'image']
+    template_name = 'product_form.html'
+
+    def form_valid(self, form):
+        form.instance.seller = self.request.user
+        return super(ProductCreateView, self).form_valid(form)
+
+
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Product
+    fields = ['title', 'slug', 'brand', 'price', 'old_price', 'stock', 'made_in_africa', 'description',
+              'additional_information',
+              'meta_keywords',
+              'meta_description',
+              'category_choice',
+              'product_categories',
+              'image',
+              ]
+    template_name = 'product_form.html'
+
+    def form_valid(self, form):
+        form.instance.seller = self.request.user
+        return super(ProductUpdateView, self).form_valid(form)
+
+    def test_func(self):
+        product_posted = self.get_object()
+        if self.request.user == product_posted.seller:
+            return True
+        return False
+
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Product
+    template_name = 'product_confirm_delete.html'
+    success_url = '/me2ushop'
+
+    def test_func(self):
+        product_posted = self.get_object()
+        if self.request.user == product_posted.seller:
+            return True
+        return False
+
+
+@login_required
+def add_tag(request):
+    print("we came to add the tag")
+    tags = request.POST.get('tag', '')
+    slug = request.POST.get('slug', '')
+
+    if len(tags) > 2:
+        product = Product.active.get(slug=slug)
+        html = u''
+        template = 'tags/tag_link.html'
+
+        for tags in tags.split():
+            print('tag_split', tags)
+            tags.strip(',')
+            Tag.objects.add_tag(product, tags)
+
+        for tags in product.tags:
+            html += render_to_string(template, {'tag': tags})
+            response = json.dumps({'success': 'True', 'html': html})
+    else:
+        response = json.dumps({'success': 'False'})
+    return HttpResponse(response, content_type='Application/javascript, charset=utf8')
+
+
+def tag_cloud(request, template_name='tags/tag_cloud.html'):
+    product_tags = Tag.objects.cloud_for_model(Product, steps=9, distribution=tagging.utils.LOGARITHMIC,
+                                               filters={'is_active': True})
+    page_title = 'Product Tag Cloud'
+    return render(request, template_name, locals())
+
+
+def tag(request, tag, template_name='tags/tag.html'):
+    products = TaggedItem.objects.get_by_model(Product.active, tag)
+
+    return render(request, template_name, locals())
+
+
 def show_product(request, slug):
     # print('person:', request.user)
     product = get_object_or_404(Product, slug=slug)
@@ -143,6 +333,7 @@ def show_product(request, slug):
     # print('productreviews:', product_reviews)
     review_form = ProductReviewForm()
     approved = Order.objects.filter(user__username=request.user, ordered=True, items__item=product)
+    # tags_product =
 
     cart_product_form = CartAddProductForm()
     from stats import stats
@@ -168,12 +359,14 @@ def add_review(request):
         review = form.save(commit=False)
 
         slug = request.POST.get('slug')
+        country = request.POST.get('country')
         # print('slug:', slug)
         product = Product.active.get(slug=slug)
         # ordered_by_user = Order.objects.filter(user=request.user, ordered=True)
         review.user = request.user
         # print('user:', review.user)
         review.product = product
+        review.country = country
         # review.ordered_by_user = ordered_by_user
         review.save()
         # print('reviewed_form:', review)
@@ -192,39 +385,44 @@ def add_review(request):
 
 def add_cart(request, slug):
     if request.user.is_authenticated:
-        # print('checking out this function')
+        print('checking out this function')
         if request.method == "POST":
             form = CartAddProductForm(request.POST or None)
             if form.is_valid():
+                print('form:', form.is_valid())
                 try:
                     # Get quantity from useronline
                     quantity = form.cleaned_data.get('quantity')
-                    # print("qty:", quantity)
+                    print("qty:", quantity)
                     item = get_object_or_404(Product, slug=slug)
-                    # print("item:", item)
+                    print("item:", item)
 
                     order_item, created = OrderItem.objects.get_or_create(
                         item=item,
                         user=request.user,
                         ordered=False
                     )
-                    # print("order_item:", order_item)
+                    print("order_item:", order_item)
 
                     order_query_set = Order.objects.filter(user=request.user, ordered=False)
-                    # print("user:", order_query_set)
+                    print("user:", order_query_set)
 
                     # This code returns the user who ordered an item
                     if order_query_set.exists():
                         order = order_query_set[0]
+                        print('order user:', order)
 
                         # check if the order item is in the order
                         if order.items.filter(item__slug=item.slug).exists():
                             if quantity > 1:
                                 order_item.quantity = quantity
                             else:
-                                order_item.quantity += 1
-
+                                order_item.quantity = 1
+                            print('updated item:', order_item)
+                            # print('cartid:', cart_id)
                             order_item.save()
+                            print(order.cart_id)
+
                             messages.info(request, 'This item quantity was updated.')
                             return redirect("me2ushop:order_summary")
                         else:
@@ -237,9 +435,10 @@ def add_cart(request, slug):
                             order_item.save()
                             return redirect("me2ushop:order_summary")
                     else:
-                        # print("order not in cart")
+                        print("order not in cart")
                         order_date = timezone.now()
                         order = Order.objects.create(user=request.user, order_date=order_date)
+                        print('order:', order)
                         order.items.add(order_item)
                         if quantity > 1:
                             order_item.quantity = quantity
@@ -258,18 +457,20 @@ def add_cart(request, slug):
             messages.info(request, 'Invalid form')
             return redirect("me2ushop:product", slug=slug)
         else:
-            # print('we came here')
+            print("i came here man")
+            # user is logged in but not using form to add quantity
             try:
                 item = get_object_or_404(Product, slug=slug)
-                # print('item:', item)
+                print('item:', item)
 
                 order_item, created = OrderItem.objects.get_or_create(
                     item=item,
                     user=request.user,
                     ordered=False
                 )
+                print('order_item returned', order_item)
                 order_query_set = Order.objects.filter(user=request.user, ordered=False)
-                # print('qs:', order_query_set)
+                print('qs:', order_query_set)
 
                 # This code returns the user who ordered an item
                 if order_query_set.exists():
@@ -285,11 +486,14 @@ def add_cart(request, slug):
                         messages.info(request, 'This item has been added to your cart.')
                         order.items.add(order_item)
                         order_item.quantity = 1
+                        order_item.save()
                         return redirect("me2ushop:order_summary")
                 else:
-                    # print("order not in cart")
+                    print("order not in cart")
                     order_date = timezone.now()
+                    # print('cart_id', cart_id)
                     order = Order.objects.create(user=request.user, order_date=order_date)
+                    # print('order:', order)
                     order.items.add(order_item)
                     order_item.quantity = 1
                     order_item.save()
@@ -299,111 +503,171 @@ def add_cart(request, slug):
             except Exception:
                 messages.warning(request, 'error:')
                 return redirect("me2ushop:product", slug=slug)
+    else:
+        from stats.models import ProductView
+        track_id = stats.tracking_id(request)
+        cart_ids = ProductView.objects.filter(tracking_id=track_id)
+        # user is anonymous
+        # user is adding quantity through form
+        print('user is anonymous')
+        if request.method == "POST":
+            form = CartAddProductForm(request.POST or None)
+            if form.is_valid():
+                try:
+                    # Get quantity from useronline
+                    quantity = form.cleaned_data.get('quantity')
+                    print("qty:", quantity)
+                    item = get_object_or_404(Product, slug=slug)
+                    print("item we found:", item)
+                    if cart_ids:
+                        cart_id = cart_ids[0]
+                        print('cart_id:', cart_id)
 
-    messages.warning(request, "Please login to continue shopping")
+                        order_item, created = OrderItem.objects.get_or_create(
+                            item=item,
+                            cart_id=cart_id,
+                            ordered=False
+                        )
+                        print("order_item:", order_item)
+
+                        order_query_set = OrderAnonymous.objects.filter(cart_id=cart_id, ordered=False)
+                        print("cart_id found:", order_query_set)
+
+                        # This code returns the user who ordered an item
+                        if order_query_set.exists():
+                            order = order_query_set[0]
+                            print('order user:', order)
+
+                            # check if the order item is in the order
+                            if order.items.filter(item__slug=item.slug).exists():
+                                if quantity > 1:
+                                    order_item.quantity = quantity
+                                else:
+                                    order_item.quantity = 1
+                                print('updated item:', order_item)
+                                # print('cartid:', cart_id)
+                                order_item.save()
+
+                                messages.info(request, 'This item quantity was updated.')
+                                return redirect("me2ushop:order_summary")
+                            else:
+                                messages.info(request, 'This item has been added to your cart.')
+                                order.items.add(order_item)
+                                if quantity > 1:
+                                    order_item.quantity = quantity
+                                else:
+                                    order_item.quantity = 1
+                                order_item.save()
+                                return redirect("me2ushop:order_summary")
+                        else:
+                            print("order not in cart")
+                            order_date = timezone.now()
+                            order = OrderAnonymous.objects.create(cart_id=cart_id, order_date=order_date)
+                            print('order:', order)
+                            order.items.add(order_item)
+                            if quantity > 1:
+                                order_item.quantity = quantity
+                            else:
+                                order_item.quantity = 1
+
+                            order_item.save()
+                            messages.info(request, 'This item has been added to your cart.')
+                            return redirect("me2ushop:order_summary")
+                except Exception:
+                    messages.info(request, 'ERROR.')
+                    return redirect("me2ushop:product", slug=slug)
+
+        else:
+            # User is adding qty without form
+            try:
+                item = get_object_or_404(Product, slug=slug)
+                print("item we found:", item)
+
+                if cart_ids:
+                    cart_id = cart_ids[0]
+                    print('cart_id:', cart_id)
+
+                    order_item, created = OrderItem.objects.get_or_create(
+                        item=item,
+                        cart_id=cart_id,
+                        ordered=False
+                    )
+                    # print("order_item:", order_item)
+
+                    order_query_set = OrderAnonymous.objects.filter(cart_id=cart_id, ordered=False)
+                    print("cart_id found:", order_query_set)
+
+                    # This code returns the user who ordered an item
+                    if order_query_set.exists():
+                        order = order_query_set[0]
+                        print('order user:', order)
+
+                        # check if the order item is in the order
+                        if order.items.filter(item__slug=item.slug).exists():
+                            if order_item.quantity >= 1:
+                                order_item.quantity += 1
+                            else:
+                                order_item.quantity = 1
+                            print('updated item:', order_item)
+                            # print('cartid:', cart_id)
+                            order_item.save()
+
+                            messages.info(request, 'This item quantity was updated.')
+                            return redirect("me2ushop:order_summary")
+                        else:
+                            messages.info(request, 'This item has been added to your cart.')
+                            order.items.add(order_item)
+                            order_item.quantity = 1
+                            order_item.save()
+                            return redirect("me2ushop:order_summary")
+                    else:
+                        print("order not in cart")
+                        order_date = timezone.now()
+                        order = OrderAnonymous.objects.create(cart_id=cart_id, order_date=order_date)
+                        print('order:', order)
+                        order.items.add(order_item)
+                        order_item.quantity = 1
+                        order_item.save()
+                        messages.info(request, 'This item has been added to your cart.')
+                        return redirect("me2ushop:order_summary")
+
+            except Exception:
+                messages.warning(request, 'error:')
+                return redirect("me2ushop:product", slug=slug)
+
+    messages.warning(request, "We unable to add item for some reason")
     return redirect("me2ushop:product", slug=slug)
-
-    # else:
-    #     # user is anonymous
-    #     if request.method == "POST":
-    #         request.session.set_test_cookie()
-    #         print('session:', request.session)
-    #         form = CartAddProductForm(request.POST or None)
-    #         if form.is_valid():
-    #             # try:
-    #             # Get quantity from useronline
-    #             quantity = form.cleaned_data.get('quantity')
-    #             print("qty:", quantity)
-    #             item = get_object_or_404(Product, slug=slug)
-    #             print("item:", item)
-    #
-    #             cart_id = get_cartID(request)
-    #             print('cart:', cart_id[0])
-    #             order_item, created = OrderItem.objects.get_or_create(
-    #                 item=item,
-    #                 cart_id=cart_id[0],
-    #                 ordered=False
-    #             )
-    #             print("order_item:", order_item)
-    #
-    #             order_query_set = Order.objects.filter(cart_id=cart_id[0], ordered=False)
-    #             print("cart_id:", order_query_set)
-    #
-    #             # This code returns the user who ordered an item
-    #             if order_query_set.exists():
-    #                 order = order_query_set[0]
-    #
-    #                 # check if the order item is in the order
-    #                 if order.items.filter(item__slug=item.slug).exists():
-    #                     if quantity > 1:
-    #                         order_item.quantity = quantity
-    #                     else:
-    #                         order_item.quantity += 1
-    #
-    #                     order_item.save()
-    #                     messages.info(request, 'This item quantity was updated.')
-    #                     return redirect("me2ushop:summary_view")
-    #                 else:
-    #                     messages.info(request, 'This item has been added to your cart.')
-    #                     order.items.add(order_item)
-    #                     if quantity > 1:
-    #                         order_item.quantity = quantity
-    #                     else:
-    #                         order_item.quantity = 1
-    #                     order_item.save()
-    #                     return redirect("me2ushop:summary_view")
-    #             else:
-    #                 print("order not in cart")
-    #                 order_date = timezone.now()
-    #                 order = Order.objects.create(cart_id=cart_id[0], order_date=order_date)
-    #                 print('order:', order)
-    #                 order.items.add(order_item)
-    #                 if quantity > 1:
-    #                     order_item.quantity = quantity
-    #                 else:
-    #                     order_item.quantity = 1
-    #
-    #                 order_item.save()
-    #                 messages.info(request, 'This item has been added to your cart.')
-    #                 if request.session.test_cookie_worked():
-    #                     print('cookies worked')
-    #                     request.session.delete_test_cookie()
-    #                 return redirect("me2ushop:summary_view")
-    #
-    #             # except Exception:
-    #             #     messages.warning(request, 'error:')
-    #             #     # add_cart_product(request, slug)
-    #             #     return redirect("me2ushop:product", slug=slug)
-    #
-    #         messages.info(request, 'Invalid form')
-    #         return redirect("me2ushop:product", slug=slug)
 
 
 def remove_cart(request, slug):
+    track_id = stats.tracking_id(request)
+    cart_id = ProductView.objects.filter(tracking_id=track_id)
     try:
-        item = get_object_or_404(Product, slug=slug)
+        # Authenticated user
+        if request.user.is_authenticated:
+            item = get_object_or_404(Product, slug=slug)
 
-        order_query_set = Order.objects.filter(
-            user=request.user,
-            ordered=False)
+            order_query_set = Order.objects.filter(
+                user=request.user,
+                ordered=False)
 
-        if order_query_set.exists():
-            order = order_query_set[0]
-            #         check if the order item is in the order
-            if order.items.filter(item__slug=item.slug).exists():
-                order_item = OrderItem.objects.filter(
-                    item=item,
-                    user=request.user,
-                    ordered=False
-                )[0]
-                while order_item.quantity > 0:
-                    order_item.quantity -= 1
-
-                    if order_item.quantity == 0:
-                        order.items.remove(order_item)
-                        messages.info(request, 'This item was removed from your cart.')
-                        order_item.save()
-                        return redirect("me2ushop:product", slug=slug)
+            if order_query_set.exists():
+                order = order_query_set[0]
+                #         check if the order item is in the order
+                if order.items.filter(item__slug=item.slug).exists():
+                    order_item = OrderItem.objects.filter(
+                        item=item,
+                        user=request.user,
+                        ordered=False
+                    )[0]
+                    # while order_item.quantity > 0:
+                    #     order_item.quantity -= 1
+                    #
+                    #     if order_item.quantity == 0:
+                    order.items.remove(order_item)
+                    messages.info(request, 'This item was removed from your cart.')
+                    order_item.save()
+                    return redirect("me2ushop:product", slug=slug)
                 return redirect("me2ushop:product", slug=slug)
 
             else:
@@ -412,59 +676,135 @@ def remove_cart(request, slug):
                 return redirect("me2ushop:product", slug=slug)
 
         else:
-            # add message saying no order for user
-            messages.info(request, 'You do not have an active order.')
-            return redirect("me2ushop:product", slug=slug)
+            # user is anonymous
+            if cart_id:
+                cart_id = cart_id[0]
+
+                item = get_object_or_404(Product, slug=slug)
+
+                order_query_set = OrderAnonymous.objects.filter(
+                    cart_id=cart_id,
+                    ordered=False)
+
+                if order_query_set.exists():
+                    order = order_query_set[0]
+                    #         check if the order item is in the order
+                    if order.items.filter(item__slug=item.slug).exists():
+                        order_item = OrderItem.objects.filter(
+                            item=item,
+                            cart_id=cart_id,
+                            ordered=False
+                        )[0]
+
+                        order.items.remove(order_item)
+                        messages.info(request, 'This item was removed from your cart.')
+                        order_item.save()
+                        return redirect("me2ushop:product", slug=slug)
 
     except Exception:
-        messages.warning(request, 'Login to continue')
+        messages.info(request, 'You do not have an active order.')
         return redirect("me2ushop:product", slug=slug)
 
 
 def remove_single_item_cart(request, slug):
-    item = get_object_or_404(Product, slug=slug)
+    track_id = stats.tracking_id(request)
+    cart_id = ProductView.objects.filter(tracking_id=track_id)
+    if request.user.is_authenticated:
+        item = get_object_or_404(Product, slug=slug)
 
-    order_query_set = Order.objects.filter(
-        user=request.user,
-        ordered=False)
+        order_query_set = Order.objects.filter(
+            user=request.user,
+            ordered=False)
 
-    if order_query_set.exists():
-        order = order_query_set[0]
+        if order_query_set.exists():
+            order = order_query_set[0]
 
-        #         check if the order item is in the order
-        if order.items.filter(item__slug=item.slug).exists():
-            order_item = OrderItem.objects.filter(
-                item=item,
-                user=request.user,
-                ordered=False
-            )[0]
-            # print('order_item:', order_item)
+            #         check if the order item is in the order
+            if order.items.filter(item__slug=item.slug).exists():
+                order_item = OrderItem.objects.filter(
+                    item=item,
+                    user=request.user,
+                    ordered=False
+                )[0]
+                # print('order_item:', order_item)
 
-            if order_item.quantity >= 1:
-                order_item.quantity -= 1
-                order_item.save()
-                messages.info(request, 'This item quantity has been reduced.')
-                # redirect("me2ushop:order_summary")
+                if order_item.quantity >= 1:
+                    order_item.quantity -= 1
+                    order_item.save()
+                    messages.info(request, 'This item quantity has been reduced.')
+                    # redirect("me2ushop:order_summary")
 
-                if order_item.quantity == 0:
-                    order.items.remove(order_item)
-                    messages.info(request, 'This item has been deleted from your cart.')
-                    return redirect("me2ushop:product", slug=slug)
+                    if order_item.quantity == 0:
+                        order.items.remove(order_item)
+                        messages.info(request, 'This item has been deleted from your cart.')
+                        return redirect("me2ushop:product", slug=slug)
 
-            return redirect("me2ushop:order_summary")
+                return redirect("me2ushop:order_summary")
 
-    return redirect("me2ushop:product", slug=slug)
+        return redirect("me2ushop:product", slug=slug)
+    else:
+        item = get_object_or_404(Product, slug=slug)
+        if cart_id:
+            cart_id = cart_id[0]
+
+            order_query_set = OrderAnonymous.objects.filter(
+                cart_id=cart_id,
+                ordered=False)
+            # print('order_qs:', order_query_set[0])
+
+            if order_query_set.exists():
+                order = order_query_set[0]
+
+                # check if the order item is in the order
+                if order.items.filter(item__slug=item.slug).exists():
+                    order_item = OrderItem.objects.filter(
+                        item=item,
+                        cart_id=cart_id,
+                        ordered=False
+                    )[0]
+                    # print('order_item:', order_item)
+
+                    if order_item.quantity >= 1:
+                        order_item.quantity -= 1
+                        order_item.save()
+                        messages.info(request, 'This item quantity has been reduced.')
+                        # redirect("me2ushop:order_summary")
+
+                        if order_item.quantity == 0:
+                            order.items.remove(order_item)
+                            messages.info(request, 'This item has been deleted from your cart.')
+                            return redirect("me2ushop:product", slug=slug)
+
+                    return redirect("me2ushop:order_summary")
+
+            return redirect("me2ushop:product", slug=slug)
 
 
-class Order_summary_view(LoginRequiredMixin, View):
+class Order_summary_view(View):
     def get(self, *args, **kwargs):
         try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
+            track_id = stats.tracking_id(self.request)
+            cart_ids = ProductView.objects.filter(tracking_id=track_id)
+            if self.request.user.is_authenticated:
 
-            context = {
-                'object': order
-            }
-            return render(self.request, 'order_summary.html', context)
+                order = Order.objects.get(user=self.request.user, ordered=False)
+
+                context = {
+                    'object': order,
+                }
+                return render(self.request, 'order_summary.html', context)
+
+            else:
+                if cart_ids:
+                    cart_id = cart_ids[0]
+
+                    order = OrderAnonymous.objects.get(cart_id=cart_id, ordered=False)
+
+                    context = {
+                        'object': order,
+                    }
+                    return render(self.request, 'order_summary.html', context)
+            return render(self.request, 'order_summary.html')
         except ObjectDoesNotExist:
             messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
             return redirect("me2ushop:home")
@@ -486,81 +826,237 @@ class Checkout_page(View):
         form = CheckoutForm()
 
         try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
-            order_query_set = Order.objects.filter(user=self.request.user, ordered=False)
-            order_items = order.total_items()
+            track_id = stats.tracking_id(self.request)
+            cart_ids = ProductView.objects.filter(tracking_id=track_id)
+            if self.request.user.is_authenticated:
 
-            if order_query_set.exists():
-                if order_items > 0:
+                order = Order.objects.get(user=self.request.user, ordered=False)
 
-                    context = {
-                        'object': order,
-                        'form': form,
-                        'couponform': CouponForm,
-                        'DISPLAY_COUPON_FORM': True,
-                    }
+                order_query_set = Order.objects.filter(user=self.request.user, ordered=False)
+                print('order_qs:', order_query_set)
 
-                    shipping_address_qs = Address.objects.filter(
-                        user=self.request.user,
-                        address_type='S',
-                        default=True
-                    )
+                order_items = order.total_items()
 
-                    if shipping_address_qs.exists():
-                        context.update({'default_shipping_address': shipping_address_qs[0]})
+                if order_query_set.exists():
+                    if order_items > 0:
 
-                    billing_address_qs = Address.objects.filter(
-                        user=self.request.user,
-                        address_type='B',
-                        default=True
-                    )
+                        context = {
+                            'object': order,
+                            'form': form,
+                            'couponform': CouponForm,
+                            'DISPLAY_COUPON_FORM': True,
+                        }
 
-                    if billing_address_qs.exists():
-                        context.update({'default_billing_address': billing_address_qs[0]})
+                        shipping_address_qs = Address.objects.filter(
+                            user=self.request.user,
+                            address_type='S',
+                            default=True
+                        )
 
-                    return render(self.request, 'checkout-page.html', context)
+                        if shipping_address_qs.exists():
+                            context.update({'default_shipping_address': shipping_address_qs[0]})
 
+                        billing_address_qs = Address.objects.filter(
+                            user=self.request.user,
+                            address_type='B',
+                            default=True
+                        )
+
+                        if billing_address_qs.exists():
+                            context.update({'default_billing_address': billing_address_qs[0]})
+
+                        return render(self.request, 'checkout-page.html', context)
+
+                    else:
+                        messages.info(self.request, "Your Cart is Empty, Continue shopping before checkout ")
+                        return redirect("me2ushop:order_summary")
                 else:
-                    messages.info(self.request, "Your Cart is Empty, Continue shopping before checkout ")
-                    return redirect("me2ushop:order_summary")
+                    messages.info(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
+                    return redirect("me2ushop:home")
             else:
-                messages.info(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
-                return redirect("me2ushop:home")
+                # User is anonymous
+                if cart_ids:
+                    cart_id = cart_ids[0]
+
+                    order = OrderAnonymous.objects.get(cart_id=cart_id, ordered=False)
+
+                    order_query_set = OrderAnonymous.objects.filter(cart_id=cart_id, ordered=False)
+
+                    order_items = order.total_items()
+
+                    if order_query_set.exists():
+                        if order_items > 0:
+                            context = {
+                                'object': order,
+                                'form': form,
+                                'couponform': CouponForm,
+                                'DISPLAY_COUPON_FORM': False,
+                            }
+                            return render(self.request, 'checkout-page.html', context)
+
+                        else:
+                            messages.info(self.request, "Your Cart is Empty, Continue shopping before checkout ")
+                            return redirect("me2ushop:order_summary")
 
         except ObjectDoesNotExist:
             messages.info(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
             return redirect("me2ushop:home")
 
     def post(self, *args, **kwargs):
+        track_id = stats.tracking_id(self.request)
+        cart_ids = ProductView.objects.filter(tracking_id=track_id)
+
         form = CheckoutForm(self.request.POST or None)
+        print('we got here')
         try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
+            if self.request.user.is_authenticated:
+                order = Order.objects.get(user=self.request.user, ordered=False)
 
-            if form.is_valid():
+                if form.is_valid():
 
-                use_default_shipping = form.cleaned_data.get('use_default_shipping')
+                    use_default_shipping = form.cleaned_data.get('use_default_shipping')
 
-                use_default_billing = form.cleaned_data.get('use_default_billing')
+                    use_default_billing = form.cleaned_data.get('use_default_billing')
 
-                if use_default_shipping:
+                    if use_default_shipping:
 
-                    shipping_address_qs = Address.objects.filter(
-                        user=self.request.user,
-                        address_type='S',
-                        default=True
-                    )
+                        shipping_address_qs = Address.objects.filter(
+                            user=self.request.user,
+                            address_type='S',
+                            default=True
+                        )
 
-                    if shipping_address_qs.exists():
-                        shipping_address = shipping_address_qs[0]
-                        order.shipping_address = shipping_address
-                        order.save()
-                        messages.info(self.request, "default shipping address in use!")
+                        if shipping_address_qs.exists():
+                            shipping_address = shipping_address_qs[0]
+                            order.shipping_address = shipping_address
+                            order.save()
+                            messages.info(self.request, "default shipping address in use!")
+
+                        else:
+                            messages.info(self.request, "No default shipping address saved!")
+                            return redirect("me2ushop:checkout")
 
                     else:
-                        messages.info(self.request, "No default shipping address saved!")
+                        shipping_address1 = form.cleaned_data.get('shipping_address')
+                        shipping_address2 = form.cleaned_data.get('shipping_address2')
+                        shipping_country = form.cleaned_data.get('shipping_country')
+                        shipping_zip = form.cleaned_data.get('shipping_zip')
+
+                        if is_valid_form([shipping_address1, shipping_country, shipping_zip]):
+
+                            shipping_address = Address(
+                                user=self.request.user,
+                                street_address=shipping_address1,
+                                apartment_address=shipping_address2,
+                                country=shipping_country,
+                                zip=shipping_zip,
+                                address_type='S'
+                            )
+
+                            shipping_address.save()
+                            order.shipping_address = shipping_address
+                            order.save()
+
+                            set_default_shipping = form.cleaned_data.get('set_default_shipping')
+                            if set_default_shipping:
+                                # print('default is:', set_default_shipping)
+                                shipping_address.default = True
+                                shipping_address.save()
+                                messages.info(self.request, "Information saved successfully")
+
+                        else:
+                            messages.info(self.request, "Please fill in the required fields")
+
+                    # same billing address as shipping
+                    same_billing_address = form.cleaned_data.get('same_billing_address')
+
+                    if same_billing_address:
+                        billing_address = shipping_address
+                        billing_address.pk = None
+                        billing_address.address_type = 'B'
+                        billing_address.default = False
+                        billing_address.save()
+
+                        order.billing_address = billing_address
+                        order.save()
+
+                    elif use_default_billing:
+
+                        billing_address_qs = Address.objects.filter(
+                            user=self.request.user,
+                            address_type='B',
+                            default=True
+                        )
+
+                        if billing_address_qs.exists():
+                            billing_address = billing_address_qs[0]
+                            billing_address.save()
+                            order.billing_address = billing_address
+                            order.save()
+                            messages.info(self.request, "default billing address under use!")
+
+                        else:
+                            messages.info(self.request, "No default billing address saved!")
+                            return redirect("me2ushop:checkout")
+
+                    else:
+
+                        billing_address1 = form.cleaned_data.get('billing_address')
+                        billing_address2 = form.cleaned_data.get('billing_address2')
+                        billing_country = form.cleaned_data.get('billing_country')
+                        billing_zip = form.cleaned_data.get('billing_zip')
+
+                        if is_valid_form([billing_address1, billing_country, billing_zip]):
+
+                            billing_address = Address(
+                                user=self.request.user,
+                                street_address=billing_address1,
+                                apartment_address=billing_address2,
+                                country=billing_country,
+                                zip=billing_zip,
+                                address_type='B'
+                            )
+
+                            billing_address.save()
+                            order.billing_address = billing_address
+                            order.save()
+
+                            # print("new bill address saved.")
+
+                            messages.info(self.request, "New billing address saved!")
+
+                            set_default_billing = form.cleaned_data.get('set_default_billing')
+
+                            if set_default_billing:
+                                # print("save billing is set to true.")
+                                billing_address.default = True
+                                billing_address.save()
+
+                        else:
+                            messages.info(self.request, "Please fill in the required BILLING FIELDS")
+                            return redirect("me2ushop:checkout")
+
+                    payment_option = form.cleaned_data.get('payment_option')
+
+                    # TODO: add a redirect to the selected payment option
+                    if payment_option == 'S':
+                        return redirect("me2ushop:payment", payment_option='stripe')
+                    elif payment_option == 'P':
+                        return redirect("me2ushop:payment", payment_option='paypal')
+                    elif payment_option == 'M':
+                        return redirect("me2ushop:payment", payment_option='mpesa')
+                    elif payment_option == 'C':
+                        return redirect("me2ushop:payment", payment_option='cash_on_delivery')
+                    else:
+                        messages.warning(self.request, 'Invalid Payment Option. Select mode of payment to continue')
                         return redirect("me2ushop:checkout")
 
-                else:
+                messages.warning(self.request, 'Invalid form')
+                return redirect("me2ushop:checkout")
+            else:
+                order = OrderAnonymous.objects.get(cart_id=cart_ids[0], ordered=False)
+
+                if form.is_valid():
                     shipping_address1 = form.cleaned_data.get('shipping_address')
                     shipping_address2 = form.cleaned_data.get('shipping_address2')
                     shipping_country = form.cleaned_data.get('shipping_country')
@@ -569,119 +1065,84 @@ class Checkout_page(View):
                     if is_valid_form([shipping_address1, shipping_country, shipping_zip]):
 
                         shipping_address = Address(
-                            user=self.request.user,
+                            cart_id=cart_ids[0],
                             street_address=shipping_address1,
                             apartment_address=shipping_address2,
                             country=shipping_country,
                             zip=shipping_zip,
                             address_type='S'
                         )
+
                         shipping_address.save()
                         order.shipping_address = shipping_address
                         order.save()
 
-                        set_default_shipping = form.cleaned_data.get('set_default_shipping')
-                        if set_default_shipping:
-                            # print('default is:', set_default_shipping)
-                            shipping_address.default = True
-                            shipping_address.save()
-                            messages.info(self.request, "Information saved successfully")
-
                     else:
                         messages.info(self.request, "Please fill in the required fields")
 
-                # same billing address as shipping
-                same_billing_address = form.cleaned_data.get('same_billing_address')
+                    # same billing address as shipping
+                    same_billing_address = form.cleaned_data.get('same_billing_address')
 
-                if same_billing_address:
-                    billing_address = shipping_address
-                    billing_address.pk = None
-                    billing_address.address_type = 'B'
-                    billing_address.default = False
-                    billing_address.save()
-
-                    order.billing_address = billing_address
-                    order.save()
-
-                elif use_default_billing:
-
-                    billing_address_qs = Address.objects.filter(
-                        user=self.request.user,
-                        address_type='B',
-                        default=True
-                    )
-
-                    if billing_address_qs.exists():
-                        billing_address = billing_address_qs[0]
+                    if same_billing_address:
+                        billing_address = shipping_address
+                        billing_address.pk = None
+                        billing_address.address_type = 'B'
+                        billing_address.default = False
                         billing_address.save()
+
                         order.billing_address = billing_address
                         order.save()
-                        messages.info(self.request, "default billing address under use!")
 
                     else:
-                        messages.info(self.request, "No default billing address saved!")
-                        return redirect("me2ushop:checkout")
 
-                else:
+                        billing_address1 = form.cleaned_data.get('billing_address')
+                        billing_address2 = form.cleaned_data.get('billing_address2')
+                        billing_country = form.cleaned_data.get('billing_country')
+                        billing_zip = form.cleaned_data.get('billing_zip')
 
-                    billing_address1 = form.cleaned_data.get('billing_address')
-                    billing_address2 = form.cleaned_data.get('billing_address2')
-                    billing_country = form.cleaned_data.get('billing_country')
-                    billing_zip = form.cleaned_data.get('billing_zip')
+                        if is_valid_form([billing_address1, billing_country, billing_zip]):
 
-                    if is_valid_form([billing_address1, billing_country, billing_zip]):
+                            billing_address = Address(
+                                cart_id=cart_ids[0],
+                                street_address=billing_address1,
+                                apartment_address=billing_address2,
+                                country=billing_country,
+                                zip=billing_zip,
+                                address_type='B'
+                            )
 
-                        billing_address = Address(
-                            user=self.request.user,
-                            street_address=billing_address1,
-                            apartment_address=billing_address2,
-                            country=billing_country,
-                            zip=billing_zip,
-                            address_type='B'
-                        )
-
-                        billing_address.save()
-
-                        order.billing_address = billing_address
-                        order.save()
-                        # print("new bill address saved.")
-
-                        messages.info(self.request, "New billing address saved!")
-
-                        set_default_billing = form.cleaned_data.get('set_default_billing')
-
-                        if set_default_billing:
-                            # print("save billing is set to true.")
-                            billing_address.default = True
                             billing_address.save()
+                            order.billing_address = billing_address
+                            order.save()
 
+                            # print("new bill address saved.")
+                        else:
+                            messages.info(self.request, "Please fill in the required BILLING FIELDS")
+                            return redirect("me2ushop:checkout")
+
+                    payment_option = form.cleaned_data.get('payment_option')
+
+                    # TODO: add a redirect to the selected payment option
+                    if payment_option == 'S':
+                        return redirect("me2ushop:payment", payment_option='stripe')
+                    elif payment_option == 'P':
+                        return redirect("me2ushop:payment", payment_option='paypal')
+                    elif payment_option == 'M':
+                        return redirect("me2ushop:payment", payment_option='mpesa')
+                    elif payment_option == 'C':
+                        return redirect("me2ushop:payment", payment_option='cash_on_delivery')
                     else:
-                        messages.info(self.request, "Please fill in the required BILLING FIELDS")
+                        messages.warning(self.request, 'Invalid Payment Option. Select mode of payment to continue')
                         return redirect("me2ushop:checkout")
 
-                payment_option = form.cleaned_data.get('payment_option')
-
-                # TODO: add a redirect to the selected payment option
-                if payment_option == 'S':
-                    return redirect("me2ushop:payment", payment_option='stripe')
-                elif payment_option == 'P':
-                    return redirect("me2ushop:payment", payment_option='paypal')
-                elif payment_option == 'M':
-                    return redirect("me2ushop:payment", payment_option='mpesa')
-                elif payment_option == 'C':
-                    return redirect("me2ushop:payment", payment_option='cash_on_delivery')
-                else:
-                    messages.warning(self.request, 'Invalid Payment Option. Select mode of payment to continue')
-                    return redirect("me2ushop:checkout")
-
-            messages.warning(self.request, 'Invalid form')
-            return redirect("me2ushop:checkout")
+                messages.warning(self.request, 'Invalid form')
+                return redirect("me2ushop:checkout")
 
         except ObjectDoesNotExist:
-            messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
+            messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER!")
             return redirect("me2ushop:home")
         except Exception:
-            messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
+            messages.error(self.request, "Error occured")
             return redirect("me2ushop:checkout")
 
 
@@ -752,8 +1213,14 @@ def add_coupon(request):
 class PaymentView(View):
 
     def get(self, *args, **kwargs):
+        track_id = stats.tracking_id(self.request)
+        cart_ids = ProductView.objects.filter(tracking_id=track_id)
 
-        order = Order.objects.get(user=self.request.user, ordered=False)
+        if self.request.user.is_authenticated:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+        else:
+            order = OrderAnonymous.objects.get(cart_id=cart_ids[0], ordered=False)
+
         if order.billing_address:
             context = {
                 'object': order,
@@ -811,11 +1278,11 @@ class PaymentView(View):
                     for item in order_items:
                         item.save()
 
-                # if order.ordered:
-                #     if order.coupon:
-                #         order.coupon.valid = False
-                #         order.coupon.save()
-                #         messages.success(self.request, "Coupon was SUCCESSFUL")
+                    # if order.ordered:
+                    #     if order.coupon:
+                    #         order.coupon.valid = False
+                    #         order.coupon.save()
+                    #         messages.success(self.request, "Coupon was SUCCESSFUL")
 
                     messages.success(self.request, " CONGRATULATIONS YOUR ORDER WAS SUCCESSFUL")
                 return redirect("me2ushop:home")

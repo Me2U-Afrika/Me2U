@@ -16,12 +16,17 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('Me2UAfricaMain/', include('Me2UAfricaMain.urls')),
     url('users/', include('users.urls')),
+    url('users/', include('django.contrib.auth.urls')),
+
     url('search/', include('search.urls')),
+
 
     url('me2ushop/', include('me2ushop.urls', namespace='me2ushop')),
 
@@ -34,3 +39,7 @@ urlpatterns = [
         name='password_change_done'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -23,9 +23,20 @@
 <div class="container mg-t">
     <div class="row">
         <div class="col-lg-6">
-            <h1>My Account</h1>
-                <strong>Welcome, {{ name|capfirst }}!</strong>
-                <br/><br />
+            <div class="media">
+                <img src="/static/{{ user.profile.image.thumbnail }}" class="card-img-top rounded-circle account-img" style="height:120px; width:160px">
+            </div>
+            <div class="media-body">
+                <strong class="account-heading">Welcome, {{ name|capfirst }}!</strong>
+                <br/>
+                <p class="text-secondary">Email: {{ user.email }}</p>
+                <br>
+                {% if profile_user.phone %}
+                    <p class="text-secondary">Phone Number: {{ user.profile.phone }}</p>
+                {% endif %}
+
+
+            </div>
         </div>
         <div class="col-lg-6">
             <section class="text-right">
@@ -33,11 +44,15 @@
                     <legend>Account Settings</legend>
                     <ul>
                         <li><a href="{% url 'password-change' %}">Change Password</a></li>
+                        <li><a href="{% url 'users:personal-info' %}">Edit Personal information</a></li>
                         <li><a href="{% url 'users:order-info' %}">Edit Billing/Shipping Information</a></li>
                     </ul>
                 </fieldset>
             </section>
         </div>
+    </div>
+    <div class="cb">
+        <br><br>
     </div>
     <h3>Order History</h3>
 

@@ -1,12 +1,23 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.conf import settings
 from django_countries.fields import CountryField
+from django_resized import ResizedImageField
+from stdimage import StdImageField
 
 ADDRESS_CHOICES = (
     ('B', 'Billing'),
-    ('S', 'Shipping')
+    ('S', 'Shipping'),
+    ('T', 'Both'),
 
+)
+
+PAYMENT_OPTIONS = (
+    ('M', "M-Pesa"),
+    ('P', "Paypal"),
+    ('S', "Stripe"),
+    ('D', "Debit Card"),
+    ('C', "Cash On Delivery"),
 )
 
 
@@ -15,6 +26,7 @@ ADDRESS_CHOICES = (
 class BaseOrderInfo(models.Model):
     class Meta:
         abstract = True
+
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
     country = CountryField(multiple=False)
@@ -28,7 +40,20 @@ class BaseOrderInfo(models.Model):
 
 class Profile(BaseOrderInfo):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='profile_pics', blank=True, null=True)
+    image = StdImageField(upload_to='profile_pics', blank=True, null=True, default='default.svg', variations={
+        'thumbnail': (300, 300),
+    }, delete_orphans=True)
 
     def __str__(self):
-        return self.user.username
+        return f'{self.user.username} profile'
+
+
+class BusinessInformation(models.Model):
+    pass
+
+
+class Seller_Profile(BaseOrderInfo):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = StdImageField(upload_to='profile_pics/sellers', blank=True, null=True, default='default.svg', variations={
+        'thumbnail': (300, 300)}, delete_orphans=True)
+

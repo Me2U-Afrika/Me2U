@@ -10,8 +10,12 @@ class PageView(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField()
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    tracking_id = models.CharField(max_length=70, default='')
+    tracking_id = models.CharField(max_length=70)
+    valid_tracker = models.BooleanField(default=True)
 
 
 class ProductView(PageView):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.tracking_id

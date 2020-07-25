@@ -13,5 +13,7 @@ class SearchForm(forms.ModelForm):
         self.fields['q'].widget.attrs['value'] = default_text
         self.fields['q'].widget.attrs['onfocus'] = "if (this.value=='" + default_text + "')this.value = ''"
         self.fields['q'].widget.attrs['placeholder'] = default_text
+        self.fields['q'].widget.attrs['class'] = 'text-center'
+
 
     include = ('q',)

@@ -1,0 +1,140 @@
+{% extends 'navigation.html' %}
+{% load search_tags %}
+{% load catalog_filters %}
+
+
+{% block content %}
+<style>
+  .vl {
+  border-left: 1px solid black;
+  height: 340px;
+  position: absolute;
+  left: 100%;
+  margin-left: 10px;
+  margin-top: -8px;
+  top: 0;
+}
+</style>
+
+<!-- Navigation-->
+<!--        <nav class="navbar navbar-expand-lg bg-secondary text-uppercase" id="mainNav">-->
+<!--            <div class="container">-->
+<!--                <a class="navbar-brand js-scroll-trigger" href="#page-top">Me2U|Seller</a>-->
+<!--                <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--                    Menu-->
+<!--                    <i class="fas fa-bars"></i>-->
+<!--                </button>-->
+<!--                <div class="collapse navbar-collapse" id="navbarResponsive">-->
+<!--                    <ul class="navbar-nav ml-auto">-->
+<!--                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#portfolio">Active Products</a></li>-->
+<!--                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">Add Product</a></li>-->
+<!--                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Contact</a></li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </nav>-->
+        <!-- Masthead-->
+        <header class="masthead bg-primary text-white text-center">
+            <div class="container d-flex align-items-center flex-column">
+                <!-- Masthead Avatar Image-->
+                <img class="masthead-avatar mb-5" src="assets/img/avataaars.svg" alt="" />
+                <!-- Masthead Heading-->
+                <h1 class="masthead-heading text-uppercase mb-0">{{ view.kwargs.username }}'s Collections</h1>
+                <!-- Icon Divider-->
+                <div class="divider-custom divider-light">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Masthead Subheading-->
+                              {% search_box request %}
+
+                <p class="masthead-subheading font-weight-light mb-0">Shoes - Men Fashion - Women Fashion</p>
+            </div>
+        </header>
+        <!-- Portfolio Section-->
+
+<!--  <hr>-->
+      {% block main_content %}
+    <!--Main layout-->
+    <main>
+      <div class="view" style="background-image: url('{{ STATIC_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">
+        <div class="container">
+        <!--Navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+               <a class="nav-link white-text waves-effect" href="{% url 'categories:categoriesHome' %}">Men's Wear
+                  <span class="sr-only">(current)</span>
+                </a>
+            </li>
+          </ul>
+
+          <!-- Collapse button -->
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+            aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">Manage Orders</a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Request Delivery</a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#portfolio">Inactive Products</a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">Add Product</a></li>
+                </ul>
+            </div>
+
+          <!-- Collapsible content -->
+          <div class="collapse navbar-collapse" id="basicExampleNav">
+
+            <!-- Links -->
+            <ul class="navbar-nav mr-auto">
+
+              <li class="nav-item">
+                <h5 class="white-text"></h5>
+              </li>
+            </ul>
+            <!-- Links -->
+          </div>
+          <!-- Collapsible content -->
+
+        </nav>
+        <!--/.Navbar-->
+          </div>
+      </div>
+
+        <!--Section: Products v.3-->
+
+        {% product_list object_list 'Collections From Seller' %}
+        <section class="text-center">
+            {% pagination_links request paginator %}
+
+        </section>
+
+
+
+          <!--Section: Products v.3-->
+          <!--Pagination-->
+
+
+
+          <!--Pagination-->
+
+    </main>
+    <!--Main layout-->
+    <hr>
+
+      {% endblock main_content %}
+
+    {% block extra_scripts %}
+
+    <script>
+
+    </script>
+    {% endblock %}
+
+{% endblock content %}
+
+
+

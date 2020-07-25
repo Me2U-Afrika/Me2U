@@ -1,0 +1,8 @@
+{% extends "navigation.html" %}
+
+{% block content %}
+    <h1 class="mt-5">Products tagged with: '{{ tag }}'</h1>
+
+            {% include 'tags/product_list.html' %}
+
+{% endblock %}

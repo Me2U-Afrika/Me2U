@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*q^0ij+dl!102!@xhx-4o7%am5(tiof2d_#)g*cehlw!3z98_!'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     'Me2UAfricaMain',
     'bootstrap3',
     'users.apps.UsersConfig',
@@ -48,6 +50,8 @@ INSTALLED_APPS = [
     'search',
     'stdimage',
     'stats',
+    'tagging',
+    'storages',
 
 ]
 
@@ -59,6 +63,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
 
 ]
 
@@ -94,8 +100,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'Welcome28@gmail',
+        'USER': os.environ.get('USER'),
+        'PASSWORD': os.environ.get('PASSWORD'),
         'HOST': 'localhost',
     }
 }
@@ -153,20 +159,39 @@ LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 
-
 # stripe settings
 
 if DEBUG:
     # test keys
-    STRIPE_PUBLISHABLE_kEY = 'pk_test_9or5EaMyoLjRYXOXKfQp16ab00YxYjqkzO'
-    STRIPE_SECRET_KEY = 'sk_test_zI4rsVZHDZLSyWxazI986czl00mW4RjtRt'
+    STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 else:
-    STRIPE_PUBLISHABLE_kEY = 'pk_test_9or5EaMyoLjRYXOXKfQp16ab00YxYjqkzO'
-    STRIPE_SECRET_KEY = 'sk_test_zI4rsVZHDZLSyWxazI986czl00mW4RjtRt'
+    STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-PRODUCTS_PER_PAGE = 2
-PRODUCTS_PER_ROW = 4
+PRODUCTS_PER_PAGE = 4
+PRODUCTS_PER_ROW = 12
 AUTH_PROFILE_MODULE = 'users.profile'
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = "me2u-africa"
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+SITE_ID = 1
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
+
+try:
+    from settings_local import *
+except ImportError:
+    pass
+
+
+def ENABLE_SSL():
+    return None

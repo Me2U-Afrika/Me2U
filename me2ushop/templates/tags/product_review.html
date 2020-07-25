@@ -1,7 +1,7 @@
 <div class="review">
     Rating: {{ review.rating }}
     <strong>{{ review.title }}</strong>
-    by {{ review.user.username }}
+    by {{ review.user.username }}-{{ review.get_country_display }}
     <br/>
     {{ review.content }}
     <br/><br />

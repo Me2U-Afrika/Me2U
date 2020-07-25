@@ -12,6 +12,7 @@ from PIL import Image
 from django.db import models
 from stdimage import StdImageField, JPEGField
 import collections
+from tagging.registry import register
 
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
@@ -27,12 +28,14 @@ CATEGORY_CHOICES = (
     ('El', 'Electronics'),
     ('Fa', 'Fashion'),
     ('Fu', 'Furniture'),
-
+    ('So', 'Sokoni'),
+    ('Wo', 'Women Fashion')
 )
 LABEL_CHOICES = (
     ('P', 'primary'),
     ('S', 'secondary'),
-    ('D', 'danger')
+    ('D', 'danger'),
+
 
 )
 ADDRESS_CHOICES = (
@@ -53,41 +56,45 @@ class BestsellerProductManager(models.Manager):
 
 class ActiveProductManager(models.Manager):
     def get_query_set(self):
-        return super(ActiveProductManager, self).get_query_set().filter(is_active=True)
+        return super(ActiveProductManager, self).get_query_set().filter(is_active=True).filter(in_stock=True)
 
 
 class Product(models.Model):
     title = models.CharField(max_length=100)
+    seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     slug = models.SlugField(unique=True,
                             max_length=50,
                             help_text='Unique value for product page URL, created from name.')
     brand = models.CharField(max_length=50, blank=True, null=True)
-    stock = models.BooleanField(default=True, blank=True, null=True)
+    stock = models.IntegerField(default=0)
+    in_stock = models.BooleanField(default=True, blank=True, null=True)
     price = models.DecimalField(max_digits=9, decimal_places=2)
     old_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, default=0.00)
     image_url = models.CharField(max_length=200, blank=True, null=True)
     # image = models.ImageField(upload_to='images/products/main')
-    image_thumbnail = models.ImageField(upload_to='images/products/thumbnail', blank=True, null=True)
-
-    # image = StdImageField(upload_to='images/products/main',blank=True, null=True)
 
     # creates a thumbnail resized to maximum size to fit a 100x75 area
     image = StdImageField(upload_to='images/products/thumbnail', blank=True, null=True, variations={
-        'thumbnail': (150, 150, True),
+        'thumbnail': (200, 200),
+        'medium': (340, 300),
+
     }, delete_orphans=True)
 
-    is_active = models.BooleanField(default=True)
     made_in_africa = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_bestseller = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
 
     description = models.TextField()
+    additional_information = models.TextField(blank=True, null=True)
     meta_keywords = models.CharField("Meta Keywords",
                                      max_length=255,
                                      help_text='Comma-delimited set of SEO keywords for meta tag')
     meta_description = models.CharField("Meta Description",
                                         max_length=255,
-                                        help_text='Content for description meta tag')
+                                        help_text='help sellers get your product easily. Give a simple short '
+                                                  'description '
+                                                  'about the product')
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
@@ -167,9 +174,10 @@ class Product(models.Model):
         from django.db.models import Q
         orders = Order.objects.filter(items__item=self)
         users = User.objects.filter(order__items__item=self)
-        items = OrderItem.objects.filter(Q(order__user__in=users,
-                                           ordered=True) |
-                                         Q(order__in=orders)).exclude(item=self)
+        items = OrderItem.objects.filter(Q(order__user__in=users) |
+                                         Q(order__in=orders)
+                                         ).exclude(item=self)
+
         products = Product.active.filter(orderitem__in=items)
 
         matching = []
@@ -189,20 +197,27 @@ class Product(models.Model):
         return most_products
 
 
+# Product model class definition here
+register(Product)
+
+
 class OrderItem(models.Model):
+    from stats.models import ProductView
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    cart_id = models.ForeignKey(ProductView, max_length=70, blank=True, null=True, on_delete=models.CASCADE)
+    date_added = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
-    item = models.ForeignKey(Product, on_delete=models.CASCADE)
+    item = models.ForeignKey(Product, on_delete=models.CASCADE, unique=False)
     quantity = models.IntegerField(default=1)
+
+    class Meta:
+        ordering = ['-date_added']
 
     def __str__(self):
         return f"{self.quantity} of {self.item.title}"
 
     def get_absolute_url(self):
         return reverse('users:order-details', kwargs={'order_id': self.id})
-
-    def get_absolute_re_order_url(self):
-        return reverse('users:re-order', kwargs={'order_id': self.id})
 
     def get_total_price(self):
         return self.quantity * self.item.price
@@ -220,23 +235,61 @@ class OrderItem(models.Model):
         return self.get_total_price()
 
 
-class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+class OrderInfo(models.Model):
+    class Meta:
+        abstract = True
+
     ref_code = models.CharField(max_length=20)
     items = models.ManyToManyField('OrderItem')
     start_date = models.DateTimeField(auto_now_add=True)
     order_date = models.DateTimeField(auto_now=True)
     ordered = models.BooleanField(default=False)
-    billing_address = models.ForeignKey('Address', related_name='billing_address', on_delete=models.SET_NULL,
-                                        blank=True, null=True)
-    shipping_address = models.ForeignKey('Address', related_name='shipping_address', on_delete=models.SET_NULL,
-                                         blank=True, null=True)
     payment = models.ForeignKey('StripePayment', on_delete=models.SET_NULL, blank=True, null=True)
     coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
     being_delivered = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
+
+
+class OrderAnonymous(OrderInfo):
+    from stats.models import ProductView
+    cart_id = models.ForeignKey(ProductView, max_length=70, blank=True, null=True, on_delete=models.CASCADE)
+    billing_address = models.ForeignKey('Address', related_name='billing_address_anonymous', on_delete=models.SET_NULL,
+                                        blank=True, null=True)
+    shipping_address = models.ForeignKey('Address', related_name='shipping_address_anonymous',
+                                         on_delete=models.SET_NULL,
+                                         blank=True, null=True)
+
+    class Meta:
+        ordering = ['-order_date']
+        verbose_name_plural = 'OrderAnonymous'
+
+    def __str__(self):
+        return str(self.cart_id)
+
+    def get_total(self):
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.get_final_price()
+        return total
+
+    def total_items(self):
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.quantity
+        return total
+
+
+class Order(OrderInfo):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    billing_address = models.ForeignKey('Address', related_name='billing_address', on_delete=models.SET_NULL,
+                                        blank=True, null=True)
+    shipping_address = models.ForeignKey('Address', related_name='shipping_address', on_delete=models.SET_NULL,
+                                         blank=True, null=True)
+
+    class Meta:
+        ordering = ['-order_date']
 
     def __str__(self):
         return self.user.username
@@ -284,6 +337,7 @@ class ProductReview(models.Model):
     rating = models.PositiveSmallIntegerField(default=5, choices=RATINGS)
     is_approved = models.BooleanField(default=True)
     content = models.TextField()
+    country = CountryField(multiple=False, blank=True, null=True)
 
     objects = models.Manager()
     approved = ActiveProductReviewManager()
@@ -293,7 +347,9 @@ class ProductReview(models.Model):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    from stats.models import ProductView
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.CASCADE)
+    cart_id = models.ForeignKey(ProductView, max_length=70, blank=True, null=True, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
     country = CountryField(multiple=False)
@@ -320,7 +376,7 @@ class StripePayment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.username
+        return self.stripe_charge_id
 
 
 class Coupon(models.Model):

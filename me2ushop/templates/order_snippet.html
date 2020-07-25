@@ -47,6 +47,7 @@
       <!-- Cart -->
 
         {% if DISPLAY_COUPON_FORM %}
+            {% if request.user.is_authenticated %}
       <!-- Promo code -->
       <form class="card p-2" action="{% url 'me2ushop:add_coupon'%}" method="POST">
         {% csrf_token %}
@@ -59,6 +60,7 @@
         </div>
       </form>
       <!-- Promo code -->
+        {% endif %}
         {% endif %}
 
         <!--Grid column-->

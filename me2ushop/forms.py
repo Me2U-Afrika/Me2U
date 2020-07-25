@@ -62,8 +62,26 @@ class CartAddProductForm(forms.Form):
         'aria-describedby': 'basic-addon2'
     }))
 
+    # override the default __init__ so we can set the request
+    # def __init__(self, request=None, *args, **kwargs):
+    #     self.request = request
+    #     super(CartAddProductForm, self).__init__(*args, **kwargs)
+    #
+    # # custom validation to check for cookie
+    # def clean(self):
+    #     if self.request:
+    #         if not self.request.session.test_cookie_worked():
+    #             raise forms.ValidationError("Cookies Must be Enabled")
+    #     return self.cleaned_data
+
 
 class ProductReviewForm(forms.ModelForm):
+    # reviewer_country = CountryField(blank_label='(select country)').formfield(
+    #     required=False,
+    #     widget=CountrySelectWidget(attrs={
+    #         'class': 'custom-select d-block w-100'
+    #     }))
+
     class Meta:
         model = ProductReview
         exclude = ('user', 'product', 'is_approved')

@@ -4,6 +4,25 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
+from stdimage import StdImageField
+
+CATEGORY_CHOICES = (
+    ('At', 'Arts, Crafts'),
+    ('Bk', 'Books'),
+    ('Bb', 'Baby Care'),
+    ('Be', 'Beautiful 2'),
+    ('Ca', 'Camera & Photo'),
+    ('S', 'Shirt'),
+    ('Sw', 'Sport wear'),
+    ('Ow', 'Outwear'),
+    ('Am', 'Automotive & Motorcycle'),
+    ('Ca', 'Cell Phones & Accessories'),
+    ('El', 'Electronics'),
+    ('Fa', 'Fashion'),
+    ('Fu', 'Furniture'),
+    ('So', 'Sokoni'),
+    ('Wo', 'Women Fashion')
+)
 
 
 class ActiveCategoryManager(models.Manager):
@@ -18,7 +37,10 @@ class Category(models.Model):
                             help_text='Unique value for product page URL, created from name.')
     description = models.TextField()
     is_active = models.BooleanField(default=True)
-    image = models.ImageField(default=False, blank=True, null=True)
+    image = StdImageField(upload_to='images/category', blank=True, null=True, variations={
+        'medium': (340, 300),
+
+    }, delete_orphans=True)
     meta_keywords = models.CharField("Meta Keywords",
                                      max_length=255,
                                      help_text='Comma-delimited set of SEO keywords for meta tag')
@@ -39,7 +61,6 @@ class Category(models.Model):
         db_table = 'ProductCategories'
         ordering = ['category_name']
         verbose_name_plural = 'ProductCategories'
-
 
     def get_absolute_url(self):
         return reverse('categories:categoryView', kwargs={'slug': self.slug})

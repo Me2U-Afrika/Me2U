@@ -1,7 +1,10 @@
 {% extends 'navigation.html' %}
+{% load tagging_tags %}
+
 
 {% block content %}
 <style>
+
 
 
 </style>
@@ -25,7 +28,7 @@
                     <br>
                 <div class="row">
                     {% for item in object.cross_sells_hybrid %}
-                        <div class="col-lg-4 col-md-3 mb-4">
+                        <div class="col-lg-4 col-md-12 mb-12">
                         {% include 'tags/product_thumbnail.html' %}
                         </div>
                     {% empty %}
@@ -70,36 +73,80 @@
                     {% endfor %}
 
                  <br>
+                 <div class="cb"><br /><br /></div>
+                  {% if object.seller == user %}
+                    <div>
+                        <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product-update' object.slug %}">Update</a>
+                        <a class="btn btn-outline-danger" href="{% url 'me2ushop:product-delete' object.slug %}">Delete</a>
+                    </div>
 
-              <form action="{{ object.get_add_cart_url }}" method="POST">
-                  {% csrf_token %}
+                  {% else %}
+                    <form action="{{ object.get_add_cart_url }}" method="POST">
+                    {% csrf_token %}
 <!--                      <div class="input-group" id="id_long_desc"><a href="" > <i class="fas fa-minus-circle mr-2"></i></a>-->
                     <div class="mt-3 pl-1 col-xs-2">
                       {{ cart_product_form.quantity }}
                     </div>
-                <div class="cb"><br/><br/></div>
+                    <div class="cb"><br/><br/></div>
 
-                 <div class="">
-                    <button class="btn btn-primary btn-md waves-effect float:left mr-3" type="submit">
-                         Add to Cart<i class="fas fa-shopping-cart ml-1"></i>
-                    </button>
+                    <div>
+                        <button class="btn btn-primary btn-md waves-effect float:left mr-3" type="submit">
+                             Add to Cart<i class="fas fa-shopping-cart ml-1"></i>
+                        </button>
 
-                     <a href="{{ object.get_remove_cart_url }}" class="btn btn-danger btn-md my-0 p">
-                      Remove from cart
-                  </a>
-                      <a href="{{ object.get_order_summary_url }}" class="btn btn-secondary btn-md my-0 p">
-                          Order Summary
-                      </a>
+                         <a href="{{ object.get_remove_cart_url }}" class="btn btn-danger btn-md my-0 p">
+                            Remove from cart
+                         </a>
+                          <a href="{{ object.get_order_summary_url }}" class="btn btn-secondary btn-md my-0 p">
+                              Order Summary
+                          </a>
                  </div>
               </form>
-              <br>
-          </div>
-            <div class="cb"><br/><br/></div>
-            <h3>Product Reviews</h3>
-            {% if request.user.is_authenticated %}
-                    <a id="add_review">Write a Review</a>
+                    <br>
+                <div>
+                  Seller: <a href="{% url 'me2ushop:seller_page' object.seller.username %}"> {{ object.seller }}</a>
+                </div>
+              {% endif %}
 
-                    {% if approved %}
+            <section class="text-left pl-5">
+                <div class="cb"><br /><br /></div>
+                    <h3>Product Tags</h3>
+                         <div id="tags" >
+                            {% for tag in product.tags %}
+                                {% include 'tags/tag_link.html' %}
+                            {% empty %}
+                            <div id="no_tags">
+
+                                Help other sellers find this product easily. Add tags or create one. Tag the product in your local dialect.
+                                <br>
+                                i.e kiti-kiswahili, amata-kinyarwanda
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <br />
+                    {% if request.user.is_authenticated %}
+                        <label for="id_tag"><a id="tag_product" style=" color:blue;">Tag this product </a></label>
+                        <br />
+                        <input type="hidden" id="id_slug" value="{{ object.slug }}"/>
+                        <input id="id_tag" type="text" placeholder="Type to choose or create a tag."/>
+                        <form>
+
+                        </form>
+                     <input type="submit" value="Tag It" id="add_tag" />
+                    {% else %}
+                      <a href="{% url 'login' %}?next={{ request.path }}">
+                          Log in to tag this product.
+                      </a>
+                    {% endif %}
+
+                <div class="cb">
+                    <br/><br/>
+                </div>
+                <h3>Product Reviews</h3>
+                {% if request.user.is_authenticated %}
+                {% if request.user != object.seller %}
+                    <a id="add_review" style=" color:DarkOrange;">Write a Review</a>
+                {% endif %}
                     <div id="review_form">
                         <div id="review_errors">
                         </div>
@@ -108,26 +155,20 @@
                             <tr>
                                 <td colspan="2">
                                     {% csrf_token %}
-                                    <input type="hidden" id="id_slug" value="{{ object.slug }}"/>
+<!--                                    <input type="hidden" id="id_slug" value="{{ object.slug }}"/>-->
                                     <input type="submit" id="submit_review" value="Submit"/>
                                     <input type="submit" id="cancel_review" value="Cancel|Close"/>
                                 </td>
                             </tr>
                         </table>
                     </div>
-                    {% else %}
-                     <div id="first_time">
-                         Only previous buyers of this product can review.
-                         <br>
-                         Your First Order!!Order today with FIRST_TIME coupon and get 5% off!!
-                     </div>
-                    {% endif %}
                 {% else %}
-                <a href="{% url 'login' %}?next={{ request.path }}">
-                    Log in to write your own review.
-                </a>
+                    <a href="{% url 'login' %}?next={{ request.path }}">
+                        Log in to write your own review.
+                    </a>
                 {% endif %}
-                <div class="cb"><br/><br/>
+                <div class="cb">
+                    <br/><br/>
                 </div>
                 <div id="reviews">
                     {% for review in product_reviews %}
@@ -138,8 +179,11 @@
                     </div>
                     {% endfor %}
                 </div>
+            </section>
+
                 <div class="cb">
-                    <br /><br />
+                    <br/>
+                    <br/>
                 </div>
           <!--Content-->
         </div>

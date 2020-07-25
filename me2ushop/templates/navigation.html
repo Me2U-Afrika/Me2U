@@ -1,47 +1,13 @@
 {% extends 'base.html' %}
 {% load cart_template_tag %}
 {% load search_tags %}
+{% load catalog_filters %}
+
 
 {% block site_wrapper %}
 <style>
-    .nav-line-1{
-     display: block;
-    }
-    .card-img-top {
-    width: 100%;
-    height: 10vw;
-    object-fit: contain;
 
-}
-    .card-thumbnail {
-    width: 11vw;
-    height: 33vh;
-    object-fit: scale-down;
 
-}
-.product-snippet{
-    float:left;
-}
-.cb {
-    clear:both;
-}
-
-.card-height{
-    height: 45vh;
-}
-
-#add_review{
-    cursor:pointer;
-    }
-.hidden{
-    display:block;
-    }
-.visible{
-    display:block;
-    }
-.new_review{
-        background-color:Pink;
-    }
 
 #loading{
     display:none;
@@ -57,15 +23,16 @@
     border:solid 1px Red;
     text-align: center;
     z-index:100;
-
+    }
 
 
 </style>
         {% block Navbar %}
+    <div class="row">
         <!-- Navbar -->
         <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
                 <!-- Brand -->
-                <a class="navbar-brand waves-effect" href="{% url 'homepage' %}">
+                <a class="navbar-brand waves-effect" href="{% url 'categories:categoriesHome' %}">
                     <strong class="blue-text">Me2U|Africa</strong>
                 </a>
 
@@ -114,7 +81,8 @@
                             <span class="sr-only">(current)</span>
                         <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
 
-                          {% include "tags/categoryTag.html" %}
+                            {% category_list request.path %}
+
                         </div>
                       </li>
                       <li class="nav-item dropdown">
@@ -132,17 +100,16 @@
                     {% search_box request %}
 
                     <!-- Right -->
-
+                    {% if user.is_authenticated %}
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item">
                              <a href="{% url 'me2ushop:order_summary'%}" class="nav-link waves-effect">
-                                <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span>
+                                <span class="badge red z-depth-1 mr-1"> {{ request|cart_item_count }} </span>
                                 <i class="fas fa-shopping-cart"></i>
                                 <span class="clearfix d-none d-sm-inline-block"> Cart </span>
                              </a>
                         </li>
 
-                        {% if user.is_authenticated %}
                          <li class="nav-item">
                             <a class="nav-link waves-effect" href="{% url 'me2ushop:checkout' %}">Checkout</a>
                         </li>
@@ -167,6 +134,13 @@
 
                     {% else %}
                     <ul class="navbar-nav nav-flex-icons">
+                        <li class="nav-item">
+                             <a href="{% url 'me2ushop:order_summary'%}" class="nav-link waves-effect">
+                                <span class="badge red z-depth-1 mr-1"> {{ request|cart_item_count_anonymous }} </span>
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+                             </a>
+                        </li>
                          <li class="nav-item mt-2">
                               <a href="{% url 'login' %}" class="button alt">LogIn</a>
                          </li>
@@ -180,7 +154,8 @@
                     {% endif %}
                 </div>
          </nav>
-         <!-- Navbar -->
+
+    </div>
         {% endblock Navbar %}
 
 
@@ -236,6 +211,8 @@
                 <li><a href="/privacy-policy/">Privacy</a></li>
                 <li><a href="/contact/">Contact</a></li>
                 <li><a href="{% url 'users:profile' %}">My Account</a></li>
+                <li><a href="{% url 'me2ushop:tag_cloud' %}">Product Hashtags</a></li>
+
             </ul>
 
             <!--Copyright-->

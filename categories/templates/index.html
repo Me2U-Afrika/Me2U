@@ -1,23 +1,156 @@
 {% extends 'navigation.html' %}
+{% load cart_template_tag %}
+{% load search_tags %}
+{% load catalog_filters %}
 
  {% block content %}
 <style>
 
 </style>
 
-     {% block main_content %}
+ {% block Navbar %}
 
+        <!-- Navbar -->
+        <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+                <!-- Brand -->
+                <a class="navbar-brand waves-effect" href="{% url 'categories:categoriesHome' %}">
+                    <strong class="blue-text">Me2U|Africa</strong>
+                </a>
+
+                <!-- Collapse -->
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Links -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <!-- Left -->
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link waves-effect" href="{% url 'me2ushop:home' %}">
+                                Me2U|Market
+                              <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect" href="">
+                                Sell On
+                                <span class="nav-line-1">Me2U</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                             <a class="nav-link waves-effect" href="">
+                                Deliver On
+                                <span class="nav-line-1">Me2U</span>
+                            </a>
+                        </li>
+                            <!-- Dropdown -->
+                          <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                              aria-haspopup="true" aria-expanded="false">All Categories</a>
+                                <span class="sr-only">(current)</span>
+                            <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+
+                              {% include "tags/categoryTag.html" %}
+                            </div>
+                          </li>
+                         <li class="nav-item dropdown">
+                              <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">Made In Africa</a>
+                                  <span class="sr-only">(current)</span>
+                                  <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+
+                                    {% include "tags/AfricaMade.html" %}
+
+                                  </div>
+                             </li>
+                     <!-- Dropdown -->
+<!--                         <li class="nav-item">-->
+<!--                         <a class="nav-link waves-effect" href="">-->
+<!--                            Blog-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                         <a class="nav-link waves-effect" href="">-->
+<!--                            Magazine-->
+<!--                        </a>-->
+<!--                    </li>-->
+                    </ul>
+
+                    {% search_box request %}
+
+                    <!-- Right -->
+                    {% if user.is_authenticated %}
+
+                    <ul class="navbar-nav nav-flex-icons">
+                        <li class="nav-item">
+                             <a href="{% url 'me2ushop:order_summary'%}" class="nav-link waves-effect">
+                                <span class="badge red z-depth-1 mr-1"> {{ request|cart_item_count }} </span>
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+                             </a>
+                        </li>
+
+                         <li class="nav-item">
+                            <a class="nav-link waves-effect" href="{% url 'me2ushop:checkout' %}">Checkout</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="" class="nav-link waves-effect" target="_blank">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link waves-effect" target="_blank">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a href="{% url 'users:profile' %}" class="button alt">Profile</a>
+                        </li>
+                         <li class="nav-item ml-3 mt-2">
+                              <a href="{% url 'logout' %}" class="button alt">LogTFOut</a>
+                         </li>
+                    </ul>
+
+                    {% else %}
+                    <ul class="navbar-nav nav-flex-icons">
+                         <li class="nav-item mt-2">
+                              <a href="{% url 'login' %}" class="button alt">LogIn</a>
+                         </li>
+
+                         <li class="nav-item">
+                            <div class="ml-3 mt-4">
+                              <a href="{% url 'users:register' %}" class="button alt">Register</a>
+                            </div>
+                         </li>
+                    </ul>
+                    {% endif %}
+                </div>
+         </nav>
+         <!-- Navbar -->
+        {% endblock Navbar %}
+
+     {% block main_content %}
+<main>
     <!--Main layout-->
     <div class="col-12">
          <!--Navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-5 mb-5">
           <!-- Navbar brand -->
-          <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                  <a class="nav-link waves-effect" href="{% url 'me2ushop:home' %}">
-                      Me2U|Market
+         <ul class="navbar-nav mr-auto">
+              <!-- Dropdown -->
+              <li class="nav-item active dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">All Categories</a>
                     <span class="sr-only">(current)</span>
-                  </a>
+                <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+
+                  {% include "tags/categoryTag.html" %}
+                </div>
               </li>
           </ul>
 
@@ -33,32 +166,84 @@
             <!-- Links -->
             <ul class="navbar-nav mr-auto">
               <!-- Dropdown -->
-              <li class="nav-item active dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">All Categories</a>
-                    <span class="sr-only">(current)</span>
-                <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+             <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Made In Africa</a>
+                      <span class="sr-only">(current)</span>
+                      <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
 
-                  {% include "tags/categoryTag.html" %}
+                        {% include "tags/AfricaMade.html" %}
+
+                      </div>
+                 </li>
+                     <!-- Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Services
+                    </a>
+                    <div class="dropdown-menu dropdown-secondary" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="">Restaurant Services</a>
+                        <a class="dropdown-item" href="">Dry Cleaning & Laundry Services</a>
+                        <a class="dropdown-item" href="">Delivery Services</a>
+                        <a class="dropdown-item" href="">Taxi/Motorbike Transport</a>
+                        <a class="dropdown-item" href="">Household, Repair & Maintainance Services</a>
+                        <a class="dropdown-item" href="">Rent/Lend Me2U Products</a>
+                        <a class="dropdown-item" href="">Register My Business</a>
+                    </div>
+                </li>
+                <!-- Dropdown -->
+                     <!-- Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Gloceries
+                </a>
+                <div class="dropdown-menu dropdown-secondary" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="">Kimironko Market</a>
+                    <a class="dropdown-item" href="">Nyabugogo Market</a>
+                    <a class="dropdown-item" href="">Nyarugenge Market</a>
+                    <a class="dropdown-item" href="">Pre-Packaged Gloceries Services</a>
+                    <a class="dropdown-item" href="">Supply for my Business</a>
+                    <a class="dropdown-item" href="">Get Delivery Serveices</a>
+                    <a class="dropdown-item" href="">Register My Business</a>
                 </div>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Gloceries</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Restaurants</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Fitness & wellness Center</a>
-              </li>
+            </li>
+            <!-- Dropdown -->
+                 <!-- Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Restaurants
+                </a>
+                <div class="dropdown-menu dropdown-secondary" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="">Simba</a>
+                    <a class="dropdown-item" href="">Camellia</a>
+                    <a class="dropdown-item" href="">Chicken Inn</a>
+                    <a class="dropdown-item" href="">Meze Fresh</a>
+                    <a class="dropdown-item" href="">Java</a>
+                    <a class="dropdown-item" href="">Brioche</a>
+                    <a class="dropdown-item" href="">Register my Business</a>
+                </div>
+            </li>
+            <!-- Dropdown -->
+                     <!-- Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Fitness & wellness Center
+                </a>
+                <div class="dropdown-menu dropdown-secondary" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="">Waka Fitness</a>
+                    <a class="dropdown-item" href="">Body Fluid</a>
+                    <a class="dropdown-item" href="">Manor</a>
+                    <a class="dropdown-item" href="">Vine Pharmacy</a>
+                    <a class="dropdown-item" href="">Impano</a>
+                    <a class="dropdown-item" href="">Personal Training</a>
+                    <a class="dropdown-item" href="">Register my Business</a>
+                </div>
+            </li>
+            <!-- Dropdown -->
+
             </ul>
             <!-- Links -->
-
-            <form class="form-inline">
-              <div class="md-form my-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-              </div>
-            </form>
+            {% search_box request %}
           </div>
           <!-- Collapsible content -->
 
@@ -81,7 +266,7 @@
 
                     <!--Card image-->
                     <div class="view overlay zoom">
-                        <img src="{{ STATIC_URL }}{{ category.image }}" alt="{{ category }}" class="card-img-top" >
+                        <img src="/static/{{ category.image.medium }}" alt="{{ category }}" class="card-img-top img-fluid" >
                       <a href="{{ category.get_absolute_url }}">
                          <div class="mask flex-center rgba-black-strong">
                           <p class="green-text">Shop Now</p>

@@ -64,7 +64,36 @@ class Ordered(admin.ModelAdmin):
 
     search_fields = [
         'user__username',
-        'ref_code'
+        'ref_code',
+    ]
+
+    actions = [make_refund_accepted]
+
+
+class Ordered_Anonymous(admin.ModelAdmin):
+    list_display = (
+        'cart_id',
+        'start_date',
+        'order_date',
+        'ordered',
+        'payment',
+        'coupon',
+        'ref_code',
+        'billing_address',
+        'shipping_address',
+        'being_delivered',
+        'received', 'refund_requested', 'refund_granted')
+    list_display_links = [
+        'cart_id',
+        'shipping_address',
+        'payment',
+        'coupon',
+        'billing_address']
+    list_filter = ['ordered', 'being_delivered', 'received', 'refund_requested', 'refund_granted']
+
+    search_fields = [
+        'ref_code',
+        'cart_id'
 
     ]
 
@@ -74,25 +103,24 @@ class Ordered(admin.ModelAdmin):
 class AddressAdmin(admin.ModelAdmin):
     list_display = [
         'user',
-        'street_address',
-        'apartment_address',
+        'cart_id',
         'country',
         'zip',
         'address_type',
         'default'
     ]
 
-    list_filter = ['country', 'default', 'address_type', 'country']
+    list_filter = ['default', 'address_type']
     search_fields = [
         'user',
-        'street_address',
-        'apartment_address',
+        'cart_id',
+        'country',
         'zip'
     ]
 
 
 class Items_Ordered(admin.ModelAdmin):
-    list_display = ('user', 'item', 'quantity', 'ordered')
+    list_display = ('user', 'cart_id', 'item', 'quantity', 'ordered')
 
 
 class CouponDisplay(admin.ModelAdmin):
@@ -124,6 +152,7 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductReview, ProductReviewAdmin)
 admin.site.register(OrderItem, Items_Ordered)
 admin.site.register(Order, Ordered)
+admin.site.register(OrderAnonymous, Ordered_Anonymous)
 admin.site.register(StripePayment, Payment)
 admin.site.register(Coupon, CouponDisplay)
 admin.site.register(RequestRefund, RefundDisplay)

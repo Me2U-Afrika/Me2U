@@ -1,0 +1,26 @@
+{% extends 'navigation.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+        <div class=" container content-section mt-5">
+            <form method="POST">
+<!--                protect form from attacks-->
+                {% csrf_token %}
+
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Seller Join Today</legend>
+<!--                    Call the form from views-->
+                    {{ form_seller|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Sign up</button>
+                </div>
+            </form>
+            <div class="border-top pt-3">
+                <small class="text-muted">
+                    Already Have An Account? <a class="ml-2" href="{% url 'login'%}">Login In</a>
+                </small>
+            </div>
+
+        </div>
+{% endblock %}

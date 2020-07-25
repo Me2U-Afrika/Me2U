@@ -18,6 +18,7 @@
 
   <div class="row">
     <div class="col-lg-2 mt-5">
+      {% category_list request.path %}
 
     </div>
 
@@ -39,7 +40,7 @@
 
           <!--First slide-->
           <div class="carousel-item active">
-            <div class="view" style="background-image: url('{{ STATIC_URL }}Electronics/jumpstory.jpg');background-repeat: no-repeat;background-size: inherit;">
+            <div class="view" style="background-image: url('{{ STATIC_URL }}images/Electronics/jumpstory.jpg');background-repeat: no-repeat;background-size: inherit;">
               <!-- Mask & flexbox options-->
               <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
                 <!-- Content -->
@@ -74,7 +75,7 @@
 
            <!--Second slide-->
           <div class="carousel-item">
-            <div class="view" style="background-image: url('{{ STATIC_URL }}LocalProduce/Local7.jpg'); background-repeat: no-repeat; background-size: cover;">
+            <div class="view" style="background-image: url('{{ STATIC_URL }}images/LocalProduce/Local7.jpg'); background-repeat: no-repeat; background-size: cover;">
 
               <!-- Mask & flexbox options-->
               <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
@@ -108,7 +109,7 @@
 
               <!--Second slide-->
           <div class="carousel-item">
-            <div class="view" style="background-image: url('{{ STATIC_URL }}LocalProduce/LocalFarm.jpg'); background-repeat: no-repeat; background-size: cover;">
+            <div class="view" style="background-image: url('{{ STATIC_URL }}images/LocalProduce/LocalFarm.jpg'); background-repeat: no-repeat; background-size: cover;">
 
               <!-- Mask & flexbox options-->
               <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
@@ -180,7 +181,7 @@
 
           <!--Third slide-->
           <div class="carousel-item">
-            <div class="view" style="background-image: url('{{ STATIC_URL }}Electronics/electronics1.jpg'); background-repeat: no-repeat; background-size: cover;">
+            <div class="view" style="background-image: url('{{ STATIC_URL }}images/Electronics/electronics1.jpg'); background-repeat: no-repeat; background-size: cover;">
 
               <!-- Mask & flexbox options-->
               <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
@@ -248,7 +249,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-               <a class="nav-link white-text waves-effect" href="{% url 'categories:categoriesHome' %}">All Categories
+               <a class="nav-link white-text waves-effect" href="{% url 'categories:categoriesHome' %}">Top Deals
                   <span class="sr-only">(current)</span>
                 </a>
             </li>
@@ -267,7 +268,7 @@
             <ul class="navbar-nav mr-auto">
 
               <li class="nav-item">
-                <h5 class="white-text">Welcome to Me2U|Market Shopping Window</h5>
+                <h5 class="white-text"></h5>
               </li>
             </ul>
             <!-- Links -->
@@ -284,55 +285,46 @@
 
           <section class="text-center">
 
-
-                {% product_list recently_viewed 'Your Recently Viewed' %}
-                            <hr>
-                {% product_list view_recs 'Similar Products' %}
-                            <hr>
-                {% product_list featured 'Featured Products' %}
-                            <hr>
+                {% if search_recs %}
+                  {% product_list search_recs 'Recommended For You' %}
+                                <hr>
+                {% endif %}
+                  {% product_list featured 'Featured Products' %}
+                                <hr>
                 {% product_list bestseller 'Bestseller Products' %}
-                            <hr>
-                {% product_list search_recs 'Recommended For You' %}
 
+                {% if view_recs %}
+                                <hr>
+                  {% product_list view_recs 'Similar Products' %}
+                {% endif %}
+
+                {% if paginator %}
+                    <hr>
+                    {% pagination_links request paginator %}
+                              <hr>
+                {% endif %}
+
+                  {% if recently_viewed %}
+                    <h3>Recently Viewed</h3>
+                  {% endif %}
           </section>
 
+            <div class="row">
+            {% for item in recently_viewed %}
+                <div class="col-lg-2 col-md-3 mb-4">
+                  {% include 'tags/product_thumbnail.html' %}
+                </div>
+            {% endfor %}
+            </div>
+
+
+
           <!--Section: Products v.3-->
-
-          <hr>
           <!--Pagination-->
-          {% if is_paginated %}
-          <nav class="d-flex justify-content-center wow fadeIn">
-            <ul class="pagination pg-blue">
 
-              <!--Arrow left-->
-              {% if page_obj.has_previous %}
-              <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                  <span class="sr-only">Previous</span>
-                </a>
-              </li>
-              {% endif %}
 
-              <li class="page-item active">
-                <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}
-                  <span class="sr-only">(current)</span>
-                </a>
-              </li>
-
-              {% if page_obj.has_next %}
-              <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                  <span class="sr-only">Next</span>
-                </a>
-              </li>
-              {% endif %}
-            </ul>
-          </nav>
           <!--Pagination-->
-          {% endif %}
+
 
 
 

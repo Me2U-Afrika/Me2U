@@ -3,7 +3,7 @@ from me2ushop.models import Product
 from django.db.models import Q
 from stats import stats
 
-STRIP_WORDS = ['a', 'an', 'am', 'and', 'by', 'for', 'from', 'in', 'no', 'not',
+STRIP_WORDS = ['a', 'an', 'i', 'am', 'and', 'by', 'for', 'from', 'in', 'no', 'not',
                'of', 'on', 'or', 'that', 'the', 'to', 'with', 'is', ',', 'Search', 'search']
 
 
@@ -24,7 +24,7 @@ def store(request, q):
 # get products matching the search text
 def productSearched(search_text):
     words = _prepare_words(search_text)
-    # print('words:', words)
+    # print('words:', search_text)
 
     products = Product.active.all()
     # print('products:', products)
@@ -32,7 +32,6 @@ def productSearched(search_text):
     results = {'products': []}
 
     for word in words:
-        # print('word:', word)
         products = products.filter(Q(title__icontains=word) |
                                    Q(description__icontains=word) |
                                    Q(brand__icontains=word) |
@@ -54,6 +53,10 @@ def _prepare_words(search_text):
     for common in STRIP_WORDS:
         if common in words:
             words.remove(common)
+    for word in words:
+        if len(word) < 3:
+            words.remove(word)
+
     return words[0:5]
 
 # Lookup funtion with a while loop

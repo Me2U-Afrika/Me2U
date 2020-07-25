@@ -1,0 +1,30 @@
+{% extends 'navigation.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+    <h1>Edit Personal Information</h1>
+        {{ response }}
+    {% if error_message %}
+        <ul class="errorlist">
+            <li>{{ error_message }}</li>
+        </ul> {% endif %}
+    <form action="." method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+          <table>{{ form|crispy }}</table>
+        <div class="cb">
+            <br>
+        </div>
+
+        <table>{{ form_pic|crispy }}</table>
+        <table>
+            <tr>
+                <th colspan="2">
+                    <input type="submit" value="Save Information" class="submit"/>
+                </th>
+            </tr>
+        </table>
+    </form>
+</div>
+{% endblock %}

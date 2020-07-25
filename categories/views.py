@@ -19,14 +19,14 @@ def get_json_products(request):
     json_products = serializers.serialize("json", products)
     return HttpResponse(json_products, content_type='application/javascript; charset=utf-8')
 
+
 def categoriesHomePage(request):
+    print('request', request)
     page_title = 'Categories'
     site_name = 'Me2U|Market'
     template_name = 'index.html'
 
     return render(request, template_name, locals())
-
-
 
 
 class CategoryDetailedView(DetailView):
@@ -38,7 +38,6 @@ class CategoryDetailedView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(CategoryDetailedView, self).get_context_data(**kwargs)
 
-
         # c = Category.active.all()
         # print('c:', c)
         # category_list = {'c': []}
@@ -47,22 +46,20 @@ class CategoryDetailedView(DetailView):
         #     for item in p:
         #         if item.made_in_africa:
         #             pass
-                    # category = item.product_categories.order_by('category_name').distinct()
-                    # print('categories:', category)
-                    # african_category = list(set(category))
+        # category = item.product_categories.order_by('category_name').distinct()
+        # print('categories:', category)
+        # african_category = list(set(category))
 
-                    # print('cat:', african_category)
+        # print('cat:', african_category)
 
-                    # context['category '] = category
-                    # return context
-                    # print('category:', category)
+        # context['category '] = category
+        # return context
+        # print('category:', category)
 
         # print('category_list:', category_list)
 
-
-
-                    # context['c'] = category
-                # print('c:', c)
+        # context['c'] = category
+        # print('c:', c)
 
         # page_title = c.category_name
         # meta_description = c.meta_description
@@ -95,9 +92,9 @@ class CategoryDetailedView_africa_made(DetailView):
         #             africa_category = category
         #             print('africa category:', africa_category)
 
-                # if item.made_in_africa:
-                #     african_category = category
-                #     print('african_category:', category)
+        # if item.made_in_africa:
+        #     african_category = category
+        #     print('african_category:', category)
 
         #
         #             context['african_category'] = african_category

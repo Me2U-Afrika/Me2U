@@ -10,5 +10,8 @@ class SearchTerm(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     tracking_id = models.CharField(max_length=70, default='')
 
+    class Meta:
+        ordering = ['-search_date']
+
     def __unicode__(self):
         return self.q
