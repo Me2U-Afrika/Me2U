@@ -1,1 +1,1 @@
-web: gunicorn me2u.wsgi
+web: gunicorn Me2U.wsgi
