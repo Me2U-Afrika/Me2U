@@ -1,1 +1,1 @@
-web: gunicorn myproject.wsgi
+web: gunicorn me2u.wsgi
