@@ -13,7 +13,30 @@ class SearchForm(forms.ModelForm):
         self.fields['q'].widget.attrs['value'] = default_text
         self.fields['q'].widget.attrs['onfocus'] = "if (this.value=='" + default_text + "')this.value = ''"
         self.fields['q'].widget.attrs['placeholder'] = default_text
-        self.fields['q'].widget.attrs['class'] = 'text-center'
+        self.fields['q'].widget.attrs['class'] = 'input-group'
+        self.fields['q'].widget.attrs['class'] = 'form-control'
+
+
+#         < div
+#
+#         class ="input-group" >
+#
+#         < input
+#         type = "text"
+#
+#         class ="form-control" placeholder="Search Order" name="article" >
+#
+#         < div
+#
+#         class ="input-group-btn" >
+#
+#         < button
+#
+#         class ="btn btn-default" type="submit" > Search < i class ="glyphicon glyphicon-search" > < / i > < / button >
+#
+#     < / div >
+#
+# < / div >
 
 
     include = ('q',)

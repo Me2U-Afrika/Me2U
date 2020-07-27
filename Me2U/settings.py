@@ -64,7 +64,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    # 'Me2U.SSLMiddleware.SSLRedirect',
 
 ]
 
@@ -192,6 +193,5 @@ try:
 except ImportError:
     pass
 
-
-def ENABLE_SSL():
-    return None
+# turn to true during production
+ENABLE_SSL = False

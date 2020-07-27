@@ -24,10 +24,10 @@ urlpatterns = [
 
     url(r'^order_summary/', views.Order_summary_view.as_view(), name='order_summary'),
 
-    url(r'^checkout/', views.Checkout_page.as_view(), name='checkout'),
+    url(r'^checkout/', views.Checkout_page.as_view(), {'SSL': True}, name='checkout'),
     url(r'^add_coupon/', views.add_coupon, name='add_coupon'),
 
-    url(r'payment/(?P<payment_option>[\w-]+)/$', views.PaymentView.as_view(), name='payment'),
+    url(r'payment/(?P<payment_option>[\w-]+)/$', views.PaymentView.as_view(), {'SSL': True}, name='payment'),
     url('request_refund/', views.RefundView.as_view(), name='request_refund'),
     url('add/review', views.add_review),
     url('add/tag', views.add_tag),

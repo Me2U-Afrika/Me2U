@@ -19,7 +19,7 @@
         <!--Grid column-->
         <div class="col-md-6 mb-4">
             <div class="view overlay">
-                <img src="{{ STATIC_URL }}{{ object.image }} " alt="{{ object.title }}" class="img-fluid"/>
+                <img src="{{ object.image.url }} " alt="{{ object.title }}" class="img-fluid"/>
                     <a href="{{ object.get_absolute_url }}">
                         <div class="mask rgba-white-slight"></div>
                     </a>
