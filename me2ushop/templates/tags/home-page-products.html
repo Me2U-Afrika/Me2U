@@ -2,7 +2,7 @@
   <div class="card card-height">
     <!--Card image-->
     <div class="view overlay zoom">
-        <img src="media/{{ item.image.medium }}" class="card-img-top img-fluid"/>
+        <img src="{{ item.image.medium.url }}" class="card-img-top img-fluid"/>
           <a href="{{ item.get_absolute_url }}">
             <div class="mask flex-center rgba-black-strong">
           <p class="btn btn-primary btn-md waves-effect"
