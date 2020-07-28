@@ -74,7 +74,7 @@ class Product(models.Model):
     # image = models.ImageField(upload_to='images/products/main')
 
     # creates a thumbnail resized to maximum size to fit a 100x75 area
-    image = StdImageField(upload_to='images/products/thumbnail', blank=True, null=True, variations={
+    image = StdImageField(upload_to='images/products', blank=True, null=True, variations={
         'thumbnail': (200, 200),
         'medium': (340, 300),
 

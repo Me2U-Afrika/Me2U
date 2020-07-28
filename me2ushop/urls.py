@@ -7,7 +7,6 @@ from django.contrib import admin
 app_name = 'me2ushop'
 
 urlpatterns = [
-    # url(r'^$', views.homeView, name='home'),
     url(r'^$', views.HomeView.as_view(), name='home'),
     # url(r'^seller/<str:username>', views.SellerView.as_view(), name='seller_page'),
     url('seller/(?P<username>[-\w]+)/$', views.SellerView.as_view(), name='seller_page'),
@@ -16,7 +15,7 @@ urlpatterns = [
     url(r'^remove_cart/(?P<slug>[\w-]+)/$', views.remove_cart, name='remove_cart'),
     url(r'^remove_single_item_cart/(?P<slug>[\w-]+)/$', views.remove_single_item_cart, name='remove_single_item_cart'),
 
-    # url(r'^product/(?P<slug>[\w-]+)/$', views.show_product, name='product'),
+
     url(r'^product/(?P<slug>[\w-]+)/$', views.ProductDetailedView.as_view(), name='product'),
     url('new/', views.ProductCreateView.as_view(), name='product-create'),
     url(r'^product/(?P<slug>[\w-]+)/update$', views.ProductUpdateView.as_view(), name='product-update'),

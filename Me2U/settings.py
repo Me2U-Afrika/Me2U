@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'Me2UAfricaMain',
+    'main',
     'bootstrap3',
     'users.apps.UsersConfig',
     'categories',
@@ -181,7 +181,7 @@ AWS_STORAGE_BUCKET_NAME = "me2u-africa"
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 SITE_ID = 1
 

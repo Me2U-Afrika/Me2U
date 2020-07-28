@@ -34,13 +34,13 @@ class BaseOrderInfo(models.Model):
     address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
     payment_option = models.CharField(max_length=10)
     default = models.BooleanField(default=False)
-    email = models.EmailField(max_length=50, blank=True, null=True)
+    email = models.EmailField(max_length=50, blank=True, null=True, unique=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
 
 
 class Profile(BaseOrderInfo):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = StdImageField(upload_to='profile_pics', blank=True, null=True, default='default.svg', variations={
+    image = StdImageField(upload_to='images/profile_pics', blank=True, null=True, default='default.svg', variations={
         'thumbnail': (300, 300),
     }, delete_orphans=True)
 
@@ -54,6 +54,6 @@ class BusinessInformation(models.Model):
 
 class Seller_Profile(BaseOrderInfo):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = StdImageField(upload_to='profile_pics/sellers', blank=True, null=True, default='default.svg', variations={
+    image = StdImageField(upload_to='images/profile_pics/sellers', blank=True, null=True, default='default.svg', variations={
         'thumbnail': (300, 300)}, delete_orphans=True)
 

@@ -32,7 +32,7 @@
         <!-- Navbar -->
         <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
                 <!-- Brand -->
-                <a class="navbar-brand waves-effect" href="{% url 'categories:categoriesHome' %}">
+                <a class="navbar-brand waves-effect "href="{% url 'categories:categoriesHome' %}">
                     <strong class="blue-text">Me2U|Africa</strong>
                 </a>
 
@@ -47,13 +47,13 @@
 
                 <!-- Left -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
+                        <li class="nav-item {% if request.path == '/me2ushop/' %}active{% endif %}">
                             <a class="nav-link waves-effect" href="{% url 'me2ushop:home' %}">
                                 Me2U|Market
                               <span class="sr-only">(current)</span>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item  {% if request.path == '/me2ushop/seller/' %}active{% endif %}">
                             <a class="nav-link waves-effect" href="">
                                 Sell On
                                 <span class="nav-line-1">Me2U</span>
@@ -212,13 +212,15 @@
                 <li><a href="/contact/">Contact</a></li>
                 <li><a href="{% url 'users:profile' %}">My Account</a></li>
                 <li><a href="{% url 'me2ushop:tag_cloud' %}">Product Hashtags</a></li>
+                <li><a href="{% url 'main:aboutus' %}">About Us</a></li>
+
 
             </ul>
 
             <!--Copyright-->
             <div class="footer-copyright py-3">
                 © 2020 Copyright:
-                <a href="{% url 'homepage' %}" target="_blank"> Me2U | Africa </a>
+                <a href="{% url 'main:homepage' %}" target="_blank"> Me2U | Magazine </a>
             </div>
             <!--/.Copyright-->
 
