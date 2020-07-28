@@ -9,11 +9,13 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
+import boto3
 import django_heroku
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from botocore.config import Config
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -26,6 +28,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
 
 ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com']
+
+s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
 
 # Application definition
 
