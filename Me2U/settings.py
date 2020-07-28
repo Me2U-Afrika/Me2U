@@ -92,6 +92,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Me2U.wsgi.application'
+SITE_ID = 1
+
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -183,7 +185,6 @@ AWS_DEFAULT_ACL = None
 
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-SITE_ID = 1
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
