@@ -1,0 +1,1280 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Validate Base ESLint config. > Rules: Base 1`] = `
+Object {
+  "errorCount": 80,
+  "fixableErrorCount": 30,
+  "fixableWarningCount": 0,
+  "results": Array [
+    Object {
+      "errorCount": 80,
+      "filePath": "tests/fixtures/base.fixture.jsx",
+      "fixableErrorCount": 30,
+      "fixableWarningCount": 0,
+      "messages": Array [
+        Object {
+          "column": 5,
+          "endColumn": 6,
+          "endLine": 2,
+          "line": 2,
+          "message": "Identifier name 'x' is too short (< 2).",
+          "messageId": "tooShort",
+          "nodeType": "Identifier",
+          "ruleId": "id-length",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 6,
+          "endLine": 2,
+          "fix": Object {
+            "range": Array [
+              50,
+              53,
+            ],
+            "text": "const",
+          },
+          "line": 2,
+          "message": "'x' is never reassigned. Use 'const' instead.",
+          "messageId": "useConst",
+          "nodeType": "Identifier",
+          "ruleId": "prefer-const",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 6,
+          "endLine": 2,
+          "line": 2,
+          "message": "'x' is assigned a value but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 8,
+          "endLine": 5,
+          "fix": Object {
+            "range": Array [
+              115,
+              118,
+            ],
+            "text": "const",
+          },
+          "line": 5,
+          "message": "'foo' is never reassigned. Use 'const' instead.",
+          "messageId": "useConst",
+          "nodeType": "Identifier",
+          "ruleId": "prefer-const",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 8,
+          "endLine": 5,
+          "line": 5,
+          "message": "'foo' is assigned a value but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 17,
+          "fix": Object {
+            "range": Array [
+              131,
+              146,
+            ],
+            "text": "0",
+          },
+          "line": 5,
+          "message": "Unexpected block statement surrounding arrow body; move the returned value immediately after the \`=>\`.",
+          "messageId": "unexpectedSingleBlock",
+          "nodeType": "ArrowFunctionExpression",
+          "ruleId": "arrow-body-style",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 3,
+          "endLine": 13,
+          "fix": Object {
+            "range": Array [
+              190,
+              193,
+            ],
+            "text": "let",
+          },
+          "line": 10,
+          "message": "Unexpected var, use let or const instead.",
+          "messageId": "unexpectedVar",
+          "nodeType": "VariableDeclaration",
+          "ruleId": "no-var",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 8,
+          "endLine": 10,
+          "line": 10,
+          "message": "'fun' is assigned a value but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 8,
+          "endColumn": 13,
+          "endLine": 11,
+          "fix": Object {
+            "range": Array [
+              209,
+              214,
+            ],
+            "text": "'baz'",
+          },
+          "line": 11,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 8,
+          "endColumn": 14,
+          "endLine": 12,
+          "fix": Object {
+            "range": Array [
+              223,
+              229,
+            ],
+            "text": "'quux'",
+          },
+          "line": 12,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "fix": Object {
+            "range": Array [
+              283,
+              289,
+            ],
+            "text": "{sun++;}",
+          },
+          "line": 16,
+          "message": "Expected { after 'if' condition.",
+          "messageId": "missingCurlyAfterCondition",
+          "nodeType": "IfStatement",
+          "ruleId": "curly",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 8,
+          "endLine": 16,
+          "line": 16,
+          "message": "'sun' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 10,
+          "endColumn": 15,
+          "endLine": 16,
+          "line": 16,
+          "message": "Unary operator '++' used.",
+          "messageId": "unexpectedUnaryOp",
+          "nodeType": "UpdateExpression",
+          "ruleId": "no-plusplus",
+          "severity": 2,
+        },
+        Object {
+          "column": 10,
+          "endColumn": 13,
+          "endLine": 16,
+          "line": 16,
+          "message": "'sun' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 24,
+          "endLine": 19,
+          "line": 19,
+          "message": "Identifier 'my_favorite_color' does not match the pattern '^_$|^[a-zA-Z][a-zA-Z0-9]*$|^[A-Z][_A-Z0-9]+[A-Z0-9]$'.",
+          "messageId": "notMatch",
+          "nodeType": "Identifier",
+          "ruleId": "id-match",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 24,
+          "endLine": 19,
+          "line": 19,
+          "message": "Identifier 'my_favorite_color' is not in camel case.",
+          "messageId": "notCamelCase",
+          "nodeType": "Identifier",
+          "ruleId": "camelcase",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 24,
+          "endLine": 19,
+          "line": 19,
+          "message": "'my_favorite_color' is assigned a value but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 27,
+          "endColumn": 36,
+          "endLine": 19,
+          "fix": Object {
+            "range": Array [
+              347,
+              356,
+            ],
+            "text": "'#112C85'",
+          },
+          "line": 19,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 2,
+          "endLine": 27,
+          "line": 22,
+          "message": "Expected a default case.",
+          "messageId": "missingDefaultCase",
+          "nodeType": "SwitchStatement",
+          "ruleId": "default-case",
+          "severity": 2,
+        },
+        Object {
+          "column": 8,
+          "endColumn": 9,
+          "endLine": 22,
+          "line": 22,
+          "message": "'a' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 1,
+          "endLine": 23,
+          "fix": Object {
+            "range": Array [
+              433,
+              433,
+            ],
+            "text": "  ",
+          },
+          "line": 23,
+          "message": "Expected indentation of 2 spaces but found 0.",
+          "messageId": "wrongIndentation",
+          "nodeType": "Keyword",
+          "ruleId": "indent",
+          "severity": 2,
+        },
+        Object {
+          "column": 6,
+          "endColumn": 9,
+          "endLine": 23,
+          "fix": Object {
+            "range": Array [
+              438,
+              441,
+            ],
+            "text": "'a'",
+          },
+          "line": 23,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 1,
+          "endLine": 25,
+          "fix": Object {
+            "range": Array [
+              454,
+              454,
+            ],
+            "text": "  ",
+          },
+          "line": 25,
+          "message": "Expected indentation of 2 spaces but found 0.",
+          "messageId": "wrongIndentation",
+          "nodeType": "Keyword",
+          "ruleId": "indent",
+          "severity": 2,
+        },
+        Object {
+          "column": 6,
+          "endColumn": 9,
+          "endLine": 25,
+          "fix": Object {
+            "range": Array [
+              459,
+              462,
+            ],
+            "text": "'b'",
+          },
+          "line": 25,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 12,
+          "endLine": 30,
+          "line": 30,
+          "message": "Expected an assignment or function call and instead saw an expression.",
+          "messageId": "unusedExpression",
+          "nodeType": "ExpressionStatement",
+          "ruleId": "no-unused-expressions",
+          "severity": 2,
+        },
+        Object {
+          "column": 6,
+          "endColumn": 9,
+          "endLine": 30,
+          "fix": Object {
+            "range": Array [
+              533,
+              536,
+            ],
+            "text": "'c'",
+          },
+          "line": 30,
+          "message": "Unexpected usage of doublequote.",
+          "messageId": "unexpected",
+          "nodeType": "Literal",
+          "ruleId": "jsx-quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 12,
+          "endColumn": 1,
+          "endLine": 31,
+          "fix": Object {
+            "range": Array [
+              539,
+              539,
+            ],
+            "text": ";",
+          },
+          "line": 30,
+          "message": "Missing semicolon.",
+          "messageId": "missingSemi",
+          "nodeType": "ExpressionStatement",
+          "ruleId": "semi",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 12,
+          "endLine": 33,
+          "line": 33,
+          "message": "'night' is assigned a value but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 15,
+          "endColumn": 21,
+          "endLine": 33,
+          "fix": Object {
+            "range": Array [
+              610,
+              616,
+            ],
+            "text": "'long'",
+          },
+          "line": 33,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 37,
+          "endLine": 34,
+          "fix": Object {
+            "range": Array [
+              618,
+              618,
+            ],
+            "text": "
+",
+          },
+          "line": 34,
+          "message": "Expected line before comment.",
+          "messageId": "before",
+          "nodeType": "Block",
+          "ruleId": "lines-around-comment",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 37,
+          "endLine": 34,
+          "fix": Object {
+            "range": Array [
+              654,
+              654,
+            ],
+            "text": "
+",
+          },
+          "line": 34,
+          "message": "Expected line after comment.",
+          "messageId": "after",
+          "nodeType": "Block",
+          "ruleId": "lines-around-comment",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 10,
+          "endLine": 35,
+          "line": 35,
+          "message": "'day' is assigned a value but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 13,
+          "endColumn": 20,
+          "endLine": 35,
+          "fix": Object {
+            "range": Array [
+              667,
+              674,
+            ],
+            "text": "'great'",
+          },
+          "line": 35,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 16,
+          "endLine": 38,
+          "line": 38,
+          "message": "Function 'fully' has too many parameters (5). Maximum allowed is 4.",
+          "messageId": "exceed",
+          "nodeType": "FunctionDeclaration",
+          "ruleId": "max-params",
+          "severity": 2,
+        },
+        Object {
+          "column": 10,
+          "endColumn": 15,
+          "endLine": 38,
+          "line": 38,
+          "message": "'fully' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 15,
+          "endColumn": 16,
+          "endLine": 38,
+          "fix": Object {
+            "range": Array [
+              757,
+              758,
+            ],
+            "text": "",
+          },
+          "line": 38,
+          "message": "Unexpected space before function parentheses.",
+          "messageId": "unexpectedSpace",
+          "nodeType": "FunctionDeclaration",
+          "ruleId": "space-before-function-paren",
+          "severity": 2,
+        },
+        Object {
+          "column": 17,
+          "endColumn": 20,
+          "endLine": 38,
+          "line": 38,
+          "message": "'bar' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 22,
+          "endColumn": 25,
+          "endLine": 38,
+          "line": 38,
+          "message": "'baz' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 27,
+          "endColumn": 30,
+          "endLine": 38,
+          "line": 38,
+          "message": "'qux' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 32,
+          "endColumn": 35,
+          "endLine": 38,
+          "line": 38,
+          "message": "'qxx' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 37,
+          "endColumn": 39,
+          "endLine": 38,
+          "line": 38,
+          "message": "'cc' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 14,
+          "endLine": 39,
+          "line": 39,
+          "message": "'doSomething' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 10,
+          "endLine": 42,
+          "line": 42,
+          "message": "'bar' is assigned a value but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 14,
+          "endColumn": 17,
+          "endLine": 42,
+          "line": 42,
+          "message": "'bar' is already declared in the upper scope.",
+          "messageId": "noShadow",
+          "nodeType": "Identifier",
+          "ruleId": "no-shadow",
+          "severity": 2,
+        },
+        Object {
+          "column": 14,
+          "endColumn": 17,
+          "endLine": 42,
+          "line": 42,
+          "message": "'bar' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 19,
+          "endColumn": 22,
+          "endLine": 42,
+          "line": 42,
+          "message": "'baz' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 24,
+          "endColumn": 27,
+          "endLine": 42,
+          "line": 42,
+          "message": "'qux' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 29,
+          "endColumn": 32,
+          "endLine": 42,
+          "line": 42,
+          "message": "'qxx' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 34,
+          "endColumn": 36,
+          "endLine": 42,
+          "line": 42,
+          "message": "'cc' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 38,
+          "endColumn": 40,
+          "endLine": 42,
+          "line": 42,
+          "message": "Arrow function has too many parameters (5). Maximum allowed is 4.",
+          "messageId": "exceed",
+          "nodeType": "ArrowFunctionExpression",
+          "ruleId": "max-params",
+          "severity": 2,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 14,
+          "endLine": 43,
+          "line": 43,
+          "message": "'doSomething' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 12,
+          "endLine": 47,
+          "line": 47,
+          "message": "Unexpected console statement.",
+          "messageId": "unexpected",
+          "nodeType": "MemberExpression",
+          "ruleId": "no-console",
+          "severity": 2,
+        },
+        Object {
+          "column": 13,
+          "endColumn": 41,
+          "endLine": 47,
+          "fix": Object {
+            "range": Array [
+              901,
+              929,
+            ],
+            "text": "'Log a debug level message.'",
+          },
+          "line": 47,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 13,
+          "endLine": 48,
+          "line": 48,
+          "message": "Unexpected console statement.",
+          "messageId": "unexpected",
+          "nodeType": "MemberExpression",
+          "ruleId": "no-console",
+          "severity": 2,
+        },
+        Object {
+          "column": 14,
+          "endColumn": 41,
+          "endLine": 48,
+          "fix": Object {
+            "range": Array [
+              945,
+              972,
+            ],
+            "text": "'Log a warn level message.'",
+          },
+          "line": 48,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 15,
+          "endColumn": 44,
+          "endLine": 49,
+          "fix": Object {
+            "range": Array [
+              989,
+              1018,
+            ],
+            "text": "'Log an error level message.'",
+          },
+          "line": 49,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 29,
+          "endColumn": 34,
+          "endLine": 52,
+          "line": 52,
+          "message": "Expected object keys to be in natural ascending order. 'month' should be before 'year'.",
+          "messageId": "sortKeys",
+          "nodeType": "Property",
+          "ruleId": "sort-keys",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 2,
+          "endLine": 55,
+          "line": 53,
+          "message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.",
+          "messageId": "restrictedSyntax",
+          "nodeType": "ForInStatement",
+          "ruleId": "no-restricted-syntax",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 2,
+          "endLine": 55,
+          "line": 53,
+          "message": "The body of a for-in should be wrapped in an if statement to filter unwanted properties from the prototype.",
+          "messageId": "wrap",
+          "nodeType": "ForInStatement",
+          "ruleId": "guard-for-in",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 9,
+          "endLine": 53,
+          "line": 53,
+          "message": "'prop' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 14,
+          "endLine": 54,
+          "line": 54,
+          "message": "Unexpected console statement.",
+          "messageId": "unexpected",
+          "nodeType": "MemberExpression",
+          "ruleId": "no-console",
+          "severity": 2,
+        },
+        Object {
+          "column": 15,
+          "endColumn": 19,
+          "endLine": 54,
+          "line": 54,
+          "message": "'prop' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 10,
+          "endColumn": 15,
+          "endLine": 58,
+          "line": 58,
+          "message": "'flora' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 5,
+          "endLine": 59,
+          "line": 59,
+          "message": "'funk' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 6,
+          "endColumn": 37,
+          "endLine": 59,
+          "fix": Object {
+            "range": Array [
+              1239,
+              1270,
+            ],
+            "text": "(atom) => { return atom; }",
+          },
+          "line": 59,
+          "message": "Unexpected function expression.",
+          "messageId": "preferArrowCallback",
+          "nodeType": "FunctionExpression",
+          "ruleId": "prefer-arrow-callback",
+          "severity": 2,
+        },
+        Object {
+          "column": 6,
+          "endColumn": 14,
+          "endLine": 59,
+          "line": 59,
+          "message": "Unexpected unnamed function.",
+          "messageId": "unnamed",
+          "nodeType": "FunctionExpression",
+          "ruleId": "func-names",
+          "severity": 1,
+        },
+        Object {
+          "column": 1,
+          "line": 61,
+          "message": "This line has a comment length of 106. Maximum allowed is 100.",
+          "messageId": "maxComment",
+          "nodeType": "Program",
+          "ruleId": "max-len",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 30,
+          "endLine": 63,
+          "fix": Object {
+            "range": Array [
+              1381,
+              1435,
+            ],
+            "text": "import { barezi } from 'bar';
+import fuzzy from 'foo';",
+          },
+          "line": 62,
+          "message": "Run autofix to sort these imports!",
+          "messageId": "sort",
+          "nodeType": null,
+          "ruleId": "simple-import-sort/sort",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 25,
+          "endLine": 62,
+          "fix": Object {
+            "range": Array [
+              1405,
+              1405,
+            ],
+            "text": "",
+          },
+          "line": 62,
+          "message": "Import in body of module; reorder to top.",
+          "nodeType": "ImportDeclaration",
+          "ruleId": "import/first",
+          "severity": 2,
+        },
+        Object {
+          "column": 8,
+          "endColumn": 13,
+          "endLine": 62,
+          "line": 62,
+          "message": "'fuzzy' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 19,
+          "endColumn": 24,
+          "endLine": 62,
+          "line": 62,
+          "message": "Unable to resolve path to module 'foo'.",
+          "nodeType": "Literal",
+          "ruleId": "import/no-unresolved",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 30,
+          "endLine": 63,
+          "fix": Object {
+            "range": Array [
+              0,
+              1435,
+            ],
+            "text": "// Rules: id-length, prefer-const, no-unused-vars
+// Rules: simple-import-sort/sort, no-unused-vars, import/no-unresolved, sort-imports-es6/sort-imports-es6
+import fuzzy from 'foo';
+import { barezi } from 'bar';
+
+let x = 0;
+
+// Rules: id-length, prefer-const, arrow-body-style'
+let foo = () => {
+  return 0;
+};
+
+// Rules: no-var, no-unused-vars, quotes
+var fun = {
+  bar: \\"baz\\",
+  qux: \\"quux\\",
+};
+
+// Rules: curly, no-undef, no-plusplus
+if (sun) sun++;
+
+// Rules: id-match, camelcase
+const my_favorite_color = \\"#112C85\\";
+
+// Rules: default-case, no-undef, space-before-blocks, indent
+switch(a) {
+case \\"a\\":
+    break;
+case \\"b\\":
+    break;
+}
+
+// Rules: no-unused-expressions, jsx-quotes, semi
+<a b=\\"c\\" />
+
+// Rules: no-unused-vars, quotes, lines-around-comment
+const night = \\"long\\";
+/* what a great and wonderful day */
+const day = \\"great\\";
+
+// Rules: max-params, no-unused-vars, space-before-function-paren
+function fully (bar, baz, qux, qxx, cc) {
+  doSomething();
+}
+
+const bar = (bar, baz, qux, qxx, cc) => {
+  doSomething();
+};
+
+// Rules: no-console
+console.log(\\"Log a debug level message.\\");
+console.warn(\\"Log a warn level message.\\");
+console.error(\\"Log an error level message.\\");
+
+// Rules: sort-keys, no-restricted-syntax, guard-for-in, no-undef
+const obj = {age:1, year:2, month:3};
+for(prop in obj) {
+  console.log(prop);
+}
+
+// Rules: prefer-arrow-callback, func-names
+function flora() {};
+funk(function(atom) { return atom; });",
+          },
+          "line": 63,
+          "message": "Import in body of module; reorder to top.",
+          "nodeType": "ImportDeclaration",
+          "ruleId": "import/first",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 30,
+          "endLine": 63,
+          "line": 63,
+          "message": "Expected 'multiple' syntax before 'single' syntax.",
+          "nodeType": "ImportDeclaration",
+          "ruleId": "sort-imports-es6/sort-imports-es6",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 30,
+          "endLine": 63,
+          "fix": Object {
+            "range": Array [
+              1381,
+              1436,
+            ],
+            "text": "import { barezi } from 'bar';
+import fuzzy from 'foo';
+",
+          },
+          "line": 63,
+          "message": "\`bar\` import should occur before import of \`foo\`",
+          "nodeType": "ImportDeclaration",
+          "ruleId": "import/order",
+          "severity": 2,
+        },
+        Object {
+          "column": 10,
+          "endColumn": 16,
+          "endLine": 63,
+          "line": 63,
+          "message": "'barezi' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "no-unused-vars",
+          "severity": 2,
+        },
+        Object {
+          "column": 24,
+          "endColumn": 29,
+          "endLine": 63,
+          "line": 63,
+          "message": "Unable to resolve path to module 'bar'.",
+          "nodeType": "Literal",
+          "ruleId": "import/no-unresolved",
+          "severity": 2,
+        },
+        Object {
+          "column": 4,
+          "endColumn": 8,
+          "endLine": 66,
+          "line": 66,
+          "message": "Unexpected constant condition.",
+          "messageId": "unexpected",
+          "nodeType": "Literal",
+          "ruleId": "no-constant-condition",
+          "severity": 1,
+        },
+        Object {
+          "column": 9,
+          "endColumn": 11,
+          "endLine": 66,
+          "fix": Object {
+            "range": Array [
+              1528,
+              1528,
+            ],
+            "text": " ",
+          },
+          "line": 66,
+          "message": "Missing space before opening brace.",
+          "messageId": "missingSpace",
+          "nodeType": "BlockStatement",
+          "ruleId": "space-before-blocks",
+          "severity": 2,
+        },
+        Object {
+          "column": 9,
+          "endColumn": 11,
+          "endLine": 66,
+          "line": 66,
+          "message": "Empty block statement.",
+          "messageId": "unexpected",
+          "nodeType": "BlockStatement",
+          "ruleId": "no-empty",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 5,
+          "endLine": 67,
+          "line": 67,
+          "message": "'atob' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 6,
+          "endColumn": 7,
+          "endLine": 67,
+          "fix": Object {
+            "range": Array [
+              1536,
+              1537,
+            ],
+            "text": "",
+          },
+          "line": 67,
+          "message": "There should be no space after this paren.",
+          "messageId": "rejectedOpeningSpace",
+          "nodeType": "Program",
+          "ruleId": "space-in-parens",
+          "severity": 2,
+        },
+        Object {
+          "column": 14,
+          "endColumn": 15,
+          "endLine": 67,
+          "fix": Object {
+            "range": Array [
+              1544,
+              1545,
+            ],
+            "text": "",
+          },
+          "line": 67,
+          "message": "There should be no space before this paren.",
+          "messageId": "rejectedClosingSpace",
+          "nodeType": "Program",
+          "ruleId": "space-in-parens",
+          "severity": 2,
+        },
+      ],
+      "source": "// Rules: id-length, prefer-const, no-unused-vars
+let x = 0;
+
+// Rules: id-length, prefer-const, arrow-body-style'
+let foo = () => {
+  return 0;
+};
+
+// Rules: no-var, no-unused-vars, quotes
+var fun = {
+  bar: \\"baz\\",
+  qux: \\"quux\\",
+};
+
+// Rules: curly, no-undef, no-plusplus
+if (sun) sun++;
+
+// Rules: id-match, camelcase
+const my_favorite_color = \\"#112C85\\";
+
+// Rules: default-case, no-undef, space-before-blocks, indent
+switch(a) {
+case \\"a\\":
+    break;
+case \\"b\\":
+    break;
+}
+
+// Rules: no-unused-expressions, jsx-quotes, semi
+<a b=\\"c\\" />
+
+// Rules: no-unused-vars, quotes, lines-around-comment
+const night = \\"long\\";
+/* what a great and wonderful day */
+const day = \\"great\\";
+
+// Rules: max-params, no-unused-vars, space-before-function-paren
+function fully (bar, baz, qux, qxx, cc) {
+  doSomething();
+}
+
+const bar = (bar, baz, qux, qxx, cc) => {
+  doSomething();
+};
+
+// Rules: no-console
+console.log(\\"Log a debug level message.\\");
+console.warn(\\"Log a warn level message.\\");
+console.error(\\"Log an error level message.\\");
+
+// Rules: sort-keys, no-restricted-syntax, guard-for-in, no-undef
+const obj = {age:1, year:2, month:3};
+for(prop in obj) {
+  console.log(prop);
+}
+
+// Rules: prefer-arrow-callback, func-names
+function flora() {};
+funk(function(atom) { return atom; });
+
+// Rules: simple-import-sort/sort, no-unused-vars, import/no-unresolved, sort-imports-es6/sort-imports-es6
+import fuzzy from 'foo';
+import { barezi } from 'bar';
+
+// no-constant-condition, space-before-blocks, no-empty, no-undef, space-in-parens
+if(true){}
+atob( 'xxxxx' );
+",
+      "warningCount": 2,
+    },
+  ],
+  "usedDeprecatedRules": Array [
+    Object {
+      "replacedBy": Array [
+        "padding-line-between-statements",
+      ],
+      "ruleId": "lines-around-directive",
+    },
+    Object {
+      "replacedBy": Array [],
+      "ruleId": "global-require",
+    },
+    Object {
+      "replacedBy": Array [],
+      "ruleId": "no-buffer-constructor",
+    },
+    Object {
+      "replacedBy": Array [],
+      "ruleId": "no-new-require",
+    },
+    Object {
+      "replacedBy": Array [],
+      "ruleId": "no-path-concat",
+    },
+  ],
+  "warningCount": 2,
+}
+`;

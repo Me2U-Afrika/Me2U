@@ -1,0 +1,184 @@
+[
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2020-08-08T18:24:43.848Z",
+    "user": 1,
+    "content_type": 19,
+    "object_id": "3",
+    "object_repr": "13 of Denim",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2020-08-08T18:33:39.425Z",
+    "user": 1,
+    "content_type": 18,
+    "object_id": "2",
+    "object_repr": "Order object (2)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Being delivered\", \"Refund granted\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2020-08-08T20:45:04.177Z",
+    "user": 2,
+    "content_type": 21,
+    "object_id": "2",
+    "object_repr": "ProductImage object (2)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2020-08-08T21:08:39.268Z",
+    "user": 2,
+    "content_type": 21,
+    "object_id": "2",
+    "object_repr": "ProductImage object (2)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"In display\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2020-08-08T21:10:36.165Z",
+    "user": 2,
+    "content_type": 21,
+    "object_id": "2",
+    "object_repr": "ProductImage object (2)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2020-08-08T21:10:48.257Z",
+    "user": 2,
+    "content_type": 21,
+    "object_id": "1",
+    "object_repr": "ProductImage object (1)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2020-08-08T21:11:08.549Z",
+    "user": 2,
+    "content_type": 21,
+    "object_id": "3",
+    "object_repr": "ProductImage object (3)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2020-08-08T21:11:25.408Z",
+    "user": 2,
+    "content_type": 21,
+    "object_id": "4",
+    "object_repr": "ProductImage object (4)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2020-08-08T21:29:50.487Z",
+    "user": 2,
+    "content_type": 21,
+    "object_id": "6",
+    "object_repr": "ProductImage object (6)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2020-08-08T21:29:56.219Z",
+    "user": 2,
+    "content_type": 21,
+    "object_id": "5",
+    "object_repr": "ProductImage object (5)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2020-08-08T21:30:14.104Z",
+    "user": 2,
+    "content_type": 21,
+    "object_id": "7",
+    "object_repr": "ProductImage object (7)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2020-08-08T21:30:35.747Z",
+    "user": 2,
+    "content_type": 21,
+    "object_id": "7",
+    "object_repr": "ProductImage object (7)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"In display\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 13,
+  "fields": {
+    "action_time": "2020-08-09T00:34:22.887Z",
+    "user": 2,
+    "content_type": 3,
+    "object_id": "1",
+    "object_repr": "Employees",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 14,
+  "fields": {
+    "action_time": "2020-08-09T00:36:48.332Z",
+    "user": 2,
+    "content_type": 3,
+    "object_id": "2",
+    "object_repr": "Dispatchers",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+}
+]

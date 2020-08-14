@@ -19,7 +19,9 @@
                 <fieldset class="form-group">
                     <legend class="border-bottom mb-4">Log In</legend>
 <!--                    Call the form from views-->
-                    {{ form|crispy }}
+                    {{ form.non_field_errors }}
+                    {% include "includes/field.html" with field=form.username %}
+                    {% include "includes/field.html" with field=form.password %}
                 </fieldset>
                 <div class="form-group">
                     <button class="btn btn-outline-info" type="submit">Sign In</button>

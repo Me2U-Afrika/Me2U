@@ -1,25 +1,43 @@
 from django import forms
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from .models import Profile
+from django.contrib.auth.forms import UserCreationForm, UsernameField
+from django.core.mail import send_mail
+
+from .models import Profile, User
 from django_countries.fields import CountryField
+import logging
+
+logger = logging.getLogger(__name__)
+
+USER_CHOICES = {
+
+    ('B', "Buyer"),
+    ('S', "Seller"),
+    ('SP', "Service_Provider"),
+
+}
 
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField()
+    # user_type = forms.ChoiceField(widget=forms.HiddenInput(), choices=USER_CHOICES)
 
-    class Meta:
+    class Meta(UserCreationForm.Meta):
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['email']
+        field_classes = {"email": UsernameField}
 
-
-class SellerRegisterForm(UserRegisterForm):
-    # email = forms.EmailField()
-
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'email', 'password1', 'password2']
-        exclude = ('username',)
+    def send_mail(self):
+        logger.info(
+            "Sending Signup email for username=%s",
+            self.cleaned_data["email"]
+        )
+        message = "Welcome {}".format(self.cleaned_data["email"])
+        send_mail(
+            "Welcome to Me2U|Africa",
+            message,
+            "me2uafrica.herokuapp.com",
+            [self.cleaned_data["email"]],
+            fail_silently=True,
+        )
 
 
 # class AutomobileRegisterForm(UserCreationForm):
@@ -42,15 +60,16 @@ class SellerRegisterForm(UserRegisterForm):
 
 
 class AddressForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        exclude = ['user', 'image', 'email', 'phone']
+    pass
+    # class Meta:
+    #     model = Profile
+    #     exclude = ['user', 'image', 'email', 'phone']
 
 
 class PersonalInfoForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['first_name', 'last_name', 'email']
 
 
 class ProfilePicForm(forms.ModelForm):

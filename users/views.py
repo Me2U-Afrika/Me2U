@@ -3,15 +3,24 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
+from django.views.generic import ListView
 
-from .forms import UserRegisterForm, SellerRegisterForm
+from .forms import UserRegisterForm
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from me2ushop.models import Order, OrderItem, Product
 from .profile import retrieve_profile, set_profile, set_personal, set_pic
 from .forms import AddressForm, PersonalInfoForm, ProfilePicForm
-from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, User
+from django.contrib.auth import authenticate, login
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import (FormView, CreateView, UpdateView, DeleteView, )
+import logging
+
+from me2ushop import models
+
+logger = logging.getLogger(__name__)
 
 
 # we going to create a view for register page using existing classes in django. The classes are converted to html.
@@ -19,17 +28,23 @@ from .models import Profile
 def register(request):
     # create an instance of form
     if request.method == 'POST':
+
         form = UserRegisterForm(request.POST)
         # Checking for validity
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
+            username = form.cleaned_data.get('email')
+
+            # email = form.cleaned_data.get('email')
+
             messages.success(request, f'Account created for {username}!. You can now login!')
+            form.send_mail()
             return redirect('login')
         return redirect('login')
-
     else:
+
         form = UserRegisterForm
+
         context = {
             'form': form,
             'page_title': 'User Registration'
@@ -40,47 +55,93 @@ def register(request):
         return render(request, 'users/register.html', context)
 
 
+# def signup(request):
+#     if (request.method == 'POST'):
+#         email = request.POST.get('email')
+#         password = request.POST.get('password')
+#         st = request.POST.get('student')
+#         te = request.POST.get('teacher')
+#
+#         user = User.objects.create_user(
+#             email=email,
+#         )
+#         user.set_password(password)
+#         user.save()
+#
+#         usert = None
+#         if st:
+#             usert = user_type(user=user, is_student=True)
+#         elif te:
+#             usert = user_type(user=user, is_teach=True)
+#
+#         usert.save()
+#         # Successfully registered. Redirect to homepage
+#         return redirect('home')
+#     return render(request, 'register.html')
+#
+#
+# def login(request):
+#     if (request.method == 'POST'):
+#         email = request.POST.get('email')  # Get email value from form
+#         password = request.POST.get('password')  # Get password value from form
+#         user = authenticate(request, email=email, password=password)
+#
+#         if user is not None:
+#             login(request, user)
+#             type_obj = user_type.objects.get(user=user)
+#             if user.is_authenticated and type_obj.is_student:
+#                 return redirect('shome')  # Go to student home
+#             elif user.is_authenticated and type_obj.is_teach:
+#                 return redirect('thome')  # Go to teacher home
+#         else:
+#             # Invalid email or password. Handle as you wish
+#             return redirect('home')
+#
+#     return render(request, 'home.html')
+
 def login_seller(request):
-    return render(request, 'users/login_seller.html')
+    pass
+    # return render(request, 'users/login_seller.html')
 
 
-def seller_register(request, template_name="users/seller_register.html"):
+def register_seller(request, template_name="users/seller_register.html"):
+    pass
     # create an instance of form
-    if request.method == 'POST':
-        form = SellerRegisterForm(request.POST)
-        # Checking for validity
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}!. You can now login!')
-            return redirect('login_seller')
-        return redirect('login_seller')
-
-    else:
-        form_seller = SellerRegisterForm
-
-        page_title = 'seller Registration'
-        context = {
-            'form': form_seller,
-            'page_title': page_title
-        }
-        # context_instance = RequestContext(request)
-        # print('contxt inst:', context_instance)
-        return render(request, template_name, context)
+    # if request.method == 'POST':
+    #     form = SellerRegisterForm(request.POST)
+    #     # Checking for validity
+    #     if form.is_valid():
+    #         form.save()
+    #         username = form.cleaned_data.get('username')
+    #         messages.success(request, f'Account created for {username}!. You can now login!')
+    #         return redirect('login_seller')
+    #     return redirect('login_seller')
+    #
+    # else:
+    #     form_seller = SellerRegisterForm
+    #
+    #     page_title = 'seller Registration'
+    #     context = {
+    #         'form': form_seller,
+    #         'page_title': page_title
+    #     }
+    #     # context_instance = RequestContext(request)
+    #     # print('contxt inst:', context_instance)
+    #     return render(request, template_name, context)
 
 
 @login_required()
 def profile(request):
     page_title = 'My Account'
     orders = Order.objects.filter(user=request.user, ordered=True)
-    user = User.objects.filter(username=request.user.username).first()
+    user = User.objects.filter(email=request.user.email).first()
     profile_user = Profile.objects.get(user=request.user)
     print('profile:', profile_user)
     # order_items = OrderItem.objects.filter(user=request.user, ordered=True)
-    # print('orders:', orders)
+    # print('order:', order)
     # print('order_items:', items)
 
-    name = request.user.username
+    name = request.user.first_name
     # context_instance = RequestContext(request)
     # print('contxt inst profile:', context_instance)
     return render(request, 'users/profile.html', locals())
@@ -154,26 +215,130 @@ def re_order(request, order_id):
     return redirect("me2ushop:order_summary")
 
 
-@csrf_protect
-def order_info(request, template_name="users/order-info.html"):
-    if request.method == 'POST':
-        postdata = request.POST.copy()
-        form = AddressForm(postdata)
-        if form.is_valid():
-            set_profile(request)
-            return redirect('users:profile')
+class AddressListView(LoginRequiredMixin, ListView):
+    model = models.Address
+    template_name = 'users/addresses/address_list.html'
 
-    else:
-        user_profile = retrieve_profile(request)
-        print('user_profile:', user_profile)
-        form = AddressForm(instance=user_profile)
-        # print('form',form)
-        page_title = 'Edit Order Information'
-        context = {
-            'form': form,
-            'page_title': page_title
-        }
-        return render(request, template_name, context)
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+
+class AddressCreateView(LoginRequiredMixin, CreateView):
+    model = models.Address
+    template_name = 'users/addresses/address_form.html'
+    fields = ["name", "email", "phone", "street_address", "apartment_address", "zip", "city", "country", "address_type",
+              "default"]
+    success_url = reverse_lazy("users:address_list")
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        user = self.request.user
+        default_add = obj.default
+        add_type = obj.address_type
+
+        current_saved = models.Address.objects.filter(user=user, address_type=add_type, default=True)
+        print('current', current_saved)
+
+        if default_add:
+            if current_saved.exists():
+                current_saved = current_saved[0]
+                current_saved.default = False
+                current_saved.save()
+                print('current', current_saved.default)
+
+            obj.user = user
+            obj.save()
+
+        obj.user = user
+        obj.save()
+        return super().form_valid(form)
+
+
+class AddressUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.Address
+    template_name = 'users/addresses/address_form.html'
+    fields = ["name", "email", "phone", "street_address", "apartment_address", "zip", "city", "country", "address_type",
+              "default"]
+    success_url = reverse_lazy("users:address_list")
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        user = self.request.user
+        default_add = obj.default
+        add_type = obj.address_type
+        print('add_type:', obj)
+
+        current_saved = models.Address.objects.filter(user=user, address_type=add_type, default=True)
+        print('current', current_saved)
+        # current_orders_open_orders = models.Order.objects.filter(user=user, ordered=True)
+
+        if default_add:
+            if current_saved.exists():
+                current_saved = current_saved[0]
+                current_saved.default = False
+                current_saved.save()
+        # for already_ordered in current_orders_open_orders:
+        #     billing_address = already_ordered.billing_address
+        #     print('already ordered', already_ordered.billing_address)
+        #
+        #     # shipping_address = billing_address
+        #     # print('already ordered', already_ordered.shipping_address)
+        #     #
+        #     # if add_type == 'B':
+        #     #     if obj.country != billing_address.country:
+        #     #         already_ordered.billing_address = billing_address
+        #     #         print('already ordered', already_ordered.billing_address)
+        #     #
+        #     #         already_ordered.save()
+        #     # elif add_type == 'S':
+        #     #     if obj.country != shipping_address.country:
+        #     #         already_ordered.shipping_address = shipping_address
+        #     #         print('already ordered', already_ordered.shipping_address)
+        #     #
+        #     #         already_ordered.save()
+
+        # obj.user = user
+        # obj.save()
+
+        obj.user = user
+        obj.save()
+        # print('default', default)
+
+        return super().form_valid(form)
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+
+class AddressDeleteView(LoginRequiredMixin, DeleteView):
+    model = models.Address
+    template_name = 'users/addresses/address_confirm_delete.html'
+    success_url = reverse_lazy("users:address_list")
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+
+def order_info(request, template_name="users/order-info.html"):
+    pass
+    # if request.method == 'POST':
+    #     postdata = request.POST.copy()
+    #     form = AddressForm(postdata)
+    #     if form.is_valid():
+    #         set_profile(request)
+    #         return redirect('users:profile')
+    #
+    # else:
+    #     user_profile = retrieve_profile(request)
+    #     # print('user_profile:', user_profile)
+    #     form = AddressForm(instance=user_profile)
+    #     # print('form',form)
+    #     page_title = 'Edit Order Information'
+    #     context = {
+    #         'form': form,
+    #         'page_title': page_title
+    #     }
+    #     return render(request, template_name, context)
 
 
 def personal_info(request, template_name="users/personal-info.html"):

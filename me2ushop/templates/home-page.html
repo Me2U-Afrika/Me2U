@@ -235,7 +235,8 @@
       </div>
 
     <div class="col-lg-2 mt-5">
-      Ads here
+      {% include "tags/AfricaMade.html" %}
+
     </div>
 
     </div>
@@ -289,19 +290,19 @@
                   {% product_list search_recs 'Recommended For You' %}
                                 <hr>
                 {% endif %}
+
                   {% product_list featured 'Featured Products' %}
                                 <hr>
                 {% product_list bestseller 'Bestseller Products' %}
-
-                {% if view_recs %}
-                                <hr>
-                  {% product_list view_recs 'Similar Products' %}
-                {% endif %}
+                 {% if view_recs %}
+                                  <hr>
+                    {% product_list view_recs 'Similar Products' %}
+                  {% endif %}
 
                 {% if paginator %}
                     <hr>
                     {% pagination_links request paginator %}
-                              <hr>
+                    <hr>
                 {% endif %}
 
                   {% if recently_viewed %}

@@ -1,0 +1,10 @@
+{% extends "navigation.html" %}
+{% block content %}
+<section class="text-center mt-5">
+    <h2>Delete address</h2>
+    <form method="POST">
+        {%  csrf_token %}
+        <p>Are you sure you want to delete it?</p>
+    <button type="submit" class="btn btn- primary">Submit </button>  </form>
+    </section>
+{% endblock content %}

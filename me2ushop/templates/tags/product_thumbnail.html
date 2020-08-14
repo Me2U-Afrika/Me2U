@@ -1,14 +1,20 @@
+
 <!--Card-->
       <div class="card card-thumbnail">
         <!--Card image-->
+          {% for image in item.productimage_set.all %}
+                          {% if image.in_display %}
+
         <div class="view overlay zoom">
-            <img src=" {{ STATIC_URL }}{{ item.image.thumbnail }}" class="card-img-top img-fluid">
+            <img src=" {{ MEDIA_URL }}{{ image.image.thumbnail }}" class="card-img-top img-fluid">
                 <div class="mask rgba-white-slight">
                     <a class="btn btn-primary btn-md waves-effect" href="{{ item.get_add_cart_url }}"
                         role="button">Add To Cart<i class="fas fa-hand-holding-usd" ></i>
                     </a>
                 </div>
         </div>
+          {% endif %}
+          {% endfor %}
           <div class="card-body text-center">
               <a href="{{ item.get_absolute_url }}">
                   <h6> {{ item.title }}</h6>
@@ -27,7 +33,42 @@
                   </a>
           </div>
       </div>
-        <!--Card image-->
+<!--Card image-->
+
+
+<!--&lt;!&ndash;Card&ndash;&gt;-->
+<!--          {% for image in item.productimage_set.all %}-->
+<!--                          {% if image.in_display %}-->
+<!--            <div>-->
+<!--                <div class="caption">-->
+<!--                    <div class="view overlay zoom">-->
+<!--                        <img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" class="card-img-top img-fluid">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="card-body text-center">-->
+<!--              <a href="{{ item.get_absolute_url }}">-->
+<!--                  <h6> {{ item.title }}</h6>-->
+
+<!--                  <h6 class="font-weight-bold blue-text">-->
+<!--                  <strong>-->
+<!--                  {% if item.old_price %}-->
+<!--                      <span style="font-size:8px" class="grey-text"><del>${{ item.old_price}}</del></span>-->
+<!--                     <br>-->
+<!--                    <span>${{ item.price }}</span>-->
+<!--                  {% else %}-->
+<!--                    ${{ item.price }}-->
+<!--                  {% endif %}-->
+<!--                </strong>-->
+<!--              </h6>-->
+<!--                  </a>-->
+<!--          </div>-->
+<!--            <a class="btn btn-primary btn-md waves-effect" href="/me2ushop/add_cart/farm-vegetables/" role="button">Add To Cart<i class="fas fa-hand-holding-usd"></i> </a>-->
+<!--          {% endif %}-->
+<!--          {% endfor %}-->
+<!--&lt;!&ndash;Card image&ndash;&gt;-->
+
+
 
 
 

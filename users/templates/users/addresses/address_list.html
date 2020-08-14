@@ -1,0 +1,59 @@
+{% extends "navigation.html" %}
+
+{% block content %}
+<div class="container mt-5">
+<h1>List of your addresses: {{ object_list.count }}</h1>
+{% for address in object_list %}
+    {% if address.address_type == 'B' %}
+        <h3> Billing Address</h3>
+        <hr>
+    {% else %}
+            <h3> Shipping Address</h3>
+        <hr>
+    {% endif %}
+    <p>
+        Name : {{ address.name }}<br>
+        Email : {{ address.email }}<br>
+        Phone : {{ address.phone }}<br>
+        Street Address : {{ address.street_address }}<br>
+        Apartment/suite/building : {{ address.apartment_address }}<br>
+        Country : {{ address.get_country_display }}<br>
+        City : {{ address.city }}<br>
+        Address Type : {{ address.get_address_type_display }} <br>
+        Default {{ address.get_address_type_display }} address : {{ address.default }}<br>
+
+    </p>
+    <p>
+        <a href="{% url 'users:address_update' address.id %}">Update address</a>
+    </p>
+    <p>
+        <a href="{% url 'users:address_delete' address.id %}">Delete address</a>
+    </p>
+    {% if not forloop.last %}
+    <hr>
+    {% endif %}
+    {% endfor %}
+
+    {% if object_list.count < 3   %}
+        {% for address in object_list %}
+                {% if address.address_type == 'B' %}
+                    <p>
+                         <a href="{% url 'users:address_create' %}">Add a Shipping Address</a>
+                    </p>
+                {% else %}
+                 <p>
+                     <a href="{% url 'users:address_create' %}">Add a Billing Address</a>
+                </p>
+                {% endif %}
+        {% endfor %}
+        {% endif %}
+
+
+    {% if object_list.count == 0 %}
+             <p>
+                 <a href="{% url 'users:address_create' %}">Add a New Address</a>
+             </p>
+
+    {% endif %}
+    </div>
+    {% endblock content %}

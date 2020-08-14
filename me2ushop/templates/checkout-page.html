@@ -23,6 +23,16 @@
             <form method="POST" class="card-body">
               {% csrf_token %}
 
+                {% if user.is_authenticated %}
+                <a href="{% url 'me2ushop:address_select' %}" class="btn  btn-primary">select available addreses</a>
+                {% else %}
+                <a href="{% url 'users:register' %}?next={% url 'me2ushop:address_select' %}"
+                   class="btn btn-primary">Signup</a>
+                <a href="{% url 'login' %}?next={% url 'me2ushop:address_select' %}"
+                   class="btn btn-primary">Login</a>
+                {% endif %}
+
+
               <h3>Shipping Address</h3>
                 <div class="hideable_shipping_form">
               <!--address-->
@@ -55,6 +65,12 @@
 
                     </div>
                     <!--Grid column-->
+                        <div class="col-lg-4 col-md-6 mb-4">
+                      <label for ="shipping_city">City</label>
+
+                      <input type="text" class="form-control" name="shipping_city" id="shipping_city" placeholder="Nairobi">
+
+                    </div>
                     <!--Grid column-->
                     <div class="col-lg-4 col-md-6 mb-4">
                       <label for ="shipping_zip">Zip</label>
@@ -67,8 +83,25 @@
                       </div>
                     </div>
                     <!--Grid column-->
-
                 </div>
+                    <div class="row">
+
+                      <div class="md-form mb-5">
+                        <input type="text" id="name" class="form-control" name="name" placeholder="Daniel">
+                        <label for="name" class="">Your Name</label>
+                      </div>
+                      <div class="md-form mb-5 ml-5">
+                        <input type="text" id="email" class="form-control" name="email" placeholder="you@mail.com">
+                        <label for="email" class="">Email</label>
+                      </div>
+
+                  <!--address-2-->
+                      <div class="md-form mb-5 ml-5">
+                            <input type="text" id="phone" class="form-control" name="phone" placeholder="+250 785......">
+                            <label for="phone" class="">Phone Number</label>
+    <!--                    {{ form.apartment_address }}-->
+                        </div>
+                        </div>
                   <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" name="same_billing_address" id="same_billing_address">
   <!--                {{ form.save_info}}-->
@@ -135,6 +168,7 @@
                       </div>
                     <!--Grid column-->
                     </div>
+
                   {% if request.user.is_authenticated %}
                     <div class="custom-control custom-checkbox">
                       <input type="checkbox" class="custom-control-input" name="set_default_billing" id="set_default_billing">
@@ -165,6 +199,41 @@
 
               </div>
               <hr class="mb-4">
+
+<!--             <h3>How To contact Me</h3>-->
+<!--            <div class="hideable_contact_form">-->
+<!--          &lt;!&ndash;address&ndash;&gt;-->
+<!--                 <div class="md-form mb-5">-->
+<!--                    <input type="text" id="name" class="form-control" name="name" placeholder="Daniel Ogechi">-->
+<!--                    <label for="name" class="">name</label>-->
+<!--                  </div>-->
+<!--                  <div class="md-form mb-5">-->
+<!--                    <input type="text" id="email" class="form-control" name="email" placeholder="you@mail.com">-->
+<!--                    <label for="email" class="">Email</label>-->
+<!--                  </div>-->
+
+<!--              &lt;!&ndash;address-2&ndash;&gt;-->
+<!--                  <div class="md-form mb-5">-->
+<!--                    <input type="text" id="phone_number" class="form-control" placeholder="+250 785......">-->
+<!--                    <label for="phone_number" class="">Phone Number</label>-->
+<!--    &lt;!&ndash;                    {{ form.apartment_address }}&ndash;&gt;-->
+<!--                  </div>-->
+
+<!--                {% if request.user.is_authenticated %}-->
+<!--                    <div class="custom-control custom-checkbox">-->
+<!--                      <input type="checkbox" class="custom-control-input" name="set_default_contact" id="set_default_contact">-->
+<!--      &lt;!&ndash;                {{ form.save_info}}&ndash;&gt;-->
+<!--                      <label class="custom-control-label" for="set_default_contact">Save as default shipping contact</label>-->
+<!--                    </div>-->
+<!--                  {% endif %}-->
+<!--                  </div>-->
+<!--                  {% if default_shipping_address %}-->
+<!--                  <div class="custom-control custom-checkbox">-->
+<!--                    <input type="checkbox" class="custom-control-input" name="use_default_contact" id="use_default_contact">-->
+<!--  &lt;!&ndash;                {{ form.save_info}}&ndash;&gt;-->
+<!--                    <label class="custom-control-label" for="use_default_contact">Use default Contact Address: {{ default_shipping_address.phone|truncatechars:6 }}</label>-->
+<!--                  </div>-->
+<!--                  {% endif %}-->
               <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
             </form>
 
@@ -184,55 +253,6 @@
   </main>
   <!--Main layout-->
 
-    <script type="text/javascript">
-
-    var hideable_billing_form = $('.hideable_billing_form');
-    var hideable_shipping_form = $('.hideable_shipping_form');
-    var same_as_shipping = $('.same_as_shipping')
-
-
-    var use_default_shipping = document.querySelector("input[name='use_default_shipping']");
-    var use_default_billing = document.querySelector("input[name='use_default_billing']");
-
-    
-    var form = document.getElementById('same_billing_address');
-    form.addEventListener('change', function(event){
-      event.preventDefault();
-
-      if (form.checked) {
-          same_as_shipping.hide();
-        } else {
-          same_as_shipping.show();
-
-        };
-    });
-
-
-    use_default_shipping.addEventListener('change', function(event) {
-      event.preventDefault();
-
-        if (use_default_shipping.checked) {
-          hideable_shipping_form.hide();
-        } else {
-          hideable_shipping_form.show();
-        };
-    });
-  
-    // var form = document.getElementById('use_default_billing');
-    // form.addEventListener('change', function(event) {
-
-    use_default_billing.addEventListener('change', function(event) {
-      event.preventDefault();
-
-        if (use_default_billing.checked) {
-          hideable_billing_form.hide();
-        } else {
-          hideable_billing_form.show();
-        };
-    });
-
-
-</script>
 
 </body>
 {% endblock %}

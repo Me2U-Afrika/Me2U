@@ -42,8 +42,8 @@ def recommended_from_search(request):
 
     # c = collections.Counter(matching)
     # for product, count in c.most_common():
-        # print('%s: %7d' % (product, count))
-        # most_words.append(word)
+    # print('%s: %7d' % (product, count))
+    # most_words.append(word)
     # print('most_products:', most_words)
 
     # return the top three most common words in the searches
@@ -58,7 +58,8 @@ def frequent_search_words(request):
         searches = SearchTerm.objects.filter(user=request.user).values('q').order_by('-search_date')[0:10]
         # print(searches)
     else:
-        searches = SearchTerm.objects.filter(tracking_id=tracking_id(request)).values('q').order_by('-search_date')[0:10]
+        searches = SearchTerm.objects.filter(tracking_id=tracking_id(request)).values('q').order_by('-search_date')[
+                   0:10]
     # print('searches found:', searches)
 
     # Join all searches together into a single string
@@ -119,16 +120,16 @@ def recommended_from_views(request):
         # if there are other tracking ides, get other products.
         if track_ids:
             all_viewed = Product.active.filter(productview__tracking_id__in=track_ids)
-            # print('all_viewed:',all_viewed)
+            # print('all_viewed:', all_viewed)
             #     if there are other products, get them, excluding the
             #      producus that the customer has already viewed.
             if all_viewed:
                 other_viewed = ProductView.objects.filter(product__in=all_viewed).exclude(product__in=viewed)
-                # print('others_viewed:', other_viewed)
+                # print('others_viewed_track_ids:', other_viewed)
 
                 if other_viewed:
                     products = Product.active.filter(productview__in=other_viewed).distinct()
-                    # print('products others viewed:', products)
+                    # print('products others viewed i havent:', products)
                     return products
 
 
@@ -142,3 +143,7 @@ def get_recently_viewed(request):
     products = Product.active.filter(id__in=product_ids)
     # print('products:', products)
     return products
+
+
+def recommended_from_other_sellers(request):
+    pass

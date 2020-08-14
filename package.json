@@ -1,0 +1,34 @@
+{
+  "name": "Me2U",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "build": "webpack",
+    "watch": "webpack --config webpack.config.js --watch --mode development"
+  },
+  "jest": {
+    "moduleDirectories": [
+      "node_modules",
+      "frontend"
+    ],
+    "testURL": "http://localhost/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "jest": "^26.2.2",
+    "webpack": "^4.44.1",
+    "webpack-bundle-tracker": "^0.4.3",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "@websublime/eslint-config": "^1.1.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}

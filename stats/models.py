@@ -1,7 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from me2ushop.models import Product
 from django.views.generic import ListView, DetailView, View
+
+from users.models import User
 
 
 class PageView(models.Model):

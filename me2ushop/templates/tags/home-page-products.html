@@ -1,44 +1,50 @@
 <!--Card-->
-  <div class="card card-height">
-    <!--Card image-->
-    <div class="view overlay zoom">
-        <img src="{{ item.image.medium.url }}" class="card-img-top img-fluid"/>
-          <a href="{{ item.get_absolute_url }}">
-            <div class="mask flex-center rgba-black-strong">
-          <p class="btn btn-primary btn-md waves-effect"
-          role="button">View</p>
+
+{% for image in item.productimage_set.all %}
+      {% if image.in_display %}
+        <div class="card card-height">
+          <!--Card image-->
+          <div class="view overlay zoom">
+              <img src="/media/{{ image.image.medium }}" class="card-img-top img-fluid"/>
+                <a href="{{ item.get_absolute_url }}">
+                  <div class="mask flex-center rgba-black-strong">
+                <p class="btn btn-primary btn-md waves-effect"
+                role="button">View</p>
+              </div>
+            </a>
+          </div>
+      <!--Card image-->
+
+        <!--Card content-->
+        <div class="card-body text-center">
+            <!--      Category & Title-->
+          <a href="{{ item.get_absolute_url }}" class="dark-grey-text"><h5 class="grey-text"> {{ item.get_category_choice_display }}</h5></a>
+          <h6>
+            <strong>
+              <a href="{{ item.get_absolute_url }}" class="dark-grey-text" style="font-size:16px">{{ item.title }}
+                <span class="badge badge-pill {{ item.get_label_display }}-color">NEW</span>
+              </a>
+            </strong>
+          </h6>
+
+          <h5 class="font-weight-bold blue-text">
+            <strong>
+              {% if item.old_price %}
+                <span style="font-size:15px" class="grey-text"><del>${{ item.old_price}}</del></span>
+                 <br>
+                <span>${{ item.price }}</span>
+              {% else %}
+                ${{ item.price }}
+              {% endif %}
+            </strong>
+          </h5>
+
+
         </div>
-      </a>
-    </div>
-    <!--Card image-->
-
-    <!--Card content-->
-    <div class="card-body text-center">
-<!--      Category & Title-->
-      <a href="{{ item.get_absolute_url }}" class="dark-grey-text"><h5 class="grey-text"> {{ item.get_category_choice_display }}</h5></a>
-      <h6>
-        <strong>
-          <a href="{{ item.get_absolute_url }}" class="dark-grey-text" style="font-size:16px">{{ item.title }}
-            <span class="badge badge-pill {{ item.get_label_display }}-color">NEW</span>
-          </a>
-        </strong>
-      </h6>
-
-      <h5 class="font-weight-bold blue-text">
-        <strong>
-          {% if item.old_price %}
-            <span style="font-size:15px" class="grey-text"><del>${{ item.old_price}}</del></span>
-             <br>
-            <span>${{ item.price }}</span>
-          {% else %}
-            ${{ item.price }}
+        <!--Card content-->
           {% endif %}
-        </strong>
-      </h5>
+    {% endfor %}
 
-
-    </div>
-    <!--Card content-->
 
   </div>
 

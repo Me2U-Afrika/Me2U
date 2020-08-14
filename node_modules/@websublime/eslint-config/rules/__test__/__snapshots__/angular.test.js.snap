@@ -1,0 +1,769 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Validate Angular ESLint config. > Rules: Angular 1`] = `
+Object {
+  "errorCount": 37,
+  "fixableErrorCount": 10,
+  "fixableWarningCount": 0,
+  "results": Array [
+    Object {
+      "errorCount": 37,
+      "filePath": "tests/fixtures/angular.fixture.ts",
+      "fixableErrorCount": 10,
+      "fixableWarningCount": 0,
+      "messages": Array [
+        Object {
+          "column": 1,
+          "endColumn": 1,
+          "endLine": 67,
+          "line": 1,
+          "message": "File has too many classes (4). Maximum allowed is 1.",
+          "messageId": "maximumExceeded",
+          "nodeType": "Program",
+          "ruleId": "max-classes-per-file",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 23,
+          "endLine": 1,
+          "line": 1,
+          "message": "Class 'invalidClassName' must be PascalCased.",
+          "messageId": "notPascalCased",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/class-name-casing",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 23,
+          "endLine": 1,
+          "line": 1,
+          "message": "'invalidClassName' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+        },
+        Object {
+          "column": 6,
+          "endColumn": 7,
+          "endLine": 3,
+          "fix": Object {
+            "range": Array [
+              27,
+              50,
+            ],
+            "text": "interface T { x: number }",
+          },
+          "line": 3,
+          "message": "Use an \`interface\` instead of a \`type\`.",
+          "messageId": "interfaceOverType",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/consistent-type-definitions",
+          "severity": 2,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 20,
+          "endLine": 9,
+          "line": 9,
+          "message": "Member Z should be declared before all field definitions.",
+          "messageId": "incorrectGroupOrder",
+          "nodeType": "TSIndexSignature",
+          "ruleId": "@typescript-eslint/member-ordering",
+          "severity": 2,
+        },
+        Object {
+          "column": 16,
+          "endColumn": 19,
+          "endLine": 9,
+          "line": 9,
+          "message": "Unexpected any. Specify a different type.",
+          "messageId": "unexpectedAny",
+          "nodeType": "TSAnyKeyword",
+          "ruleId": "@typescript-eslint/no-explicit-any",
+          "severity": 1,
+          "suggestions": Array [
+            Object {
+              "desc": "Use \`unknown\` instead, this will force you to explicitly, and safely assert the type is correct.",
+              "fix": Object {
+                "range": Array [
+                  162,
+                  165,
+                ],
+                "text": "unknown",
+              },
+              "messageId": "suggestUnknown",
+            },
+            Object {
+              "desc": "Use \`never\` instead, this is useful when instantiating generic type parameters that you don't need to know the type of.",
+              "fix": Object {
+                "range": Array [
+                  162,
+                  165,
+                ],
+                "text": "never",
+              },
+              "messageId": "suggestNever",
+            },
+          ],
+        },
+        Object {
+          "column": 11,
+          "endColumn": 14,
+          "endLine": 12,
+          "line": 12,
+          "message": "An empty interface is equivalent to \`{}\`.",
+          "messageId": "noEmpty",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/no-empty-interface",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 21,
+          "endLine": 14,
+          "fix": Object {
+            "range": Array [
+              211,
+              219,
+            ],
+            "text": "",
+          },
+          "line": 14,
+          "message": "Type number trivially inferred from a number literal, remove type annotation.",
+          "messageId": "noInferrableType",
+          "nodeType": "VariableDeclarator",
+          "ruleId": "@typescript-eslint/no-inferrable-types",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 16,
+          "endLine": 14,
+          "line": 14,
+          "message": "Identifier name 'a' is too short (< 2).",
+          "messageId": "tooShort",
+          "nodeType": "Identifier",
+          "ruleId": "id-length",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 16,
+          "endLine": 14,
+          "line": 14,
+          "message": "'a' is assigned a value but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 13,
+          "endLine": 16,
+          "line": 16,
+          "message": "'FooBar' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 20,
+          "endLine": 17,
+          "fix": Object {
+            "range": Array [
+              248,
+              256,
+            ],
+            "text": "",
+          },
+          "line": 17,
+          "message": "Type number trivially inferred from a number literal, remove type annotation.",
+          "messageId": "noInferrableType",
+          "nodeType": "ClassProperty",
+          "ruleId": "@typescript-eslint/no-inferrable-types",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 8,
+          "endLine": 20,
+          "line": 20,
+          "message": "Identifier name 'C' is too short (< 2).",
+          "messageId": "tooShort",
+          "nodeType": "Identifier",
+          "ruleId": "id-length",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 8,
+          "endLine": 20,
+          "line": 20,
+          "message": "'C' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 12,
+          "endLine": 21,
+          "line": 21,
+          "message": "Class cannot have method named \`new\`.",
+          "messageId": "errorMessageClass",
+          "nodeType": "MethodDefinition",
+          "ruleId": "@typescript-eslint/no-misused-new",
+          "severity": 2,
+        },
+        Object {
+          "column": 11,
+          "endColumn": 16,
+          "endLine": 24,
+          "line": 24,
+          "message": "Interface name must not be prefixed with \\"I\\".",
+          "messageId": "noPrefix",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/interface-name-prefix",
+          "severity": 2,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 17,
+          "endLine": 25,
+          "line": 25,
+          "message": "Interfaces cannot be constructed, only classes.",
+          "messageId": "errorMessageInterface",
+          "nodeType": "TSConstructSignatureDeclaration",
+          "ruleId": "@typescript-eslint/no-misused-new",
+          "severity": 2,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 23,
+          "endLine": 26,
+          "line": 26,
+          "message": "Interfaces cannot be constructed, only classes.",
+          "messageId": "errorMessageInterface",
+          "nodeType": "TSMethodSignature",
+          "ruleId": "@typescript-eslint/no-misused-new",
+          "severity": 2,
+        },
+        Object {
+          "column": 20,
+          "endColumn": 27,
+          "endLine": 33,
+          "line": 33,
+          "message": "'getFoob' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 27,
+          "endLine": 34,
+          "line": 34,
+          "message": "'includesBaz' is assigned a value but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+        },
+        Object {
+          "column": 30,
+          "endColumn": 39,
+          "endLine": 34,
+          "line": 34,
+          "message": "Forbidden non-null assertion.",
+          "messageId": "noNonNull",
+          "nodeType": "TSNonNullExpression",
+          "ruleId": "@typescript-eslint/no-non-null-assertion",
+          "severity": 2,
+          "suggestions": Array [
+            Object {
+              "desc": "Consider using the optional chain operator \`?.\` instead. This operator includes runtime checks, so it is safer than the compile-only non-null assertion operator.",
+              "fix": Object {
+                "range": Array [
+                  454,
+                  455,
+                ],
+                "text": "?",
+              },
+              "messageId": "suggestOptionalChain",
+            },
+          ],
+        },
+        Object {
+          "column": 3,
+          "endColumn": 14,
+          "endLine": 37,
+          "fix": Object {
+            "range": Array [
+              474,
+              506,
+            ],
+            "text": "type Foot = () => string;",
+          },
+          "line": 37,
+          "message": "Interface has only a call signature - use 'type Foot = () => string;' instead.",
+          "messageId": "functionTypeOverCallableType",
+          "nodeType": "TSCallSignatureDeclaration",
+          "ruleId": "@typescript-eslint/prefer-function-type",
+          "severity": 2,
+        },
+        Object {
+          "column": 10,
+          "endColumn": 14,
+          "endLine": 40,
+          "line": 40,
+          "message": "'foot' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+        },
+        Object {
+          "column": 22,
+          "endColumn": 32,
+          "endLine": 40,
+          "fix": Object {
+            "range": Array [
+              527,
+              541,
+            ],
+            "text": "() => number",
+          },
+          "line": 40,
+          "message": "Type literal has only a call signature - use '() => number' instead.",
+          "messageId": "functionTypeOverCallableType",
+          "nodeType": "TSCallSignatureDeclaration",
+          "ruleId": "@typescript-eslint/prefer-function-type",
+          "severity": 2,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 12,
+          "endLine": 45,
+          "fix": Object {
+            "range": Array [
+              572,
+              619,
+            ],
+            "text": "type Foof = () => void;",
+          },
+          "line": 45,
+          "message": "Interface has only a call signature - use 'type Foof = () => void;' instead.",
+          "messageId": "functionTypeOverCallableType",
+          "nodeType": "TSCallSignatureDeclaration",
+          "ruleId": "@typescript-eslint/prefer-function-type",
+          "severity": 2,
+        },
+        Object {
+          "column": 10,
+          "endColumn": 11,
+          "endLine": 48,
+          "line": 48,
+          "message": "'f' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+        },
+        Object {
+          "column": 12,
+          "endColumn": 21,
+          "endLine": 49,
+          "line": 49,
+          "message": "These overloads can be combined into one signature taking \`number | string\`.",
+          "messageId": "singleParameterDifference",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/unified-signatures",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 9,
+          "endLine": 51,
+          "fix": Object {
+            "range": Array [
+              680,
+              683,
+            ],
+            "text": "const",
+          },
+          "line": 51,
+          "message": "'fooc' is never reassigned. Use 'const' instead.",
+          "messageId": "useConst",
+          "nodeType": "Identifier",
+          "ruleId": "prefer-const",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 9,
+          "endLine": 51,
+          "line": 51,
+          "message": "'fooc' is assigned a value but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+        },
+        Object {
+          "column": 12,
+          "endColumn": 17,
+          "endLine": 51,
+          "line": 51,
+          "message": "Missing return type on function.",
+          "messageId": "missingReturnType",
+          "nodeType": "ArrowFunctionExpression",
+          "ruleId": "@typescript-eslint/explicit-function-return-type",
+          "severity": 1,
+        },
+        Object {
+          "column": 18,
+          "fix": Object {
+            "range": Array [
+              697,
+              712,
+            ],
+            "text": "0",
+          },
+          "line": 51,
+          "message": "Unexpected block statement surrounding arrow body; move the returned value immediately after the \`=>\`.",
+          "messageId": "unexpectedSingleBlock",
+          "nodeType": "ArrowFunctionExpression",
+          "ruleId": "arrow-body-style",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 8,
+          "endLine": 55,
+          "line": 55,
+          "message": "Identifier name 'A' is too short (< 2).",
+          "messageId": "tooShort",
+          "nodeType": "Identifier",
+          "ruleId": "id-length",
+          "severity": 2,
+        },
+        Object {
+          "column": 7,
+          "endColumn": 8,
+          "endLine": 55,
+          "line": 55,
+          "message": "'A' is defined but never used.",
+          "messageId": "unusedVar",
+          "nodeType": "Identifier",
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 12,
+          "endLine": 57,
+          "line": 57,
+          "message": "Unexpected 'super()'.",
+          "messageId": "unexpected",
+          "nodeType": "CallExpression",
+          "ruleId": "constructor-super",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 12,
+          "endLine": 61,
+          "line": 61,
+          "message": "Expected an assignment or function call and instead saw an expression.",
+          "messageId": "unusedExpression",
+          "nodeType": "ExpressionStatement",
+          "ruleId": "no-unused-expressions",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 4,
+          "endLine": 61,
+          "line": 61,
+          "message": "'foo' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 7,
+          "endLine": 61,
+          "line": 61,
+          "message": "Expected '===' and instead saw '=='.",
+          "messageId": "unexpected",
+          "nodeType": "BinaryExpression",
+          "ruleId": "eqeqeq",
+          "severity": 2,
+        },
+        Object {
+          "column": 12,
+          "endColumn": 1,
+          "endLine": 62,
+          "fix": Object {
+            "range": Array [
+              801,
+              801,
+            ],
+            "text": ";",
+          },
+          "line": 61,
+          "message": "Missing semicolon.",
+          "messageId": "missingSemi",
+          "nodeType": "ExpressionStatement",
+          "ruleId": "semi",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 13,
+          "endLine": 62,
+          "line": 62,
+          "message": "Expected an assignment or function call and instead saw an expression.",
+          "messageId": "unusedExpression",
+          "nodeType": "ExpressionStatement",
+          "ruleId": "no-unused-expressions",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 8,
+          "endLine": 62,
+          "line": 62,
+          "message": "'bananas' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 9,
+          "endColumn": 11,
+          "endLine": 62,
+          "line": 62,
+          "message": "Expected '!==' and instead saw '!='.",
+          "messageId": "unexpected",
+          "nodeType": "BinaryExpression",
+          "ruleId": "eqeqeq",
+          "severity": 2,
+        },
+        Object {
+          "column": 13,
+          "endColumn": 1,
+          "endLine": 63,
+          "fix": Object {
+            "range": Array [
+              814,
+              814,
+            ],
+            "text": ";",
+          },
+          "line": 62,
+          "message": "Missing semicolon.",
+          "messageId": "missingSemi",
+          "nodeType": "ExpressionStatement",
+          "ruleId": "semi",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 2,
+          "endLine": 66,
+          "line": 64,
+          "message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.",
+          "messageId": "restrictedSyntax",
+          "nodeType": "ForInStatement",
+          "ruleId": "no-restricted-syntax",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 2,
+          "endLine": 66,
+          "line": 64,
+          "message": "The body of a for-in should be wrapped in an if statement to filter unwanted properties from the prototype.",
+          "messageId": "wrap",
+          "nodeType": "ForInStatement",
+          "ruleId": "guard-for-in",
+          "severity": 2,
+        },
+        Object {
+          "column": 6,
+          "endColumn": 9,
+          "endLine": 64,
+          "line": 64,
+          "message": "'key' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 13,
+          "endColumn": 16,
+          "endLine": 64,
+          "line": 64,
+          "message": "'foo' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 14,
+          "endLine": 65,
+          "line": 65,
+          "message": "'doSomething' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+        Object {
+          "column": 15,
+          "endColumn": 18,
+          "endLine": 65,
+          "line": 65,
+          "message": "'key' is not defined.",
+          "messageId": "undef",
+          "nodeType": "Identifier",
+          "ruleId": "no-undef",
+          "severity": 2,
+        },
+      ],
+      "source": "class invalidClassName {}
+
+type T = { x: number };
+
+interface Foo {
+  B: string; // -> field
+  new (); // -> constructor
+  A(): void; // -> method
+  [Z: string]: any; // -> signature
+}
+
+interface Bar {}
+
+const a: number = 10;
+
+class FooBar {
+  prop: number = 5;
+}
+
+class C {
+  new(): C;
+}
+
+interface IFace {
+  new (): IFace;
+  constructor(): void;
+}
+
+interface Foob {
+  bar?: string;
+}
+
+const foob: Foob = getFoob();
+const includesBaz: boolean = foob.bar!.includes('baz');
+
+interface Foot {
+  (): string;
+}
+
+function foot(bar: { (): number }): number {
+  return bar();
+}
+
+interface Foof extends Function {
+  (): void;
+}
+
+function f(x: number): void;
+function f(x: string): void;
+
+let fooc = () => {
+  return 0;
+};
+
+class A {
+  constructor() {
+    super();  // This is a SyntaxError.
+  }
+}
+
+foo == true
+bananas != 1
+
+for (key in foo) {
+  doSomething(key);
+}
+",
+      "warningCount": 11,
+    },
+  ],
+  "usedDeprecatedRules": Array [
+    Object {
+      "replacedBy": Array [
+        "naming-convention",
+      ],
+      "ruleId": "@typescript-eslint/class-name-casing",
+    },
+    Object {
+      "replacedBy": Array [
+        "ban-ts-comment",
+      ],
+      "ruleId": "@typescript-eslint/ban-ts-ignore",
+    },
+    Object {
+      "replacedBy": Array [
+        "naming-convention",
+      ],
+      "ruleId": "@typescript-eslint/camelcase",
+    },
+    Object {
+      "replacedBy": Array [
+        "naming-convention",
+      ],
+      "ruleId": "@typescript-eslint/interface-name-prefix",
+    },
+    Object {
+      "replacedBy": Array [
+        "padding-line-between-statements",
+      ],
+      "ruleId": "lines-around-directive",
+    },
+    Object {
+      "replacedBy": Array [],
+      "ruleId": "global-require",
+    },
+    Object {
+      "replacedBy": Array [],
+      "ruleId": "no-buffer-constructor",
+    },
+    Object {
+      "replacedBy": Array [],
+      "ruleId": "no-new-require",
+    },
+    Object {
+      "replacedBy": Array [],
+      "ruleId": "no-path-concat",
+    },
+  ],
+  "warningCount": 11,
+}
+`;

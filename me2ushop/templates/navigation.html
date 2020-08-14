@@ -7,8 +7,6 @@
 {% block site_wrapper %}
 <style>
 
-
-
 #loading{
     display:none;
     position:fixed;
@@ -98,6 +96,12 @@
                     </ul>
 
                     {% search_box request %}
+<!--                      {% if request.cart_items %}-->
+<!--                        <div>-->
+<!--                            {{ request.cart_items.count }}-->
+<!--                            items in basket-->
+<!--                        </div>-->
+<!--                        {% endif %}-->
 
                     <!-- Right -->
                     {% if user.is_authenticated %}

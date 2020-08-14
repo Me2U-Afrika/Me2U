@@ -8,9 +8,15 @@
                 {% csrf_token %}
 
                 <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Join Today</legend>
+                    <legend class="border-bottom mb-4">Join Me2U|Africa</legend>
 <!--                    Call the form from views-->
-                    {{ form|crispy }}
+<!--                    {{ form|crispy }}-->
+                    {{ form.non_field_errors }}
+                    {% include "includes/field.html" with field=form.email %}
+                    {% include "includes/field.html" with field=form.password1 %}
+                    {% include "includes/field.html" with field=form.password2 %}
+
+
                 </fieldset>
                 <div class="form-group">
                     <button class="btn btn-outline-info" type="submit">Sign up</button>

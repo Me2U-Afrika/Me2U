@@ -30,6 +30,11 @@ class ActiveCategoryManager(models.Manager):
         return super(ActiveCategoryManager, self).get_query_set().filter(is_active=True)
 
 
+class CategoryTagManager(models.Manager):
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
+
 class Category(models.Model):
     category_name = models.CharField(max_length=50)
     slug = models.SlugField(unique=True,
@@ -56,6 +61,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.category_name
+
+    def natural_key(self):
+        return self.slug
 
     class Meta:
         db_table = 'ProductCategories'

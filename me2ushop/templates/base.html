@@ -13,7 +13,7 @@
             {% block headblock %}
             {% endblock headblock %}
 
-                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
               <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
               <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
               <!-- Font Awesome -->
@@ -25,7 +25,7 @@
               <!-- Material Design Bootstrap -->
               <link rel="stylesheet" href=" {{ STATIC_URL }}css/mdb.min.css">
                   <!-- Your custom styles (optional) -->
-              <link href="/static/css/style.css" rel="stylesheet">
+              <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet">
 
           <!-- Bootstrap core CSS -->
           <link href= "{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
@@ -94,7 +94,7 @@
     <div class="mt-5 pt-4 ms">
         {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-success mt-5" role="alert">
+        <div class="alert alert-{{ message.tags }} mt-5" role="alert">
             {{ message }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -111,7 +111,6 @@
         <div id="noscript">Some parts of {{ site_name }} require Javascript</div>
         <div id="noscript_padder"></div>
     </noscript>
-    <div id="banner">
 
       {% block site_wrapper %}
 
@@ -133,11 +132,17 @@
   <!-- Bootstrap tooltips -->
       <script type="text/javascript" src="{% static 'js/popper.min.js'%}"></script>
       <!-- Bootstrap core JavaScript -->
-<!--      <script type="text/javascript" src="{% static 'js/bootstrap.min.js'}"></script>-->
+      <script type="text/javascript" src="{% static 'js/bootstrap.min.js'%}"></script>
       <!-- MDB core JavaScript -->
       <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
       <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
 
+        <script
+            src="https://unpkg.com/react@16/umd/react.production.min.js">
+        </script>
+         <script
+            src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js">
+        </script>
     <script type="text/javascript" >
         $('.alert').alert()
         $(".alert").alert('close')

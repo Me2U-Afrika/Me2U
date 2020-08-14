@@ -1,4 +1,7 @@
- {% for c in active_categories %}
-        <a href="{{ c.get_absolute_africa_made_url }}">{{ c.category_name }}</a>
-        <br>
+ {% for c in made_in_africa %}
+
+
+            <a href="{{ c.get_absolute_africa_made_url }}">{{ c.category_name }}</a>
+                <br>
+
     {% endfor %}

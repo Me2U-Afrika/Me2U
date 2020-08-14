@@ -34,6 +34,7 @@ s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
 # Application definition
 
 INSTALLED_APPS = [
+    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
+    'django_extensions',
+    'debug_toolbar',
+    'widget_tweaks',
+    'django_tables2',
     'main',
     'bootstrap3',
     'users.apps.UsersConfig',
@@ -56,13 +61,16 @@ INSTALLED_APPS = [
     'stats',
     'tagging',
     'storages',
+    'webpack_loader',
 
 ]
+DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap.html'
 
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'main.middleware.cart_middleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -70,16 +78,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'Me2U.SSLMiddleware.SSLRedirect',
 
 ]
+INTERNAL_IPS = ['127.0.0.1']
 
 ROOT_URLCONF = 'Me2U.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -95,10 +105,14 @@ TEMPLATES = [
         },
     },
 ]
+WEBPACK_LOADER = {    
+    'DEFAULT': {'BUNDLE_DIR_NAME': 'bundles/',
+    'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),    
+    }
+}
 
 WSGI_APPLICATION = 'Me2U.wsgi.application'
 SITE_ID = 1
-
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -107,7 +121,7 @@ SITE_ID = 1
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'me2u',
         'USER': os.environ.get('USER'),
         'PASSWORD': os.environ.get('PASSWORD'),
         'HOST': 'localhost',
@@ -162,10 +176,12 @@ STATICFILES_DIRS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL = 'main:homepage'
+LOGIN_REDIRECT_URL = 'categories:categoriesHome'
 LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # stripe settings
 
@@ -173,13 +189,26 @@ if DEBUG:
     # test keys
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+
+    #     Email server
+    EMAIL_BACKEND = (
+        "django.core.mail.backends.console.EmailBackend")
 else:
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
+    #   Email Config
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST_USER = "Daniel Makori"
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_PASSWORD = "password"
+
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
+
 AUTH_PROFILE_MODULE = 'users.profile'
+AUTH_USER_MODEL = 'users.User'
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
@@ -188,7 +217,8 @@ AWS_STORAGE_BUCKET_NAME = "me2u-africa"
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
 # Activate Django-Heroku.

@@ -1,0 +1,31 @@
+{% extends "navigation.html" %}
+
+{% block content %}
+<div class="container mt-5">
+<h1>{{ object.title }} Images: {{ product_image.count }}</h1>
+    {% if product_image.count < 4 %}
+    <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a>
+    {% endif %}
+    <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product' object.slug %}">View Product</a>
+
+        <div class="row">
+            <div class="col-lg-10">
+                {% for image in product_image %}
+                    <div class="col-lg-4 col-md-6 mb-4 mt-4 product-snippet">
+                        <div class="card card-height">
+                            <!--Card image-->
+                            <div class="view overlay zoom">
+                                <img src="/media/{{ image.image.medium }}" class="card-img-top img-fluid"/>
+                            </div>
+                            {% if image.in_display %}
+                            <a class="btn btn-outline-green">Currently Displayed</a>
+                            {% endif %}
+                            <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_update' image.id%}">Update</a>
+                            <a class="btn btn-outline-danger" href="{% url 'me2ushop:product_image_delete' image.id %}">Delete</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+</div>
+    {% endblock %}

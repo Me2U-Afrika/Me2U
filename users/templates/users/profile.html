@@ -26,10 +26,10 @@
 
 
             <div class="media">
-                <img src="{{ user.profile.image.thumbnail.url }}" class="card-img-top rounded-circle account-img" style="height:120px; width:160px">
+                <img src="/media/images/{{ user.profile.image.thumbnail }}" class="card-img-top rounded-circle account-img" style="height:120px; width:160px">
             </div>
             <div class="media-body">
-                <strong class="account-heading">Welcome, {{ name|capfirst }}!</strong>
+                <strong class="account-heading">Welcome {{ name|capfirst }}!</strong>
                 <br/>
                 <p class="text-secondary">Email: {{ user.email }}</p>
                 <br>
@@ -47,9 +47,13 @@
                     <ul>
                         <li><a href="{% url 'password-change' %}">Change Password</a></li>
                         <li><a href="{% url 'users:personal-info' %}">Edit Personal information</a></li>
-                        <li><a href="{% url 'users:order-info' %}">Edit Billing/Shipping Information</a></li>
+                        <li><a href="{% url 'users:address_list' %}">Edit Billing/Shipping Information</a></li>
                     </ul>
                 </fieldset>
+                <div class="cb">
+                    <br>
+                    <br>
+                </div>
             </section>
         </div>
     </div>

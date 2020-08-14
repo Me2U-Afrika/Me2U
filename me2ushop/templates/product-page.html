@@ -1,244 +1,265 @@
 {% extends 'navigation.html' %}
 {% load tagging_tags %}
+{% load render_bundle from webpack_loader %}
 
 
 {% block content %}
-<style>
 
-
-
-</style>
 <body>
   <!--Main layout-->
   <main class="mt-5 pt-4">
     <div class="container dark-grey-text mt-5">
 
       <!--Grid row-->
-      <div class="row wow fadeIn">
+        <div class="row wow fadeIn">
 
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
-            <div class="view overlay">
-                <img src="{{ object.image.url }} " alt="{{ object.title }}" class="img-fluid"/>
-                    <a href="{{ object.get_absolute_url }}">
-                        <div class="mask rgba-white-slight"></div>
-                    </a>
-                    <div class="cb"><br/><br/></div>
-                    <h3>Mostly Ordered With</h3>
-                    <br>
-                <div class="row">
-                    {% for item in object.cross_sells_hybrid %}
-                        <div class="col-lg-4 col-md-12 mb-12">
-                        {% include 'tags/product_thumbnail.html' %}
-                        </div>
-                    {% empty %}
-                    <p class="text-center">No related orders.</p>
-                    {% endfor %}
-                </div>
-              </div>
-            <hr>
-        </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
-
-          <!--Content-->
-          <div class="p-4">
-
-            <h1>{{ object.title }}</h1>
-
-            <p class="lead">
-                {% if object.sale_price %}
-                  <span class="mr-1">
-                    Was:<del>{{ object.old_price}}</del></span>
-                <br>
-                    Now:<span>${{ object.price }}</span>
-
-                {% else %}
-                    <span>${{ object.price }}</span>
-                {% endif %}
-            </p>
-
-            <p class="lead font-weight-bold">Description</p>
-
-              <p>{{ object.description }}</p>
-
-                Brand: <em>{{ object.brand }}</em>
-                <br>
-                In categor{{ object.product_categories.count|pluralize:"y,ies" }}:
-                        {% for c in object.product_categories.all %}
-                                <a href="{{ c.get_absolute_url }}">{{ c }}</a>
-                        {% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-
-                 <br>
-                 <div class="cb"><br /><br /></div>
-                  {% if object.seller == user %}
-                    <div>
-                        <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product-update' object.slug %}">Update</a>
-                        <a class="btn btn-outline-danger" href="{% url 'me2ushop:product-delete' object.slug %}">Delete</a>
-                    </div>
-
-                  {% else %}
-                    <form action="{{ object.get_add_cart_url }}" method="POST">
-                    {% csrf_token %}
-<!--                      <div class="input-group" id="id_long_desc"><a href="" > <i class="fas fa-minus-circle mr-2"></i></a>-->
-                    <div class="mt-3 pl-1 col-xs-2">
-                      {{ cart_product_form.quantity }}
-                    </div>
-                    <div class="cb"><br/><br/></div>
-
-                    <div>
-                        <button class="btn btn-primary btn-md waves-effect float:left mr-3" type="submit">
-                             Add to Cart<i class="fas fa-shopping-cart ml-1"></i>
-                        </button>
-
-                         <a href="{{ object.get_remove_cart_url }}" class="btn btn-danger btn-md my-0 p">
-                            Remove from cart
-                         </a>
-                          <a href="{{ object.get_order_summary_url }}" class="btn btn-secondary btn-md my-0 p">
-                              Order Summary
-                          </a>
-                 </div>
-              </form>
-                    <br>
-                <div>
-                  Seller: <a href="{% url 'me2ushop:seller_page' object.seller.username %}"> {{ object.seller }}</a>
-                </div>
-              {% endif %}
-
-            <section class="text-left pl-5">
-                <div class="cb"><br /><br /></div>
-                    <h3>Product Tags</h3>
-                         <div id="tags" >
-                            {% for tag in product.tags %}
-                                {% include 'tags/tag_link.html' %}
-                            {% empty %}
-                            <div id="no_tags">
-
-                                Help other sellers find this product easily. Add tags or create one. Tag the product in your local dialect.
-                                <br>
-                                i.e kiti-kiswahili, amata-kinyarwanda
+            <!--Grid column-->
+                <div class="col-md-6 mb-4">
+                        {% for image in object.productimage_set.all %}
+                            {% if image.in_display %}
+                            <div id="imagebox">
+                                <img src="{{ image.image.url }}" alt="{{ object.title }}" class="img-fluid"/>
                             </div>
+                            {% endif %}
+                        {% endfor %}
+                            <div class="cb"><br/></div>
+                            <h3>Mostly Ordered With</h3>
+
+                        <div class="row">
+                            {% for item in object.cross_sells_hybrid %}
+                                <div class="col-lg-4 col-md-12 mb-12">
+                                {% include 'tags/product_thumbnail.html' %}
+                                </div>
+                            {% empty %}
+                            <p class="text-center">No related orders.</p>
                             {% endfor %}
                         </div>
-                        <br />
-                    {% if request.user.is_authenticated %}
-                        <label for="id_tag"><a id="tag_product" style=" color:blue;">Tag this product </a></label>
-                        <br />
-                        <input type="hidden" id="id_slug" value="{{ object.slug }}"/>
-                        <input id="id_tag" type="text" placeholder="Type to choose or create a tag."/>
-                        <form>
-
-                        </form>
-                     <input type="submit" value="Tag It" id="add_tag" />
-                    {% else %}
-                      <a href="{% url 'login' %}?next={{ request.path }}">
-                          Log in to tag this product.
-                      </a>
-                    {% endif %}
-
-                <div class="cb">
-                    <br/><br/>
+                    <hr>
                 </div>
-                <h3>Product Reviews</h3>
-                {% if request.user.is_authenticated %}
-                {% if request.user != object.seller %}
-                    <a id="add_review" style=" color:DarkOrange;">Write a Review</a>
-                {% endif %}
-                    <div id="review_form">
-                        <div id="review_errors">
+            <!--Grid column-->
+
+            <!--Grid column-->
+                <div class="col-md-6 mb-4">
+
+                    <!--Content-->
+                    <div class="p-4">
+
+                        <h1>{{ object.title }}</h1>
+
+                        <p class="lead">
+                            {% if object.sale_price and object.discount_price %}
+                           <h6><span class="mr-1">
+                               <del>${{ object.price}}</del></span></h6>
+
+                                <h2><span>${{ object.discount_price }}</span></h2>
+
+                            {% else %}
+                                <span>${{ object.price }}</span>
+                            {% endif %}
+                        </p>
+
+                        <p class="lead font-weight-bold">Description</p>
+
+                        <p>{{ object.description|linebreaks }}</p>
+                        <p>Brand: <a href="{% url 'me2ushop:seller_page' object.seller.id %}"><em>{{ object.brand }}</em></a></p>
+                            <br>
+                            In categor{{ object.product_categories.count|pluralize:"y,ies" }}:
+                                    {% for c in object.product_categories.all %}
+                                        <a href="{{ c.get_absolute_url }}">{{ c }}</a>
+                                    {% if not forloop.last %} , {% endif %}
+                                    {% endfor %}
+
+                        <br>
+                        <div class="cb"><br/><br/></div>
+                        {% if object.seller == user %}
+                            <div>
+                                <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product-update' object.slug %}">Update</a>
+                                <a class="btn btn-outline-orange" href="{% url 'me2ushop:product_images' object.slug %}">Product Images</a>
+                                <a class="btn btn-outline-danger" href="{% url 'me2ushop:product-delete' object.slug %}">Delete</a>
+                                <a class="btn btn-outline-green" href="{% url 'me2ushop:seller_page' object.seller.id %}">My Store</a>
+
+                            </div>
+
+                        {% else %}
+                            <form action="{{ object.get_add_cart_url }}" method="POST">
+                                {% csrf_token %}
+                                    <!--<div class="input-group" id="id_long_desc"><a href="" > <i class="fas fa-minus-circle mr-2"></i></a>-->
+                                <div class="mt-3 pl-1 col-xs-2">
+                                    {% if formset %}
+                                    {{ formset.management_form }}
+                                        {% for form in formset %}
+                                    <div class="row">
+                                        {{ form }}
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="cb"><br/><br/></div>
+
+                                <div>
+                                    <button class="btn btn-primary btn-md waves-effect float:left mr-3" type="submit">
+                                        Add to Cart<i class="fas fa-shopping-cart ml-1"></i>
+                                    </button>
+                                    <a href="{{ object.get_remove_cart_url }}" class="btn btn-danger btn-md my-0 p">
+                                        Remove from cart
+                                    </a>
+                                    <a href="{{ object.get_order_summary_url }}" class="btn btn-secondary btn-md my-0 p">
+                                        Order Summary
+                                    </a>
+                                </div>
+                            </form>
+                            <br>
+                            <div>
+                                Seller: <a href="{% url 'me2ushop:seller_page' object.seller.id %}"> {{ object.brand }}</a>
+                            </div>
+                        {% endif %}
+
+                        <section class="text-left pl-5">
+                            <div class="cb"><br /><br /></div>
+                            <h3>Product Tags</h3>
+                                <div id="tags" >
+                                    {% for tag in product.tags %}
+                                        {% include 'tags/tag_link.html' %}
+                                    {% empty %}
+                                    <div id="no_tags">
+                                        Help other sellers find this product easily. Add tags or create one. Tag the product in your local dialect.
+                                        <br>
+                                        i.e kiti-kiswahili, amata-kinyarwanda
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <br />
+                            {% if request.user.is_authenticated %}
+                                <label for="id_tag"><a id="tag_product" style=" color:blueviolet;">Tag this product </a></label>
+                                <br />
+                                <input type="hidden" id="id_slug" value="{{ object.slug }}"/>
+                                <input id="id_tag" type="text" placeholder="Type to choose or create a tag."/>
+                                <form>
+
+                                </form>
+                                <input type="submit" value="Tag It" id="add_tag" />
+                            {% else %}
+                            <a href="{% url 'login' %}?next={{ request.path }}">
+                                Log in to tag this product.
+                            </a>
+                            {% endif %}
+
+                            <div class="cb">
+                                <br/><br/>
+                            </div>
+                            <h3>Product Reviews</h3>
+                            {% if request.user.is_authenticated %}
+                            {% if request.user != object.seller %}
+                                <a id="add_review" style=" color:blueviolet;">Write a Review</a>
+                            {% endif %}
+                                <div id="review_form">
+                                    <div id="review_errors">
+                                    </div>
+                                    <table>
+                                        {{ review_form.as_table }}
+                                        <tr>
+                                            <td colspan="2">
+                                                {% csrf_token %}
+                                                <input type="submit" id="submit_review" value="Submit"/>
+                                                <input type="submit" id="cancel_review" value="Cancel|Close"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            {% else %}
+                            <a href="{% url 'login' %}?next={{ request.path }}">
+                                Log in to write your own review.
+                            </a>
+                            {% endif %}
+                            <div class="cb">
+                                <br/><br/>
+                            </div>
+                            <div id="reviews">
+                                {% for review in product_reviews %}
+                                    {% include 'tags/product_review.html' %}
+                                {% empty %}
+                                <div id="no_reviews">
+                                    No product reviews yet. Be the First!
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+
+                        <div class="cb">
+                            <br/>
+                            <br/>
                         </div>
-                        <table>
-                            {{ review_form.as_table }}
-                            <tr>
-                                <td colspan="2">
-                                    {% csrf_token %}
-<!--                                    <input type="hidden" id="id_slug" value="{{ object.slug }}"/>-->
-                                    <input type="submit" id="submit_review" value="Submit"/>
-                                    <input type="submit" id="cancel_review" value="Cancel|Close"/>
-                                </td>
-                            </tr>
-                        </table>
                     </div>
-                {% else %}
-                    <a href="{% url 'login' %}?next={{ request.path }}">
-                        Log in to write your own review.
-                    </a>
-                {% endif %}
-                <div class="cb">
-                    <br/><br/>
+                    <!--Content-->
+                    <!--Grid column-->
+
                 </div>
-                <div id="reviews">
-                    {% for review in product_reviews %}
-                        {% include 'tags/product_review.html' %}
-                    {% empty %}
-                    <div id="no_reviews">
-                        No product reviews yet. Be the First!
+            <!--Grid row-->
+
+            <hr>
+
+            <!--Grid row-->
+            {% if object.additional_information %}
+                <div class="row d-flex justify-content-center wow fadeIn">
+
+                    <!--Grid column-->
+                    <div class="col-md-6 text-center">
+
+                        <h4 class="my-4 h4">Additional information</h4>
+
+                        <p>{{ object.additional_information|linebreaks }}</p>
+
                     </div>
-                    {% endfor %}
+                    <!--Grid column-->
                 </div>
-            </section>
+            {% endif %}
+                <!--Grid row-->
+                <hr>
+                <!--Grid row-->
+                <div class="row d-flex justify-content-center wow fadeIn">
 
-                <div class="cb">
-                    <br/>
-                    <br/>
+                    <div class="col-md-12 text-center">
+                        <h3>Similar Products by different vendors</h3>
+                        {% for item in object.cross_sells_sellers %}
+                                <div class="col-lg-4 col-md-12 mb-12">
+                                {% include 'tags/product_snippet.html' %}
+                                </div>
+                            {% empty %}
+                            <p class="text-center">No related orders.</p>
+                            {% endfor %}
+                    </div>
                 </div>
-          <!--Content-->
+                <hr>
+            <!--Grid row-->
         </div>
-        <!--Grid column-->
 
-      </div>
-      <!--Grid row-->
-
-      <hr>
-
-      <!--Grid row-->
-      <div class="row d-flex justify-content-center wow fadeIn">
-
-        <!--Grid column-->
-        <div class="col-md-6 text-center">
-
-          <h4 class="my-4 h4">Additional information</h4>
-
-          <p>4K ACTION CAMERA with 4X ZOOM: Professional 4K/30FPS, 2.7K/30fps, 1080P/60FPS video and 16MP photo resolution enables you to capture exciting moment for you.<br>
-            This action camera also features zoom range from 1.0X to 4.0X.
-            WIRELESS WRIST REMOTE CONTROL: Put the remote control on your wrist while installing the sports PC web camera on your helmet, convenient to record moments in places you can't reach. Wireless range up to 10m(33ft), the remote is not waterproof.
-            <br><
-                WIFI ACTION CAMERA with 2" SCREEN: Save and share your sports action camera moments on the phone/tablet with App XDV, WiFi signal ranges up to 33 feet. 2'' screen allows you to preview the video in action camera.
-                100FT WATERPROOF CAMERA with FREE ACCESSORIES: Place your camera into the waterproof case and securely fasten it, you can dive below 30 meters. This underwater camera is ideal for water sports such as swimming, surfing, diving, etc.
-            <br> This underwater camera also comes with 2 rechargeable 1050mAh batteries, charger and accessories which available for most action camera even Gopro.
-                  VERSATILE BUT COMPACT: This action camera features multiple functions including driving mode, image rotation, time-lapse, loop recording, slow motion, dramashot, exposure and white balance. Bringing this sports camera to more applicable conditions beyond your expectation. This action camera is not Mac compatible.</p>
-
-        </div>
-        <!--Grid column-->
-
-      </div>
-      <!--Grid row-->
-        <hr>
-      <!--Grid row-->
-        <div class="row d-flex justify-content-center wow fadeIn">
-
-            <div class="col-md-12 text-center">
-                <h3>Recommended for You</h3>
-                {% for item in view_recs %}
-                    {% include 'tags/product_snippet.html' %}
-                {% empty %}
-                    No related orders.
-                {% endfor %}
-            </div>
-        </div>
-        <hr>
-      <!--Grid row-->
     </div>
   </main>
   <!--Main layout-->
-     {% block extra_scripts %}
-  <script type="text/javascript">
+        {% block extra_scripts %}
+            {% if formset %}
+                {{ formset.media }}
+            {% endif %}
 
-  </script>
-
+            {% render_bundle 'imageswitcher' 'js' %}
+            <script>
+                const e = React.createElement;
+                document.addEventListener("DOMContentLoaded",
+                    function(event) {
+                        var images = [
+                            {% for image in object.productimage_set.all %}
+                                {"image": "{{image.image.url|safe }}",
+                                    "thumbnail": "{{ image.image.thumbnail.url|safe }}"
+                                },
+                            {% endfor %}
+                        ]
+                        ReactDOM.render(e(ImageBox,
+                        {images: images,
+                         imageStart:images[0]}),
+                           document.getElementById('imagebox')
+                        );
+                    });
+            </script>
         {% endblock extra_scripts %}
 
 

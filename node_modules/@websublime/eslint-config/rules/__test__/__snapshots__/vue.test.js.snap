@@ -1,0 +1,315 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Validate Vue ESLint config. > Rules: Vuejs 1`] = `
+Object {
+  "errorCount": 11,
+  "fixableErrorCount": 5,
+  "fixableWarningCount": 4,
+  "results": Array [
+    Object {
+      "errorCount": 11,
+      "filePath": "tests/fixtures/vue.fixture.vue",
+      "fixableErrorCount": 5,
+      "fixableWarningCount": 4,
+      "messages": Array [
+        Object {
+          "column": 1,
+          "endColumn": 2,
+          "endLine": 1,
+          "line": 1,
+          "message": "Definition for rule 'import/order' was not found.",
+          "nodeType": null,
+          "ruleId": "import/order",
+          "severity": 2,
+        },
+        Object {
+          "column": 1,
+          "endColumn": 2,
+          "endLine": 1,
+          "line": 1,
+          "message": "Definition for rule 'import/extensions' was not found.",
+          "nodeType": null,
+          "ruleId": "import/extensions",
+          "severity": 2,
+        },
+        Object {
+          "column": 8,
+          "endColumn": 14,
+          "endLine": 2,
+          "line": 2,
+          "message": "'v-else' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive.",
+          "nodeType": "VAttribute",
+          "ruleId": "vue/valid-v-else",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 6,
+          "endLine": 7,
+          "line": 4,
+          "message": "Elements in iteration expect to have 'v-bind:key' directives.",
+          "nodeType": "VStartTag",
+          "ruleId": "vue/require-v-for-key",
+          "severity": 2,
+        },
+        Object {
+          "column": 19,
+          "endColumn": 21,
+          "endLine": 8,
+          "fix": Object {
+            "range": Array [
+              130,
+              130,
+            ],
+            "text": " ",
+          },
+          "line": 8,
+          "message": "Expected 1 space before '}}', but not found.",
+          "nodeType": "VExpressionEnd",
+          "ruleId": "vue/mustache-interpolation-spacing",
+          "severity": 1,
+        },
+        Object {
+          "column": 13,
+          "endColumn": 33,
+          "endLine": 10,
+          "fix": Object {
+            "range": Array [
+              156,
+              161,
+            ],
+            "text": "@",
+          },
+          "line": 10,
+          "message": "Expected '@' instead of 'v-on:'.",
+          "nodeType": "VAttribute",
+          "ruleId": "vue/v-on-style",
+          "severity": 1,
+        },
+        Object {
+          "column": 34,
+          "endColumn": 34,
+          "endLine": 10,
+          "fix": Object {
+            "range": Array [
+              177,
+              177,
+            ],
+            "text": "
+",
+          },
+          "line": 10,
+          "message": "Expected 1 line break after opening tag (\`<button>\`), but no line breaks found.",
+          "messageId": "unexpectedAfterClosingBracket",
+          "nodeType": "HTMLTagClose",
+          "ruleId": "vue/singleline-html-element-content-newline",
+          "severity": 1,
+        },
+        Object {
+          "column": 40,
+          "endColumn": 40,
+          "endLine": 10,
+          "fix": Object {
+            "range": Array [
+              183,
+              183,
+            ],
+            "text": "
+",
+          },
+          "line": 10,
+          "message": "Expected 1 line break before closing tag (\`</button>\`), but no line breaks found.",
+          "messageId": "unexpectedBeforeOpeningBracket",
+          "nodeType": "HTMLEndTagOpen",
+          "ruleId": "vue/singleline-html-element-content-newline",
+          "severity": 1,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 7,
+          "endLine": 16,
+          "line": 16,
+          "message": "Expected object keys to be in natural ascending order. 'data' should be before 'name'.",
+          "messageId": "sortKeys",
+          "nodeType": "Property",
+          "ruleId": "sort-keys",
+          "severity": 2,
+        },
+        Object {
+          "column": 3,
+          "endColumn": 4,
+          "endLine": 23,
+          "fix": Object {
+            "range": Array [
+              263,
+              383,
+            ],
+            "text": "function() {
+return {
+    name: 'World',
+    items: [
+      {id: 1, name: \\"a\\"},
+      {id: 2, name: \\"b\\"},
+      {id: 3, name: \\"c\\"}
+    ]
+  };
+}",
+          },
+          "line": 16,
+          "message": "\`data\` property in component must be a function.",
+          "nodeType": "Property",
+          "ruleId": "vue/no-shared-component-data",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 10,
+          "endLine": 18,
+          "line": 18,
+          "message": "Expected object keys to be in natural ascending order. 'items' should be before 'name'.",
+          "messageId": "sortKeys",
+          "nodeType": "Property",
+          "ruleId": "sort-keys",
+          "severity": 2,
+        },
+        Object {
+          "column": 21,
+          "endColumn": 24,
+          "endLine": 19,
+          "fix": Object {
+            "range": Array [
+              317,
+              320,
+            ],
+            "text": "'a'",
+          },
+          "line": 19,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 21,
+          "endColumn": 24,
+          "endLine": 20,
+          "fix": Object {
+            "range": Array [
+              343,
+              346,
+            ],
+            "text": "'b'",
+          },
+          "line": 20,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 21,
+          "endColumn": 24,
+          "endLine": 21,
+          "fix": Object {
+            "range": Array [
+              369,
+              372,
+            ],
+            "text": "'c'",
+          },
+          "line": 21,
+          "message": "Strings must use singlequote.",
+          "messageId": "wrongQuotes",
+          "nodeType": "Literal",
+          "ruleId": "quotes",
+          "severity": 2,
+        },
+        Object {
+          "column": 5,
+          "endColumn": 14,
+          "endLine": 25,
+          "line": 25,
+          "message": "Missing return type on function.",
+          "messageId": "missingReturnType",
+          "nodeType": "FunctionExpression",
+          "ruleId": "@typescript-eslint/explicit-function-return-type",
+          "severity": 1,
+        },
+        Object {
+          "column": 2,
+          "endColumn": 1,
+          "endLine": 30,
+          "fix": Object {
+            "range": Array [
+              448,
+              448,
+            ],
+            "text": ";",
+          },
+          "line": 29,
+          "message": "Missing semicolon.",
+          "messageId": "missingSemi",
+          "nodeType": "ExportDefaultDeclaration",
+          "ruleId": "semi",
+          "severity": 2,
+        },
+      ],
+      "source": "<template>
+  <div v-else>
+    Hello, {{ name }}!
+    <div
+      v-for=\\"item of items\\"
+      key=\\"item.id\\"
+    >
+      {{ item.name}}
+    </div>
+    <button v-on:click=\\"onClick\\">Button</button>
+  </div>
+</template>
+<script>
+export default {
+  name: 'App',
+  data: {
+    name: 'World',
+    items: [
+      {id: 1, name: \\"a\\"},
+      {id: 2, name: \\"b\\"},
+      {id: 3, name: \\"c\\"}
+    ]
+  },
+  methods: {
+    onClick() {
+      // do something.
+    }
+  }
+}
+</script>
+",
+      "warningCount": 5,
+    },
+  ],
+  "usedDeprecatedRules": Array [
+    Object {
+      "replacedBy": Array [
+        "naming-convention",
+      ],
+      "ruleId": "@typescript-eslint/camelcase",
+    },
+    Object {
+      "replacedBy": Array [
+        "naming-convention",
+      ],
+      "ruleId": "@typescript-eslint/class-name-casing",
+    },
+    Object {
+      "replacedBy": Array [
+        "naming-convention",
+      ],
+      "ruleId": "@typescript-eslint/interface-name-prefix",
+    },
+  ],
+  "warningCount": 5,
+}
+`;

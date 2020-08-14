@@ -76,28 +76,18 @@ class CategoryDetailedView_africa_made(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(CategoryDetailedView_africa_made, self).get_context_data(**kwargs)
-        # categories = Category.active.all()
+
+        made_in_africa = []
+        categories = Category.active.all()
         # print('all:', categories)
-        # made_in_africa = Product.active.all()
-        # print('made:', made_in_africa)
-        # for category in categories:
-        #     products = category.product_set.all()
-        #     print('products:', products)
-        #
-        #     # context['products'] = products
-        #
-        #     for item in products:
-        #         print('item:', item)
-        #         if item in made_in_africa:
-        #             africa_category = category
-        #             print('africa category:', africa_category)
+        for category in categories:
+            products = category.product_set.all()
+            # print('products:', products)
+            for item in products:
+                if item.made_in_africa and category not in made_in_africa:
+                    made_in_africa.append(category)
 
-        # if item.made_in_africa:
-        #     african_category = category
-        #     print('african_category:', category)
-
-        #
-        #             context['african_category'] = african_category
-        #             print('item:', item)
+        print ('mda:', made_in_africa)
+        context.update({'made_in_africa': made_in_africa})
 
         return context

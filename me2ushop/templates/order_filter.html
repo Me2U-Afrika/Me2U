@@ -1,0 +1,15 @@
+{% extends 'navigation.html' %}
+{% load render_table from django_tables2 %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Order dashboard</h2>
+    <form method="get">
+        {{ filter.form.as_p }}
+        <input type="submit">
+    </form>
+        </div>
+
+    <p>
+        {% render_table filter.qs %}
+    </p>
+{% endblock content %}

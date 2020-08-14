@@ -4,9 +4,7 @@ function preparedDocument(){
         text_length = jQuery("#id_q").val().length;
 
 
-
-
-        if (text =="search" || text == "Search"){
+        if (text=="search" || text=="Search"){
             // pop up alert
             alert("Enter a search term");
             // halt submission of form
@@ -44,7 +42,7 @@ function preparedDocument(){
 
 
     function addProductReview(){
-//           console.log('we came here')
+           console.log('we came here')
     // build an object of review data to submit
 
         var review = {
@@ -148,14 +146,6 @@ function preparedDocument(){
         }
     });
 
-    function statusBox(){
-        jQuery('<div id="loading"> Loading...</div>')
-        .prependTo("#main")
-        .ajaxStart(function(){jQuery(this).show();})
-        .ajaxStop(function(){jQuery(this).hide();})
-    }
-
-
 
 // Checkout form code
     var hideable_billing_form = $('.hideable_billing_form');
@@ -208,5 +198,5 @@ function preparedDocument(){
 }
 
 jQuery(document).ready(preparedDocument)
-statusBox()
+//statusBox()
 

@@ -1,8 +1,10 @@
 from django import forms
+from django.forms import inlineformset_factory, formset_factory, modelform_factory
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
-from .models import OrderItem
+from .models import OrderItem, Order, Address
 from .models import ProductReview
+from . import widgets
 
 PAYMENT_CHOICES = {
 
@@ -16,6 +18,10 @@ PAYMENT_CHOICES = {
 
 
 class CheckoutForm(forms.Form):
+    name = forms.CharField(required=False)
+    email = forms.EmailField(required=False)
+    phone = forms.CharField(required=False)
+    city = forms.CharField(required=False)
     shipping_address = forms.CharField(required=False)
     shipping_address2 = forms.CharField(required=False)
     shipping_zip = forms.CharField(required=False)
@@ -44,6 +50,19 @@ class CheckoutForm(forms.Form):
     payment_option = forms.ChoiceField(widget=forms.RadioSelect(), choices=PAYMENT_CHOICES)
 
 
+class AddressSelectionForm(forms.Form):
+    billing_address = forms.ModelChoiceField(queryset=None)
+    shipping_address = forms.ModelChoiceField(queryset=None)
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        queryset_billing = Address.objects.filter(user=user, address_type='B')
+        queryset_shipping = Address.objects.filter(user=user, address_type='S')
+
+        self.fields['billing_address'].queryset = queryset_billing
+        self.fields['shipping_address'].queryset = queryset_shipping
+
+
 class CouponForm(forms.Form):
     code = forms.CharField(widget=forms.TextInput(attrs={
         'placeholder': 'Enter Coupon',
@@ -54,7 +73,7 @@ class CouponForm(forms.Form):
 
 
 class CartAddProductForm(forms.Form):
-    quantity = forms.IntegerField(widget=forms.TextInput(attrs={
+    quantity = forms.IntegerField(required=False, widget=forms.TextInput(attrs={
         'placeholder': 'Qty',
         'value': '1',
         'class': 'form-control',
@@ -62,17 +81,25 @@ class CartAddProductForm(forms.Form):
         'aria-describedby': 'basic-addon2'
     }))
 
-    # override the default __init__ so we can set the request
-    # def __init__(self, request=None, *args, **kwargs):
-    #     self.request = request
-    #     super(CartAddProductForm, self).__init__(*args, **kwargs)
-    #
-    # # custom validation to check for cookie
-    # def clean(self):
-    #     if self.request:
-    #         if not self.request.session.test_cookie_worked():
-    #             raise forms.ValidationError("Cookies Must be Enabled")
-    #     return self.cleaned_data
+
+CartAddFormSet = modelform_factory(
+    OrderItem,
+    fields=('quantity',),
+    widgets={'quantity': widgets.PlusMinusNumber()},
+)
+
+
+# override the default __init__ so we can set the request
+# def __init__(self, request=None, *args, **kwargs):
+#     self.request = request
+#     super(CartAddProductForm, self).__init__(*args, **kwargs)
+#
+# # custom validation to check for cookie
+# def clean(self):
+#     if self.request:
+#         if not self.request.session.test_cookie_worked():
+#             raise forms.ValidationError("Cookies Must be Enabled")
+#     return self.cleaned_data
 
 
 class ProductReviewForm(forms.ModelForm):

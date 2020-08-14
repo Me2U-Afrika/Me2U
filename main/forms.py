@@ -19,7 +19,7 @@ class ContactForm(forms.Form):
         send_mail(
             "Site Message",
             message,
-            "site@me2ushop.domain",
+            "me2uafrica.herokuapp.com",
             ["danielmakori0@gmail.com"],
             fail_silently=False,
         )

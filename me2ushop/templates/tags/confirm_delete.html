@@ -1,0 +1,20 @@
+{% extends 'navigation.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+        <div class=" container content-section mt-5">
+            <form action="{{ object.get_absolute_url }}" method="POST" enctype="multipart/form-data">
+<!--                protect form from attacks-->
+                {% csrf_token %}
+
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Add a Product</legend>
+<!--                    Call the form from views-->
+                    {{ form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Submit</button>
+                </div>
+            </form>
+
+        </div>
+{% endblock %}
