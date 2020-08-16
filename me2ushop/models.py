@@ -1,5 +1,6 @@
 from django.conf import settings
 from Me2U.settings import PRODUCTS_PER_ROW
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.signals import post_save
@@ -127,6 +128,15 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+    # def clean(self):
+    #     # Don't all)ow draft entries to have a pub_date.
+    #     if self.seller != settings.AUTH_USER_MODEL:
+    #         print(self.seller)
+    #         print(settings.AUTH_PROFILE_MODULE)
+    #
+    #         raise ValidationError('Please select your seller email prior to adding. Make sure the selected email '
+    #                               'belongs to you.')
 
     def natural_key(self):
         return self.slug
@@ -328,6 +338,8 @@ class Order(models.Model):
     shipping_zip_code = models.CharField(max_length=12)
     shipping_country = models.CharField(max_length=3)
     shipping_city = models.CharField(max_length=12, blank=True, null=True)
+
+    last_spoken_to = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, related_name="cs_chats",on_delete=models.SET_NULL)
 
     class Meta:
         ordering = ['-order_date']

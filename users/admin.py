@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 @admin.register(models.User)
 class UserAdmin(DjangoUserAdmin):
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
+        (None, {"fields": ("username", "email", "password")}),
         (
             "Personal info",
             {"fields": ("first_name", "last_name")},
@@ -46,17 +46,18 @@ class UserAdmin(DjangoUserAdmin):
         (None,
          {
              "classes": ("wide",),
-             "fields": ("email", "password1", "password2"),
+             "fields": ("username", "email", "password1", "password2"),
          },
          ),
     )
     list_display = (
+        'username',
         "email",
         "first_name",
         "last_name",
         "is_staff",
     )
-    search_fields = ("email", "first_name", "last_name")
+    search_fields = ('username', "email", "first_name", "last_name")
     list_display_links = ("email",)
     ordering = ("date_joined",)
 

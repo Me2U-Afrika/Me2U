@@ -33,14 +33,18 @@ def register(request):
         # Checking for validity
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('email')
-
-            # email = form.cleaned_data.get('email')
-
-            messages.success(request, f'Account created for {username}!. You can now login!')
+            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
+            raw_password = form.cleaned_data.get('password1')
+            account = authenticate(email=email, password=raw_password)
+            login(request, account)
+            messages.success(request, f'Account created for {username}!')
             form.send_mail()
-            return redirect('login')
-        return redirect('login')
+            return redirect('me2ushop:home')
+        else:
+            messages.info(request, 'Invalid details, please try again')
+
+            return redirect('users:register')
     else:
 
         form = UserRegisterForm
@@ -49,59 +53,9 @@ def register(request):
             'form': form,
             'page_title': 'User Registration'
         }
-        page_title = 'User Registration'
         # context_instance = RequestContext(request)
         # print('contxt inst:', context_instance)
         return render(request, 'users/register.html', context)
-
-
-# def signup(request):
-#     if (request.method == 'POST'):
-#         email = request.POST.get('email')
-#         password = request.POST.get('password')
-#         st = request.POST.get('student')
-#         te = request.POST.get('teacher')
-#
-#         user = User.objects.create_user(
-#             email=email,
-#         )
-#         user.set_password(password)
-#         user.save()
-#
-#         usert = None
-#         if st:
-#             usert = user_type(user=user, is_student=True)
-#         elif te:
-#             usert = user_type(user=user, is_teach=True)
-#
-#         usert.save()
-#         # Successfully registered. Redirect to homepage
-#         return redirect('home')
-#     return render(request, 'register.html')
-#
-#
-# def login(request):
-#     if (request.method == 'POST'):
-#         email = request.POST.get('email')  # Get email value from form
-#         password = request.POST.get('password')  # Get password value from form
-#         user = authenticate(request, email=email, password=password)
-#
-#         if user is not None:
-#             login(request, user)
-#             type_obj = user_type.objects.get(user=user)
-#             if user.is_authenticated and type_obj.is_student:
-#                 return redirect('shome')  # Go to student home
-#             elif user.is_authenticated and type_obj.is_teach:
-#                 return redirect('thome')  # Go to teacher home
-#         else:
-#             # Invalid email or password. Handle as you wish
-#             return redirect('home')
-#
-#     return render(request, 'home.html')
-
-def login_seller(request):
-    pass
-    # return render(request, 'users/login_seller.html')
 
 
 def register_seller(request, template_name="users/seller_register.html"):

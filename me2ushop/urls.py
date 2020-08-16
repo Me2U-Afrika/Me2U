@@ -1,4 +1,6 @@
 from django.conf.urls import url
+from django.views.generic import TemplateView
+
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -9,6 +11,9 @@ app_name = 'me2ushop'
 urlpatterns = [
 
     url(r'^$', views.HomeView.as_view(), name='home'),
+    url('customer-service/(?P<order_id>[-\w]+)/$', views.room, name="cs_chat"),
+    url('customer-service/', TemplateView.as_view(template_name='customer_service.html'),
+        name="cs_main"),
     # url(r'^seller/<str:username>', views.SellerView.as_view(), name='seller_page'),
     url('seller/(?P<id>[-\w]+)/$', views.SellerView.as_view(), name='seller_page'),
 

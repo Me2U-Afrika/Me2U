@@ -416,6 +416,7 @@
     "is_active": true,
     "date_joined": "2020-08-01T04:56:02.773Z",
     "email": "danielmakori0@gmail.com",
+    "username": "Danny Max",
     "groups": [],
     "user_permissions": []
   }
@@ -433,6 +434,7 @@
     "is_active": true,
     "date_joined": "2020-08-01T05:00:14Z",
     "email": "dmakori28@gmail.com",
+    "username": "Ogechi",
     "groups": [],
     "user_permissions": []
   }
@@ -450,6 +452,7 @@
     "is_active": true,
     "date_joined": "2020-08-01T12:27:55.813Z",
     "email": "jacyboss@gmail.com",
+    "username": "jacy",
     "groups": [],
     "user_permissions": []
   }

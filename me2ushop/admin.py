@@ -149,7 +149,7 @@ class SellersProductAdmin(ProductAdmin):
                     ]
     list_editable = ('in_stock', 'stock',)
     readonly_fields = ("is_bestseller", "is_featured")
-    prepopulated_fields = {'seller': (Product.seller,)}
+    prepopulated_fields = {}
     autocomplete_fields = ()
 
     # Dispatchers are only allowed to see order that# are ready to be shipped
@@ -157,6 +157,9 @@ class SellersProductAdmin(ProductAdmin):
         qs = super().get_queryset(request)
         # print('qs:',qs)
         return qs.filter(seller=request.user)
+
+    def has_add_permission(self, request):
+        print(request)
 
 
 class ProductImageAdmin(admin.ModelAdmin):

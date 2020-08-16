@@ -22,15 +22,19 @@
     text-align: center;
     z-index:100;
     }
+.hello-msg {
+    font-size: 15px;
 
+
+}
 
 </style>
         {% block Navbar %}
     <div class="row">
         <!-- Navbar -->
-        <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark scrolling-navbar">
                 <!-- Brand -->
-                <a class="navbar-brand waves-effect "href="{% url 'categories:categoriesHome' %}">
+                <a class="navbar-brand waves-effect" href="{% url 'categories:categoriesHome' %}">
                     <strong class="blue-text">Me2U|Africa</strong>
                 </a>
 
@@ -118,18 +122,9 @@
                             <a class="nav-link waves-effect" href="{% url 'me2ushop:checkout' %}">Checkout</a>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="" class="nav-link waves-effect" target="_blank">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="" class="nav-link waves-effect" target="_blank">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item mt-2">
-                            <a href="{% url 'users:profile' %}" class="button alt">Profile</a>
+                        <li class="hello-msg nav-item mt-2">
+                            <a href="{% url 'users:profile' %}" class="button alt">Karibu,
+                            <span class="nav-line-1">{{request.user.username}}</span></a>
                         </li>
                          <li class="nav-item ml-3 mt-2">
                               <a href="{% url 'logout' %}" class="button alt">LogTFOut</a>

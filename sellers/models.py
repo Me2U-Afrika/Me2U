@@ -12,6 +12,6 @@ class Sellers(models.Model):
 
 class BusinessInformation(models.Model):
     owner = models.ForeignKey(Sellers, on_delete=models.CASCADE)
-    business_type = models.
+    # business_type = models.
 
 

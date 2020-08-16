@@ -34,6 +34,7 @@ s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'suit',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'widget_tweaks',
     'django_tables2',
+    'rest_framework',
     'main',
     'bootstrap3',
     'users.apps.UsersConfig',
@@ -65,6 +67,16 @@ INSTALLED_APPS = [
 
 ]
 DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap.html'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':
+        ('rest_framework.authentication.SessionAuthentication',
+         'rest_framework.authentication.BasicAuthentication'),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.DjangoModelPermissions',),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', 'PAGE_SIZE': 100
+
+}
 
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -105,13 +117,22 @@ TEMPLATES = [
         },
     },
 ]
-WEBPACK_LOADER = {    
+WEBPACK_LOADER = {
     'DEFAULT': {'BUNDLE_DIR_NAME': 'bundles/',
-    'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),    
-    }
+                'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+                }
 }
 
 WSGI_APPLICATION = 'Me2U.wsgi.application'
+ASGI_APPLICATION = 'Me2U.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
+}
 SITE_ID = 1
 
 # Database

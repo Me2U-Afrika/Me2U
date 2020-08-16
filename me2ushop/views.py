@@ -38,7 +38,6 @@ import string
 import stripe
 import tagging
 from tagging.models import Tag, TaggedItem
-
 from users.models import User
 
 from users.models import Profile
@@ -48,6 +47,11 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
+
+
+# chat room view
+def room(request, order_id):
+    return render(request, 'chat_room.html', {'room_name_json': str(order_id)},)
 
 
 class DateInput(django_forms.DateInput):
