@@ -1,8 +1,9 @@
 from urllib.parse import urljoin
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
-# import psycopg2
-from pysqlite2 import dbapi2 as sqlite
+import psycopg2
+
+# from pysqlite2 import dbapi2 as sqlite
 
 # from urlparse import urljoin
 
@@ -12,14 +13,17 @@ ignorewords = {'the', 'of', 'to', 'and', 'a', 'in', 'is', 'it'}
 
 class Crawler:
     # initilize the crawler with the name of the database
-    def __init__(self, dbname):
-        self.con = sqlite.connect(dbname)
+    def __init__(self,):
+        pass
+        # self.con = sqlite.connect(dbname)
 
     def __del__(self):
-        self.con.close()
+        # self.con.close()
+        return None
 
     def dbcommit(self):
-        self.con.commit()
+        # self.con.commit()
+        return None
 
     # Auxilliary function for getting an entry id and adding
     # it if it's not present
@@ -79,10 +83,7 @@ class Crawler:
 
     #     Create the database tables
 
-
-
-
-crawler = Crawler('searchindex.db')
+# crawler = Crawler('searchindex.db')
 # pagelist = ['http://127.0.0.1:8000/me2ushop/']
 # print(crawler.crawl(pagelist))
 # crawler.createindextables()

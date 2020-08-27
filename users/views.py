@@ -107,7 +107,9 @@ def order_details(request, order_id, template_name="users/order-details.html"):
     # print('order:', order)
     page_title = 'Order Details for Order #' + order_id
     order_items = OrderItem.objects.filter(user=request.user, order=order)
-    # print('order_items:', order_items)
+    seller_items = OrderItem.objects.filter(order=order, item__seller=request.user)
+
+    print('seller_items:', order_items)
     # for order_item in order_items:
     # print('item:', order_item.item.slug)
 

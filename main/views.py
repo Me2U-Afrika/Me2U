@@ -5,12 +5,22 @@ import datetime as dt
 from django.contrib.auth.decorators import login_required
 
 from . import forms
-from .models import MaDere, Basket, BasketLine
-
-# Create your views here.
-
 
 from me2ushop.models import Product, OrderItem, Order
+
+
+# chat/views.py
+from django.shortcuts import render
+
+
+def index(request):
+    return render(request, 'chat/index.html', {})
+
+
+def room(request, room_name):
+    return render(request, 'chat/room.html', {
+        'room_name': room_name
+    })
 
 
 def welcome(request):
@@ -27,44 +37,6 @@ class ContactUsView(FormView):
         return super().form_valid(form)
 
 
-def add_to_cart(request):
-    product = get_object_or_404(Product, pk=request.GET.get('product_id'))
-
-    cart_order_id = request.cart_order_id
-    print('cat:', cart_order_id)
-
-    if not request.cart_order_id:
-        if request.user.is_authenticated:
-            user = request.user
-        else:
-            user = None
-        cart_order_id = Basket.objects.create(user=user)
-        # cart_order_id = Order.objects.create(user=user)
-
-        # print('cart_items:', cart_order_id.id)
-        request.session['cart_id'] = cart_order_id.id
-
-    print('cat2:', cart_order_id)
-    # order_item, created = BasketLine.objects.get_or_create(
-    #     basket=cart_order_id.id,
-    #     product=product
-    # )
-    # print('created:', created)
-
-    order_item, created = BasketLine.objects.get_or_create(
-        basket=cart_order_id,
-        product=product,
-    )
-    print('created:', created)
-    # print('created_id:', OrderItem.user)
-
-    if not created:
-        order_item.quantity += 1
-        order_item.save()
-        return redirect("me2ushop:order_summary")
-    return redirect("me2ushop:product", slug=product.slug)
-
-
 # We first update our news_today view function we call the render
 # function and pass in 3 arguments. The request, the template file,
 # and a dictionary of values that we pass into the template. This
@@ -73,9 +45,6 @@ def add_to_cart(request):
 
 @login_required()
 def our_drivers(request):
-    # day = convert_dates(date)
-    date = dt.date.today()
-
     context = {
         'madriver': MaDere.objects.all()
     }

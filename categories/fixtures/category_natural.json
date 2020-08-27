@@ -1,0 +1,100 @@
+[
+{
+  "model": "categories.category",
+  "fields": {
+    "category_name": "At",
+    "slug": "art-craft",
+    "description": "What would you love more? Get modern art from Africa and beyond",
+    "is_active": true,
+    "image": "images/category/beach-towel-in-wind_PqVAEax.jpg",
+    "meta_keywords": "Art,3D,Design",
+    "meta_description": "African Art and Craft and Designers work.",
+    "created_at": "2020-06-22T16:13:45.964Z",
+    "updated_at": "2020-08-20T16:10:43.102Z"
+  }
+},
+{
+  "model": "categories.category",
+  "fields": {
+    "category_name": "Fa",
+    "slug": "fashion",
+    "description": "Quality dresses at Affordable rates",
+    "is_active": true,
+    "image": "images/category/Denim_jeans.jpg",
+    "meta_keywords": "Maasai, Shuka, kenyamaasai,kitenge,africankitenge",
+    "meta_description": "African wear in kenya, Maasai community. Available for shipment at affordable prices",
+    "created_at": "2020-06-22T16:44:23.817Z",
+    "updated_at": "2020-08-20T16:14:30.199Z"
+  }
+},
+{
+  "model": "categories.category",
+  "fields": {
+    "category_name": "El",
+    "slug": "electronics",
+    "description": "Electronics",
+    "is_active": true,
+    "image": "images/category/electronics2_wzt2ZIi.png",
+    "meta_keywords": "Electronics, cameras, phones",
+    "meta_description": "Get cheap cameras today",
+    "created_at": "2020-06-23T03:20:54.103Z",
+    "updated_at": "2020-08-20T16:13:47.926Z"
+  }
+},
+{
+  "model": "categories.category",
+  "fields": {
+    "category_name": "Ca",
+    "slug": "camera-photo",
+    "description": "Get quality cameras",
+    "is_active": true,
+    "image": "images/category/electronics4.jpg",
+    "meta_keywords": "Electronics, cameras, phones",
+    "meta_description": "Get cheap Electronics",
+    "created_at": "2020-06-23T20:03:48.402Z",
+    "updated_at": "2020-08-20T16:12:08.725Z"
+  }
+},
+{
+  "model": "categories.category",
+  "fields": {
+    "category_name": "So",
+    "slug": "gloceries",
+    "description": "Get Local produce at affordable price",
+    "is_active": true,
+    "image": "images/category/Local6.jpg",
+    "meta_keywords": "Fresh,Farm products, Gloceries,",
+    "meta_description": "Fresh from the Farm products",
+    "created_at": "2020-08-06T18:06:27.699Z",
+    "updated_at": "2020-08-20T16:15:47.315Z"
+  }
+},
+{
+  "model": "categories.category",
+  "fields": {
+    "category_name": "Ca",
+    "slug": "cellphones",
+    "description": "Get phones from across the globe at affordable price",
+    "is_active": true,
+    "image": "images/category/electronics1.jpg",
+    "meta_keywords": "Electronics, cameras, phones",
+    "meta_description": "Get cheap Electronics",
+    "created_at": "2020-08-06T18:06:27.813Z",
+    "updated_at": "2020-08-20T16:13:18.822Z"
+  }
+},
+{
+  "model": "categories.category",
+  "fields": {
+    "category_name": "Wo",
+    "slug": "womenfashion",
+    "description": "Get nice lady outfit",
+    "is_active": true,
+    "image": "images/category/jumpstory.jpg",
+    "meta_keywords": "women, women fashion, fashion, ladies wear",
+    "meta_description": "African wear in kenya, Maasai community. Available for shipment at affordable prices",
+    "created_at": "2020-08-06T18:08:27.414Z",
+    "updated_at": "2020-08-20T16:17:32.644Z"
+  }
+}
+]

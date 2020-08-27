@@ -6,12 +6,12 @@ class MaDrivers(admin.ModelAdmin):
     list_display = ('name', 'location', 'availability', 'description')
 
 
-class basketline(admin.ModelAdmin):
-    list_display = ('basket', 'quantity', 'product')
-
-
-class basket(admin.ModelAdmin):
-    list_display = ('user', 'status')
+# class basketline(admin.ModelAdmin):
+#     list_display = ('basket', 'quantity', 'product')
+#
+#
+# class basket(admin.ModelAdmin):
+#     list_display = ('user', 'status')
 
 
 # class ReferralsAdmin(admin.ModelAdmin):
@@ -19,8 +19,8 @@ class basket(admin.ModelAdmin):
 
 
 admin.site.register(MaDere, MaDrivers)
-admin.site.register(Basket, basket)
-admin.site.register(BasketLine, basketline)
+# admin.site.register(Basket, basket)
+# admin.site.register(BasketLine, basketline)
 
 # admin.site.register(Referrals, ReferralsAdmin)
 # admin.site.register(ads)

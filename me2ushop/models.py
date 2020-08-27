@@ -3,6 +3,7 @@ from Me2U.settings import PRODUCTS_PER_ROW
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Count
 from django.db.models.signals import post_save
 from django.utils import timezone
 from django.shortcuts import reverse
@@ -15,7 +16,6 @@ from django.db import models
 from stdimage import StdImageField, JPEGField
 import collections
 from tagging.registry import register
-
 
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
@@ -102,7 +102,9 @@ class Product(models.Model):
                                         max_length=255,
                                         help_text='help sellers get your product easily. Give a simple short '
                                                   'description '
-                                                  'about the page content you have added')
+                                                  'about the page content you have added. This information makes it'
+                                                  'easy for customers to get your product and offers an overview of it'
+                                        )
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
@@ -116,8 +118,9 @@ class Product(models.Model):
                                        'primary blue, '
                                        'danger red, '
                                        'secondary purple')
-    product_categories = models.ManyToManyField(Category, help_text='input the category above and any other where the '
-                                                                    'product can be found in.')
+    product_categories = models.ManyToManyField(Category, blank=True,
+                                                help_text='input the category above and any other where the '
+                                                          'product can be found in.')
 
     objects = ProductManager()
     active = ActiveProductManager()
@@ -191,7 +194,6 @@ class Product(models.Model):
         print('words:', words)
 
         for word in words:
-
             products = Product.active.filter(Q(title__icontains=word) |
                                              Q(title__startswith=self) |
                                              Q(title__endswith=self)
@@ -272,6 +274,7 @@ class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     cart_id = models.ForeignKey(ProductView, on_delete=models.CASCADE, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
+    date_ordered = models.DateTimeField(auto_now=True)
     status = models.IntegerField(choices=STATUSES, default=NEW)
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Product, on_delete=models.PROTECT, unique=False, blank=True, null=True)
@@ -296,10 +299,25 @@ class OrderItem(models.Model):
         return self.get_total_price() - self.get_total_discount_price()
 
     def get_final_price(self):
-        # if self.item.discount_price:
-        #     return self.get_total_discount_price()
-        # else:ord
-        return self.get_total_price()
+        if self.item.discount_price:
+            return self.get_total_discount_price()
+        else:
+            return self.get_total_price()
+
+    @property
+    def mobile_thumb_url(self):
+        products = [self.item]
+        # print('products:', products)
+        if products:
+            img = products[0].productimage_set.first()
+            if img:
+                return img.image.thumbnail.url
+
+    @property
+    def summary(self):
+        pieces = ['%s x %s' % (self.quantity, self.item.title)]
+
+        return ",".join(pieces)
 
 
 class Order(models.Model):
@@ -339,7 +357,8 @@ class Order(models.Model):
     shipping_country = models.CharField(max_length=3)
     shipping_city = models.CharField(max_length=12, blank=True, null=True)
 
-    last_spoken_to = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, related_name="cs_chats",on_delete=models.SET_NULL)
+    last_spoken_to = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, related_name="cs_chats",
+                                       on_delete=models.SET_NULL)
 
     class Meta:
         ordering = ['-order_date']
@@ -374,6 +393,27 @@ class Order(models.Model):
 
     def get_total_saved_coupon(self):
         return self.get_total() - self.get_coupon_total()
+
+    @property
+    def mobile_thumb_url(self):
+        products = [i.item for i in self.items.all()]
+        # print('products:', products)
+        if products:
+            img = products[0].productimage_set.first()
+            if img:
+                return img.image.thumbnail.url
+
+    @property
+    def summary(self):
+        product_counts = self.items.values(
+            'quantity', 'item__title'
+        )
+        pieces = []
+        for pc in product_counts:
+            pieces.append(
+                '%s x %s' % (pc['quantity'], pc['item__title'])
+            )
+        return ",".join(pieces)
 
 
 class ActiveProductReviewManager(models.Manager):

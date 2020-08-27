@@ -51,7 +51,7 @@ def create_ref_code():
 
 # chat room view
 def room(request, order_id):
-    return render(request, 'chat_room.html', {'room_name_json': str(order_id)},)
+    return render(request, 'chat_room.html', {'room_name_json': str(order_id)}, )
 
 
 class DateInput(django_forms.DateInput):
@@ -206,6 +206,7 @@ class HomeView(ListView):
                 context.update({'bestseller': results})
 
         return context
+
 
 
 def homeView(request):

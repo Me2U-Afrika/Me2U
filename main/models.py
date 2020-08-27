@@ -41,28 +41,28 @@ class MaDere(models.Model):
 
 
 # Same as the Order class
-class Basket(models.Model):
-    OPEN = 10
-    SUBMITTED = 20
-    # Same as Ordered = False/True
-    STATUSES = ((OPEN, 'Open'), (SUBMITTED, 'Submitted'))
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    status = models.IntegerField(choices=STATUSES, default=OPEN)
-
-    def is_empty(self):
-        return self.basketline_set.all().count() == 0
-
-    # Same as total_items
-    def count(self):
-        return sum(item.quantity for item in self.basketline_set.all())
-
-
-# same as the order_item class @ me2ushop.models
-class BasketLine(models.Model):
-    basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+# class Basket(models.Model):
+#     OPEN = 10
+#     SUBMITTED = 20
+#     # Same as Ordered = False/True
+#     STATUSES = ((OPEN, 'Open'), (SUBMITTED, 'Submitted'))
+#
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+#     status = models.IntegerField(choices=STATUSES, default=OPEN)
+#
+#     def is_empty(self):
+#         return self.basketline_set.all().count() == 0
+#
+#     # Same as total_items
+#     def count(self):
+#         return sum(item.quantity for item in self.basketline_set.all())
+#
+#
+# # same as the order_item class @ me2ushop.models
+# class BasketLine(models.Model):
+#     basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+#     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
 
 # class Referrals(models.Model):
 #     link = models.CharField(max_length=2083)

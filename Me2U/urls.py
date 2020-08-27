@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin as admin
+from django.urls import path
 from me2ushop import admin as main_admin
 
 from django.contrib.auth import views as auth_views
@@ -28,15 +29,19 @@ urlpatterns = [
     url(r'^seller-admin/', main_admin.sellers_admin.urls),
     url(r'^dispatch-admin/', main_admin.dispatchers_admin.urls),
 
+    path('api-auth', include('rest_framework.urls'), ),
+
     url('main/', include('main.urls')),
     url('users/', include('users.urls')),
     url('users/', include('django.contrib.auth.urls')),
 
     url('search/', include('search.urls')),
+    url('sellers/', include('sellers.urls')),
 
     url('me2ushop/', include('me2ushop.urls')),
+    url('marketing/', include('marketing.urls')),
 
-    url('categories/', include('categories.urls', namespace='categories')),
+    url('', include('categories.urls', namespace='categories')),
 
     url('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     url('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),

@@ -1,10 +1,17 @@
-from django.conf.urls import url
-from django.views.generic import TemplateView
-
-from . import views
 from django.conf import settings
+from django.conf.urls import url
 from django.conf.urls.static import static
-# from django.contrib import admin
+from django.views.generic import TemplateView
+from django.urls import path, include
+from rest_framework import routers
+from me2ushop import endpoints
+from rest_framework.authtoken import views as authtoken_views
+from . import views
+
+router = routers.DefaultRouter()
+router.register(r'orderitems', endpoints.PaidOrderItemsViewSet)
+router.register(r'orders', endpoints.PaidOrderViewSet)
+
 
 app_name = 'me2ushop'
 
@@ -46,6 +53,9 @@ urlpatterns = [
     url('add/tag', views.add_tag),
     url('tag/(?P<tag>[\w-]+)/$', views.tag),
     url('tag_cloud', views.tag_cloud, name='tag_cloud'),
+    path('api/', include(router.urls)),
+    path('mobile-api/auth/', authtoken_views.obtain_auth_token, name='mobile_token'),
+    path('mobile-api/my-orders/', endpoints.my_orders, name='mobile_my_orders',),
 
 ]
 

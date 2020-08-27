@@ -39,6 +39,15 @@
                     <td>${{ order_item.get_total_price }}</td>
                 </tr>
             {% endfor %}
+            {% for order_item in seller_items %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="{% url 'me2ushop:product' order_item.item.slug %}"> {{ order_item.item.title }} </a></td>
+                    <td>${{ order_item.item.price }}</td>
+                    <td>{{ order_item.quantity }}</td>
+                    <td>${{ order_item.get_total_price }}</td>
+                </tr>
+            {% endfor %}
                <tr>
                  <td colspan="4"><b>Total</b></td>
                  <td><b>${{ order.get_total }}</b></td>

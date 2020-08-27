@@ -1,0 +1,32 @@
+{% extends 'navigation.html' %}
+
+{% block content %}
+
+{% include 'sellers/seller_navbar.html' %}
+
+<div class="row">
+    <div class="col-md">
+        <div class="card card-body">
+            <h5>Delivery Address</h5>
+            <hr>
+            <h3>Shipping Address</h3>
+            <p>Street Address: {{order.shipping_address1 }}</p>
+            <p>Apartment Address: {{order.shipping_address2 }}</p>
+            <p>Country: {{order.shipping_country }}</p>
+            <p>City: {{order.shipping_city }}</p>
+            <p>Zip Code: {{order.shipping_zip_code }}</p>
+
+            <h3>Billing Address</h3>
+            <p>Street Address: {{order.billing_address1 }}</p>
+            <p>Apartment Address: {{order.billing_address2 }}</p>
+            <p>Country: {{order.billing_country }}</p>
+            <p>City: {{order.billing_city }}</p>
+            <p>Zip Code: {{order.billing_zip_code }}</p>
+
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

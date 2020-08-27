@@ -3,10 +3,22 @@
 {% block content %}
 <div class="container mt-5">
 <h1>{{ object.title }} Images: {{ product_image.count }}</h1>
-    {% if product_image.count < 4 %}
-    <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a>
-    {% endif %}
-    <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product' object.slug %}">View Product</a>
+
+     <div class="card card-body">
+       <div class="text-center font-small wow fadeIn">
+           {% if product_image.count < 4 %}
+            <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a>
+           {% endif %}
+           <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product' object.slug %}">View Product</a>
+            <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-create' %}"
+               role="button">Add A New Product
+            </a>
+            <a class="btn btn-outline-green" href="{% url 'me2ushop:seller_page' object.seller.id %}" role="button" target="_blank">My Storefront
+            </a>
+           <a class="btn btn-outline-yellow" href="{% url 'sellers:seller_home' %}">Dashboard</a>
+
+        </div>
+        </div>
 
         <div class="row">
             <div class="col-lg-10">
@@ -15,10 +27,11 @@
                         <div class="card card-height">
                             <!--Card image-->
                             <div class="view overlay zoom">
-                                <img src="/media/{{ image.image.medium }}" class="card-img-top img-fluid"/>
+                               <a href="{% url 'me2ushop:product_image_update">
+                                   <img src="/media/{{ image.image.medium }}" class="card-img-top img-fluid"/></a>
                             </div>
                             {% if image.in_display %}
-                            <a class="btn btn-outline-green">Currently Displayed</a>
+                            <p class="outline-green">Currently Displayed</p>
                             {% endif %}
                             <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_update' image.id%}">Update</a>
                             <a class="btn btn-outline-danger" href="{% url 'me2ushop:product_image_delete' image.id %}">Delete</a>

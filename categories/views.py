@@ -66,6 +66,19 @@ class CategoryDetailedView(DetailView):
         # meta_keywords = c.meta_keywords
 
         return context
+    #
+    # def get_queryset(self):
+    #     category_slug = self.kwargs['slug']
+    #     print('category:', category_slug)
+    #     self.category = None
+    #     if category_slug != "all":
+    #         self.category = get_object_or_404(Category, slug=category_slug)
+    #     if self.category:
+    #         products = Product.active.all().filter(product_categories=self.category)
+    #     else:
+    #         products = Product.active.all()
+    #     print('products qs:', products)
+    #     return products.order_by('title')
 
 
 class CategoryDetailedView_africa_made(DetailView):
@@ -87,7 +100,7 @@ class CategoryDetailedView_africa_made(DetailView):
                 if item.made_in_africa and category not in made_in_africa:
                     made_in_africa.append(category)
 
-        print ('mda:', made_in_africa)
+        print('mda:', made_in_africa)
         context.update({'made_in_africa': made_in_africa})
 
         return context

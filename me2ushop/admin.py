@@ -159,7 +159,8 @@ class SellersProductAdmin(ProductAdmin):
         return qs.filter(seller=request.user)
 
     def has_add_permission(self, request):
-        print(request)
+        pass
+        # print(request)
 
 
 class ProductImageAdmin(admin.ModelAdmin):
@@ -200,7 +201,7 @@ class ProductReviewAdmin(admin.ModelAdmin):
 
 
 class Items_Ordered(admin.ModelAdmin):
-    list_display = ('user', 'item', 'quantity', 'status', 'ordered')
+    list_display = ('user', 'item', 'quantity', 'status', 'ordered','date_ordered')
     search_fields = ['item', ]
     list_editable = ('status',)
     list_filter = ("status",)
@@ -211,6 +212,7 @@ class Items_Ordered(admin.ModelAdmin):
 class Ordered(admin.ModelAdmin):
     list_display = (
         'user',
+        'last_spoken_to',
         'order_date',
         'ordered',
         'payment',

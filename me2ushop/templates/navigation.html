@@ -24,15 +24,26 @@
     }
 .hello-msg {
     font-size: 15px;
-
-
 }
+#total-orders{
+    background-color:#4cb4c7;
+}
+#orders-delivered{
+    background-color:#7abecc;
+}
+#orders-pending{
+    background-color:#7CD1C0;
+}#orders-cancelled{
+    background-color:#7CD1C0;
+}
+
+
 
 </style>
         {% block Navbar %}
     <div class="row">
         <!-- Navbar -->
-        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark scrolling-navbar">
+        <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
                 <!-- Brand -->
                 <a class="navbar-brand waves-effect" href="{% url 'categories:categoriesHome' %}">
                     <strong class="blue-text">Me2U|Africa</strong>
@@ -49,63 +60,59 @@
 
                 <!-- Left -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item {% if request.path == '/me2ushop/' %}active{% endif %}">
+                        <li class="nav-item active">
                             <a class="nav-link waves-effect" href="{% url 'me2ushop:home' %}">
                                 Me2U|Market
                               <span class="sr-only">(current)</span>
                             </a>
                         </li>
-                        <li class="nav-item  {% if request.path == '/me2ushop/seller/' %}active{% endif %}">
-                            <a class="nav-link waves-effect" href="">
+                        <li class="nav-item {% if request.path == '/sellers/' %}active{% endif %}">
+                            <a class="nav-link waves-effect" href="{% url 'sellers:seller_home' %}">
                                 Sell On
                                 <span class="nav-line-1">Me2U</span>
                             </a>
                         </li>
-                                <!-- Dropdown -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">Services
+
+                        <li class="nav-item">
+                             <a class="nav-link waves-effect" href="">
+                                Deliver On
+                                <span class="nav-line-1">Me2U</span>
                             </a>
-                            <div class="dropdown-menu dropdown-secondary" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="">Advertise and Earn</a>
-                                <a class="dropdown-item" href="">Get Dry Cleaning & Laundry Services</a>
-                                <a class="dropdown-item" href="">Delivery Services</a>
-                                <a class="dropdown-item" href="">Taxi/Motorbike Transport</a>
-                                <a class="dropdown-item" href="">Household, Repair & Maintainance Services</a>
-                                <a class="dropdown-item" href="">Rent/Lend Me2U Products</a>
-                                <a class="dropdown-item" href="">WE ARE HIRING!!!</a>
-                            </div>
                         </li>
-                        <!-- Dropdown -->
-                      <li class="nav-item dropdown ml-4">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                          aria-haspopup="true" aria-expanded="false">Categories</a>
-                            <span class="sr-only">(current)</span>
-                        <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                            <!-- Dropdown -->
+                          <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                              aria-haspopup="true" aria-expanded="false">All Categories</a>
+                                <span class="sr-only">(current)</span>
+                            <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
 
-                            {% category_list request.path %}
+                              {% include "tags/categoryTag.html" %}
+                            </div>
+                          </li>
+                         <li class="nav-item dropdown">
+                              <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">Made In Africa</a>
+                                  <span class="sr-only">(current)</span>
+                                  <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
 
-                        </div>
-                      </li>
-                      <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">Africa|Made</a>
-                          <span class="sr-only">(current)</span>
-                          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                                    {% include "tags/AfricaMade.html" %}
 
-                            {% include "tags/AfricaMade.html" %}
-
-                          </div>
-                     </li>
+                                  </div>
+                             </li>
+                     <!-- Dropdown -->
+<!--                         <li class="nav-item">-->
+<!--                         <a class="nav-link waves-effect" href="">-->
+<!--                            Blog-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                         <a class="nav-link waves-effect" href="">-->
+<!--                            Magazine-->
+<!--                        </a>-->
+<!--                    </li>-->
                     </ul>
 
                     {% search_box request %}
-<!--                      {% if request.cart_items %}-->
-<!--                        <div>-->
-<!--                            {{ request.cart_items.count }}-->
-<!--                            items in basket-->
-<!--                        </div>-->
-<!--                        {% endif %}-->
 
                     <!-- Right -->
                     {% if user.is_authenticated %}
@@ -153,7 +160,7 @@
                     {% endif %}
                 </div>
          </nav>
-
+         <!-- Navbar -->
     </div>
         {% endblock Navbar %}
 
@@ -208,7 +215,7 @@
             </div>
             <ul>
                 <li><a href="/privacy-policy/">Privacy</a></li>
-                <li><a href="/contact/">Contact</a></li>
+                <li><a href="{% url 'main:contact_us' %}">Contact US</a></li>
                 <li><a href="{% url 'users:profile' %}">My Account</a></li>
                 <li><a href="{% url 'me2ushop:tag_cloud' %}">Product Hashtags</a></li>
                 <li><a href="{% url 'main:aboutus' %}">About Us</a></li>

@@ -8,7 +8,6 @@ from stats.models import ProductView
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.signals import user_logged_in
-from main.models import Basket
 
 import logging
 

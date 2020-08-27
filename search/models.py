@@ -17,6 +17,7 @@ class SearchTerm(models.Model):
     def __unicode__(self):
         return self.q
 
+
 #
 # class SearchEngine(models.Model):
 #
@@ -32,3 +33,26 @@ class SearchTerm(models.Model):
 #         self.con.execute('create index urltoidx on link(toid)')
 #         self.con.execute('create index urlfromidx on link(fromid)')
 #         self.dbcommit()
+
+# class Wordlist(models.Model):
+#     word = models.CharField(max_length=50)
+#
+#
+# class Urllist(models.Model):
+#     url = models.CharField()
+#
+#
+# class Wordlocation(models.Model):
+#     wordid = models.ForeignKey(Wordlist, on_delete=models.CASCADE)
+#     urlid = models.ForeignKey(Urllist, on_delete=models.CASCADE)
+#     location = models.CharField()
+#
+#
+# class Link(models.Model):
+#     fromid = models.IntegerField()
+#     toid = models.IntegerField()
+#
+#
+# class Linkwords(models.Model):
+#     wordid = models.ForeignKey(Wordlist, on_delete=models.CASCADE)
+#     linkid = models.ForeignKey(Link, on_delete=models.CASCADE)

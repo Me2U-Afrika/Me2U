@@ -15,6 +15,7 @@ class TestPage(TestCase):
 
     def test_user_signup_page_submission_works(self):
         post_data = {
+            "username": "ogechi",
             "email": "user@domain.com",
             "password1": "abcabcabc",
             "password2": "abcabcabc",

@@ -9,6 +9,20 @@ __pycache__/
 # Distribution / packaging
 .Python
 media/
+staticfiles/
+bundles/
+node_modules/
+webpack-stats.json/
+geckodriver.log/
+pinegrow.json/
+me2u_models.dot/
+me2u_modles.png/
+Me2UApp/
+.vscode/
+products.json/
+package-lock.json/
+yarn-error.log/
+
 build/
 develop-eggs/
 dist/

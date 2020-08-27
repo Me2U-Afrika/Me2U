@@ -1,0 +1,86 @@
+{% extends 'navigation.html' %}
+
+{% block content %}
+<style>
+
+</style>
+{% include 'sellers/seller_navbar.html' %}
+
+<div class="row">
+    <div class="col-md">
+        <div class="card card-body">
+               <div class="text-center font-small wow fadeIn">
+                    <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-create' %}"
+                       role="button">Add A New Product<i class="fas fa-hand-holding-usd"></i>
+                    </a>
+                    <a class="btn btn-outline-green" href="{% url 'me2ushop:seller_page' seller_name.id %}" role="button" target="_blank">My Storefront
+                        <i class="fas fa-hand-lizard"></i>
+                    </a>
+                </div>
+        </div>
+        <div class="card card-body">
+            <table class="table">
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Thumbnail</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+                {% for item in products %}
+                <tr>
+                   <td> <a href="{{ item.get_absolute_url}}">{{ item }}</a> </td>
+                    <td>{{ item.get_category_choice_display }}</td>
+                    {% for image in item.productimage_set.all %}
+                    {% if image.in_display %}
+                    <td class="caption" style="height:70px">
+                        <img src="/media/{{ image.image.thumbnail }}"/>
+                    </td>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if item.discount_price %}
+                        <td>{{ item.discount_price }}</td>
+                    {% else %}
+                        <td>{{ item.price }}</td>
+                    {% endif %}
+                    <td>
+                        <nav>
+                            <ul class="navbar-nav mr-auto">
+
+                            <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                              aria-haspopup="true" aria-expanded="false">Actions</a>
+                                <span class="sr-only">(current)</span>
+                            <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="btn btn-outline-orange btn-sm btn-block" href="{% url 'me2ushop:product' item.slug %}">View</a>
+                                <a class="btn btn-outline-primary btn-sm btn-block" href="{% url 'me2ushop:product-update' item.slug %}">Update</a>
+                                <a class="btn btn-outline-info btn-sm btn-block" href="{% url 'me2ushop:product_images' item.slug %}">Add Images</a>
+                                <a class="btn btn-outline-danger btn-sm btn-block" href="{% url 'me2ushop:product-delete' item.slug %}">Delete</a>
+                            </div>
+                          </li>
+                                </ul>
+                        </nav>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div class="card card-body">
+               <div class="text-center font-small wow fadeIn">
+                    <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-create' %}"
+                       role="button">Add A New Product<i class="fas fa-hand-holding-usd"></i>
+                    </a>
+                    <a class="btn btn-outline-green" href="{% url 'me2ushop:seller_page' seller_name.id %}" role="button" target="_blank">My Storefront
+                        <i class="fas fa-hand-lizard"></i>
+                    </a>
+                </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+
+

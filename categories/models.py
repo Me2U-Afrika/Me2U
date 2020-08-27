@@ -30,13 +30,13 @@ class ActiveCategoryManager(models.Manager):
         return super(ActiveCategoryManager, self).get_query_set().filter(is_active=True)
 
 
-class CategoryTagManager(models.Manager):
+class CategoryManager(models.Manager):
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
 
 
 class Category(models.Model):
-    category_name = models.CharField(max_length=50)
+    category_name = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     slug = models.SlugField(unique=True,
                             max_length=50,
                             help_text='Unique value for product page URL, created from name.')
@@ -56,7 +56,8 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    objects = models.Manager()
+    # objects = models.Manager()
+    objects = CategoryManager()
     active = ActiveCategoryManager()
 
     def __str__(self):

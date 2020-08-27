@@ -12,10 +12,15 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import boto3
 import django_heroku
 import os
+import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from botocore.config import Config
 
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+env.read_env('.env')
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -25,15 +30,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
+# DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com']
+REDIS_URL = env('REDIS_URL')
+
+ALLOWED_HOSTS = ['*']
+CANON_URL_HOST = 'www.me2u-africa.com'
+CANON_URLS_TO_REWRITE = ['me2u-africa.com', 'www.me2uafricaherokuapp.com']
 
 s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
 
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'channels',
     'suit',
     'django.contrib.admin',
@@ -45,10 +56,11 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_extensions',
+    'django_filters',
     'debug_toolbar',
     'widget_tweaks',
     'django_tables2',
-    'rest_framework',
+    'django.contrib.sitemaps',
     'main',
     'bootstrap3',
     'users.apps.UsersConfig',
@@ -59,19 +71,27 @@ INSTALLED_APPS = [
     'stripe',
     'utils',
     'search',
+    'sellers',
     'stdimage',
     'stats',
     'tagging',
     'storages',
+    'rest_framework',
+    'rest_framework.authtoken',
     'webpack_loader',
 
 ]
 DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap.html'
 
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':
         ('rest_framework.authentication.SessionAuthentication',
-         'rest_framework.authentication.BasicAuthentication'),
+         'rest_framework.authentication.TokenAuthentication',
+         'rest_framework.authentication.BasicAuthentication',
+
+         ),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.DjangoModelPermissions',),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', 'PAGE_SIZE': 100
@@ -79,19 +99,20 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'main.middleware.cart_middleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'Me2U.SSLMiddleware.SSLRedirect',
+    'main.middleware.cart_middleware',
+    # 'marketing.urlcanon.URLCanonicalizationMiddleware',
 
 ]
 INTERNAL_IPS = ['127.0.0.1']
@@ -129,7 +150,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],
+            'hosts': [REDIS_URL],
         },
     },
 }
@@ -219,11 +240,11 @@ else:
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
     #   Email Config
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST_USER = "Daniel Makori"
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = "password"
+    EMAIL_BACKEND = env('EMAIL_BACKEND')
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+    EMAIL_PORT = env('EMAIL_PORT')
+    EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
@@ -233,7 +254,7 @@ AUTH_USER_MODEL = 'users.User'
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = "me2u-africa"
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
 
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
