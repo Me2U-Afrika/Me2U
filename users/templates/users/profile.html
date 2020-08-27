@@ -26,7 +26,7 @@
 
 
             <div class="media">
-                <img src="/media/images/{{ user.profile.image.thumbnail }}" class="card-img-top rounded-circle account-img" style="height:120px; width:160px">
+                <img src="{{ user.profile.image.thumbnail.url }}" class="card-img-top rounded-circle account-img" style="height:120px; width:160px">
             </div>
             <div class="media-body">
                 <strong class="account-heading">Welcome {{ name|capfirst }}!</strong>

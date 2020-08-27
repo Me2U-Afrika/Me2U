@@ -17,6 +17,7 @@ import environ
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from botocore.config import Config
 
+
 env = environ.Env(
     DEBUG=(bool, False)
 )
@@ -35,7 +36,8 @@ DEBUG = env('DEBUG')
 
 REDIS_URL = env('REDIS_URL')
 
-ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com/', 'http://127.0.0.1:8000/']
+# ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com/', 'http://127.0.0.1:8000/']
+ALLOWED_HOSTS = ['*']
 CANON_URL_HOST = 'me2uafrica.herokuapp.com/'
 CANON_URLS_TO_REWRITE = ['me2u-africa.com', 'www.me2uafricaherokuapp.com']
 
@@ -223,7 +225,7 @@ LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # stripe settings
 
