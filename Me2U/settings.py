@@ -235,14 +235,13 @@ if DEBUG:
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
     #     Email server
-    EMAIL_BACKEND = (
-        "django.core.mail.backends.console.EmailBackend")
+    EMAIL_BACKEND = ("django.core.mail.backends.console.EmailBackend")
 else:
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
     #   Email Config
-    EMAIL_BACKEND = env('EMAIL_BACKEND')
+
     EMAIL_HOST_USER = env('EMAIL_HOST_USER')
     EMAIL_PORT = env('EMAIL_PORT')
     EMAIL_USE_TLS = env('EMAIL_USE_TLS')
