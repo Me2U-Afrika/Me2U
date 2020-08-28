@@ -22,7 +22,6 @@ chardet==3.0.4
 colorama==0.4.3
 ConfigArgParse==1.2.3
 constantly==15.1.0
-coursera-dl==0.11.5
 coverage==5.2.1
 cryptography==3.0
 cssselect2==0.3.0
@@ -45,7 +44,7 @@ django-heroku==0.3.1
 django-resized==0.3.11
 django-stdimage==5.1.1
 django-storages==1.9.1
-django-suit==0.2.28
+django-suit @ https://github.com/darklow/django-suit/tarball/v2
 django-tables2==2.3.1
 django-tagging==0.5.0
 django-webpack-loader==0.7.0
@@ -63,7 +62,6 @@ hyperlink==20.0.1
 idna==2.9
 incremental==17.5.0
 iniconfig==1.0.1
-ipython==7.17.0
 ipython-genutils==0.2.0
 jedi==0.17.2
 jmespath==0.10.0
@@ -102,7 +100,6 @@ python-jsonrpc-server==0.3.4
 python-language-server==0.34.1
 python-utils==2.4.0
 pytz==2020.1
-pywin32==228
 pywin32-ctypes==0.2.0
 requests==2.23.0
 s3transfer==0.3.3
