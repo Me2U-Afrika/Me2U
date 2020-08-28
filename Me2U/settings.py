@@ -262,7 +262,6 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Activate Django-Heroku.
-django_heroku.settings(locals())
 
 try:
     from settings_local import *
@@ -271,3 +270,6 @@ except ImportError:
 
 # turn to true during production
 ENABLE_SSL = False
+
+
+django_heroku.settings(locals())
