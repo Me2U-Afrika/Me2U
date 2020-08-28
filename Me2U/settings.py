@@ -17,7 +17,6 @@ import environ
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from botocore.config import Config
 
-
 env = environ.Env(
     DEBUG=(bool, False)
 )
@@ -32,9 +31,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
-DEBUG =os.environ('DEBUG')
+DEBUG = os.environ.get('DEBUG')
 
-REDIS_URL = os.environ('REDIS_URL')
+REDIS_URL = os.environ.get('REDIS_URL')
 
 # ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com/', 'http://127.0.0.1:8000/']
 ALLOWED_HOSTS = ['*']
@@ -240,7 +239,7 @@ else:
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-      # Email Config
+    # Email Config
     EMAIL_HOST_USER = "Daniel Makori"
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
@@ -261,7 +260,6 @@ AWS_DEFAULT_ACL = None
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
