@@ -215,7 +215,7 @@ META_DESCRIPTION = 'Me2U|Africa is an online self sustaining ecommerce tailored 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "Me2U/static"),
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
