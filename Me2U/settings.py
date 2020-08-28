@@ -34,7 +34,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
 DEBUG = env('DEBUG')
 
-REDIS_URL = env('REDIS_URL')
+REDIS_URL = os.environ('REDIS_URL')
 
 # ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com/', 'http://127.0.0.1:8000/']
 ALLOWED_HOSTS = ['*']
