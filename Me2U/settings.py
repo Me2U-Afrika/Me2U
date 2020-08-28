@@ -32,7 +32,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
-DEBUG = env('DEBUG')
+DEBUG =os.environ('DEBUG')
 
 REDIS_URL = os.environ('REDIS_URL')
 
