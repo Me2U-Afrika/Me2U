@@ -17,10 +17,6 @@ import environ
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from botocore.config import Config
 
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-env.read_env('.env')
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
