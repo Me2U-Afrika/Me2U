@@ -36,7 +36,9 @@ urlpatterns = [
     url(r'^product/(?P<slug>[\w-]+)/delete$', views.ProductDeleteView.as_view(), name='product-delete'),
 
     url(r"^product-images/(?P<slug>[\w-]+)/$", views.show_product_image, name="product_images", ),
-    url(r'^product-images/(?P<slug>[\w-]+)/create$', views.ProductImageCreateView.as_view(), name='product_image_create'),
+    url(r'^product-images/(?P<slug>[\w-]+)/create$', views.ProductImageCreateView.as_view(),
+    name='product_image_create'),
+    # url(r'^product-images/(?P<slug>[\w-]+)/create$', views.product_image_create, name='product_image_create'),
     url("^image-(?P<pk>[\w-]+)/update/$", views.ProductImageUpdateView.as_view(), name="product_image_update"),
     url('^image-(?P<pk>[\w-]+)/delete/$', views.ProductImageDeleteView.as_view(), name="product_image_delete"),
 

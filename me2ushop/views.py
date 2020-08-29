@@ -402,13 +402,15 @@ def product_image_create(request, slug):
     # print('productreviews:', product_reviews)
     # review_form = ProductReviewForm()
     product_image = ProductImage.objects.filter(item__seller=request.user, item=product)
+    form = ProductImageCreate(instance=request.user)
 
     context = {
         'object': product,
-        'product_image': product_image
+        'product_image': product_image,
+        'form': form,
     }
 
-    return render(request, 'product_images_list.html', context)
+    return render(request, 'tags/product_images_form.html', context)
 
 
 class ProductImageCreateView(LoginRequiredMixin, CreateView):

@@ -2,7 +2,7 @@ from django import forms
 from django.forms import inlineformset_factory, formset_factory, modelform_factory
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
-from .models import OrderItem, Order, Address
+from .models import OrderItem, Order, Address, ProductImage
 from .models import ProductReview
 from . import widgets
 
@@ -129,6 +129,14 @@ class RefundForm(forms.Form):
 class PaymentForm(forms.Form):
     use_default = forms.BooleanField(required=False)
     save = forms.BooleanField(required=False)
+
+
+class ProductImageCreate(forms.ModelForm):
+
+    class Meta:
+        model = ProductImage
+        fields = '__all__'
+
 
 # class ProductAddToCartForm(forms.Form):
 #     quantity = forms.IntegerField(widget=forms.TextInput(attrs={
