@@ -17,7 +17,7 @@ class OrderItemSerializer(serializers.HyperlinkedModelSerializer):
 class PaidOrderItemsViewSet(viewsets.ModelViewSet):
     queryset = models.OrderItem.objects.filter(
         order__status=models.Order.PAID).order_by('-date_ordered')
-    print('queryset:', queryset)
+    # print('queryset:', queryset)
 
     serializer_class = OrderItemSerializer
     filter_fields = ('item', 'status')
