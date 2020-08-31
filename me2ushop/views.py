@@ -208,7 +208,6 @@ class HomeView(ListView):
         return context
 
 
-
 def homeView(request):
     site_name = 'Me2U|Market'
     template_name = 'home-page.html'
@@ -402,7 +401,7 @@ def product_image_create(request, slug):
     # print('productreviews:', product_reviews)
     # review_form = ProductReviewForm()
     product_image = ProductImage.objects.filter(item__seller=request.user, item=product)
-    form = ProductImageCreate(instance=request.user)
+    form = ProductImageCreate()
 
     context = {
         'object': product,
@@ -732,7 +731,7 @@ def add_cart(request, slug):
                     item = get_object_or_404(Product, slug=slug)
                     # print("item we found:", item)
                     if request.cart_id:
-                        cart_id = request.cart_id[0]
+                        cart_id = request.cart_id
 
                         order_item, created = OrderItem.objects.get_or_create(
                             item=item,
@@ -796,7 +795,7 @@ def add_cart(request, slug):
 
         else:
             if request.cart_id:
-                cart_id = request.cart_id[0]
+                cart_id = request.cart_id
                 print('User is adding qty without form')
                 try:
                     item = get_object_or_404(Product, slug=slug)
@@ -894,7 +893,7 @@ def remove_cart(request, slug):
         else:
             # user is anonymous
             if request.cart_id:
-                cart_id = request.cart_id[0]
+                cart_id = request.cart_id
 
                 item = get_object_or_404(Product, slug=slug)
 
@@ -962,7 +961,7 @@ def remove_single_item_cart(request, slug):
     else:
         item = get_object_or_404(Product, slug=slug)
         if request.cart_id:
-            cart_id = request.cart_id[0]
+            cart_id = request.cart_id
 
             order_query_set = Order.objects.filter(
                 cart_id=cart_id,
@@ -1011,7 +1010,7 @@ class Order_summary_view(View):
 
             else:
                 if self.request.cart_id:
-                    cart_id = self.request.cart_id[0]
+                    cart_id = self.request.cart_id
 
                     order = Order.objects.get(cart_id=cart_id, ordered=False)
                     print(order)
@@ -1102,7 +1101,7 @@ class Checkout_page(View):
             else:
                 # User is anonymous
                 if self.request.cart_id:
-                    cart_id = self.request.cart_id[0]
+                    cart_id = self.request.cart_id
 
                     order = Order.objects.get(cart_id=cart_id, ordered=False)
 
@@ -1318,7 +1317,7 @@ class Checkout_page(View):
             else:
                 if self.request.cart_id:
 
-                    order = Order.objects.get(cart_id=self.request.cart_id[0], ordered=False)
+                    order = Order.objects.get(cart_id=self.request.cart_id, ordered=False)
 
                     if form.is_valid():
                         print('valid checkout anonymous form')
@@ -1332,9 +1331,9 @@ class Checkout_page(View):
                         shipping_zip = form.cleaned_data.get('shipping_zip')
 
                         if is_valid_form([shipping_address1, shipping_country, shipping_zip, name, phone, email]):
-
+                            print('valid details')
                             shipping_address = Address(
-                                cart_id=self.request.cart_id[0],
+                                cart_id=self.request.cart_id,
                                 name=name,
                                 email=email,
                                 phone=phone,
@@ -1388,7 +1387,7 @@ class Checkout_page(View):
                             if is_valid_form([billing_address1, billing_country, billing_zip]):
 
                                 billing_address = Address(
-                                    cart_id=self.request.cart_id[0],
+                                    cart_id=self.request.cart_id,
                                     street_address=billing_address1,
                                     apartment_address=billing_address2,
                                     country=billing_country,
@@ -1505,7 +1504,7 @@ class PaymentView(View):
         if self.request.user.is_authenticated:
             order = Order.objects.get(user=self.request.user, ordered=False)
         elif self.request.cart_id:
-            order = Order.objects.get(cart_id=self.request.cart_id[0], ordered=False)
+            order = Order.objects.get(cart_id=self.request.cart_id, ordered=False)
 
         # print('order:', order)
         if order.billing_country:
@@ -1530,7 +1529,7 @@ class PaymentView(View):
             order = Order.objects.get(user=self.request.user, ordered=False)
         else:
             if self.request.cart_id:
-                order = Order.objects.get(cart_id=self.request.cart_id[0], ordered=False)
+                order = Order.objects.get(cart_id=self.request.cart_id, ordered=False)
 
         form = PaymentForm(self.request.POST)
         # userprofile = UserProfile.objects.get(user=self.request.user)
@@ -1560,7 +1559,7 @@ class PaymentView(View):
                 if self.request.user.is_authenticated:
                     payment.user = self.request.user
                 else:
-                    payment.cart_id = self.request.cart_id[0]
+                    payment.cart_id = self.request.cart_id
                 payment.amount = amount
                 payment.save()
 

@@ -1,0 +1,41 @@
+<br>
+<div class="row">
+    <div class="col">
+        <div class="col-md">
+            <div class="card text-center text-white mb-3" id="total-orders">
+                <div class="card-header">
+                    <h5 class="card-title">Active Orders</h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{total_orders.count}}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="col-md">
+            <div class="card text-center text-white mb-3" id="orders-delivered">
+                <div class="card-header">
+                    <h5 class="card-title">Delivered by Me </h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{delivered.count }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="col-md">
+            <div class="card text-center text-white mb-3" id="orders-cancelled">
+                <div class="card-header">
+                    <h5 class="card-title">My Current pending</h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{pending.count }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

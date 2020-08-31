@@ -12,7 +12,6 @@ router = routers.DefaultRouter()
 router.register(r'orderitems', endpoints.PaidOrderItemsViewSet)
 router.register(r'orders', endpoints.PaidOrderViewSet)
 
-
 app_name = 'me2ushop'
 
 urlpatterns = [
@@ -28,7 +27,6 @@ urlpatterns = [
     url(r'^remove_cart/(?P<slug>[\w-]+)/$', views.remove_cart, name='remove_cart'),
     url(r'^remove_single_item_cart/(?P<slug>[\w-]+)/$', views.remove_single_item_cart, name='remove_single_item_cart'),
 
-
     url(r'^product/(?P<slug>[\w-]+)/$', views.ProductDetailedView.as_view(), name='product'),
     url('new/', views.ProductCreateView.as_view(), name='product-create'),
 
@@ -37,7 +35,7 @@ urlpatterns = [
 
     url(r"^product-images/(?P<slug>[\w-]+)/$", views.show_product_image, name="product_images", ),
     url(r'^product-images/(?P<slug>[\w-]+)/create$', views.ProductImageCreateView.as_view(),
-    name='product_image_create'),
+        name='product_image_create'),
     # url(r'^product-images/(?P<slug>[\w-]+)/create$', views.product_image_create, name='product_image_create'),
     url("^image-(?P<pk>[\w-]+)/update/$", views.ProductImageUpdateView.as_view(), name="product_image_update"),
     url('^image-(?P<pk>[\w-]+)/delete/$', views.ProductImageDeleteView.as_view(), name="product_image_delete"),
@@ -57,7 +55,7 @@ urlpatterns = [
     url('tag_cloud', views.tag_cloud, name='tag_cloud'),
     path('api/', include(router.urls)),
     path('mobile-api/auth/', authtoken_views.obtain_auth_token, name='mobile_token'),
-    path('mobile-api/my-orders/', endpoints.my_orders, name='mobile_my_orders',),
+    path('mobile-api/my-orders/', endpoints.my_orders, name='mobile_my_orders', ),
 
 ]
 

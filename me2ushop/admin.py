@@ -201,7 +201,7 @@ class ProductReviewAdmin(admin.ModelAdmin):
 
 
 class Items_Ordered(admin.ModelAdmin):
-    list_display = ('user', 'item', 'quantity', 'status', 'ordered','date_ordered')
+    list_display = ('user', 'item', 'quantity', 'status', 'ordered', 'date_ordered')
     search_fields = ['item', ]
     list_editable = ('status',)
     list_filter = ("status",)
@@ -620,26 +620,26 @@ main_admin.register(Product, ProductAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)
 main_admin.register(ProductImage, ProductImageAdmin)
 
-# admin.site.register(ProductReview, ProductReviewAdmin)
+admin.site.register(ProductReview, ProductReviewAdmin)
 main_admin.register(ProductReview, ProductReviewAdmin)
 
-# admin.site.register(OrderItem, Items_Ordered)
+admin.site.register(OrderItem, Items_Ordered)
 main_admin.register(OrderItem, Items_Ordered)
 
-# admin.site.register(Order, Ordered)
+admin.site.register(Order, Ordered)
 main_admin.register(Order, Ordered)
 
 # admin.site.register(OrderAnonymous, Ordered_Anonymous)
-# admin.site.register(StripePayment, Payment)
+admin.site.register(StripePayment, Payment)
 main_admin.register(StripePayment, Payment)
 
-# admin.site.register(Coupon, CouponDisplay)
+admin.site.register(Coupon, CouponDisplay)
 main_admin.register(Coupon, CouponDisplay)
 
 main_admin.register(RequestRefund, RefundDisplay)
-# admin.site.register(RequestRefund, RefundDisplay)
+admin.site.register(RequestRefund, RefundDisplay)
 
-# admin.site.register(Address, AddressAdmin)
+admin.site.register(Address, AddressAdmin)
 main_admin.register(Address, AddressAdmin)
 
 central_office_admin = CentralOfficeAdminSite("central-office-admin")
@@ -654,6 +654,6 @@ dispatchers_admin.register(Product, DispatchersProductAdmin)
 # dispatchers_admin.register(models.ProductTag, ProductTagAdmin)
 dispatchers_admin.register(Order, DispatchersOrderAdmin)
 
-sellers_admin = SellersAdminSite("seller-admin")
+sellers_admin = SellersAdminSite("service_providers-admin")
 sellers_admin.register(Product, SellersProductAdmin)
 sellers_admin.register(Order, SellersOrderAdmin)

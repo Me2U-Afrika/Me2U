@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UsernameField
 from django.core.mail import send_mail
 
-from .models import Profile, User
+from .models import Profile, User, AutomobileProfile, SellerProfile
 from django_countries.fields import CountryField
 import logging
 
@@ -32,23 +32,18 @@ class UserRegisterForm(UserCreationForm):
         )
 
 
-# class AutomobileRegisterForm(UserCreationForm):
-#     phone_number = forms.CharField(max_length=20)
-#     refferal_name = forms.CharField(max_length=10)
-#
-#     class Meta:
-#         model = User
-#         fields = ['first_name', 'last_name', 'email,' 'password1', 'password2']
+class AutomobileRegisterForm(forms.ModelForm):
 
-#
-# class SellerRegisterForm(UserCreationForm):
-#     shop_tax_country = CountryField(multiple=False)
-#     phone_number = forms.CharField(max_length=20)
-#     refferal_name = forms.CharField(max_length=10)
-#
-#     class Meta:
-#         model = User
-#         fields = ['first_name', 'last_name', 'email,' 'password1', 'password2']
+    class Meta:
+        model = AutomobileProfile
+        fields = '__all__'
+        exclude = ['date_of_registration']
+
+
+class SellerRegisterForm(forms.ModelForm):
+    class Meta:
+        model = SellerProfile
+        fields = "__all__"
 
 
 class AddressForm(forms.ModelForm):

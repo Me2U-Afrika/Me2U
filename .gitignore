@@ -20,7 +20,6 @@ me2u_modles.png/
 Me2UApp/
 .vscode/
 products.json/
-package-lock.json/
 yarn-error.log/
 
 build/

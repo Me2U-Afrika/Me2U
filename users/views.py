@@ -11,10 +11,10 @@ from django.contrib.auth.decorators import login_required
 from me2ushop.models import Order, OrderItem, Product
 from .profile import retrieve_profile, set_profile, set_personal, set_pic
 from .forms import AddressForm, PersonalInfoForm, ProfilePicForm
-from .models import Profile, User
+from .models import Profile, User, SellerProfile, AutomobileProfile
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import (FormView, CreateView, UpdateView, DeleteView, )
 import logging
 
@@ -327,3 +327,65 @@ def personal_info(request, template_name="users/personal-info.html"):
             'page_title': page_title
         }
         return render(request, template_name, context)
+
+
+class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = SellerProfile
+    template_name = 'users/service_providers/seller_profile_form.html'
+    fields = ['first_name', 'last_name', 'business_type', 'business_title', 'tax_country', 'subscription_type']
+    success_url = reverse_lazy("users:seller_confirm")
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        # print('obj:', obj)
+        user = self.request.user
+        # seller_set = User.objects.get(email=user)
+        # seller_set.group_
+        # seller_set.save()
+        # user.Groups.add('Seller')
+        # print(user.is_seller)
+
+        obj.user = user
+        obj.save()
+        # form.save()
+        return super().form_valid(form)
+
+    def test_func(self):
+        if not self.request.user.is_seller:
+            try:
+                print('we got here')
+                current_app = Seller_Profile.objects.filter(user=self.request.user, application_status__lt=20)
+                if current_app:
+                    print('current_app available:', current_app[0].application_status)
+                    return False
+            except Exception:
+                return True
+            return True
+
+
+class AutomobileCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = AutomobileProfile
+    template_name = 'users/service_providers/automobile_profile_form.html'
+    fields = ['first_name', 'last_name', 'passport_no', 'automobile_type', 'country', 'city_of_operation']
+    success_url = reverse_lazy("users:automobile_confirm")
+
+    def form_valid(self, form):
+        # form.save()
+        obj = form.save(commit=False)
+        user = self.request.user
+        # user.is_dispatcher = True
+        obj.user = user
+        obj.save()
+        return super().form_valid(form)
+
+    def test_func(self):
+        if not self.request.user.is_dispatcher:
+            try:
+                print('we got here')
+                current_app = Automobile_Profile.objects.filter(user=self.request.user, application_status__lt=20)
+                if current_app:
+                    print('current_app available:', current_app[0].application_status)
+                    return False
+            except Exception:
+                return True
+            return True

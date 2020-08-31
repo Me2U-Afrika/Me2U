@@ -266,19 +266,26 @@ class OrderItem(models.Model):
     PROCESSING = 20
     SENT = 30
     CANCELLED = 40
+    ON_TRANSIT = 45
+    DELIVERED = 50
     STATUSES = ((NEW, "New"),
                 (PROCESSING, "Processing"),
                 (SENT, "Sent"),
-                (CANCELLED, "Cancelled"),)
+                (CANCELLED, "Cancelled"),
+                (DELIVERED, "Delivered"),
+                )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-    cart_id = models.ForeignKey(ProductView, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    # cart_id = models.ForeignKey(ProductView, on_delete=models.CASCADE, blank=True, null=True)
+    cart_id = models.CharField(max_length=40, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     date_ordered = models.DateTimeField(auto_now=True)
     status = models.IntegerField(choices=STATUSES, default=NEW)
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Product, on_delete=models.PROTECT, unique=False, blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    delivered_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='dispatcher', on_delete=models.SET_NULL, blank=True, null=True)
+
 
     class Meta:
         ordering = ['-date_added']
@@ -327,7 +334,8 @@ class Order(models.Model):
     DONE = 30
     STATUSES = ((NEW, 'New'), (PAID, 'Paid'), (DONE, 'Done'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-    cart_id = models.ForeignKey(ProductView, on_delete=models.CASCADE, blank=True, null=True)
+    # cart_id = models.ForeignKey(ProductView, on_delete=models.CASCADE, blank=True, null=True)
+    cart_id = models.CharField(max_length=40, blank=True, null=True)
     status = models.IntegerField(choices=STATUSES, default=NEW)
     items = models.ManyToManyField('OrderItem')
     ref_code = models.CharField(max_length=20)
@@ -444,7 +452,8 @@ class ProductReview(models.Model):
 class Address(models.Model):
     from stats.models import ProductView
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.CASCADE)
-    cart_id = models.ForeignKey(ProductView, max_length=70, blank=True, null=True, on_delete=models.CASCADE)
+    # cart_id = models.ForeignKey(ProductView, max_length=70, blank=True, null=True, on_delete=models.CASCADE)
+    cart_id = models.CharField(max_length=40, blank=True, null=True)
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
     country = CountryField(multiple=False)

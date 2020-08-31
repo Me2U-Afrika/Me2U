@@ -18,7 +18,7 @@ class MaDrivers(admin.ModelAdmin):
 #     list_display = ('description', 'discount')
 
 
-admin.site.register(MaDere, MaDrivers)
+# admin.site.register(MaDere, MaDrivers)
 # admin.site.register(Basket, basket)
 # admin.site.register(BasketLine, basketline)
 

@@ -66,19 +66,21 @@
                               <span class="sr-only">(current)</span>
                             </a>
                         </li>
+                        {% if request.user.is_authenticated %}
                         <li class="nav-item {% if request.path == '/sellers/' %}active{% endif %}">
                             <a class="nav-link waves-effect" href="{% url 'sellers:seller_home' %}">
-                                Sell On
+                                  Sell On
                                 <span class="nav-line-1">Me2U</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                             <a class="nav-link waves-effect" href="">
+                             <a class="nav-link waves-effect" href="{% url 'users:automobile_create' %}">
                                 Deliver On
                                 <span class="nav-line-1">Me2U</span>
                             </a>
                         </li>
+                        {% endif %}
                             <!-- Dropdown -->
                           <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"

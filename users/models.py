@@ -63,7 +63,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, username, password, **extra_fields)
 
-    def create_superuser(self, email,username, password, **extra_fields):
+    def create_superuser(self, email, username, password, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -143,8 +143,73 @@ class Profile(models.Model):
         return f'{self.user.email} profile'
 
 
-class Seller_Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = StdImageField(upload_to='images/profile_pics/sellers', blank=True, null=True, default='default.svg',
-                          variations={
-                              'thumbnail': (300, 300)}, delete_orphans=True)
+BUSINESS_TYPE_CHOICE = (
+    ('Co', 'Company'),
+    ('Sol', 'Sole Proprietorship')
+)
+
+SUBSCRIPTION_TYPE_CHOICE = (
+    ('Bs', 'Basic'),
+    ('Pr', 'Premium')
+)
+
+UNDER_REVIEW = 10
+ACCEPTED = 20
+DENIED = 30
+STATUSES = ((UNDER_REVIEW, "Under Review"),
+            (ACCEPTED, "Accepted"),
+            (DENIED, "Denied"),
+            )
+
+
+class SellerProfile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=10)
+    last_name = models.CharField(max_length=10)
+    business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
+    business_title = models.CharField(max_length=30)
+    date_of_registration = models.DateField
+    tax_country = CountryField(multiple=False)
+    business_description = models.TextField
+    subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE)
+    application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
+
+
+AUTOMOBILE_TYPE_CHOICE = (
+    ('Cr', 'Car'),
+    ('Pk', 'Pick Up'),
+    ('Va', 'Van'),
+    ('Bs', 'Bus'),
+    ('Tr', 'Truck'),
+    ('Mt', 'Motor'),
+    ('Bc', 'Bicycle'),
+)
+COUNTRIES_CHOICE = (
+    ('KE', 'Kenya'),
+    ('UG', 'Uganda'),
+    ('TZ', 'Tanzania'),
+    ('RW', 'Rwanda'),
+)
+
+VALID_CITIES_CHOICE = (
+    ('Kg', 'Kigali'),
+    ('Kp', 'Kampala'),
+    ('Nb', 'Nairobi'),
+    ('Dd', 'Dodoma'),
+)
+
+
+class AutomobileProfile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=10)
+    last_name = models.CharField(max_length=10)
+    passport_no = models.CharField(max_length=20)
+    automobile_type = models.CharField(choices=AUTOMOBILE_TYPE_CHOICE, max_length=4)
+    date_of_registration = models.DateTimeField(auto_now_add=True)
+    country = models.CharField(max_length=2, choices=COUNTRIES_CHOICE)
+    city_of_operation = models.CharField(max_length=2, choices=VALID_CITIES_CHOICE)
+    application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
+
+
+class Admin(object):
+    pass

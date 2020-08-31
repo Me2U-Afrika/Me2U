@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.contrib import admin as admin
+from django.contrib import admin
 from django.urls import path
 from me2ushop import admin as main_admin
 
@@ -23,8 +23,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # url(r'^admin/', admin.site.urls),
-    url(r'^admin/', main_admin.main_admin.urls),
+    url(r'^admin/', admin.site.urls),
     url(r'^office-admin/', main_admin.central_office_admin.urls),
     url(r'^seller-admin/', main_admin.sellers_admin.urls),
     url(r'^dispatch-admin/', main_admin.dispatchers_admin.urls),

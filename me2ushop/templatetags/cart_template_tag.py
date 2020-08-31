@@ -22,80 +22,81 @@ register = template.Library()
 @register.filter
 def cart_item_count(request, **kwargs):
     if request.user.is_authenticated:
+        # print('request cart_id:', request.cart_id)
 
         qs = Order.objects.filter(user=request.user, ordered=False)
         # print(qs)
-
+        #
         if request.cart_id:
             # print('true', request.cart_id)
-            cart_id = request.cart_id[0]
-            # print("valid tracker:", cart_id.valid_tracker)
+            cart_id = request.cart_id
+        #     # print("valid tracker:", cart_id.valid_tracker)
+        #
+        #     if cart_id.valid_tracker:
+        #
+            order_items = OrderItem.objects.filter(cart_id=cart_id, ordered=False)
+        #
+            # print('order_items:', order_items)
+        #
+            for order_item in order_items:
+                # print('item_cart_id:', order_item.cart_id)
+                quantity = order_item.quantity
 
-            if cart_id.valid_tracker:
+                # Get product instances for each
+                product = Product.active.all()
+                item = get_object_or_404(product, slug=order_item.item.slug)
+        #
+                # Delete and create a new instance of the product
+                order_item.delete()
+                order_anonymous_delete = Order.objects.filter(cart_id=cart_id, ordered=False)
+                # # print("anonymous_id:", order_anonymous_delete)
+                order_anonymous_delete.delete()
+                # # print("anonymous_id:", order_anonymous_delete)
+                #
+                # # Add new product being ordered to database
+                order_item, created = OrderItem.objects.get_or_create(
+                    item=item,
+                    user=request.user,
+                    ordered=False
+                )
+                # print("order_item:", order_item)
+                # print("order_item_id:", order_item.cart_id)
 
-                order_items = OrderItem.objects.filter(cart_id=cart_id, ordered=False)
+                # Check if current user has products in cart
+                order_query_set = Order.objects.filter(user=request.user, ordered=False)
+                # print("user:", order_query_set)
 
-                # print('order_items:', order_items)
-
-                for order_item in order_items:
-                    # print('item_cart_id:', order_item.cart_id)
-                    quantity = order_item.quantity
-
-                    # Get product instances for each
-                    product = Product.active.all()
-                    item = get_object_or_404(product, slug=order_item.item.slug)
-
-                    # Delete and create a new instance of the product
-                    order_item.delete()
-                    order_anonymous_delete = Order.objects.filter(cart_id=cart_id, ordered=False)
-                    # print("anonymous_id:", order_anonymous_delete)
-                    order_anonymous_delete.delete()
-                    # print("anonymous_id:", order_anonymous_delete)
-
-                    # Add new product being ordered to database
-                    order_item, created = OrderItem.objects.get_or_create(
-                        item=item,
-                        user=request.user,
-                        ordered=False
-                    )
-                    # print("order_item:", order_item)
-                    # print("order_item_id:", order_item.cart_id)
-
-                    # Check if current user has products in cart
-                    order_query_set = Order.objects.filter(user=request.user, ordered=False)
-                    # print("user:", order_query_set)
-
-                    # This code returns the latest order by user that is not complete
-                    if order_query_set.exists():
-                        order = order_query_set[0]
-                        # order.items.add(order_item)
-                        # order.items = order_item
-                        # order.user = request.user
-                        # order.save()
-                        if order.items.filter(item__slug=item.slug).exists():
-                            if quantity > 1:
-                                order_item.quantity = quantity
-                            else:
-                                order_item.quantity += 1
-                            order_item.save()
+                # This code returns the latest order by user that is not complete
+                if order_query_set.exists():
+                    order = order_query_set[0]
+                    # order.items.add(order_item)
+                    # order.items = order_item
+                    # order.user = request.user
+                    # order.save()
+                    if order.items.filter(item__slug=item.slug).exists():
+                        if quantity > 1:
+                            order_item.quantity += quantity
                         else:
-                            order.items.add(order_item)
-                            order_item.quantity = quantity
-                            order_item.save()
+                            order_item.quantity += 1
+                        order_item.save()
                     else:
-                        # print("order not in cart")
-                        order_date = timezone.now()
-                        order = Order.objects.create(user=request.user, order_date=order_date)
                         order.items.add(order_item)
                         order_item.quantity = quantity
                         order_item.save()
-                        order.save()
-
-            for tracking_id in request.cart_id:
-                tracking_id.user = request.user
-                tracking_id.valid_tracker = False
-                tracking_id.save()
-
+                else:
+                    # print("order not in cart")
+                    order_date = timezone.now()
+                    order = Order.objects.create(user=request.user, order_date=order_date)
+                    order.items.add(order_item)
+                    order_item.quantity = quantity
+                    order_item.save()
+                    order.save()
+        #
+        #     for tracking_id in request.cart_id:
+        #         tracking_id.user = request.user
+        #         tracking_id.valid_tracker = False
+        #         tracking_id.save()
+        #
         if qs:
             return qs[0].items.count()
         return 0
@@ -104,7 +105,7 @@ def cart_item_count(request, **kwargs):
 @register.filter
 def cart_item_count_anonymous(request):
     if request.cart_id:
-        qs = Order.objects.filter(cart_id=request.cart_id[0], ordered=False)
+        qs = Order.objects.filter(cart_id=request.cart_id, ordered=False)
         if qs.exists():
             return qs[0].items.count()
 

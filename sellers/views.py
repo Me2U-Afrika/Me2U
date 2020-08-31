@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 from django.utils.html import format_html
@@ -11,29 +12,58 @@ from me2ushop.models import ProductImage, Product, Order, OrderItem, Address
 
 def seller_page(request):
     print('user:', request.user)
-    orders = OrderItem.objects.filter(item__seller=request.user).filter(ordered=True).exclude(order__status=30).exclude(status__gt=20)
-    order_id = Order.objects.filter(items__item__seller=request.user, ordered=True, status=20).distinct()
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if request.user.is_seller:
+        orders = OrderItem.objects.filter(item__seller=request.user).filter(ordered=True).exclude(
+            order__status=30).exclude(status__gt=20)
+        order_id = Order.objects.filter(items__item__seller=request.user, ordered=True, status=20).distinct()
 
-    # if order_id:
-    #     order_id = order_id[0]
-    # print('order_id', order_id[0].name)
-    total_orders = Order.objects.filter(items__item__seller=request.user)
-    cancelled = Order.objects.filter(items__item__seller=request.user, items__status=40)
-    delivered = Order.objects.filter(items__status=30, status=30, items__item__seller=request.user)
-    pending = orders.exclude(order__status=30)
-    print('orders:', orders)
-    for order in orders:
-        if order.user:
-            print(order.user)
-        else:
-            print(order.cart_id)
-    # for order in order_id:
-    #     print('order number:', order)
-    #     print('order from id:', order.items.all())
-    print('delivered:', delivered)
-    print('pending:', pending.count())
+        # if order_id:
+        #     order_id = order_id[0]
+        # print('order_id', order_id[0].name)
+        total_orders = Order.objects.filter(items__item__seller=request.user)
+        cancelled = Order.objects.filter(items__item__seller=request.user, items__status=40)
+        delivered = Order.objects.filter(items__status=30, status=30, items__item__seller=request.user)
+        pending = orders.exclude(order__status=30)
+        print('orders:', orders)
+        for order in orders:
+            if order.user:
+                print(order.user)
+            else:
+                print(order.cart_id)
+        # for order in order_id:
+        #     print('order number:', order)
+        #     print('order from id:', order.items.all())
+        print('delivered:', delivered)
+        print('pending:', pending.count())
 
-    return render(request, 'sellers/seller_dashboard.html', locals())
+        return render(request, 'sellers/seller_dashboard.html', locals())
+    else:
+        messages.warning(request, "You are not a registered Me2U seller Sign Up")
+        return redirect('users:seller_create')
+
+
+def automobile_page(request):
+    print('user:', request.user)
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if request.user.is_dispatcher:
+        orders = OrderItem.objects.filter(status=30).filter(ordered=True).exclude(order__status=30)
+        # order_id = Order.objects.filter(ordered=True, status=20).distinct()
+
+        # if order_id:
+        #     order_id = order_id[0]
+        # print('order_id', order_id[0].name)
+        total_orders = OrderItem.objects.filter(delivered_by=request.user, status=50)
+        pending = OrderItem.objects.filter(deliverd_by=request.user, status=45)
+        delivered_by_me = OrderItem.objects.filter(status=50, delivered_by=request.user)
+        print('delivered:', delivered_by_me)
+
+        return render(request, 'automobiles/automobile_dashboard.html', locals())
+    else:
+        messages.warning(request, "You are not a registered Me2U delivery agent Sign Up")
+        return redirect('users:automobile_create')
 
 
 def seller_products(request):
@@ -52,7 +82,7 @@ def seller_products(request):
 
     # context = {
     #     'products': products,
-    #     'seller': seller_name,
+    #     'service_providers': seller_name,
     # }
     print('seller_name:', seller_name.id)
     print('seller_products:', products)
