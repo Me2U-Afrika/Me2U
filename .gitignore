@@ -21,6 +21,7 @@ Me2UApp/
 .vscode/
 products.json/
 yarn-error.log/
+settings_local.py/
 
 build/
 develop-eggs/
