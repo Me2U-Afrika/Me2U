@@ -4,6 +4,7 @@ from django.urls import path
 from marketing.sitemap import SITEMAPS
 from . import views
 from django.contrib.sitemaps import views as view
+
 app_name = 'marketing'
 
 urlpatterns = [
@@ -11,4 +12,4 @@ urlpatterns = [
 
 ]
 
-urlpatterns += url(r'^sitemap/', view.sitemap, {'sitemaps': SITEMAPS}),
+urlpatterns += url(r'^sitemap\.xml$', view.sitemap, {'sitemaps': SITEMAPS}),

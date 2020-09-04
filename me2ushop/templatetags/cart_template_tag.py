@@ -91,12 +91,7 @@ def cart_item_count(request, **kwargs):
                     order_item.quantity = quantity
                     order_item.save()
                     order.save()
-        #
-        #     for tracking_id in request.cart_id:
-        #         tracking_id.user = request.user
-        #         tracking_id.valid_tracker = False
-        #         tracking_id.save()
-        #
+
         if qs:
             return qs[0].items.count()
         return 0

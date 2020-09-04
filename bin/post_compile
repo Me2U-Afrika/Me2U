@@ -3,3 +3,6 @@ export PATH=/app/.heroku/node/bin:$PATH
 npm run build-prod
 python manage.py collectstatic --noinput
 python manage.py migrate --noinput
+
+npm test --frontend
+python manage.py test --noinput --exclude-tag=e2e

@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import boto3
 import django_heroku
 import os
-import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from botocore.config import Config
@@ -43,8 +42,8 @@ s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
 
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
-    'channels',
-    'suit',
+    # 'channels',
+    # 'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
+    'django.contrib.redirects',
     'django_extensions',
     'django_filters',
     'debug_toolbar',
@@ -111,6 +111,7 @@ MIDDLEWARE = [
     # 'Me2U.SSLMiddleware.SSLRedirect',
     'main.middleware.cart_middleware',
     # 'marketing.urlcanon.URLCanonicalizationMiddleware',
+    'django.contrib.redirects.middleware.RedirectFallbackMiddleware'
 
 ]
 INTERNAL_IPS = ['127.0.0.1']
@@ -130,7 +131,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
-                'utils.context_processors.me2u'
+                'utils.context_processors.me2u',
+                'utils.context_processors.globals',
             ],
 
         },
@@ -153,7 +155,7 @@ CHANNEL_LAYERS = {
     },
 }
 SITE_ID = 1
-
+GA_TRACKER_ID = '123'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -221,7 +223,7 @@ LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # stripe settings
 
@@ -230,17 +232,24 @@ if DEBUG:
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-    #     Email server
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 else:
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-    # Email Config
-    EMAIL_HOST_USER = "Daniel Makori"
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
+# Email Config
+# Email server
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST_USER = "Daniel Makori"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
+
+ADMINS = (
+    ('Me2U|Africa IT', 'danielmakori0@gmail.com'),
+)
+
+EMAIL_SUBJECT_PREFIX = '[Me2U|Africa]'
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
@@ -248,6 +257,9 @@ PRODUCTS_PER_ROW = 12
 AUTH_PROFILE_MODULE = 'users.profile'
 AUTH_USER_MODEL = 'users.User'
 
+# if os.environ.get('AWS_ACCESS_KEY_ID', default=None):
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = "me2u-africa"
@@ -255,15 +267,12 @@ AWS_STORAGE_BUCKET_NAME = "me2u-africa"
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
-# Activate Django-Heroku.
 
 try:
     from settings_local import *
@@ -271,7 +280,7 @@ except ImportError:
     pass
 
 # turn to true during production
-ENABLE_SSL = False
+# ENABLE_SSL = False
 
-
+# Activate Django-Heroku.
 django_heroku.settings(locals())
