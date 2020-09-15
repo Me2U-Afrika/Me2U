@@ -63,8 +63,9 @@ class Category(models.Model):
     def __str__(self):
         return self.category_name
 
+    # The natural_key method should return a tuple, not a string.
     def natural_key(self):
-        return self.slug
+        return (self.slug,)
 
     class Meta:
         db_table = 'ProductCategories'

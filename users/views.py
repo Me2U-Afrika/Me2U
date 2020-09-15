@@ -38,24 +38,21 @@ def register(request):
             raw_password = form.cleaned_data.get('password1')
             account = authenticate(email=email, password=raw_password)
             login(request, account)
-            messages.success(request, f'Account created for {username}!')
             form.send_mail()
+            messages.success(request, f'Account created for {username}!')
             return redirect('me2ushop:home')
         else:
-            messages.info(request, 'Invalid details, please try again')
-
-            return redirect('users:register')
+            messages.warning(request, 'Invalid details, please try again')
+            form = UserRegisterForm(request.POST)
     else:
 
         form = UserRegisterForm
 
-        context = {
-            'form': form,
-            'page_title': 'User Registration'
-        }
-        # context_instance = RequestContext(request)
-        # print('contxt inst:', context_instance)
-        return render(request, 'users/register.html', context)
+    context = {
+        'form': form,
+        'page_title': 'User Registration'
+    }
+    return render(request, 'users/register.html', context)
 
 
 def register_seller(request, template_name="users/seller_register.html"):
@@ -95,7 +92,7 @@ def profile(request):
     # print('order:', order)
     # print('order_items:', items)
 
-    name = request.user.first_name
+    name = request.user.username
     # context_instance = RequestContext(request)
     # print('contxt inst profile:', context_instance)
     return render(request, 'users/profile.html', locals())
@@ -335,15 +332,25 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     fields = ['first_name', 'last_name', 'business_type', 'business_title', 'tax_country', 'subscription_type']
     success_url = reverse_lazy("users:seller_confirm")
 
+    def get_queryset(self):
+        print('we got here')
+        current_app = SellerProfile.objects.filter(user=self.request.user, application_status__lt=20)
+        if current_app:
+            print('current_app available:', current_app[0].application_status)
+
     def form_valid(self, form):
+        from django.contrib.auth.models import Group
+        seller_group = Group.objects.get(name='Sellers')
         obj = form.save(commit=False)
         # print('obj:', obj)
         user = self.request.user
-        # seller_set = User.objects.get(email=user)
-        # seller_set.group_
-        # seller_set.save()
-        # user.Groups.add('Seller')
-        # print(user.is_seller)
+        # user_instance = User.objects.get(email=user)
+        print(seller_group)
+        # print(user_instance)
+        seller_group.user_set.add(user)
+        user.is_staff = True
+        user.save()
+        print(user.is_seller)
 
         obj.user = user
         obj.save()
@@ -352,14 +359,6 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def test_func(self):
         if not self.request.user.is_seller:
-            try:
-                print('we got here')
-                current_app = Seller_Profile.objects.filter(user=self.request.user, application_status__lt=20)
-                if current_app:
-                    print('current_app available:', current_app[0].application_status)
-                    return False
-            except Exception:
-                return True
             return True
 
 
@@ -382,7 +381,7 @@ class AutomobileCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         if not self.request.user.is_dispatcher:
             try:
                 print('we got here')
-                current_app = Automobile_Profile.objects.filter(user=self.request.user, application_status__lt=20)
+                current_app = AutomobileProfile.objects.filter(user=self.request.user, application_status__lt=20)
                 if current_app:
                     print('current_app available:', current_app[0].application_status)
                     return False

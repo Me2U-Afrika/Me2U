@@ -34,7 +34,14 @@
             <tr>
               <th scope="row">{{ forloop.counter }}</th>
                 <td><a href="{% url 'me2ushop:product' order_item.item.slug %}"> {{ order_item.item.title }} </a></td>
-                <td>{{ order_item.item.price }}</td>
+
+                {% if order_item.item.discount_price %}
+                    <td>{{ order_item.item.discount_price }}</td>
+                {% else %}
+                    <td>{{ order_item.item.price }}</td>
+                {% endif %}
+
+
                 <td><a href="{% url 'me2ushop:remove_single_item_cart' order_item.item.slug %}"><i class="fas fa-minus-circle mr-2"></i></a>
                     {{ order_item.quantity }}
                     <a href="{% url 'me2ushop:add_cart' order_item.item.slug %}"><i class="fas fa-plus-circle ml-2"></i></a></td>

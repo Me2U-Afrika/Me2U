@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.views.generic import FormView
@@ -34,6 +35,7 @@ class ContactUsView(FormView):
 
     def form_valid(self, form):
         form.send_mail()
+        messages.info(self.request, 'Your Message has been sent successfully! Thank you!')
         return super().form_valid(form)
 
 

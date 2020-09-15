@@ -147,10 +147,19 @@ class PaymentForm(forms.Form):
 
 
 class ProductImageCreate(forms.ModelForm):
+    item = forms.CharField(widget=forms.HiddenInput())
+    # image = forms.ImageField()
+    # in_display = forms.BooleanField(required=False)
 
     class Meta:
         model = ProductImage
-        fields = '__all__'
+        fields = ('item', 'image', 'in_display',)
+
+        # def __init__(self, *args, **kwargs):
+        #     super(ProductImageCreate, self).__init__(*args, **kwargs)
+
+            # self.fields['item'].widget.attrs['type'] = 'hidden'
+
 
 
 # class ProductAddToCartForm(forms.Form):

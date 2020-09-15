@@ -50,3 +50,4 @@ class TestPage(TestCase):
         self.client.force_login(user1)
         self.client.post(reverse("users:address_create"), post_data)
         self.assertTrue(Address.objects.filter(user=user1).exists())
+

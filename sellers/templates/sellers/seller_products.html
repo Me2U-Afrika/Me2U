@@ -22,6 +22,7 @@
             <table class="table">
                 <tr>
                     <th>Product</th>
+                    <th>Stock </th>
                     <th>Category</th>
                     <th>Thumbnail</th>
                     <th>Price</th>
@@ -29,15 +30,21 @@
                 </tr>
                 {% for item in products %}
                 <tr>
-                   <td> <a href="{{ item.get_absolute_url}}">{{ item }}</a> </td>
+                   <td> <a href="{{ item.get_absolute_url}}">{{ item }}</a></td>
+                   <td> {{ item.stock }}</td>
                     <td>{{ item.get_category_choice_display }}</td>
-                    {% for image in item.productimage_set.all %}
-                    {% if image.in_display %}
-                    <td class="caption" style="height:70px">
-                        <img src="/media/{{ image.image.thumbnail }}"/>
-                    </td>
+
+                    {% if item.productimage_set.all %}
+                        {% for image in item.productimage_set.all %}
+                            {% if image.in_display %}
+                            <td class="caption" style="height:70px">
+                                <img src="/media/{{ image.image.thumbnail }}"/>
+                            </td>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <td><a class="btn btn-outline-info btn-sm" href="{% url 'me2ushop:product_images' item.slug %}">Add Image</a></td>
                     {% endif %}
-                    {% endfor %}
 
                     {% if item.discount_price %}
                         <td>{{ item.discount_price }}</td>

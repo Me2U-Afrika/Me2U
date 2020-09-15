@@ -43,6 +43,17 @@ PAYMENT_OPTIONS = (
 class BusinessInformation(models.Model):
     pass
 
+#
+# def validateEmail(email):
+#     print('we came to validate email:', email)
+#     from django.core.validators import validate_email
+#     from django.core.exceptions import ValidationError
+#     try:
+#         validate_email(email)
+#         return True
+#     except ValidationError:
+#         raise ValueError("Users must a valid email address")
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -53,6 +64,7 @@ class UserManager(BaseUserManager):
         if not username:
             raise ValueError('Users must have a username')
         email = self.normalize_email(email)
+        # email = validateEmail(email)
         user = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -97,24 +109,22 @@ class User(AbstractUser):
     def is_employee(self):
         return self.is_active and (
                 self.is_superuser
-                or self.is_staff
-                and self.groups.filter(name='Employees').exists()
+                # or self.is_staff
+                or self.groups.filter(name='Employees').exists()
         )
 
     @property
     def is_dispatcher(self):
         return self.is_active and (
                 self.is_superuser
-                or self.is_staff
-                and self.groups.filter(name='Dispatchers').exists()
+                or self.groups.filter(name='Dispatchers').exists()
         )
 
     @property
     def is_seller(self):
         return self.is_active and (
-                self.is_superuser
-                or self.is_staff
-                and self.groups.filter(name='Sellers').exists()
+            self.is_superuser
+            or self.groups.filter(name='Sellers').exists()
         )
 
 

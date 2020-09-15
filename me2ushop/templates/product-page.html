@@ -60,7 +60,7 @@
                             <p class="lead font-weight-bold">Description</p>
 
                             <p>{{ object.description|linebreaks }}</p>
-                                <p>Brand:<a href="{% url 'me2ushop:seller_page' object.seller.id %}"><em><span property="v:brand">{{ object.brand }}</span></em></a></p>
+                                <p>Brand: <em><span property="v:brand">{{ object.brand }}</span></em></p>
                                 <br>
                                 In categor{{ object.product_categories.count|pluralize:"y,ies" }}:
                                         {% for c in object.product_categories.all %}
@@ -69,6 +69,11 @@
                                         {% endfor %}
 
                             <br>
+                            {% if object.stock > 0 %}
+                            <p>Stock: {{ object.stock }}</p>
+                            {% else %}
+                            <p>Stock:Product Not in Stock</p>
+                            {% endif %}
                             <div class="cb"><br/><br/></div>
                             {% if object.seller == user %}
                                 <div>
@@ -95,8 +100,8 @@
                                     {% endfor %}
                                     {% endif %}
                                 </div>
-                                <div class="cb"><br/><br/></div>
-
+                                <div class="cb">
+                                    <br/><br/></div>
                                 <div>
                                     <button class="btn btn-primary btn-md waves-effect float:left mr-3" type="submit">
                                         Add to Cart<i class="fas fa-shopping-cart ml-1"></i>
@@ -109,7 +114,9 @@
                                     </a>
                                 </div>
                             </form>
+                            {% endif %}
                             <br>
+                            {% if object.seller %}
                             <div>
                                 Seller: <a href="{% url 'me2ushop:seller_page' object.seller.id %}"> {{ object.brand }}</a>
                             </div>

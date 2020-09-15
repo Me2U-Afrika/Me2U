@@ -109,7 +109,7 @@ class ProductAdmin(admin.ModelAdmin):
         return list(self.readonly_fields) + ['slug', 'title']
 
     def get_prepopulated_fields(self, request, obj=None):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_seller:
             return self.prepopulated_fields
         else:
             return {}
@@ -134,7 +134,28 @@ class DispatchersProductAdmin(ProductAdmin):
     autocomplete_fields = ()
 
 
+class SellerForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+    def clean_seller(self):
+        if not self.cleaned_data['seller']:
+            return User()
+        return self.cleaned_data['seller']
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     user = User.objects.filter(email=User)
+    #     instance = kwargs.get("instance")
+    #     self.fields['seller'].queryset = user
+    #     # pre-fill the timezone for good measure
+    #     self.fields['publish_date'].initial = timezone.now()
+
+
 class SellersProductAdmin(ProductAdmin):
+    form = SellerForm
+
     list_display = ['title',
                     'slug',
                     'brand',
@@ -147,20 +168,25 @@ class SellersProductAdmin(ProductAdmin):
                     "price", 'created_at', 'updated_at', 'meta_keywords',
                     'meta_description',
                     ]
-    list_editable = ('in_stock', 'stock',)
-    readonly_fields = ("is_bestseller", "is_featured")
-    prepopulated_fields = {}
+    list_editable = ('stock',)
+    readonly_fields = ('seller', "is_bestseller", "is_featured", 'in_stock')
+    prepopulated_fields = {'slug': ('title',)}
     autocomplete_fields = ()
 
-    # Dispatchers are only allowed to see order that# are ready to be shipped
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        # print('qs:',qs)
+
         return qs.filter(seller=request.user)
 
-    def has_add_permission(self, request):
-        pass
-        # print(request)
+    def save_model(self, request, obj, form, change):
+        if not obj.seller:
+            obj.seller = request.user
+        if obj.stock < 1:
+            obj.in_stock = False
+            obj.is_active = False
+        else:
+            obj.in_stock = True
+        obj.save()
 
 
 class ProductImageAdmin(admin.ModelAdmin):
@@ -596,8 +622,8 @@ class CentralOfficeAdminSite(InvoiceMixin, ColoredAdminSite):
 
 class DispatchersAdminSite(ColoredAdminSite):
     site_header = "Me2U|Africa dispatch administration"
-    site_header_color = "green"
-    module_caption_color = "lightgreen"
+    site_header_color = "grey"
+    module_caption_color = "grey"
 
     def has_permission(self, request):
         return request.user.is_active and request.user.is_dispatcher
@@ -615,45 +641,33 @@ class SellersAdminSite(ColoredAdminSite):
 main_admin = OwnersAdminSite()
 
 admin.site.register(Product, ProductAdmin)
-main_admin.register(Product, ProductAdmin)
 
 admin.site.register(ProductImage, ProductImageAdmin)
-main_admin.register(ProductImage, ProductImageAdmin)
 
 admin.site.register(ProductReview, ProductReviewAdmin)
-main_admin.register(ProductReview, ProductReviewAdmin)
 
 admin.site.register(OrderItem, Items_Ordered)
-main_admin.register(OrderItem, Items_Ordered)
 
 admin.site.register(Order, Ordered)
-main_admin.register(Order, Ordered)
 
-# admin.site.register(OrderAnonymous, Ordered_Anonymous)
 admin.site.register(StripePayment, Payment)
-main_admin.register(StripePayment, Payment)
 
 admin.site.register(Coupon, CouponDisplay)
-main_admin.register(Coupon, CouponDisplay)
 
-main_admin.register(RequestRefund, RefundDisplay)
 admin.site.register(RequestRefund, RefundDisplay)
 
 admin.site.register(Address, AddressAdmin)
-main_admin.register(Address, AddressAdmin)
 
 central_office_admin = CentralOfficeAdminSite("central-office-admin")
 central_office_admin.register(Product, ProductAdmin)
-# central_office_admin.register(models.ProductTag, ProductTagAdmin)
 central_office_admin.register(ProductImage, ProductImageAdmin)
 central_office_admin.register(Address, AddressAdmin)
 central_office_admin.register(Order, CentralOfficeOrderAdmin)
 
 dispatchers_admin = DispatchersAdminSite("dispatchers-admin")
 dispatchers_admin.register(Product, DispatchersProductAdmin)
-# dispatchers_admin.register(models.ProductTag, ProductTagAdmin)
 dispatchers_admin.register(Order, DispatchersOrderAdmin)
 
-sellers_admin = SellersAdminSite("service_providers-admin")
+sellers_admin = SellersAdminSite("sellers-admin")
 sellers_admin.register(Product, SellersProductAdmin)
 sellers_admin.register(Order, SellersOrderAdmin)

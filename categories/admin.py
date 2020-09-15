@@ -42,5 +42,5 @@ class CategoryAdmin(admin.ModelAdmin):
 
 # main_admin = OwnersAdminSite()
 
-# admin.site.register(Category, CategoryAdmin)
+admin.site.register(Category, CategoryAdmin)
 admin_register.main_admin.register(Category, CategoryAdmin)

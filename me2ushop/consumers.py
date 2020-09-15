@@ -6,6 +6,7 @@ import json
 
 from channels.consumer import AsyncConsumer
 from asgiref.sync import async_to_sync
+from django.db import close_old_connections
 from django.urls import reverse
 from channels.exceptions import StopConsumer
 from channels.generic.http import AsyncHttpConsumer
@@ -31,6 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
+    # print('we check this functions first')
     EMPLOYEE = 2
     CLIENT = 1
 
@@ -154,7 +156,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
 
 class ChatNotifyConsumer(AsyncHttpConsumer):
-    print("we came to notify customer service")
+    # print("we came to notify customer service")
 
     def is_employee_func(self, user):
         # print('acertain employee status')
@@ -162,6 +164,7 @@ class ChatNotifyConsumer(AsyncHttpConsumer):
 
     async def handle(self, body):
         print('we handling the requests')
+        close_old_connections()
         is_employee = await database_sync_to_async(self.is_employee_func)(self.scope["user"])
         if is_employee:
             print('is_employee:', is_employee)
@@ -247,7 +250,6 @@ class ChatNotifyConsumer(AsyncHttpConsumer):
 
 class OrderTrackerConsumer(AsyncHttpConsumer):
     # print('we came here to check')
-
     def verify_user(self, user, order_id):
         # print('we also came to verify')
         order = get_object_or_404(models.Order, pk=order_id)

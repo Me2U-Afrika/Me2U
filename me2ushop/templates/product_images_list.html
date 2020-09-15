@@ -7,7 +7,7 @@
      <div class="card card-body">
        <div class="text-center font-small wow fadeIn">
            {% if product_image.count < 4 %}
-            <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a>
+            <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_create' object.id %}">Add New Image</a>
            {% endif %}
            <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product' object.slug %}">View Product</a>
             <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-create' %}"
@@ -27,7 +27,7 @@
                         <div class="card card-height">
                             <!--Card image-->
                             <div class="view overlay zoom">
-                               <a href="{% url 'me2ushop:product_image_update">
+                               <a href="{% url 'me2ushop:product_image_update' image.id%}">
                                    <img src="/media/{{ image.image.medium }}" class="card-img-top img-fluid"/></a>
                             </div>
                             {% if image.in_display %}

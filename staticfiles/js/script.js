@@ -154,6 +154,7 @@ function preparedDocument(){
 
 
     var use_default_shipping = document.querySelector("input[name='use_default_shipping']");
+    var add_new_shipping = document.querySelector("input[name='add_new_shipping']");
     var use_default_billing = document.querySelector("input[name='use_default_billing']");
 
 
@@ -169,7 +170,6 @@ function preparedDocument(){
         };
     });
 
-
     use_default_shipping.addEventListener('change', function(event) {
       event.preventDefault();
 
@@ -177,6 +177,17 @@ function preparedDocument(){
           hideable_shipping_form.hide();
         } else {
           hideable_shipping_form.show();
+        };
+    });
+
+
+    add_new_shipping.addEventListener('change', function(event) {
+      event.preventDefault();
+
+        if (add_new_shipping.checked) {
+          hideable_shipping_form.show();
+        } else {
+          hideable_shipping_form.hide();
         };
     });
 

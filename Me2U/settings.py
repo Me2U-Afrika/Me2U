@@ -26,8 +26,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
-# DEBUG = os.environ.get('DEBUG')
-# DEBUG = True
+
 
 REDIS_URL = os.environ.get('REDIS_URL')
 
@@ -42,7 +41,7 @@ s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
 
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
-    # 'channels',
+    'channels',
     # 'suit',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -218,7 +217,7 @@ STATICFILES_DIRS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL = 'categories:categoriesHome'
+LOGIN_REDIRECT_URL = 'me2ushop:home'
 LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -231,19 +230,25 @@ if DEBUG:
     # test keys
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
-
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 else:
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+    # Email Config
+    # Email server
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST_USER = "Daniel Makori"
+    EMAIL_HOST = "smtp.domain.com"
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 
-# Email Config
-# Email server
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-EMAIL_HOST_USER = "Daniel Makori"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
 
 ADMINS = (
     ('Me2U|Africa IT', 'danielmakori0@gmail.com'),
@@ -256,16 +261,6 @@ PRODUCTS_PER_ROW = 12
 
 AUTH_PROFILE_MODULE = 'users.profile'
 AUTH_USER_MODEL = 'users.User'
-
-# if os.environ.get('AWS_ACCESS_KEY_ID', default=None):
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = "me2u-africa"
-
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
 
 
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

@@ -72,10 +72,10 @@ def seller_products(request):
     products = Product.objects.filter(seller=seller_name)
 
     for obj in products:
-        image = ProductImage.objects.filter(item=obj, in_display=True)[0]
+        image = ProductImage.objects.filter(item=obj, in_display=True)
         if image:
             format_image = format_html(
-                '<img src="%s"/>' % image.image.thumbnail.url
+                '<img src="%s"/>' % image[0].image.thumbnail.url
             )
             print('product_image:', format_image)
             context = {'format_image': format_image}

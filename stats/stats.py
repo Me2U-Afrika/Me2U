@@ -111,7 +111,7 @@ def recommended_from_views(request):
     # print('viewed by me:', viewed)
 
     # if there are previously viewed products, get other tracking ids that have viewed
-    #     those products also
+    # those products also
     if viewed:
         productviews = ProductView.objects.filter(product__in=viewed).values('tracking_id')
 

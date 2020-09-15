@@ -8,7 +8,7 @@
                 {% csrf_token %}
 
                 <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Add a new Image</legend>
+                    <legend class="border-bottom mb-4">Add a new Image for {{ item }}</legend>
 <!--                    Call the form from views-->
                     {{ form|crispy }}
                 </fieldset>

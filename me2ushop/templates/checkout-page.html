@@ -23,17 +23,23 @@
             <form method="POST" class="card-body">
               {% csrf_token %}
 
-                {% if user.is_authenticated %}
-                <a href="{% url 'me2ushop:address_select' %}" class="btn  btn-primary">select available addreses</a>
-                {% else %}
-                <a href="{% url 'users:register' %}?next={% url 'me2ushop:address_select' %}"
+                {% if user.is_not_authenticated %}
+                <a href="{% url 'users:register' %}"
                    class="btn btn-primary">Signup</a>
-                <a href="{% url 'login' %}?next={% url 'me2ushop:address_select' %}"
+                <a href="{% url 'login' %}?next={% url 'me2ushop:checkout' %}"
                    class="btn btn-primary">Login</a>
                 {% endif %}
 
 
               <h3>Shipping Address</h3>
+<!--                {% if request.user.is_authenticated %}-->
+<!--                    {% include "includes/field.html" with field=form_address.shipping_address %}-->
+<!--                    <div class="custom-control custom-checkbox">-->
+<!--                        <input type="checkbox" class="custom-control-input" name="add_new_shipping" id="add_new_shipping">-->
+<!--                        <label class="custom-control-label" for="add_new_shipping">Add new shipping Address</label>-->
+<!--                      </div>-->
+<!--                {% endif %}-->
+
                 <div class="hideable_shipping_form">
               <!--address-->
                   <div class="md-form mb-5">
@@ -121,15 +127,17 @@
               {% if default_shipping_address %}
                  <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" name="use_default_shipping" id="use_default_shipping">
-  <!--                {{ form.save_info}}-->
                     <label class="custom-control-label" for="use_default_shipping">Use default shipping Address: {{ default_shipping_address.street_address|truncatechars:10 }}</label>
                   </div>
               {% endif %}
                   <!--Grid row-->
+
               <hr>
 
              <div class="same_as_shipping">   
               <h3>Billing Address</h3>
+                 {% include "includes/field.html" with field=form_address.billing_address %}
+
               <div class="hideable_billing_form" id="hideable_billing_form">
                     <div class="md-form mb-5">
                       <input type="text" id="billing_address" class="form-control" name="billing_address" placeholder="1234 Main St">

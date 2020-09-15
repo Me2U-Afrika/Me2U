@@ -285,25 +285,31 @@
         <!--Section: Products v.3-->
 
           <section class="text-center">
-
                 {% if search_recs %}
                   {% product_list search_recs 'Recommended For You' %}
                                 <hr>
                 {% endif %}
 
+                {% if featured %}
                   {% product_list featured 'Featured Products' %}
                                 <hr>
-                {% product_list bestseller 'Bestseller Products' %}
-                 {% if view_recs %}
-                                  <hr>
-                    {% product_list view_recs 'Similar Products' %}
-                  {% endif %}
+                {% endif %}
 
-                {% if paginator %}
-                    <hr>
-                    {% pagination_links request paginator %}
+                {% if bestseller %}
+                  {% product_list bestseller 'Bestseller Products' %}
                     <hr>
                 {% endif %}
+
+                 {% if view_recs %}
+                    {% product_list view_recs 'Similar Products' %}
+                      <hr>
+                  {% endif %}
+
+                  {% if paginator %}
+<!--                      <hr>-->
+                      {% pagination_links request paginator %}
+<!--                      <hr>-->
+                  {% endif %}
 
                   {% if recently_viewed %}
                     <h3>Recently Viewed</h3>

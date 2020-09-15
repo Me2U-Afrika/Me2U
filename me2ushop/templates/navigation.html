@@ -133,7 +133,7 @@
 
                         <li class="hello-msg nav-item mt-2">
                             <a href="{% url 'users:profile' %}" class="button alt">Karibu,
-                            <span class="nav-line-1">{{request.user.username}}</span></a>
+                            <span class="nav-line-1">{{request.user.username|capfirst}}</span></a>
                         </li>
                          <li class="nav-item ml-3 mt-2">
                               <a href="{% url 'logout' %}" class="button alt">LogTFOut</a>
@@ -144,7 +144,7 @@
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item">
                              <a href="{% url 'me2ushop:order_summary'%}" class="nav-link waves-effect">
-                                <span class="badge red z-depth-1 mr-1"> {{ request|cart_item_count_anonymous }} </span>
+                                <span class="badge red z-depth-1 mr-1"> {{ request|cart_item_count }} </span>
                                 <i class="fas fa-shopping-cart"></i>
                                 <span class="clearfix d-none d-sm-inline-block"> Cart </span>
                              </a>

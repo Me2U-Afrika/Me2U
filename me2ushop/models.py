@@ -57,8 +57,8 @@ PAYMENT_CHOICES = {
 
 
 class ActiveProductManager(models.Manager):
-    def get_query_set(self):
-        return super(ActiveProductManager, self).get_query_set().filter(in_stock=True)
+    def all(self):
+        return super(ActiveProductManager, self).all().filter(is_active=True).filter(productimage__in_display=True)
 
 
 class FeaturedProductManager(ActiveProductManager):
@@ -78,7 +78,7 @@ class ProductManager(models.Manager):
 
 class Product(models.Model):
     title = models.CharField(max_length=100)
-    seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
     slug = models.SlugField(unique=True,
                             max_length=50,
                             help_text='Unique value for product page URL, created from the product title.')
@@ -142,7 +142,7 @@ class Product(models.Model):
     #                               'belongs to you.')
 
     def natural_key(self):
-        return self.slug
+        return (self.slug,)
 
     class Meta:
         db_table = 'Products'
@@ -230,6 +230,12 @@ class Product(models.Model):
 
         return most_products
 
+    # def save_model(self):
+    #     if self.stock < 1:
+    #         self.is_active = False
+    #     else:
+    #         self.is_active = True
+
 
 # Product model class definition here
 # tags register
@@ -276,7 +282,6 @@ class OrderItem(models.Model):
                 )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
-    # cart_id = models.ForeignKey(ProductView, on_delete=models.CASCADE, blank=True, null=True)
     cart_id = models.CharField(max_length=40, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     date_ordered = models.DateTimeField(auto_now=True)
@@ -284,8 +289,8 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Product, on_delete=models.PROTECT, unique=False, blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
-    delivered_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='dispatcher', on_delete=models.SET_NULL, blank=True, null=True)
-
+    delivered_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='dispatcher', on_delete=models.SET_NULL,
+                                     blank=True, null=True)
 
     class Meta:
         ordering = ['-date_added']
@@ -328,13 +333,11 @@ class OrderItem(models.Model):
 
 
 class Order(models.Model):
-    from stats.models import ProductView
     NEW = 10
     PAID = 20
     DONE = 30
     STATUSES = ((NEW, 'New'), (PAID, 'Paid'), (DONE, 'Done'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-    # cart_id = models.ForeignKey(ProductView, on_delete=models.CASCADE, blank=True, null=True)
     cart_id = models.CharField(max_length=40, blank=True, null=True)
     status = models.IntegerField(choices=STATUSES, default=NEW)
     items = models.ManyToManyField('OrderItem')
