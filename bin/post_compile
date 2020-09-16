@@ -1,5 +1,5 @@
 #!/bin/bash
-export PATH=/app/.heroku\client\bin:$PATH
+export PATH=/app/.heroku\bin:$PATH
 npm run build-prod
 python manage.py collectstatic --noinput
 python manage.py migrate --noinput

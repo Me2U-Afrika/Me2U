@@ -1122,7 +1122,7 @@ def merge_cart(sender, user, request, **kwargs):
                         order_item.quantity = quantity
                     # print('order saved:', order_item)
                     order_item.save()
-
+                del request.session['cart_id']
                 request.session['cart_id'] = order.id
         else:
             order_items = OrderItem.objects.filter(order=cart_id, ordered=False)

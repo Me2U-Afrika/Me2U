@@ -25,8 +25,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
-# DEBUG = True
+# DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
+DEBUG = True
 
 
 REDIS_URL = os.environ.get('REDIS_URL')
@@ -222,7 +222,7 @@ LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 
 # stripe settings
 
