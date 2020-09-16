@@ -30,8 +30,7 @@ DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
 
 REDIS_URL = os.environ.get('REDIS_URL')
 
-# ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com/', 'http://127.0.0.1:8000/']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com/', 'http://127.0.0.1:8000/']
 CANON_URL_HOST = 'me2uafrica.herokuapp.com/'
 CANON_URLS_TO_REWRITE = ['me2u-africa.com', 'www.me2uafricaherokuapp.com']
 
@@ -245,7 +244,8 @@ else:
     EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None

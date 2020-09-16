@@ -1066,14 +1066,18 @@ def add_cart(request, slug):
     #     return redirect("me2ushop:product", slug=slug)
 
 
-@receiver(user_logged_in, sender=User)
+@receiver(user_logged_in)
 def merge_cart(sender, user, request, **kwargs):
-    print("we came here to merge")
+    cart = getattr(request, 'cart', None)
+    # print("we came here to merge")
+    # print('user merge:', user)
+    # print('cart:', cart)
+    # print('cart:', request.cart)
 
-    qs = Order.objects.filter(user=request.user, ordered=False)
+    qs = Order.objects.filter(user=user, ordered=False)
 
-    if request.cart:
-        cart_id = request.cart
+    if cart:
+        cart_id = cart
         if qs.exists():
             # print("before:", request.cart.id)
             order = qs[0]
@@ -1101,7 +1105,7 @@ def merge_cart(sender, user, request, **kwargs):
                     # # Add new product being ordered to database
                     order_item, created = OrderItem.objects.get_or_create(
                         item=item,
-                        user=request.user,
+                        user=user,
                         ordered=False
                     )
                     # print('created item:', created)
@@ -1143,19 +1147,20 @@ def merge_cart(sender, user, request, **kwargs):
                 # # Add new product being ordered to database
                 order_item, created = OrderItem.objects.get_or_create(
                     item=item,
-                    user=request.user,
+                    user=user,
                     ordered=False
                 )
                 # print('orderItem created:', order_item)
 
                 order_date = timezone.now()
-                order = Order.objects.create(user=request.user, order_date=order_date)
+                order = Order.objects.create(user=user, order_date=order_date)
                 order.items.add(order_item)
                 order_item.quantity = quantity
                 order_item.save()
                 order.save()
+                del request.session['cart_id']
                 request.session['cart_id'] = order.id
-    if qs.exists():
+    elif qs.exists():
         request.session['cart_id'] = qs[0].id
 
 

@@ -8,8 +8,10 @@ from unittest.mock import patch, MagicMock
 from main import factories
 from me2ushop import consumers
 from channels.testing import HttpCommunicator
+from django.test import tag
 
 
+@tag('e2e')
 class TestConsumers(TestCase):
     def test_chat_between_two_users_works(self):
         def init_db():

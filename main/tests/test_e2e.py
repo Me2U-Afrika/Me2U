@@ -15,7 +15,7 @@ from main import factories
 from django.test import tag
 
 
-@tag('e2e')
+# @tag('e2e')
 # class FrontendTests(StaticLiveServerTestCase):
 #     selenium = None
 #
