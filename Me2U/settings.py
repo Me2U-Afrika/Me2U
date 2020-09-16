@@ -159,15 +159,19 @@ GA_TRACKER_ID = '123'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'me2u',
-#         'USER': os.environ.get('USER'),
-#         'PASSWORD': os.environ.get('PASSWORD'),
-#         'HOST': 'localhost',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'me2uafrica',
+        'USER': os.environ.get('USER'),
+        'PASSWORD': os.environ.get('PASSWORD_AWS'),
+        'HOST': 'database-1.ckkeiam4jjhu.ap-southeast-2.rds.amazonaws.com',
+        'PORT': 5432
+    }
+}
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

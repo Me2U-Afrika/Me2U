@@ -1,13 +1,13 @@
-import os
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'me2u',
-        'USER': os.environ.get('USER'),
-        'PASSWORD': os.environ.get('PASSWORD'),
-        'HOST': 'localhost',
-    }
-}
+# import os
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'me2u',
+#         'USER': os.environ.get('USER'),
+#         'PASSWORD': os.environ.get('PASSWORD'),
+#         'HOST': 'localhost',
+#     }
+# }
 #
 # AWS_ACCESS_KEY_ID = 'AKIATXPOCGQKGV3H3N4S'
 # AWS_SECRET_ACCESS_KEY = '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'
