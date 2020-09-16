@@ -25,7 +25,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
+# DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
+DEBUG = True
 
 
 REDIS_URL = os.environ.get('REDIS_URL')
@@ -230,7 +231,6 @@ if DEBUG:
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
 else:
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
@@ -243,11 +243,11 @@ else:
     EMAIL_USE_TLS = True
     EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = None
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
 
 ADMINS = (
     ('Me2U|Africa IT', 'danielmakori0@gmail.com'),
