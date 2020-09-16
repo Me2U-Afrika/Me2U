@@ -28,7 +28,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
 DEBUG = True
 
-
 REDIS_URL = os.environ.get('REDIS_URL')
 
 ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com/', 'http://127.0.0.1:8000/']
@@ -170,6 +169,7 @@ DATABASES = {
     }
 }
 import dj_database_url
+
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
 
@@ -267,7 +267,6 @@ PRODUCTS_PER_ROW = 12
 
 AUTH_PROFILE_MODULE = 'users.profile'
 AUTH_USER_MODEL = 'users.User'
-
 
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # SECURE_SSL_REDIRECT = True
