@@ -337,7 +337,7 @@ class Order(models.Model):
     PAID = 20
     DONE = 30
     STATUSES = ((NEW, 'New'), (PAID, 'Paid'), (DONE, 'Done'))
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, db_index=True)
     cart_id = models.CharField(max_length=40, blank=True, null=True)
     status = models.IntegerField(choices=STATUSES, default=NEW)
     items = models.ManyToManyField('OrderItem')
