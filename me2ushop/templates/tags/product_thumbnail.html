@@ -6,7 +6,7 @@
                           {% if image.in_display %}
 
         <div class="view overlay zoom">
-            <img src=" {{ MEDIA_URL }}{{ image.image.thumbnail }}" class="card-img-top img-fluid">
+            <img src=" {{ image.image.thumbnail.url }}" class="card-img-top img-fluid">
                 <div class="mask rgba-white-slight">
                     <a class="btn btn-primary btn-md waves-effect" href="{{ item.get_add_cart_url }}"
                         role="button">Add To Cart<i class="fas fa-hand-holding-usd" ></i>
