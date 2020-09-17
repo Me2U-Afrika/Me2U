@@ -8,6 +8,6 @@ module.exports = {
     plugins:[new BundleTracker({filename: './webpack-stats.json'}),],
 
     output:{ 
-        filename: '[name].bundle.js',    
+        filename: '[name].bundle.js',
         path: require('path').resolve('./static/bundles')
     }};

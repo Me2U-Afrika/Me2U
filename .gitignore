@@ -10,7 +10,7 @@ __pycache__/
 .Python
 media/
 #staticfiles/
-bundles/
+#bundles/
 node_modules/
 webpack-stats.json
 geckodriver.log
