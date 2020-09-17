@@ -9,11 +9,11 @@ __pycache__/
 # Distribution / packaging
 .Python
 media/
-staticfiles/
+#staticfiles/
 bundles/
 node_modules/
-webpack-stats.json/
-geckodriver.log/
+webpack-stats.json
+geckodriver.log
 pinegrow.json/
 me2u_models.dot/
 me2u_modles.png/

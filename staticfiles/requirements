@@ -1,0 +1,18 @@
+installing bootstrap to our project
+
+- pip install django-bootstrap3
+
+- To check if the models were defined properly
+        python manage.py check
+
+- Make Migrations
+        python manage.py makemigrations news
+
+- view migration(We can view what SQL functions will be called when we run our migration by running the following command.)
+        python manage.py sqlmigrate news 0001 (depends on the number assigned to your model when migration is performed)
+
+- Run Migration
+        python3.6 manage.py migrate
+
+ - crispy forms
+  pip install django-crispy-forms
