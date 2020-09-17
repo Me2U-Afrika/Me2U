@@ -236,7 +236,7 @@ LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
+# STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 
 # stripe settings
 
@@ -258,7 +258,7 @@ else:
     EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')

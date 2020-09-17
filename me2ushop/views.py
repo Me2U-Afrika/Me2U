@@ -1846,7 +1846,7 @@ class PaymentView(View):
             order = Order.objects.get(user=self.request.user, ordered=False)
         else:
             if self.request.cart:
-                order = Order.objects.get(cart_id=self.request.cart.id, ordered=False)
+                order = Order.objects.get(id=self.request.cart.id, ordered=False)
 
         form = PaymentForm(self.request.POST)
         # userprofile = UserProfile.objects.get(user=self.request.user)
