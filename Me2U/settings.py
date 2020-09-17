@@ -157,21 +157,20 @@ GA_TRACKER_ID = '123'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-if not DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'me2uafrica',
-            'USER': os.environ.get('USER'),
-            'PASSWORD': os.environ.get('PASSWORD_AWS'),
-            'HOST': 'database-1.ckkeiam4jjhu.ap-southeast-2.rds.amazonaws.com',
-            'PORT': 5432
-        }
-    }
-    import dj_database_url
-
-    db_from_env = dj_database_url.config(conn_max_age=600)
-    DATABASES['default'].update(db_from_env)
+# if not DEBUG:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': 'me2uafrica',
+#             'USER': os.environ.get('USER'),
+#             'PASSWORD': os.environ.get('PASSWORD_AWS'),
+#             'HOST': 'database-1.ckkeiam4jjhu.ap-southeast-2.rds.amazonaws.com',
+#         }
+#     }
+#     import dj_database_url
+#
+#     db_from_env = dj_database_url.config(conn_max_age=600)
+#     DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -247,7 +246,7 @@ else:
     EMAIL_USE_TLS = True
     EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
@@ -274,10 +273,10 @@ AUTH_USER_MODEL = 'users.User'
 # CSRF_COOKIE_SECURE = True
 
 
-# try:
-#     from settings_local import *
-# except ImportError:
-#     pass
+try:
+    from settings_local import *
+except ImportError:
+    pass
 
 # turn to true during production
 # ENABLE_SSL = False
