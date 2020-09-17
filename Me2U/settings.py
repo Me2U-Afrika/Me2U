@@ -158,29 +158,29 @@ GA_TRACKER_ID = '123'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 # if not DEBUG:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': 'me2uafrica',
-#             'USER': os.environ.get('USER'),
-#             'PASSWORD': os.environ.get('PASSWORD_AWS'),
-#             'HOST': 'database-1.ckkeiam4jjhu.ap-southeast-2.rds.amazonaws.com',
-#         }
-#     }
-#     import dj_database_url
-#
-#     db_from_env = dj_database_url.config(conn_max_age=600)
-#     DATABASES['default'].update(db_from_env)
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'me2u',
+        'NAME': 'me2uafrica',
         'USER': os.environ.get('USER'),
-        'PASSWORD': os.environ.get('PASSWORD'),
-        'HOST': 'localhost',
+        'PASSWORD': os.environ.get('PASSWORD_AWS'),
+        'HOST': 'database-1.ckkeiam4jjhu.ap-southeast-2.rds.amazonaws.com',
     }
 }
+import dj_database_url
+
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'me2u',
+#         'USER': os.environ.get('USER'),
+#         'PASSWORD': os.environ.get('PASSWORD'),
+#         'HOST': 'localhost',
+#     }
+# }
 
 
 # Password validation
@@ -283,11 +283,11 @@ AUTH_USER_MODEL = 'users.User'
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
 
-
-try:
-    from settings_local import *
-except ImportError:
-    pass
+#
+# try:
+#     from settings_local import *
+# except ImportError:
+#     pass
 
 # turn to true during production
 # ENABLE_SSL = False
