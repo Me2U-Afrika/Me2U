@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
 # DEBUG = False
 
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = '127.0.0.1'
 
 ALLOWED_HOSTS = ['*']
 CANON_URL_HOST = 'me2uafrica.herokuapp.com/'
@@ -148,7 +148,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [REDIS_URL],
+            'hosts': [('127.0.0.1', 6379)],
         },
     },
 }

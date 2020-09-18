@@ -10,7 +10,7 @@ function preparedDocument(){
             // halt submission of form
             return false
         }
-         if (text_length < 3){
+         if (text_length < 3 ){
         // pop up alert
         alert("Search term should be atleast 3 characters long");
         // halt submission of form
@@ -204,10 +204,7 @@ function preparedDocument(){
         };
     });
 
-
-
 }
 
 jQuery(document).ready(preparedDocument)
 //statusBox()
-

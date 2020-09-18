@@ -89,7 +89,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
         if authorized:
             print('we came to create connection for channel_name:', self.channel_name)
-            self.r_conn = await aioredis.create_redis(settings.REDIS_URL)
+            # print('redis url:', settings.REDIS_URL)
+            self.r_conn = await aioredis.create_redis('redis://localhost')
             print('r_conn:', self.r_conn)
 
             await self.channel_layer.group_add(self.room_group_name, self.channel_name)
@@ -98,8 +99,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             await self.accept()
             print('connection created')
 
-            await self.channel_layer.group_send(
-                self.room_group_name, {
+            await self.channel_layer.group_send(self.room_group_name, {
                     'type': 'chat_join',
                     'username': self.scope['user'].get_username(),
                 },
@@ -199,7 +199,7 @@ class ChatNotifyConsumer(AsyncHttpConsumer):
     async def stream(self):
         print('We came to stream')
         print('We came to stream:', self.is_streaming)
-        r_conn = await aioredis.create_redis(settings.REDIS_URL)
+        r_conn = await aioredis.create_redis('redis://localhost')
         print('r_conn:', r_conn)
         print('r_conn:', self.is_streaming)
         while self.is_streaming:

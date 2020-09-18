@@ -1,7 +1,9 @@
 $(function(){
-    $('.btn-number').click(function(e){
-        console.log('we here')
+    $('.btn-number').click(function (e) {
         e.preventDefault();
+
+        console.log('we here')
+
         fieldName = $(this).attr('data-field');
         typeof =  $(this).attr('data-type');
         var input = $("input[name='"+ fieldName +"']");
