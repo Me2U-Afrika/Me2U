@@ -38,7 +38,7 @@
                         {% for image in item.productimage_set.all %}
                             {% if image.in_display %}
                             <td class="caption" style="height:70px">
-                                <img src="/media/{{ image.image.thumbnail }}"/>
+                                <img src="{{ image.image.thumbnail.url }}"/>
                             </td>
                             {% endif %}
                         {% endfor %}

@@ -5,7 +5,7 @@
                       {% if image.in_display %}
 
         <div class="view overlay zoom">
-            <img src="{{ image.image.url }}" class="card-img-top img-fluid"/>
+            <img src="{{ image.image.medium.url }}" class="card-img-top img-fluid"/>
               <a href="{{ item.get_absolute_url }}">
                 <div class="mask flex-center rgba-black-strong">
               <p class="green-text">Click For More</p>

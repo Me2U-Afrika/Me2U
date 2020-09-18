@@ -2,7 +2,7 @@ from django import forms
 from django.forms import inlineformset_factory, formset_factory, modelform_factory
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
-from .models import OrderItem, Order, Address, ProductImage
+from .models import OrderItem, Order, Address, ProductImage, Product
 from .models import ProductReview
 from . import widgets
 
@@ -146,21 +146,30 @@ class PaymentForm(forms.Form):
     save = forms.BooleanField(required=False)
 
 
-class ProductImageCreate(forms.ModelForm):
-    item = forms.CharField(widget=forms.HiddenInput())
-    # image = forms.ImageField()
-    # in_display = forms.BooleanField(required=False)
-
-    class Meta:
-        model = ProductImage
-        fields = ('item', 'image', 'in_display',)
+# class ProductImageCreate(forms.ModelForm):
+#     item = forms.CharField(widget=forms.HiddenInput())
+#     # image = forms.ImageField()
+#     # in_display = forms.BooleanField(required=False)
+#
+#     class Meta:
+#         model = ProductImage
+#         fields = ('item', 'image', 'in_display',)
 
         # def __init__(self, *args, **kwargs):
         #     super(ProductImageCreate, self).__init__(*args, **kwargs)
 
             # self.fields['item'].widget.attrs['type'] = 'hidden'
 
+class ProductImageCreate(forms.ModelForm):
+    class Meta:
+        model = ProductImage
+        fields = ['item', 'image', 'in_display']
 
+    def __init__(self, slug, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        queryset_item = Product.objects.filter(slug=slug)
+
+        self.fields['item'].queryset = queryset_item
 
 # class ProductAddToCartForm(forms.Form):
 #     quantity = forms.IntegerField(widget=forms.TextInput(attrs={

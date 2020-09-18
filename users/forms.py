@@ -32,7 +32,7 @@ class UserRegisterForm(UserCreationForm):
         send_mail(
             "Welcome to Me2U|Africa",
             message,
-            "me2uafrica.herokuapp.com",
+            "Welcome to Me2U|Africa. Shop with us today and receive massive discounts! me2uafrica.herokuapp.com",
             [self.cleaned_data["username"]],
             fail_silently=True,
         )

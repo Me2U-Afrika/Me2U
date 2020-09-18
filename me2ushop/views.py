@@ -411,20 +411,22 @@ def show_product_image(request, slug):
 
 def product_image_create(request, slug):
     product = get_object_or_404(Product, slug=slug)
+    print('slug:', slug)
 
     product_image = ProductImage.objects.filter(item__seller=request.user, item=product)
     if request.method == 'POST':
-        print('we came to post')
-        postdata = request.POST.copy()
-        postdata['item'] = product
-        form = ProductImageCreate(postdata)
-        print(form)
-
+        form = ProductImageCreate(request.POST or None, request.FILES or None, instance=request.user)
+        print('form', form)
         if form.is_valid():
-            form = form.save(commit=False)
-            print(form.item)
+            print(form.is_valid())
+            in_display = form.cleaned_data.get('in_display')
+            image = form.cleaned_data.get('image')
+            print('indisplay', in_display)
+            print('image:', image)
+            form.save()
+        return redirect('me2ushop:product_images', slug)
     else:
-        form = ProductImageCreate()
+        form = ProductImageCreate(slug)
         # form.fields['item'].widget.attrs['value'] = product
         context = {
             'object': product,
@@ -432,58 +434,56 @@ def product_image_create(request, slug):
             'form': form,
         }
 
-        return render(request, 'tags/product_images_form.html', context)
+        return render(request, 'tags/product_image_create_form.html', context)
 
 
-class ProductImageCreateView(LoginRequiredMixin, CreateView):
-    model = ProductImage
-    template_name = 'tags/product_images_form.html'
-    fields = ["image", "in_display"]
-
-    # success_url = redirect("me2ushop:product_images")
-
-    # def get_context_data(self,**kwargs):
-    #     print(kwargs)
-    # print(request)
-    # kwargs['item'] = ProductImage.objects.filter(item__slug=slug)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        self.object = self.get_object()
-        item = Product.objects.get(id=self.object.id)
-        context['item'] = item
-        return context
-
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        print('obj:', obj)
-        id = self.get_object().id
-        obj.item = get_object_or_404(Product, id=id)
-        item = obj.item
-        print('item:', item)
-        print(item.seller)
-        user = self.request.user
-        print(user)
-
-        default_image = obj.in_display
-
-        if item.seller == user:
-
-            current_saved_default = ProductImage.displayed.filter(item__seller=user, item=item)
-            print('current', current_saved_default)
-
-            if default_image:
-                if current_saved_default.exists():
-                    current_saved = current_saved_default[0]
-                    current_saved.in_display = False
-                    current_saved.save()
-                    # print('current', current_saved.default)
-
-            # obj.user = user
-            obj.save()
-            return super().form_valid(form)
-        messages.warning(self.request, 'you cannot add an image for another sellers product')
-        return redirect("me2ushop:home")
+# class ProductImageCreateView(LoginRequiredMixin, CreateView):
+#     model = ProductImage
+#     template_name = 'tags/product_images_form.html'
+#     fields = ["image", "in_display"]
+#     # form_class = ProductImageCreate
+#
+#     # success_url = redirect("me2ushop:product_images")
+#
+#     # def get_context_data(self, slug, **kwargs):
+#     #     kwargs['item'] = Product.objects.filter(slug=slug)
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         self.object = self.get_object()
+#         item = Product.objects.get(slug=self.object.slug)
+#         context['item'] = item
+#         return context
+#
+#     def form_valid(self, form):
+#         obj = form.save(commit=False)
+#         print('obj:', obj)
+#         slug = self.get_object().slug
+#         obj.item = get_object_or_404(Product, slug=slug)
+#         item = obj.item
+#         print('item:', item)
+#         print(item.seller)
+#         user = self.request.user
+#         print(user)
+#
+#         default_image = obj.in_display
+#
+#         if item.seller == user:
+#
+#             current_saved_default = ProductImage.displayed.filter(item__seller=user, item=item)
+#             print('current', current_saved_default)
+#
+#             if default_image:
+#                 if current_saved_default.exists():
+#                     current_saved = current_saved_default[0]
+#                     current_saved.in_display = False
+#                     current_saved.save()
+#                     # print('current', current_saved.default)
+#
+#             # obj.user = user
+#             obj.save()
+#         return super().form_valid(form)
+#         # return redirect("me2ushop:home")
 
 
 class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

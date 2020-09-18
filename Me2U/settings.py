@@ -26,11 +26,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
-# DEBUG = True
+# DEBUG = False
 
 REDIS_URL = os.environ.get('REDIS_URL')
 
-ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com/', 'http://127.0.0.1:8000/']
+ALLOWED_HOSTS = ['*']
 CANON_URL_HOST = 'me2uafrica.herokuapp.com/'
 CANON_URLS_TO_REWRITE = ['me2u-africa.com', 'www.me2uafricaherokuapp.com']
 
@@ -157,31 +157,20 @@ GA_TRACKER_ID = '123'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# if not DEBUG:
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'me2uafrica',
-        'USER': os.environ.get('USER'),
-        'PASSWORD': os.environ.get('PASSWORD_AWS'),
-        'HOST': 'database-1.ckkeiam4jjhu.ap-southeast-2.rds.amazonaws.com',
+if not DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'me2uafrica',
+            'USER': os.environ.get('USER'),
+            'PASSWORD': os.environ.get('PASSWORD_AWS'),
+            'HOST': 'database-1.ckkeiam4jjhu.ap-southeast-2.rds.amazonaws.com',
+        }
     }
-}
-import dj_database_url
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'me2u',
-#         'USER': os.environ.get('USER'),
-#         'PASSWORD': os.environ.get('PASSWORD'),
-#         'HOST': 'localhost',
-#     }
-# }
-
+    import dj_database_url
+    db_from_env = dj_database_url.config(conn_max_age=600)
+    DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -251,14 +240,22 @@ else:
     # Email Config
     # Email server
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST_USER = "Daniel Makori"
+    EMAIL_HOST_USER = "danielmakori0@gmail.com"
     EMAIL_HOST = "smtp.domain.com"
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+    # turn to true during production
+    # ENABLE_SSL = False
 
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -278,19 +275,10 @@ PRODUCTS_PER_ROW = 12
 AUTH_PROFILE_MODULE = 'users.profile'
 AUTH_USER_MODEL = 'users.User'
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
-
-# try:
-#     from settings_local import *
-# except ImportError:
-#     pass
-
-# turn to true during production
-# ENABLE_SSL = False
+try:
+    from settings_local import *
+except ImportError:
+    pass
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
