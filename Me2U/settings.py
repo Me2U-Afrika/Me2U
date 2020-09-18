@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
 # DEBUG = False
 
-REDIS_URL = '127.0.0.1'
+REDIS_URL = os.environ.get('REDIS_URL')
 
 ALLOWED_HOSTS = ['*']
 CANON_URL_HOST = 'me2uafrica.herokuapp.com/'
@@ -148,7 +148,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],
+            'hosts': [REDIS_URL],
         },
     },
 }
@@ -225,8 +225,8 @@ LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # stripe settings
 
