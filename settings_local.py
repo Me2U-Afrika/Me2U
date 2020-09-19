@@ -12,27 +12,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-from botocore.config import Config
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
-# DEBUG = False
-
-REDIS_URL = os.environ.get('REDIS_URL')
-
-ALLOWED_HOSTS = ['*']
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -42,13 +21,3 @@ DATABASES = {
         'HOST': 'localhost',
     }
 }
-
-
-STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
-
-STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
-STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-
-
