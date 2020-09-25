@@ -1,2 +1,3 @@
 User-agent: *
 Disallow:
+Sitemap: me2uafrica.herokuapp.com/marketing/sitemap.xml
