@@ -13,30 +13,41 @@ from me2ushop.models import ProductImage, Product, Order, OrderItem, Address
 def seller_page(request):
     print('user:', request.user)
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect('login/?next=/sellers/')
     if request.user.is_seller:
-        orders = OrderItem.objects.filter(item__seller=request.user).filter(ordered=True).exclude(
-            order__status=30).exclude(status__gt=20)
-        order_id = Order.objects.filter(items__item__seller=request.user, ordered=True, status=20).distinct()
+        items = OrderItem.objects.filter(item__seller=request.user).filter(ordered=True).exclude(status__gt=20)
+        items_delivered = OrderItem.objects.filter(item__seller=request.user).filter(ordered=True).filter(status=50)
+        print('items:', items_delivered)
 
-        # if order_id:
-        #     order_id = order_id[0]
-        # print('order_id', order_id[0].name)
-        total_orders = Order.objects.filter(items__item__seller=request.user)
-        cancelled = Order.objects.filter(items__item__seller=request.user, items__status=40)
-        delivered = Order.objects.filter(items__status=30, status=30, items__item__seller=request.user)
-        pending = orders.exclude(order__status=30)
+        orders = Order.objects.filter(items__item__seller=request.user).filter(ordered=True).filter(status=20).distinct()
+        orders_completed = Order.objects.filter(items__item__seller=request.user).filter(ordered=True).filter(status=30).distinct()
         print('orders:', orders)
-        for order in orders:
-            if order.user:
-                print(order.user)
-            else:
-                print(order.cart_id)
-        # for order in order_id:
-        #     print('order number:', order)
-        #     print('order from id:', order.items.all())
-        print('delivered:', delivered)
-        print('pending:', pending.count())
+        # print('order_id:', orders[0].id)
+        # print('order_set:', orders[0].order_set.all())
+        customers = {}
+        order = Order.objects.filter(items__id=orders[0].id)
+        print('order:', order)
+        # print('order name:', order[0].user)
+        for order in order:
+            if order.name not in customers:
+                customers[order.user] = order.phone
+        print(customers)
+        order_id = Order.objects.filter(items__item__seller=request.user, ordered=True).exclude(
+            status__gt=20).distinct()
+
+        total_orders = OrderItem.objects.filter(item__seller=request.user)
+        # for order in total_orders:
+        #     if order.user:
+        #         customers[order.user] = order.order_set.get
+        #         print('order.user:', order.user)
+        #         print(customers)
+        #     elif request.cart:
+        #         customers['name'] = order.request.cart
+        #         print('session cart id:', order.request.cart.id)
+        cancelled = total_orders.filter(status=40)
+        delivered = OrderItem.objects.filter(status=50, item__seller=request.user)
+        pending = total_orders.filter(status=10)
+        in_transit = total_orders.filter(status=45)
 
         return render(request, 'sellers/seller_dashboard.html', locals())
     else:

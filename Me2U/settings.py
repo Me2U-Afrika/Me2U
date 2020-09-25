@@ -31,9 +31,8 @@ DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
 
 REDIS_URL = os.environ.get('REDIS_URL')
 
-ALLOWED_HOSTS = ['*']
-CANON_URL_HOST = 'me2uafrica.herokuapp.com/'
-CANON_URLS_TO_REWRITE = ['me2u-africa.com', 'www.me2uafricaherokuapp.com']
+# CANON_URL_HOST = 'www.me2uafricaherokuapp.com/'
+# CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com']
 
 s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
 
@@ -170,6 +169,7 @@ if not DEBUG:
     }
 
     import dj_database_url
+
     db_from_env = dj_database_url.config(conn_max_age=600)
     DATABASES['default'].update(db_from_env)
 
@@ -229,24 +229,29 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Email Config
+# Email server
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST_USER = "danielmakori0@gmail.com"
+DEFAULT_FROM_EMAIL = "Me2U|Afrika"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
+
 # stripe settings
 
 if DEBUG:
     # test keys
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    ALLOWED_HOSTS = ['*']
+
 else:
+    ALLOWED_HOSTS = ['www.me2uafrika.com', 'me2uafrika.com', 'localhost', 'me2uafrica.herokuapp.com']
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
-    # Email Config
-    # Email server
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST_USER = "danielmakori0@gmail.com"
-    EMAIL_HOST = "smtp.domain.com"
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

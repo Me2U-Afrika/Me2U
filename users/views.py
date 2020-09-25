@@ -34,13 +34,13 @@ def register(request):
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
-            email = form.cleaned_data.get('email')
-            raw_password = form.cleaned_data.get('password1')
-            account = authenticate(email=email, password=raw_password)
-            login(request, account)
+            # email = form.cleaned_data.get('email')
+            # raw_password = form.cleaned_data.get('password1')
+            # account = authenticate(email=email, password=raw_password)
+            # login(request, account)
             form.send_mail()
             messages.success(request, f'Account created for {username}!')
-            return redirect('me2ushop:home')
+            return redirect('login')
         else:
             messages.warning(request, 'Invalid details, please try again')
             form = UserRegisterForm(request.POST)

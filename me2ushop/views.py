@@ -234,7 +234,6 @@ def homeView(request):
             top_bestseller = [bestseller[0]]
 
     # print('view recs:', view_recs)
-
     return render(request, template_name, locals())
     # model = Product
     # paginate_by = 8
@@ -1082,12 +1081,57 @@ def merge_cart(sender, user, request, **kwargs):
             # print("before:", request.cart.id)
             order = qs[0]
             if cart_id.id != order.id:
-
+                # order = Order.objects.filter(id=cart_id.id, ordered=False)
+                # print(order)
                 order_items = OrderItem.objects.filter(order=cart_id, ordered=False)
 
-                # print('order_items:', order_items)
+                print('order_items:', order_items)
 
                 for order_item in order_items:
+                    if order_item.user is None:
+                        # print('item_cart_id:', order_item.cart_id)
+                        quantity = order_item.quantity
+
+                        # Get product instances for each
+                        product = Product.active.all()
+                        item = get_object_or_404(product, slug=order_item.item.slug)
+
+                        # Delete and create a new instance of the product
+                        order_item.delete()
+                        order_anonymous_delete = Order.objects.filter(id=cart_id.id, ordered=False)
+                        # # print("anonymous_id:", order_anonymous_delete)
+                        order_anonymous_delete.delete()
+                        # # print("anonymous_id:", order_anonymous_delete)
+
+                        # # Add new product being ordered to database
+                        order_item, created = OrderItem.objects.get_or_create(
+                            item=item,
+                            user=user,
+                            ordered=False
+                        )
+                        # print('created item:', created)
+
+                        if order.items.filter(item__slug=item.slug).exists():
+                            if quantity > 1:
+                                order_item.quantity = quantity
+                            else:
+                                order_item.quantity += 1
+                            # print('order saved:', order_item)
+                            order_item.save()
+                        else:
+                            order.items.add(order_item)
+                            order_item.quantity = quantity
+                        # print('order saved:', order_item)
+                        order_item.save()
+                    request.session['cart_id'] = order.id
+        else:
+            order_items = OrderItem.objects.filter(order=cart_id, ordered=False)
+
+            # print('order_items:', order_items)
+
+            for order_item in order_items:
+                if order_item.user is not None:
+
                     # print('item_cart_id:', order_item.cart_id)
                     quantity = order_item.quantity
 
@@ -1108,58 +1152,15 @@ def merge_cart(sender, user, request, **kwargs):
                         user=user,
                         ordered=False
                     )
-                    # print('created item:', created)
+                    # print('orderItem created:', order_item)
 
-                    if order.items.filter(item__slug=item.slug).exists():
-                        if quantity > 1:
-                            order_item.quantity = quantity
-                        else:
-                            order_item.quantity += 1
-                        # print('order saved:', order_item)
-                        order_item.save()
-                    else:
-                        order.items.add(order_item)
-                        order_item.quantity = quantity
-                    # print('order saved:', order_item)
+                    order_date = timezone.now()
+                    order = Order.objects.create(user=user, order_date=order_date)
+                    order.items.add(order_item)
+                    order_item.quantity = quantity
                     order_item.save()
-                del request.session['cart_id']
-                request.session['cart_id'] = order.id
-        else:
-            order_items = OrderItem.objects.filter(order=cart_id, ordered=False)
-
-            # print('order_items:', order_items)
-
-            for order_item in order_items:
-                # print('item_cart_id:', order_item.cart_id)
-                quantity = order_item.quantity
-
-                # Get product instances for each
-                product = Product.active.all()
-                item = get_object_or_404(product, slug=order_item.item.slug)
-
-                # Delete and create a new instance of the product
-                order_item.delete()
-                order_anonymous_delete = Order.objects.filter(id=cart_id.id, ordered=False)
-                # # print("anonymous_id:", order_anonymous_delete)
-                order_anonymous_delete.delete()
-                # # print("anonymous_id:", order_anonymous_delete)
-
-                # # Add new product being ordered to database
-                order_item, created = OrderItem.objects.get_or_create(
-                    item=item,
-                    user=user,
-                    ordered=False
-                )
-                # print('orderItem created:', order_item)
-
-                order_date = timezone.now()
-                order = Order.objects.create(user=user, order_date=order_date)
-                order.items.add(order_item)
-                order_item.quantity = quantity
-                order_item.save()
-                order.save()
-                del request.session['cart_id']
-                request.session['cart_id'] = order.id
+                    order.save()
+                    request.session['cart_id'] = order.id
     elif qs.exists():
         request.session['cart_id'] = qs[0].id
 

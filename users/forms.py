@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UsernameField
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 
 from .models import Profile, User, AutomobileProfile, SellerProfile
 from django_countries.fields import CountryField
@@ -10,11 +10,11 @@ logger = logging.getLogger(__name__)
 
 
 class UserRegisterForm(UserCreationForm):
-
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ['username', 'email']
         field_classes = {"email": UsernameField}
+
     # password1 = forms.RegexField(label="Password", regex=r'^(?=.*\W+).*$',
     #                              help_text='Password must be 6 characters long and contain' \
     #                                        'at least one non-alphanumeric character.',
@@ -29,17 +29,16 @@ class UserRegisterForm(UserCreationForm):
             self.cleaned_data["username"]
         )
         message = "Welcome {}".format(self.cleaned_data["username"])
+        email_subject = 'Welcome to Me2U|Africa. Activate Your Account'
         send_mail(
-            "Welcome to Me2U|Africa",
+            email_subject,
             message,
-            "Welcome to Me2U|Africa. Shop with us today and receive massive discounts! me2uafrica.herokuapp.com",
-            [self.cleaned_data["username"]],
-            fail_silently=True,
+            'noreply@me2uafrika.com',
+            [self.cleaned_data["email"]], fail_silently=True,
         )
 
 
 class AutomobileRegisterForm(forms.ModelForm):
-
     class Meta:
         model = AutomobileProfile
         fields = '__all__'

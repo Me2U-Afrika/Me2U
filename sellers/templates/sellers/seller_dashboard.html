@@ -4,22 +4,22 @@
 {% include 'sellers/status.html' %}
 <div class="row">
     <div class="col-md-5">
-        <h5>CUSTOMERS</h5>
+        <h5>Completed Orders</h5>
         <hr>
         <div class="card card-body">
             <a class="btn btn-primary btn-sm btn-block" href="">customer</a>
             <table class="table table-sm">
                 <tr>
-                    <th>Most Bought Products</th>
-                    <th>Order date</th>
+                    <th>Name</th>
+                    <th>Product</th>
                     <th>status</th>
                 </tr>
-                    {% for order in order_id %}
+                    {% for item in items_delivered %}
 
                 <tr>
-                    <td><a href="{% url 'sellers:customer_details' order.id %}">{{ order.user }}</a></td>
-                    <td>{{ order.order_date }}</td>
-                    <td>{{ order.get_status_display }}</td>
+                    <td><a>{{ item.user }}</a></td>
+                    <td>{{ item }}</td>
+                    <td>{{ item.get_status_display }}</td>
                 </tr>
 
                 {% endfor %}
@@ -30,15 +30,14 @@
     
 
     <div class="col-md-7">
-        <h5>Recent Orders</h5>
+        <h5>Recent 5 Orders</h5>
         <hr>
         <div class="card card-body">
             <a class="btn btn-primary btn-sm btn-block" href="">Create Order</a>
             <table class="table table-sm">
                 <tr>
                     <th></th>
-                    <th>Customer ID</th>
-                    <th>Product</th>
+                    <th>Order ID</th>
                     <th>Date Ordered</th>
                     <th>Status</th>
                     <th>Update</th>
@@ -48,8 +47,7 @@
                 <tr>
                     <td><a href="{% url 'sellers:customer_details' order.id %}">View</a></td>
                     <td><a href="{% url 'sellers:customer_details' order.id %}">{{ order.id }}</a></td>
-                    <td><a href="{% url 'sellers:customer_details' order.id %}">{{ order }}</a></td>
-                    <td>{{ order.date_ordered }}</td>
+                    <td>{{ order.order_date }}</td>
                     <td>{{ order.get_status_display }}</td>
                     <td><a>Update</a></td>
                     <td><a>Delete</a></td>

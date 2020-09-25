@@ -7,7 +7,7 @@ from Me2U import settings
 class URLCanonicalizationMiddleware(object):
     def process_view(self, request, view_func, view_args, view_kwargs):
         if not settings.DEBUG:
-            print(settings.DEBUG)
+            # print(settings.DEBUG)
 
             """ only perform the redirect if not in debug mode """
             protocol = 'https://' if request.is_secure() else 'http://'

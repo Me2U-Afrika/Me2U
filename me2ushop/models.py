@@ -272,12 +272,13 @@ class OrderItem(models.Model):
     PROCESSING = 20
     SENT = 30
     CANCELLED = 40
-    ON_TRANSIT = 45
+    IN_TRANSIT = 45
     DELIVERED = 50
     STATUSES = ((NEW, "New"),
                 (PROCESSING, "Processing"),
                 (SENT, "Sent"),
                 (CANCELLED, "Cancelled"),
+                (IN_TRANSIT, "in_transit"),
                 (DELIVERED, "Delivered"),
                 )
 
