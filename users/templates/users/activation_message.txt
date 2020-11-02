@@ -1,0 +1,11 @@
+Hello {{ user }},
+
+Thank You for creating an account with us.
+Please activate your account using the link below:
+
+{{ activation_url }}
+
+Karibu,
+
+-customerservice
+-Me2U|Afrika

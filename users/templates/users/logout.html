@@ -1,6 +1,20 @@
-{% extends 'navigation.html' %}
+{% extends 'me2ushop/base_template.html' %}
+{% load mptt_tags %}
 
-    {% block content %}
+
+
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/seller_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
+{% endblock %}
+
+<body>
+{% block site_wrapper %}
+
+<div class="super_container">
     <section class="text-center">
      <h2 class="mt-5"> You have been logged out!</h2>
         <div class="border-top pt-3">
@@ -9,4 +23,19 @@
             </small>
         </div>
     </section>
-    {%  endblock content %}
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+{% endblock %}
+</body>
+

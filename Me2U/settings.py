@@ -16,25 +16,36 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from botocore.config import Config
 
+AUTH_PROFILE_MODULE = 'users.profile'
+AUTH_USER_MODEL = 'users.User'
+
+ADMINS = (
+    ('Me2U|Africa IT', 'danielmakori0@gmail.com'),
+)
+
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print("base dir path", BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+# CANON_URL_HOST = 'www.me2uafricaherokuapp.com/'
+# CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
 # DEBUG = False
 
-REDIS_URL = os.environ.get('REDIS_URL')
+SITE_URL = 'me2uafrika.herokuapp.com'
+if DEBUG:
+    SITE_URL = 'http://127.0.0.1:8000/'
 
-# CANON_URL_HOST = 'www.me2uafricaherokuapp.com/'
-# CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com']
-
-s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
+EMAIL_SUBJECT_PREFIX = '[Me2U|Afrika]'
 
 # Application definition
 
@@ -59,13 +70,17 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'main',
     'bootstrap3',
+    'bootstrap4',
     'users.apps.UsersConfig',
     'categories',
     'me2ushop',
+    'marketing',
     'crispy_forms',
     'django_countries',
     'stripe',
     'utils',
+    'mptt',
+    "django_mptt_admin",
     'search',
     'sellers',
     'stdimage',
@@ -78,6 +93,9 @@ INSTALLED_APPS = [
 
 ]
 DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap.html'
+
+# default is 10 pixels
+MPTT_ADMIN_LEVEL_INDENT = 20
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
@@ -144,6 +162,11 @@ WEBPACK_LOADER = {
 
 WSGI_APPLICATION = 'Me2U.wsgi.application'
 ASGI_APPLICATION = 'Me2U.routing.application'
+
+REDIS_URL = os.environ.get('REDIS_URL')
+
+s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -229,27 +252,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Email Config
-# Email server
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST_USER = "danielmakori0@gmail.com"
-DEFAULT_FROM_EMAIL = "Me2U|Afrika"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
-
 # stripe settings
 
 if DEBUG:
     # test keys
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
-    # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     ALLOWED_HOSTS = ['*']
 
 else:
-    ALLOWED_HOSTS = ['www.me2uafrika.com', 'me2uafrika.com', 'localhost', 'me2uafrica.herokuapp.com']
+    # ALLOWED_HOSTS = ['www.me2uafrika.com', 'me2uafrika.com', 'localhost', 'me2uafrica.herokuapp.com']
+    ALLOWED_HOSTS = ['*']
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
@@ -264,23 +278,23 @@ else:
     # turn to true during production
     # ENABLE_SSL = False
 
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-
-ADMINS = (
-    ('Me2U|Africa IT', 'danielmakori0@gmail.com'),
-)
-
-EMAIL_SUBJECT_PREFIX = '[Me2U|Africa]'
+    # Email Config
+    # Email server
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST_USER = "danielmakori0@gmail.com"
+    DEFAULT_FROM_EMAIL = "Me2U|Afrika"
+    EMAIL_HOST = "smtp.gmail.com"
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
 
-AUTH_PROFILE_MODULE = 'users.profile'
-AUTH_USER_MODEL = 'users.User'
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 try:
     from settings_local import *

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category
+from .models import Category, Department
 from datetime import datetime, timedelta
 import logging
 from . import models
@@ -9,12 +9,19 @@ from django.db.models.functions import TruncDay
 from django.db.models import Avg, Count, Min, Sum
 from django.urls import path
 from django.template.response import TemplateResponse
+from me2ushop.models import Product
 
 from . import models
 from me2ushop import admin as admin_register
-
+from django_mptt_admin.admin import DjangoMpttAdmin
+from mptt.admin import MPTTModelAdmin, DraggableMPTTAdmin
 
 logger = logging.getLogger(__name__)
+
+
+class DepartmentAdmin(DraggableMPTTAdmin):
+    list_display = ('tree_actions', 'indented_title', 'created', 'modified',)
+    list_display_links = ('indented_title',)
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -27,6 +34,14 @@ class CategoryAdmin(admin.ModelAdmin):
                'updated_at',)
     # sets up slug to be generated from category name
     prepopulated_fields = {'slug': ('category_name',)}
+
+    fieldsets = (
+        (
+            None, {
+                'fields': ('category_name',)
+            }
+        ),
+    )
 
     def get_readonly_fields(self, request, obj=None):
         if request.user.is_superuser:
@@ -42,5 +57,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 # main_admin = OwnersAdminSite()
 
+
 admin.site.register(Category, CategoryAdmin)
+# admin.site.register(Department, DepartmentAdmin)
+admin.site.register(Department, DepartmentAdmin)
+# admin.site.register(, DepartmentAdmin)
+
 admin_register.main_admin.register(Category, CategoryAdmin)

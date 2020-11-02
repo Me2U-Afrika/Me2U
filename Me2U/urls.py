@@ -23,7 +23,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^main-admin/', admin.site.urls),
     url(r'^office-admin/', main_admin.central_office_admin.urls),
     url(r'^seller-admin/', main_admin.sellers_admin.urls),
     url(r'^dispatch-admin/', main_admin.dispatchers_admin.urls),
@@ -37,18 +37,18 @@ urlpatterns = [
     url('search/', include('search.urls')),
     url('sellers/', include('sellers.urls')),
 
-    url('me2ushop/', include('me2ushop.urls')),
+    url('', include('me2ushop.urls')),
     url('marketing/', include('marketing.urls')),
 
-    url('', include('categories.urls', namespace='categories')),
+    url('categories', include('categories.urls', namespace='categories')),
 
-    url('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-    url('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-    url('password-change/', auth_views.PasswordChangeView.as_view(template_name='users/password_change.html'),
-        name='password-change'),
-    url('password_change_done/',
-        auth_views.PasswordChangeDoneView.as_view(template_name='users/password_change_done.html'),
-        name='password_change_done'),
+    # url('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    # url('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
+    # url('password-change/', auth_views.PasswordChangeView.as_view(template_name='users/password_change.html'),
+    #     name='password-change'),
+    # url('password_change_done/',
+    #     auth_views.PasswordChangeDoneView.as_view(template_name='users/password_change_done.html'),
+    #     name='password_change_done'),
 
 ]
 

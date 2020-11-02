@@ -1,15 +1,13 @@
-{% extends 'navigation.html' %}
-{% load crispy_forms_tags %}
+{% extends 'me2ushop/base_template.html' %}
+{% load mptt_tags %}
 
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif%}
 
-{% block content %}
+
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/seller_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
 <style type="text/css">
   .form-signin {
     width: 100%;
@@ -42,9 +40,16 @@
     text-align: center;
   }
 </style>
+{% endblock %}
 
+<body>
+{% block navbar %}
+{% endblock %}
 
-<form class="form-signin" method="post">{% csrf_token %}
+{% block site_wrapper %}
+
+<div class="super_container">
+    <form class="form-signin" method="post">{% csrf_token %}
   <div class="d-flex flex-column pb-3">
     <img class="img-fluid mx-auto d-block" src="" alt="Me2U|Africa Logo" width="72" height="72">
   </div>
@@ -78,27 +83,20 @@
     </small>
 </div>
 
-<!--        <div class="container content-section mt-5">-->
-<!--            <form method="POST">-->
-<!--&lt;!&ndash;                protect form from attacks&ndash;&gt;-->
-<!--                {% csrf_token %}-->
+</div>
 
-<!--                <fieldset class="form-group">-->
-<!--                    <legend class="border-bottom mb-4">Log In</legend>-->
-<!--&lt;!&ndash;                    Call the form from views&ndash;&gt;-->
-<!--                    {{ form.non_field_errors }}-->
-<!--                    {% include "includes/field.html" with field=form.username %}-->
-<!--                    {% include "includes/field.html" with field=form.password %}-->
-<!--                </fieldset>-->
-<!--                <div class="form-group">-->
-<!--                    <button class="btn btn-outline-info" type="submit">Sign In</button>-->
-<!--                </div>-->
-<!--            </form>-->
-<!--            <div class="border-top pt-3">-->
-<!--                <small class="text-muted">-->
-<!--                    Need An Account? <a class="ml-2" href="{% url 'users:register'%}">Sign Up</a>-->
-<!--                </small>-->
-<!--            </div>-->
-
-<!--        </div>-->
 {% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+{% endblock %}
+</body>
+
+
+

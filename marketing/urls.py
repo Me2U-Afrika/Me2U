@@ -9,6 +9,7 @@ app_name = 'marketing'
 
 urlpatterns = [
     url(r'^robots/', views.robots),
+    url(r'^ajax/email-signup/', views.email_signup, name="ajax_email_signup"),
 
 ]
 

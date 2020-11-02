@@ -1,6 +1,8 @@
 {% extends 'navigation.html' %}
 {% load search_tags %}
 {% load catalog_filters %}
+{% load mptt_tags %}
+
 
 
 {% block content %}
@@ -16,211 +18,73 @@
 }
 </style>
 
+ <div class="alert-top-message alert-dismissible" role="alert">
+        <button type="button" class="close alert-top-message" data-dismiss="alert">
+<!--            <span aria-hidden="true">&times;</span>-->
+<!--            <span class="sr-only">Close</span>-->
+        </button>
+        <div class="container">
+            <h4>{{marketing_message.message}}</h4>
+        </div>
+ </div>
+
   <div class="row">
-    <div class="col-lg-2 mt-5">
-      {% category_list request.path %}
+    <div class="col-lg-2">
+
+<h3>Departments</h3>
+
+    {% department_list request.path %}
+
 
     </div>
 
-      <div class="col-lg-8">
+      {% if sliders %}
+      <div class="col-lg-8" >
       <!--Carousel Wrapper-->
       <div id="carousel-example-1z" class="carousel slide carousel-fade" data-ride="carousel">
 
         <!--Indicators-->
         <ol class="carousel-indicators">
-          <li data-target="#carousel-example-1z" data-slide-to="0" class="active"></li>
-          <li data-target="#carousel-example-1z" data-slide-to="1"></li>
-          <li data-target="#carousel-example-1z" data-slide-to="2"></li>
+            {% for slider in sliders %}
+          <li data-target="#carousel-example-1z" data-slide-to="{{ forloop.counter }}" {% if forloop.first %} class="active"{% endif %}></li>
+            {% endfor %}
         </ol>
         <!--/.Indicators-->
 
         <!--Slides-->
-
         <div class="carousel-inner" role="listbox">
-
-          <!--First slide-->
-          <div class="carousel-item active">
-            <div class="view" style="background-image: url('{{ MEDIA_URL }}images/Electronics/jumpstory.jpg');background-repeat: no-repeat;background-size: contain;">
-              <!-- Mask & flexbox options-->
-<!--              <div class="mask rgba-black-light d-flex justify-content-center align-items-center">-->
-              <div class="justify-content-center align-items-center">
-                <!-- Content -->
-                <div class="text-center white-text mx-5 wow fadeIn">
-<!--                  <h1 class="mb-4">-->
-<!--                    <strong>Karibu Me2U|Market</strong>-->
-<!--                  </h1>-->
-
-<!--                  <p>-->
-<!--                    <strong>All Rounded online Market of choice.  You need it, we got it! </strong>-->
-<!--                  </p>-->
-
-<!--                  <p class="mb-4 d-none d-md-block">-->
-<!--                    <strong>-->
-<!--                      Empowering African Products And Culture Across the Globe through Trade.-->
-<!--                    </strong>-->
-<!--                  </p>-->
-
-<!--                  <a target="_blank" href="" class="btn btn-outline-white btn-lg">Start-->
-<!--                    Shopping-->
-<!--                    <i class="fas fa-chess"></i>-->
-<!--                  </a>-->
-                </div>
-                <!-- Content -->
-
-              </div>
-              <!-- Mask & flexbox options-->
-
-            </div>
-          </div>
-          <!--/First slide-->
-
-           <!--Second slide-->
-          <div class="carousel-item">
-            <div class="view" style="background-image: url('{{ MEDIA_URL }}images/LocalProduce/Local7.jpg'); background-repeat: no-repeat; background-size: contain;">
-
+           {% for slider in sliders %}
+          <!--Second slide-->
+          <div class="carousel-item {% if forloop.first %} active {% endif %}">
+              {% if slider.link_url %} <a href="{{ slider.link_url }}">{% endif %}
+            <div class="view" style="background-image: url('{{ MEDIA_URL }}{{ slider.image }}'); background-repeat: no-repeat; background-size: cover;">
               <!-- Mask & flexbox options-->
 <!--              <div class="mask rgba-black-light d-flex justify-content-center align-items-center">-->
               <div class="d-flex justify-content-center align-items-center">
-
                 <!-- Content -->
                 <div class="text-center white-text mx-5 wow fadeIn">
-<!--                  <h1 class="mb-4">-->
-<!--                    <strong>Door To Door Delivery Services</strong>-->
-<!--                  </h1>-->
-
-<!--                  <p>-->
-<!--                    <strong>We deliver in all East African Countries.</strong>-->
-<!--                  </p>-->
-
-<!--                  <p class="mb-4 d-none d-md-block">-->
-<!--                    Refer a seller and earn a shopping coupon worth $5 from their store!!-->
-<!--                  </p>-->
-
+                    {% if slider.header_text %}
+                      <h1 class="mb-4">
+                        <strong>{{slider.header_text|safe }}</strong>
+                      </h1>
+                    {% endif %}
+                    {% if slider.text %}
+                      <p class="mb-4 d-none d-md-block">
+                        {{ slider.text|safe }}
+                      </p>
+                    {% endif %}
 <!--                  <a target="_blank" href="" class="btn btn-outline-white btn-lg">Start shopping-->
 <!--                    <i class="fas fa-chess-queen"></i>-->
 <!--                  </a>-->
                 </div>
                 <!-- Content -->
-
               </div>
               <!-- Mask & flexbox options-->
-
             </div>
+              {% if slider.link_url %}</a>{% endif %}
           </div>
           <!--/Second slide-->
-
-              <!--Second slide-->
-          <div class="carousel-item">
-            <div class="view" style="background-image: url('{{ MEDIA_URL }}images/LocalProduce/LocalFarm.jpg'); background-repeat: no-repeat; background-size: contain;">
-
-              <!-- Mask & flexbox options-->
-              <div class="d-flex justify-content-center align-items-center">
-<!--              <div class="mask rgba-black-light d-flex justify-content-center align-items-center">-->
-
-                <!-- Content -->
-                <div class="text-center white-text mx-5 wow fadeIn">
-<!--                  <h1 class="mb-4">-->
-<!--                    <strong>Cheap Local Products</strong>-->
-<!--                  </h1>-->
-
-<!--                  <p>-->
-<!--                    <strong>Order Fresh Farm Products and Support our farmers. </strong>-->
-<!--                  </p>-->
-
-<!--                  <p class="mb-4 d-none d-md-block">-->
-<!--                    <strong>Pre-packaged gloceries from our top sellers also available. Do more with a single click. </strong>-->
-<!--                  </p>-->
-
-<!--                  <a target="_blank" href="" class="btn btn-outline-white btn-lg">Shop Now-->
-<!--                    <i class="fas fa-chess-bishop"></i>-->
-<!--                  </a>-->
-                </div>
-                <!-- Content -->
-              </div>
-              <!-- Mask & flexbox options-->
-            </div>
-          </div>
-          <!--/Second slide-->
-
-                  <!--Second slide-->
-          <div class="carousel-item">
-            <div class="view" style="background-image: url('{{ MEDIA_URL }}images/Electronics/jumpstory.jpg');background-repeat: no-repeat;background-size: contain;">
-
-
-              <!-- Mask & flexbox options-->
-<!--              <div class="mask rgba-black-light d-flex justify-content-center align-items-center">-->
-              <div class="d-flex justify-content-center align-items-center">
-
-                <!-- Content -->
-<!--                <div class="text-center white-text mx-5 wow fadeIn">-->
-<!--                  <h1 class="mb-4">-->
-<!--                    <strong>Advertise Me2U|Africa</strong>-->
-<!--                  </h1>-->
-
-<!--                  <p>-->
-<!--                    <strong>What's the best way to earn in any Season?</strong>-->
-<!--                  </p>-->
-
-<!--                  <p class="mb-4 d-none d-md-block">-->
-<!--                    Use your media influence and earn with us. At Me2U, we care about our customers and the best way to appreciate you is to invest-->
-<!--                      in you. <br>-->
-<!--                      Don't say am Broke no more! We all Millionaires in different ways!-->
-<!--                  </p>-->
-
-<!--                  <a target="_blank" href="" class="btn btn-outline-white btn-lg">Start-->
-<!--                    Earning!!-->
-<!--                    <i class="fas fa-chess-king"></i>-->
-<!--                  </a>-->
-<!--                </div>-->
-                <!-- Content -->
-
-              </div>
-              <!-- Mask & flexbox options-->
-
-            </div>
-          </div>
-          <!--/Second slide-->
-
-
-
-          <!--Third slide-->
-          <div class="carousel-item">
-            <div class="view" style="background-image: url('{{ MEDIA_URL }}images/Electronics/electronics1.jpg'); background-repeat: no-repeat; background-size: contain;">
-
-              <!-- Mask & flexbox options-->
-<!--              <div class="mask rgba-black-light d-flex justify-content-center align-items-center">-->
-              <div class="d-flex justify-content-center align-items-center">
-
-                <!-- Content -->
-                <div class="text-center white-text mx-5 wow fadeIn">
-<!--                  <h1 class="mb-4">-->
-<!--                    <strong>Earn With Me2U|Africa as an Agent</strong>-->
-<!--                  </h1>-->
-
-<!--                  <p>-->
-<!--                    <strong>All our Agents are our WareHouses!</strong>-->
-<!--                  </p>-->
-
-<!--                  <p class="mb-4 d-none d-md-block">-->
-<!--                    Do you own a form of automobile and would like to make some extra cash.-->
-<!--                    <br>-->
-<!--                      Work as our Pick and Drop agent and get paid weekly!-->
-<!--                      All qualified agents receive training on packaging and order preprocessing prior to Delivery-->
-<!--                  </p>-->
-
-<!--                  <a target="_blank" href="" class="btn btn-outline-white btn-lg">Deliver Orders-->
-<!--                    <i class="fas fa-chess-knight"></i>-->
-<!--                  </a>-->
-                </div>
-                <!-- Content -->
-
-              </div>
-              <!-- Mask & flexbox options-->
-
-            </div>
-          </div>
-          <!--/Third slide-->
-
+          {% endfor %}
         </div>
         <!--/.Slides-->
 
@@ -238,6 +102,7 @@
       </div>
       <!--/.Carousel Wrapper-->
       </div>
+      {% endif %}
 
     <div class="col-lg-2 mt-5">
       {% include "tags/AfricaMade.html" %}
@@ -247,6 +112,7 @@
     </div>
   <hr>
       {% block main_content %}
+
     <!--Main layout-->
     <main>
       <div class="view" style="background-image: url('{{ MEDIA_URL }}images/pageDecorator/Maasaipattern.png'); background-repeat: no-repeat; background-size: cover;">

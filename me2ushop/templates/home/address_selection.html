@@ -1,0 +1,77 @@
+
+{% extends 'me2ushop/base_template.html' %}
+{% load crispy_forms_tags %}
+
+{% block headblock %}
+
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/cart_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/cart_responsive.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main_styles.css">
+
+{% endblock %}
+
+<body>
+
+{% block site_wrapper %}
+
+<div class="super_container">
+
+	<!-- Cart -->
+
+	<div class="cart_section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10 offset-lg-1">
+					<div class="cart_container">
+						<div class="cart_title">Address Selection Form</div>
+
+                         <!--Card-->
+                          <div class="card">
+                            <!--Card content-->
+                            <form method="POST" class="card-body">
+                              {% csrf_token %}
+
+                                {{ form|crispy }}
+
+
+                              <hr class="mb-4">
+                              <button class="btn btn-primary btn-lg btn-block" type="submit">Proceed to Payments</button>
+                            </form>
+
+                          </div>
+
+						<div class="cart_buttons">
+							 <button type="button" class="button cart_button_clear">
+								 <a href="{% url 'me2ushop:home'%}">Continue Shopping<i class="fas fa-hand-holding-usd"></i></a>
+							 </button>
+
+                            <button type="button" class="button cart_button_checkout">
+                                <a  href="{% url 'me2ushop:checkout' %}" target="_blank">Add New Address</a>
+                            </button>
+
+						</div>
+						 <div class="pt-4 text-center font-small mt-4 wow fadeIn cart_buttons">
+
+
+                    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}js/cart_custom.js"></script>
+<script src="{{ STATIC_URL }}js/custom.js"></script>
+
+
+
+{% endblock %}
+</body>
+

@@ -1,16 +1,24 @@
-<h3>Categories</h3>
-    <ul id="Categories">
-        {% with active_categories as cats %}
-         {% for c in cats %}
-            <li>
-                {% ifequal c.get_absolute_url request_path %}
-                    {{ c.get_category_name_display }}
-                    <br>
-                {% else %}
-                    <a href="{{ c.get_absolute_url }}" class="Category">{{ c.get_category_name_display }}</a>
-                <br>
-                {% endifequal %}
-            </li>
+{% load mptt_tags %}
+
+
+<div class="custom_dropdown">
+<div class="custom_dropdown_list">
+    <span class="custom_dropdown_placeholder clc">All Categories</span>
+    <i class="fas fa-chevron-down"></i>
+    <ul class="custom_list clc">
+        <li><a class="clc" href="#">All Categories</a></li>
+
+        {% for category,structure in departments|tree_info %}
+        {% if structure.new_level %}
+                <li>{% else %}</li>
+
+            <li>{% endif %}
+
+            <a href="{{ category.get_absolute_url }}" class="clc" name="{{ category.id }}"> {{ category.category_name|truncatechars:19 }}</a>
+
+                {% for level in structure.closed_levels %}</li>
         {% endfor %}
-        {% endwith %}
+        {% endfor %}
     </ul>
+</div>
+</div>

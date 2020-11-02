@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UsernameField
 from django.core.mail import send_mail, EmailMessage
+from django.template.loader import render_to_string
 
 from .models import Profile, User, AutomobileProfile, SellerProfile
 from django_countries.fields import CountryField
@@ -28,8 +29,12 @@ class UserRegisterForm(UserCreationForm):
             "Sending Signup email for username=%s",
             self.cleaned_data["username"]
         )
-        message = "Welcome {}".format(self.cleaned_data["username"])
-        email_subject = 'Welcome to Me2U|Africa. Activate Your Account'
+        # message = "Welcome {}".format(self.cleaned_data["username"])
+        context = {
+            'username': self.cleaned_data["username"]
+        }
+        message = render_to_string('users/message_from_ceo.txt', context)
+        email_subject = 'Welcome to Me2U|Africa. Message from CEO'
         send_mail(
             email_subject,
             message,

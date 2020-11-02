@@ -1,0 +1,9 @@
+Hello {{ username }},
+
+Thank You for creating an account with us.
+
+Karibu,
+
+-Daniel Ogechi
+-C.E.O
+-Me2U|Afrika

@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.conf.urls import *
 from django.views.generic import TemplateView
+from django.contrib.auth import views as auth_views
 
 from . import views
 
@@ -20,6 +21,7 @@ urlpatterns = [
     url("address-create/", views.AddressCreateView.as_view(), name="address_create", ),
     url("automobile-create/", views.AutomobileCreateView.as_view(), name="automobile_create", ),
     url("seller-create/", views.SellerCreateView.as_view(), name="seller_create", ),
+    url("brand-create/", views.BrandCreateView.as_view(), name="brand_create", ),
     url("^address-(?P<pk>[\w-]+)/update/$", views.AddressUpdateView.as_view(), name="address_update", ),
     url('^address-(?P<pk>[\w-]+)/delete/$', views.AddressDeleteView.as_view(), name="address_delete", ),
     url('automobile-register-confirm/',
@@ -28,5 +30,13 @@ urlpatterns = [
     url('seller-register-confirm/',
                 TemplateView.as_view(template_name='users/service_providers/seller_register_confirm.html'),
                 name='seller_confirm'),
+    url(r'^activate/(?P<activationKey>[\w-]+)/$', views.activation_view, name='activation_view'),
+    url('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    url('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
+    url('password-change/', auth_views.PasswordChangeView.as_view(template_name='users/password_change.html'),
+        name='password-change'),
+    url('password_change_done/',
+        auth_views.PasswordChangeDoneView.as_view(template_name='users/password_change_done.html'),
+        name='password_change_done'),
 
 ]

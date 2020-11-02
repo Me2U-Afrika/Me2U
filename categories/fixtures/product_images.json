@@ -1,0 +1,90 @@
+[
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 1,
+    "image": "images/products/15.jpg",
+    "in_display": true
+  }
+},
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 1,
+    "image": "images/products/Local10_eXVEgt7.jpg",
+    "in_display": false
+  }
+},
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 1,
+    "image": "images/products/electronics3_M6ZilUB.jpg",
+    "in_display": false
+  }
+},
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 2,
+    "image": "images/products/15_trO5YQG.jpg",
+    "in_display": true
+  }
+},
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 4,
+    "image": "images/products/electronics3_3TdR8ZV.jpg",
+    "in_display": true
+  }
+},
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 5,
+    "image": "images/products/electronics1_F9CJ6Qs.jpg",
+    "in_display": false
+  }
+},
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 6,
+    "image": "images/products/electronics2_PwHAqci.png",
+    "in_display": true
+  }
+},
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 5,
+    "image": "images/products/electronics1_DBp4KSa.jpg",
+    "in_display": true
+  }
+},
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 9,
+    "image": "images/products/Local7.jpg",
+    "in_display": true
+  }
+},
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 8,
+    "image": "images/products/LocalFarm_xsVcP6b.jpg",
+    "in_display": true
+  }
+},
+{
+  "model": "me2ushop.productimage",
+  "fields": {
+    "item": 12,
+    "image": "images/products/electronics2_jUUfv0f.png",
+    "in_display": true
+  }
+}
+]

@@ -66,5 +66,24 @@
       92
     ]
   }
+},
+  {
+  "model": "auth.group",
+  "pk": 3,
+  "fields": {
+    "name": "Sellers",
+    "permissions": [
+      60,
+      61,
+      64,
+      70,
+      72,
+      74,
+      76,
+      80,
+      84,
+      92
+    ]
+  }
 }
 ]

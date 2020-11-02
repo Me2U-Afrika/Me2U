@@ -31,6 +31,8 @@ If you use this database dump to load the fresh database(in another django proje
 To fix this problem, make sure to backup the database by excluding contenttypes and auth.permissions tables
 
 ./manage.py dumpdata --exclude auth.permission --exclude contenttypes > db.json
+manage.py dumpdata --exclude auth.permission --exclude contenttypes > categories/fixtures/ db.json
+
 
 Now you can use loaddata command with a fresh database
 

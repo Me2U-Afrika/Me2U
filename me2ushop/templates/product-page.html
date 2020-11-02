@@ -21,7 +21,7 @@
                                 <img src="{{ image.image.url }}" alt="{{ object.title }}" class="img-fluid"/>
                             </div>
                             {% endif %}
-                        {% endfor %}
+                            {% endfor %}
                             <div class="cb"><br/></div>
                             <h3>Mostly Ordered With</h3>
 
@@ -42,13 +42,11 @@
                 <div class="col-md-6 mb-4">
                     <!--Content-->
                     <div class="p-4">
-                        <div xmlns:v="http://rdf.data-vocabulary.org/#"
-                             about="{{ object.get_absolute_url }}" typeof="v:Product">
+                        <div xmlns:v='http://rdf.data-vocabulary.org/#' about="{{ object.get_absolute_url }}" typeof="v:Product">
                             <h1><span property="v:title">{{ object.title }}</span></h1>
                             <p class="lead">
                                 {% if object.sale_price and object.discount_price %}
-                               <h6><span class="mr-1">
-                                   <del>${{ object.price}}</del></span></h6>
+                               <h6><span class="mr-1"><del>${{ object.price}}</del></span></h6>
 
                                     <h2><span property="v:discount_price">${{ object.discount_price }}</span></h2>
 

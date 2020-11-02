@@ -2,7 +2,7 @@ from django.contrib import admin
 from datetime import datetime, timedelta
 import logging
 from . import models
-from .models import Profile, User, SellerProfile, AutomobileProfile
+from .models import Profile, User, SellerProfile, AutomobileProfile, EmailConfirmed
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.html import format_html
 from django.db.models.functions import TruncDay
@@ -61,9 +61,9 @@ class UserAdmin(DjangoUserAdmin):
     list_display_links = ("email",)
     ordering = ("date_joined",)
 
-# class SellerAdmin(models.Admin):
-#     list_display = ('')
 
+class SellerAdmin(models.Admin):
+    list_display = ('user',)
 
 
 admin.site.register(Profile)
@@ -74,5 +74,6 @@ admin.site.register(Profile)
 admin.site.register(SellerProfile)
 
 admin.site.register(AutomobileProfile)
-# main_admin.register(AutomobileProfile)
+admin.site.register(EmailConfirmed)
 
+# main_admin.register(AutomobileProfile)

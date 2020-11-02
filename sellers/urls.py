@@ -7,11 +7,11 @@ from django.views.generic import TemplateView
 app_name = 'sellers'
 
 urlpatterns = [
-    url(r'^$', views.seller_page, name='seller_home'),
+    url(r'sellers/', views.seller_page, name='seller_home'),
     # url('customer-details/(?P<id>[-\w]+)/$', views.customer_details, name='customer_details'),
     path('customer-details/<str:id>', views.customer_details, name='customer_details'),
     path('customer-address/<str:id>', views.customer_address, name='customer_address'),
-    url('service_providers-products', views.seller_products, name='seller_products'),
+    url('my-products', views.seller_products, name='seller_products'),
 
 
     # url('aboutus/', TemplateView.as_view(template_name='about_us.html'), name='aboutus'),

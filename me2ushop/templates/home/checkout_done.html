@@ -1,0 +1,54 @@
+{% extends 'me2ushop/base_template.html' %}
+{% load crispy_forms_tags %}
+
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
+{% endblock %}
+
+<body>
+
+{% block site_wrapper %}
+
+<div class="super_container">
+
+	<!-- Cart -->
+
+	<div class="cart_section">
+		<div class="container">
+			<div class="row">
+                <div class="col">
+	                {% if order.ordered %}
+                    <h2 class="my-5 h2 text-center" style="color:green">Congratulations! Your Order Was Successful!</h2>
+	                    <h4><a role="button" href="{% url 'me2ushop:invoice_cs' order.id %}">Download Receipt</a></h4>
+	                {% else %}
+                    <h2 class="my-5 h2 text-center" style="color:red">Pending Order! <a href="{% url 'me2ushop:checkout'%}"> PayNow!</a></h2>
+	                {% endif %}
+                    <div class="col-md-4 mb-4">
+	                    {% include 'order_snippet.html' %}
+                    </div>
+
+                </div>
+
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+{% endblock %}
+</body>
+

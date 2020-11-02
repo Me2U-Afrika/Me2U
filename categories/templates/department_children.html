@@ -1,0 +1,36 @@
+{% load mptt_tags %}
+
+<ul id="Categories">
+    {% if object.get_children %}
+    {% for child in object.get_children %}
+
+    <a href="{{ child.get_absolute_url }}" class="Category">{{ child }}</a>
+    <br>
+
+    {% endfor %}
+    {% endif %}
+</ul>
+
+
+
+
+
+
+
+<!--{% drilldown_tree_for_node object as drilldown  %}-->
+<!--{% for node,structure in drilldown|tree_info %}-->
+<!--{% if structure.new_level %}-->
+<!--<ul>-->
+<!--    <li>{% else %}</li><li>-->
+<!--    {% endif %}-->
+<!--    {% if node == object %}-->
+<!--    <strong>{{ node.category_name }}</strong>-->
+<!--    {% else %} <a href="{{ node.get_absolute_url }}">{{ node.category_name }}</a>-->
+<!--    {% if node.parent_id == departments.pk %}-->
+<!--    {% endif %}-->
+<!--    {% endif %}-->
+<!--    {% for level in structure.closed_levels %}-->
+<!--    </li>-->
+<!--</ul>-->
+<!--{% endfor %}-->
+<!--{% endfor %}-->

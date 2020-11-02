@@ -1,5 +1,5 @@
 from .models import SearchTerm
-from me2ushop.models import Product
+from me2ushop.models import Product, Brand
 from django.db.models import Q
 from stats import stats
 
@@ -22,7 +22,7 @@ def store(request, q):
 
 
 # get products matching the search text
-def productSearched(search_text):
+def productSearched(search_text, category):
     words = _prepare_words(search_text)
     # print('words:', search_text)
 
@@ -31,18 +31,37 @@ def productSearched(search_text):
 
     results = {'products': []}
 
-    for word in words:
-        products = products.filter(Q(title__icontains=word) |
-                                   Q(description__icontains=word) |
-                                   Q(brand__icontains=word) |
-                                   Q(meta_description__icontains=word) |
-                                   Q(product_categories__category_name__icontains=word) |
-                                   Q(category_choice__icontains=word) |
-                                   Q(meta_keywords__icontains=word)).distinct()
-        if products:
-            # print('found:', products)
-            results['products'].append(products)
-    # print(results)
+    if category == 'All Categories' or category == '':
+        print('searching all categories')
+
+        for word in words:
+            products = products.filter(Q(title__icontains=word) |
+                                       Q(description__icontains=word) |
+                                       Q(brand_name__title__icontains=word) |
+                                       Q(meta_description__icontains=word) |
+                                       Q(product_categories__category_name__icontains=word) |
+                                       Q(category_choice__icontains=word) |
+                                       Q(meta_keywords__icontains=word)).distinct()
+            if products:
+                # print('found:', products)
+                results['products'].append(products)
+        # print(results)
+
+    else:
+        print('we came here to exact category choice')
+        for word in words:
+            products = products.filter(
+                Q(product_categories__category_name__iexact=category) &
+                Q(title__icontains=word) |
+                Q(description__icontains=word) |
+                Q(brand_name__title__icontains=word) |
+                Q(meta_description__icontains=word) |
+                Q(category_choice__icontains=word) |
+                Q(meta_keywords__icontains=word)).distinct()
+            if products:
+                # print('found:', products)
+                results['products'].append(products)
+        # print(results)
 
     return results
 

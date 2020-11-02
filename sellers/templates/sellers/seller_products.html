@@ -1,24 +1,27 @@
-{% extends 'navigation.html' %}
+{% extends 'me2ushop/base_template.html' %}
+{% load mptt_tags %}
+{% load catalog_filters %}
 
-{% block content %}
-<style>
 
-</style>
-{% include 'sellers/seller_navbar.html' %}
 
-<div class="row">
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/seller_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
+{% endblock %}
+
+  {% block navbar %}
+        {% include 'sellers/seller_navbar.html' %}
+  {% endblock %}
+
+<body>
+{% block site_wrapper %}
+
+<div class="super_container">
+    <div class="row">
     <div class="col-md">
-        <div class="card card-body">
-               <div class="text-center font-small wow fadeIn">
-                    <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-create' %}"
-                       role="button">Add A New Product<i class="fas fa-hand-holding-usd"></i>
-                    </a>
-                    <a class="btn btn-outline-green" href="{% url 'me2ushop:seller_page' seller_name.id %}" role="button" target="_blank">My Storefront
-                        <i class="fas fa-hand-lizard"></i>
-                    </a>
-                </div>
-        </div>
-        <div class="card card-body">
             <table class="table">
                 <tr>
                     <th>Product</th>
@@ -34,8 +37,8 @@
                    <td> {{ item.stock }}</td>
                     <td>{{ item.get_category_choice_display }}</td>
 
-                    {% if item.productimage_set.all %}
-                        {% for image in item.productimage_set.all %}
+                    {% if item.get_images %}
+                        {% for image in item.get_images %}
                             {% if image.in_display %}
                             <td class="caption" style="height:70px">
                                 <img src="{{ image.image.thumbnail.url }}"/>
@@ -47,24 +50,16 @@
                     {% endif %}
 
                     {% if item.discount_price %}
-                        <td>{{ item.discount_price }}</td>
+                        <td>{{ item.discount_price|currency }}</td>
                     {% else %}
-                        <td>{{ item.price }}</td>
+                        <td>{{ item.price|currency }}</td>
                     {% endif %}
                     <td>
                         <nav>
                             <ul class="navbar-nav mr-auto">
 
-                            <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                              aria-haspopup="true" aria-expanded="false">Actions</a>
-                                <span class="sr-only">(current)</span>
-                            <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                            <li class="nav-item">
                                 <a class="btn btn-outline-orange btn-sm btn-block" href="{% url 'me2ushop:product' item.slug %}">View</a>
-                                <a class="btn btn-outline-primary btn-sm btn-block" href="{% url 'me2ushop:product-update' item.slug %}">Update</a>
-                                <a class="btn btn-outline-info btn-sm btn-block" href="{% url 'me2ushop:product_images' item.slug %}">Add Images</a>
-                                <a class="btn btn-outline-danger btn-sm btn-block" href="{% url 'me2ushop:product-delete' item.slug %}">Delete</a>
-                            </div>
                           </li>
                                 </ul>
                         </nav>
@@ -72,22 +67,22 @@
                 </tr>
                 {% endfor %}
             </table>
-            <div class="card card-body">
-               <div class="text-center font-small wow fadeIn">
-                    <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-create' %}"
-                       role="button">Add A New Product<i class="fas fa-hand-holding-usd"></i>
-                    </a>
-                    <a class="btn btn-outline-green" href="{% url 'me2ushop:seller_page' seller_name.id %}" role="button" target="_blank">My Storefront
-                        <i class="fas fa-hand-lizard"></i>
-                    </a>
-                </div>
-        </div>
-        </div>
     </div>
 </div>
 
+</div>
 
-{% endblock content %}
+{% endblock %}
 
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+{% endblock %}
+</body>
 
 

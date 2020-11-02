@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -8,16 +9,16 @@ from django.views.generic import ListView
 from .forms import UserRegisterForm
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from me2ushop.models import Order, OrderItem, Product
+from me2ushop.models import Order, OrderItem, Product, Brand
 from .profile import retrieve_profile, set_profile, set_personal, set_pic
 from .forms import AddressForm, PersonalInfoForm, ProfilePicForm
-from .models import Profile, User, SellerProfile, AutomobileProfile
+from .models import Profile, User, SellerProfile, AutomobileProfile, EmailConfirmed
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import (FormView, CreateView, UpdateView, DeleteView, )
 import logging
-
+import re
 from me2ushop import models
 
 logger = logging.getLogger(__name__)
@@ -38,8 +39,8 @@ def register(request):
             # raw_password = form.cleaned_data.get('password1')
             # account = authenticate(email=email, password=raw_password)
             # login(request, account)
-            form.send_mail()
-            messages.success(request, f'Account created for {username}!')
+            # form.send_mail()
+            messages.success(request, f'Account created for {username}! Check your email to confirm before login')
             return redirect('login')
         else:
             messages.warning(request, 'Invalid details, please try again')
@@ -53,6 +54,34 @@ def register(request):
         'page_title': 'User Registration'
     }
     return render(request, 'users/register.html', context)
+
+
+SHA1_RE = re.compile('^[a-f0-9]{40}$')
+
+
+def activation_view(request, activationKey):
+    if SHA1_RE.search(activationKey):
+        print('real')
+        try:
+            instance = EmailConfirmed.objects.get(activationKey=activationKey)
+        except EmailConfirmed.DoesNotExist:
+            instance = None
+            raise Http404
+        if instance is not None and not instance.confirmed:
+            page_message = 'Confirmation Successful! Welcome'
+            instance.confirmed = True
+            # instance.activationKey = 'Confirmed'
+            instance.save()
+        elif instance is not None and instance.confirmed:
+            page_message = "Already Confirmed"
+        else:
+            page_message = ''
+        context = {
+            'page_message': page_message
+        }
+        return render(request, 'users/activation_complete.html', context)
+    else:
+        raise Http404
 
 
 def register_seller(request, template_name="users/seller_register.html"):
@@ -88,6 +117,10 @@ def profile(request):
     user = User.objects.filter(email=request.user.email).first()
     profile_user = Profile.objects.get(user=request.user)
     print('profile:', profile_user)
+    # set = user.emailconfirmed_set.all()
+    # if set:
+    #     if not set[0].confirmed:
+    #         set[0].activate_user_email()
     # order_items = OrderItem.objects.filter(user=request.user, ordered=True)
     # print('order:', order)
     # print('order_items:', items)
@@ -328,9 +361,9 @@ def personal_info(request, template_name="users/personal-info.html"):
 
 class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = SellerProfile
-    template_name = 'users/service_providers/seller_profile_form.html'
-    fields = ['first_name', 'last_name', 'business_type', 'business_title', 'tax_country', 'subscription_type']
-    success_url = reverse_lazy("users:seller_confirm")
+    template_name = 'users/service_providers/seller_form.html'
+    fields = ['first_name', 'last_name', 'business_type', 'tax_country', 'subscription_type']
+    success_url = reverse_lazy("users:brand_create")
 
     def get_queryset(self):
         print('we got here')
@@ -339,10 +372,37 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
             print('current_app available:', current_app[0].application_status)
 
     def form_valid(self, form):
+        print('registering business')
+        obj = form.save(commit=False)
+        print('obj:', obj)
+        user = self.request.user
+
+        obj.user = user
+        obj.save()
+        # form.save()
+        return super().form_valid(form)
+
+    def test_func(self):
+        if not self.request.user.is_seller:
+            return True
+
+
+class BrandCreateView(LoginRequiredMixin, CreateView):
+    model = Brand
+    template_name = 'users/service_providers/brand_create_form.html'
+    fields = ['title', 'image', 'logo']
+    success_url = reverse_lazy("users:seller_confirm")
+
+    def form_valid(self, form):
+        print('registering brand')
+        from django.contrib.auth.models import Group
+        obj = form.save(commit=False)
+        print('obj:', obj)
+
         from django.contrib.auth.models import Group
         seller_group = Group.objects.get(name='Sellers')
         obj = form.save(commit=False)
-        # print('obj:', obj)
+        print('obj:', obj)
         user = self.request.user
         # user_instance = User.objects.get(email=user)
         print(seller_group)
@@ -356,10 +416,6 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         obj.save()
         # form.save()
         return super().form_valid(form)
-
-    def test_func(self):
-        if not self.request.user.is_seller:
-            return True
 
 
 class AutomobileCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):

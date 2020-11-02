@@ -2,10 +2,15 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.conf import settings
 import django.contrib.auth.validators
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.urls import reverse
 
 from django_countries.fields import CountryField
 from django_resized import ResizedImageField
 from stdimage import StdImageField
+
+from utils.models import CreationModificationDateMixin
 
 ADDRESS_CHOICES = (
     ('B', 'Billing'),
@@ -39,9 +44,6 @@ PAYMENT_OPTIONS = (
 #     email = models.EmailField(max_length=50, blank=True, null=True, unique=True)
 #     phone = models.CharField(max_length=20, blank=True, null=True)
 
-
-class BusinessInformation(models.Model):
-    pass
 
 #
 # def validateEmail(email):
@@ -123,9 +125,33 @@ class User(AbstractUser):
     @property
     def is_seller(self):
         return self.is_active and (
-            self.is_superuser
-            or self.groups.filter(name='Sellers').exists()
+                self.is_superuser
+                or self.groups.filter(name='Sellers').exists()
         )
+
+
+class EmailConfirmed(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    activationKey = models.CharField(max_length=200)
+    confirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.confirmed)
+
+    def activate_user_email(self):
+        activation_url = "%s%s" % (settings.SITE_URL, reverse('users:activation_view', args=[self.activationKey]))
+        context = {
+            "activationKey": self.activationKey,
+            "activation_url": activation_url,
+            "user": self.user.username
+        }
+        message = render_to_string('users/activation_message.txt', context)
+        subject = settings.EMAIL_SUBJECT_PREFIX + "Activate Your Email"
+        self.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
+        # print(message)
+
+    def email_user(self, subject, message, from_email=None, *kwargs):
+        send_mail(subject, message, from_email, [self.user.email], kwargs)
 
 
 # class user_type(models.Model):
@@ -172,17 +198,24 @@ STATUSES = ((UNDER_REVIEW, "Under Review"),
             )
 
 
-class SellerProfile(models.Model):
+class BusinessInformation(models.Model):
+    pass
+
+
+class SellerProfile(CreationModificationDateMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=10)
     last_name = models.CharField(max_length=10)
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
-    business_title = models.CharField(max_length=30)
     date_of_registration = models.DateField
     tax_country = CountryField(multiple=False)
     business_description = models.TextField
-    subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE)
+    subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE, help_text='Select a monthly recurring subscription fees')
     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return str(self.first_name)
 
 
 AUTOMOBILE_TYPE_CHOICE = (

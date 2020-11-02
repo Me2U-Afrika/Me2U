@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.management import call_command
 from django.test import TestCase, override_settings
 from me2ushop import models
-from categories.models import Category
+from categories.models import Category, Department
 
 
 class TestImport(TestCase):
@@ -22,4 +22,4 @@ class TestImport(TestCase):
         self.assertEqual(out.getvalue(), expected_out)
         self.assertEqual(models.Product.objects.count(), 3)
         self.assertEqual(models.ProductImage.objects.count(), 3)
-        self.assertEqual(Category.objects.count(), 6)
+        self.assertEqual(Department.objects.count(), 6)

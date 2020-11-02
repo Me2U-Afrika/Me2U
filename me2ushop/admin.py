@@ -116,10 +116,10 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class DispatchersProductAdmin(ProductAdmin):
-    readonly_fields = ('title', 'seller',
+    readonly_fields = ('title',
                        'description',
                        'slug',
-                       'brand',
+                       'brand_name',
                        'is_bestseller',
                        'is_featured',
                        'additional_information',
@@ -134,31 +134,31 @@ class DispatchersProductAdmin(ProductAdmin):
     autocomplete_fields = ()
 
 
-class SellerForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields = '__all__'
+# class SellerForm(forms.ModelForm):
+#     class Meta:
+#         model = Product
+#         fields = '__all__'
+#
+#     def clean_seller(self):
+#         if not self.cleaned_data['seller']:
+#             return User()
+#         return self.cleaned_data['seller']
 
-    def clean_seller(self):
-        if not self.cleaned_data['seller']:
-            return User()
-        return self.cleaned_data['seller']
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     user = User.objects.filter(email=User)
-    #     instance = kwargs.get("instance")
-    #     self.fields['seller'].queryset = user
-    #     # pre-fill the timezone for good measure
-    #     self.fields['publish_date'].initial = timezone.now()
+# def __init__(self, *args, **kwargs):
+#     super().__init__(*args, **kwargs)
+#     user = User.objects.filter(email=User)
+#     instance = kwargs.get("instance")
+#     self.fields['seller'].queryset = user
+#     # pre-fill the timezone for good measure
+#     self.fields['publish_date'].initial = timezone.now()
 
 
 class SellersProductAdmin(ProductAdmin):
-    form = SellerForm
+    # form = SellerForm
 
     list_display = ['title',
                     'slug',
-                    'brand',
+                    'brand_name',
                     'in_stock',
                     'stock',
                     'is_bestseller',
@@ -169,24 +169,30 @@ class SellersProductAdmin(ProductAdmin):
                     'meta_description',
                     ]
     list_editable = ('stock',)
-    readonly_fields = ('seller', "is_bestseller", "is_featured", 'in_stock')
+    readonly_fields = ("is_bestseller", "is_featured", 'in_stock')
     prepopulated_fields = {'slug': ('title',)}
     autocomplete_fields = ()
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
+        brand = Brand.objects.get(user=request.user)
 
-        return qs.filter(seller=request.user)
+        return qs.filter(brand_name=brand)
 
     def save_model(self, request, obj, form, change):
-        if not obj.seller:
-            obj.seller = request.user
+        # if not obj.seller:
+        #     obj.seller = request.user
         if obj.stock < 1:
             obj.in_stock = False
             obj.is_active = False
         else:
             obj.in_stock = True
         obj.save()
+
+
+class BrandAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user',)
+    search_fields = ('title',)
 
 
 class ProductImageAdmin(admin.ModelAdmin):
@@ -232,7 +238,11 @@ class Items_Ordered(admin.ModelAdmin):
     list_editable = ('status',)
     list_filter = ("status",)
 
-    # inlines = (OrderInline,)
+
+class WishListAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product',)
+    search_fields = ['product', 'user']
+    list_filter = ("user",)
 
 
 class Ordered(admin.ModelAdmin):
@@ -281,6 +291,7 @@ class Ordered(admin.ModelAdmin):
              "billing_address2",
              "billing_zip_code",
              "billing_city",
+             "payment",
              "billing_country",
          )},
          ),
@@ -458,7 +469,7 @@ class InvoiceMixin:
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-            url("invoice/(?P<order_id>[-\w]+)/$", self.admin_view(self.invoice_for_order), name="invoice", )
+            url("invoice/(?P<order_id>[-\w]+)/$", self.admin_view(self.invoice_for_order), name="invoice", ),
         ]
         return my_urls + urls
 
@@ -642,6 +653,8 @@ main_admin = OwnersAdminSite()
 
 admin.site.register(Product, ProductAdmin)
 
+admin.site.register(Brand, BrandAdmin)
+
 admin.site.register(ProductImage, ProductImageAdmin)
 
 admin.site.register(ProductReview, ProductReviewAdmin)
@@ -649,6 +662,7 @@ admin.site.register(ProductReview, ProductReviewAdmin)
 admin.site.register(OrderItem, Items_Ordered)
 
 admin.site.register(Order, Ordered)
+admin.site.register(WishList, WishListAdmin)
 
 admin.site.register(StripePayment, Payment)
 
@@ -657,6 +671,8 @@ admin.site.register(Coupon, CouponDisplay)
 admin.site.register(RequestRefund, RefundDisplay)
 
 admin.site.register(Address, AddressAdmin)
+admin.site.register(Variation)
+admin.site.register(Variation_options)
 
 central_office_admin = CentralOfficeAdminSite("central-office-admin")
 central_office_admin.register(Product, ProductAdmin)

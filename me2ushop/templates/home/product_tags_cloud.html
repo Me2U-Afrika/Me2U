@@ -1,0 +1,46 @@
+{% extends 'me2ushop/base_template.html' %}
+{% load mptt_tags %}
+
+
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
+{% endblock %}
+
+
+
+<body>
+
+{% block site_wrapper %}
+
+<div class="super_container">
+
+{% load tagging_tags %}
+
+{% block content %}
+    <section class="text-center">
+        <h1 class="mt-5">Product Tag Cloud</h1>
+        {% for tag in product_tags %}
+            <a href="/me2ushop/tag/{{ tag.name }}/" style="font-size:{{ tag.font_size|add:11}}px;">#{{ tag.name|slugify }}
+            </a>&nbsp;
+        {% endfor %}
+        {% endblock %}
+    </section>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+{% endblock %}
+</body>
+

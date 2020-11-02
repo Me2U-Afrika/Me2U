@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Category
+from .models import Category, Department
 from me2ushop.models import Product
 from django.views.generic import ListView, DetailView, View
 from django.shortcuts import render, get_object_or_404
@@ -21,7 +21,7 @@ def get_json_products(request):
 
 
 def categoriesHomePage(request):
-    print('request', request)
+    # print('request', request)
     page_title = 'Categories'
     site_name = 'Me2U|Market'
     template_name = 'index.html'
@@ -38,47 +38,19 @@ class CategoryDetailedView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(CategoryDetailedView, self).get_context_data(**kwargs)
 
-        # c = Category.active.all()
-        # print('c:', c)
-        # category_list = {'c': []}
-        # for c in c:
-        #     p = c.product_set.all()
-        #     for item in p:
-        #         if item.made_in_africa:
-        #             pass
-        # category = item.product_categories.order_by('category_name').distinct()
-        # print('categories:', category)
-        # african_category = list(set(category))
+        return context
 
-        # print('cat:', african_category)
 
-        # context['category '] = category
-        # return context
-        # print('category:', category)
+class DepartmentDetailedView(DetailView):
+    model = Department
+    paginate_by = 12
+    template_name = 'home/category.html'
+    query_pk_and_slug = True
 
-        # print('category_list:', category_list)
-
-        # context['c'] = category
-        # print('c:', c)
-
-        # page_title = c.category_name
-        # meta_description = c.meta_description
-        # meta_keywords = c.meta_keywords
+    def get_context_data(self, **kwargs):
+        context = super(DepartmentDetailedView, self).get_context_data(**kwargs)
 
         return context
-    #
-    # def get_queryset(self):
-    #     category_slug = self.kwargs['slug']
-    #     print('category:', category_slug)
-    #     self.category = None
-    #     if category_slug != "all":
-    #         self.category = get_object_or_404(Category, slug=category_slug)
-    #     if self.category:
-    #         products = Product.active.all().filter(product_categories=self.category)
-    #     else:
-    #         products = Product.active.all()
-    #     print('products qs:', products)
-    #     return products.order_by('title')
 
 
 class CategoryDetailedView_africa_made(DetailView):
@@ -100,7 +72,7 @@ class CategoryDetailedView_africa_made(DetailView):
                 if item.made_in_africa and category not in made_in_africa:
                     made_in_africa.append(category)
 
-        print('mda:', made_in_africa)
+        # print('mda:', made_in_africa)
         context.update({'made_in_africa': made_in_africa})
 
         return context

@@ -8,9 +8,10 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
-from categories.models import Category
+from categories.models import Category, Department
 from users.models import Profile
-
+from utils.models import CreationModificationDateMixin
+from sellers.models import Sellers
 from PIL import Image
 from django.db import models
 from stdimage import StdImageField, JPEGField
@@ -58,7 +59,7 @@ PAYMENT_CHOICES = {
 
 class ActiveProductManager(models.Manager):
     def all(self):
-        return super(ActiveProductManager, self).all().filter(is_active=True).filter(productimage__in_display=True)
+        return super(ActiveProductManager, self).all().filter(is_active=True)
 
 
 class FeaturedProductManager(ActiveProductManager):
@@ -76,21 +77,42 @@ class ProductManager(models.Manager):
         return self.get(slug=slug)
 
 
+class Brand(CreationModificationDateMixin):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, unique=True, help_text='Unique title to identify Your store and your '
+                                                                    'product line')
+    active = models.BooleanField(default=True)
+    image = StdImageField(upload_to='images/brands/brand_background', blank=True, null=True,
+                          help_text='wallpaper for your store.Leave blank if you don\'t have one',
+                          default='images/brands/brand_background/default.jpg')
+    logo = StdImageField(upload_to='images/brands/brand_logo', blank=True, null=True, help_text='logo for your store, '
+                                                                                                'Leave blank if you '
+                                                                                                'don\'t have one',)
+
+    def __str__(self):
+        return str(self.title)
+
+
 class Product(models.Model):
     title = models.CharField(max_length=100)
-    seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
     slug = models.SlugField(unique=True,
                             max_length=50,
                             help_text='Unique value for product page URL, created from the product title.')
-    brand = models.CharField(max_length=50, help_text='Your store name')
-    stock = models.IntegerField(default=0)
+    brand_name = models.ForeignKey('Brand', on_delete=models.SET_NULL, blank=True, null=True,
+                                   help_text='Your store name')
+    image_url = models.CharField(max_length=250, null=True, blank=True)
+    stock = models.IntegerField(default=1)
+    sku = models.CharField(max_length=120)
     in_stock = models.BooleanField(default=True, blank=True, null=True)
     price = models.DecimalField(max_digits=9, decimal_places=2)
     discount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, default=0.00)
     made_in_africa = models.BooleanField(default=False)
+
     is_active = models.BooleanField(default=True)
     is_bestseller = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
+    is_on_offer = models.BooleanField(default=False)
+    is_bestrated = models.BooleanField(default=False)
 
     description = models.TextField()
     additional_information = models.TextField(blank=True, null=True)
@@ -118,9 +140,15 @@ class Product(models.Model):
                                        'primary blue, '
                                        'danger red, '
                                        'secondary purple')
-    product_categories = models.ManyToManyField(Category, blank=True,
-                                                help_text='input the category above and any other where the '
-                                                          'product can be found in.')
+    # product_categories = models.ManyToManyField(Category, blank=True,
+    #                                             help_text='input the category above and any other where the '
+    #                                                       'product can be found in.')
+    # product_categories = models.ManyToManyField(Category,
+    #
+    #                                             help_text='input the subcategory.')
+    product_categories = models.ManyToManyField(Department,
+
+                                                help_text='input the subcategory.')
 
     objects = ProductManager()
     active = ActiveProductManager()
@@ -133,7 +161,7 @@ class Product(models.Model):
         return self.title
 
     # def clean(self):
-    #     # Don't all)ow draft entries to have a pub_date.
+    #     # Don't allow draft entries to have a pub_date.
     #     if self.seller != settings.AUTH_USER_MODEL:
     #         print(self.seller)
     #         print(settings.AUTH_PROFILE_MODULE)
@@ -155,12 +183,34 @@ class Product(models.Model):
         else:
             return self.price
 
+    def total_items_ordered(self):
+        orders = self.orderitem_set.all()
+        total = 0
+        for order_item in orders:
+            if order_item.ordered:
+                total += order_item.quantity
+
+        return total
+
+    def total_discount(self):
+        # orders = self.orderitem_set.all()
+        diff = ((self.price - self.discount_price) / self.price) * 100
+        return round(diff)
+
     def get_absolute_url(self):
 
         return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
     def get_add_cart_url(self):
         return reverse('me2ushop:add_cart', kwargs={'slug': self.slug})
+
+    def get_images(self):
+        return self.productimage_set.all()
+
+    def get_image_in_display(self):
+        image = self.productimage_set.filter(in_display=True)
+        if image:
+            return image[0]
 
     def get_remove_cart_url(self):
         return reverse('me2ushop:remove_cart', kwargs={'slug': self.slug})
@@ -187,18 +237,25 @@ class Product(models.Model):
         from users.models import User
         from django.db.models import Q
 
-        users = User.objects.filter(product__title__icontains=self)
-        print('other sellers:', users)
-        print('self', self.slug)
+        category = self.category_choice
+        name = self.title
+        # print('category:', category)
+        print('name:', name)
+        # print('other sellers:', users)
+        # print('self', self.slug)
         words = _prepare_words(self.title)
         print('words:', words)
 
         for word in words:
-            products = Product.active.filter(Q(title__icontains=word) |
-                                             Q(title__startswith=self) |
-                                             Q(title__endswith=self)
-                                             ).exclude(slug=self.slug)
-            print('from sellers', products)
+            products = Product.active.filter(
+                Q(title__icontains=self) |
+                Q(title__startswith=self) |
+                Q(title__icontains=word) |
+                Q(title__startswith=word) |
+                Q(title__endswith=self) |
+                Q(title__endswith=word)
+            ).filter(category_choice=self.category_choice).exclude(slug=self.slug)
+            # print('from sellers', products)
             return products
 
     def cross_sells_hybrid(self):
@@ -247,27 +304,78 @@ class DisplayImageManager(models.Manager):
         return super(DisplayImageManager, self).get_query_set().filter(in_display=True)
 
 
-class ProductImage(models.Model):
+class ProductImage(CreationModificationDateMixin):
     item = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
     image = StdImageField(upload_to='images/products', blank=True, null=True, variations={
-        'thumbnail': (200, 200),
-        'medium': (340, 300),
+        'thumbnail': (170, 115, True),
+        'medium': (365, 365),
+        'large': (415, 470, True),
 
     }, delete_orphans=True)
     in_display = models.BooleanField(default=True)
 
-    objects = models.Manager()
+    objects = ProductManager()
     displayed = DisplayImageManager()
 
     class Meta:
-        ordering = ('-in_display',)
+        ordering = ('-created',)
+
+    def natural_key(self):
+        return (self.slug,)
+
+    def __str__(self):
+        return str(self.item)
 
     def get_absolute_url(self):
         return reverse('me2ushop:product_images', kwargs={'slug': self.item.slug})
 
 
+#
+class VariationsManager(models.Manager):
+    def all(self):
+        return super(VariationsManager, self).filter(active=True)
+
+    def sizes(self):
+        return self.all().filter(category='size')
+
+    def colors(self):
+        return self.all().filter(category='color')
+
+
+VAR_CATEGORIES = (
+    ('size', 'size'),
+    ('color', 'color'),
+    ('package', 'package'),
+)
+
+
+class Variation(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variation_name = models.CharField(max_length=120)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return str(self.variation_name)
+
+
+class Variation_options(models.Model):
+    variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
+    variation_choices = models.CharField(max_length=120)
+
+    def __str__(self):
+        return str(self.variation_choices)
+
+
+class WishList(CreationModificationDateMixin):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.product.title)
+
+
 class OrderItem(models.Model):
-    from stats.models import ProductView
+    # from stats.models import ProductView
     NEW = 10
     PROCESSING = 20
     SENT = 30
@@ -317,6 +425,14 @@ class OrderItem(models.Model):
         else:
             return self.get_total_price()
 
+    def total_items_ordered(self):
+        # total = self.orderitem_set.all().count()
+        total = 0
+        for order_item in self.filter(ordered=True):
+            total += order_item.quantity
+
+        return total
+
     @property
     def mobile_thumb_url(self):
         products = [self.item]
@@ -346,7 +462,7 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     order_date = models.DateTimeField(auto_now=True)
     ordered = models.BooleanField(default=False)
-    payment = models.ForeignKey('StripePayment', on_delete=models.SET_NULL, blank=True, null=True)
+    payment = models.CharField(max_length=2, blank=True, null=True)
     coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
     being_delivered = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
@@ -450,7 +566,10 @@ class ProductReview(models.Model):
     approved = ActiveProductReviewManager()
 
     def __str__(self):
-        return self.content
+        return str(self.user.username)
+
+    def get_images(self):
+        return self.product.productimage_set.all()
 
 
 class Address(models.Model):
@@ -474,8 +593,7 @@ class Address(models.Model):
     # contact info
 
     def __str__(self):
-        # return str(self.country)
-        return ''.join(str(self.street_address) + ' ' + str(self.country))
+        return "%s, %s, %s, %s, %s" % (self.street_address, self.country, self.city, self.zip, self.phone)
 
     class Meta:
         verbose_name_plural = 'Addresses'

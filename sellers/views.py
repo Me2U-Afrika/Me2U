@@ -1,55 +1,71 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
+from django.urls import reverse
 from django.utils.html import format_html
 from users.models import User
 
 from me2ushop.models import Product
 
-from me2ushop.models import ProductImage, Product, Order, OrderItem, Address
+from me2ushop.models import ProductImage, Product, Order, OrderItem, Address, Brand
 
 
+@login_required()
 def seller_page(request):
-    print('user:', request.user)
-    if not request.user.is_authenticated:
-        return redirect('login/?next=/sellers/')
+    # print('user:', request.user)
+    # if not request.user.is_authenticated:
+    #     return redirect('login/?next=/sellers/')
     if request.user.is_seller:
-        items = OrderItem.objects.filter(item__seller=request.user).filter(ordered=True).exclude(status__gt=20)
-        items_delivered = OrderItem.objects.filter(item__seller=request.user).filter(ordered=True).filter(status=50)
-        print('items:', items_delivered)
+        try:
+            from utils import context_processors
+            utils = context_processors.me2u(request)
+            brand_name = utils['brand'][0]
+            print(brand_name.id)
 
-        orders = Order.objects.filter(items__item__seller=request.user).filter(ordered=True).filter(status=20).distinct()
-        orders_completed = Order.objects.filter(items__item__seller=request.user).filter(ordered=True).filter(status=30).distinct()
-        print('orders:', orders)
-        # print('order_id:', orders[0].id)
-        # print('order_set:', orders[0].order_set.all())
-        customers = {}
-        order = Order.objects.filter(items__id=orders[0].id)
-        print('order:', order)
-        # print('order name:', order[0].user)
-        for order in order:
-            if order.name not in customers:
-                customers[order.user] = order.phone
-        print(customers)
-        order_id = Order.objects.filter(items__item__seller=request.user, ordered=True).exclude(
-            status__gt=20).distinct()
+            products = brand_name.product_set.all()
+            orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
+            items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
+            print('items:', items_delivered)
 
-        total_orders = OrderItem.objects.filter(item__seller=request.user)
-        # for order in total_orders:
-        #     if order.user:
-        #         customers[order.user] = order.order_set.get
-        #         print('order.user:', order.user)
-        #         print(customers)
-        #     elif request.cart:
-        #         customers['name'] = order.request.cart
-        #         print('session cart id:', order.request.cart.id)
-        cancelled = total_orders.filter(status=40)
-        delivered = OrderItem.objects.filter(status=50, item__seller=request.user)
-        pending = total_orders.filter(status=10)
-        in_transit = total_orders.filter(status=45)
+            # orders = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(status=20).distinct()
+            orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
+                status=30).distinct()
+            print('orders:', orders)
+            # print('order_id:', orders[0].id)
+            # print('order_set:', orders[0].order_set.all())
+            # customers = {}
+            # order = Order.objects.filter(items__id=orders[0].id)
+            # print('order:', order)
+            # # print('order name:', order[0].user)
+            # for order in order:
+            #     if order.name not in customers:
+            #         customers[order.user] = order.phone
+            # print(customers)
+            order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
+                status__gt=20).distinct()
 
-        return render(request, 'sellers/seller_dashboard.html', locals())
+            total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
+            # for order in total_orders:
+            #     if order.user:
+            #         customers[order.user] = order.order_set.get
+            #         print('order.user:', order.user)
+            #         print(customers)
+            #     elif request.cart:
+            #         customers['name'] = order.request.cart
+            #         print('session cart id:', order.request.cart.id)
+            cancelled = total_orders.filter(status=40)
+            delivered = OrderItem.objects.filter(status=50, item__in=products)
+            pending = total_orders.filter(status=10)
+            in_transit = total_orders.filter(status=45)
+            page_title = 'Seller-Central'
+
+            return render(request, 'sellers/seller_dashboard_template.html', locals())
+        except ObjectDoesNotExist:
+            return redirect("users:brand_create")
+
     else:
         messages.warning(request, "You are not a registered Me2U seller Sign Up")
         return redirect('users:seller_create')
@@ -77,10 +93,10 @@ def automobile_page(request):
         return redirect('users:automobile_create')
 
 
+@login_required()
 def seller_products(request):
     user = request.user
-    seller_name = User.objects.get(email=user)
-    products = Product.objects.filter(seller=seller_name)
+    products = Product.objects.filter(brand_name__user=user)
 
     for obj in products:
         image = ProductImage.objects.filter(item=obj, in_display=True)
@@ -88,50 +104,27 @@ def seller_products(request):
             format_image = format_html(
                 '<img src="%s"/>' % image[0].image.thumbnail.url
             )
-            print('product_image:', format_image)
+            # print('product_image:', format_image)
             context = {'format_image': format_image}
-
-    # context = {
-    #     'products': products,
-    #     'service_providers': seller_name,
-    # }
-    print('seller_name:', seller_name.id)
-    print('seller_products:', products)
 
     return render(request, 'sellers/seller_products.html', locals())
 
 
-def customer_details(request, id, template_name="sellers/customer_details.html"):
+def customer_details(request, id, template_name="sellers/customer_details_template.html"):
     print('we got here')
-    user_orders = OrderItem.objects.filter(id=id, item__seller=request.user)
+    from utils import context_processors
+    context = context_processors.me2u(request)
+    brand_name = context['brand'][0]
+    products = brand_name.product_set.all()
+    user_orders = OrderItem.objects.filter(id=id, item__in=products)
+    print(user_orders)
     if user_orders:
         for user_order in user_orders:
             if user_order.user:
-                ordered = Order.objects.filter(user=user_order.user)
-                print(ordered)
-                for user_order in ordered:
-                    customer_email = user_order.user.email
-                    customer_name = user_order.user.username
-                    order = user_order
-                    item = []
-                    for items in order.items.all():
-                        if items.item.seller == request.user:
-                            item.append(items)
-                            print('items:', item)
-                            count = len(item)
+                customer_email = user_order.user.email
+                customer_name = user_order.user.username
 
-            else:
-                cart_id = user_order.cart_id
-                order_id = Order.objects.filter(cart_id=cart_id)
-                print('order_id:', order_id)
-
-                for order_id in order_id:
-                    print('order_id:', order_id)
-                    customer_name = order_id.name
-                    customer_email = order_id.email
-                    # print('user_items:', order_id)
-
-    print('user_items:', user_orders)
+    # print('user_items:', user_orders)
     page_title = 'Customer Order Details'
 
     return render(request, template_name, locals())

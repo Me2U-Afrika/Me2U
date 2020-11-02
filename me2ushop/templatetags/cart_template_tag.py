@@ -2,7 +2,7 @@ from django import template
 from django.contrib import messages
 from django.dispatch import receiver
 from django.utils import timezone
-from me2ushop.models import Order, OrderItem, Product
+from me2ushop.models import Order, OrderItem, Product, WishList
 from stats import stats
 from stats.models import ProductView
 from django.contrib.auth.decorators import login_required
@@ -108,3 +108,26 @@ def cart_item_count(request):
     return 0
 
 
+@register.filter
+def cart_item_total(request):
+    # if request.cart_id:
+    #     qs = Order.objects.filter(cart_id=request.cart_id, ordered=False)
+    #     if qs.exists():
+    #         return qs[0].items.count()
+
+    if request.cart:
+        return request.cart.get_total()
+    return 0
+
+
+@register.filter
+def wish_list_count(request):
+    # if request.cart_id:
+    #     qs = Order.objects.filter(cart_id=request.cart_id, ordered=False)
+    #     if qs.exists():
+    #         return qs[0].items.count()
+
+    if request.user:
+        wish_list = WishList.objects.filter(user=request.user)
+        return wish_list.count()
+    return 0

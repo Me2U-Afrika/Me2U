@@ -1,0 +1,63 @@
+{% extends 'me2ushop/base_template.html' %}
+{% load crispy_forms_tags %}
+
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
+<!--contact styles-->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
+
+{% endblock %}
+
+<body>
+
+{% block site_wrapper %}
+
+<div class="super_container">
+
+	<!-- Cart -->
+
+	<div class="contact_form">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10 offset-lg-1">
+					<div class="contact_form_container">
+						<div class="contact_form_title">Add Product</div>
+
+						<form action="#" method="POST" id="contact_form" enctype="multipart/form-data">
+							{% csrf_token %}
+	                        {{ form|crispy }}
+							<div class="contact_form_button">
+								<button type="submit" class="button contact_submit_button">Submit</button>
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel"></div>
+	</div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+<!-- contact styles-->
+<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
+
+{% endblock %}
+</body>
+

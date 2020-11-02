@@ -1,10 +1,38 @@
-<div class="col-md-4">
-<form class="navbar-form" id="search" role="search" action="{% url 'search_results' %}" method="get">
-          <div class="input-group">
-            {{ form.q }}
-            <div class="input-group-btn">
-              <button class="btn btn-default btn-sm btn-block" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+{% load catalog_filters %}
+{% load mptt_tags %}
+
+
+<div class="col-lg-6 col-12 order-lg-2 order-3 text-lg-left text-right">
+    <div class="header_search">
+        <div class="header_search_content">
+            <div class="header_search_form_container" id="search">
+                <form action="{% url 'search:search_results' %}" method="get" class="header_search_form clearfix">
+
+                    {{ form.q }}
+
+                    <div class="custom_dropdown">
+                        <div class="custom_dropdown_list" >
+                            <span class="custom_dropdown_placeholder clc">All Categories</span>
+                            <select class="custom_list clc all_cat" name="category_searched" id="id_category_searched">
+                                <option class="clc" value="All Categories">All Categories</option>
+                                {% for category,structure in departments|tree_info %}
+                                {% if structure.new_level %}
+                                <option class="clc" value="{{ category.category_name }}">{% else %}</option>
+
+                                <option class="clc" value="{{ category.category_name }}">{% endif %}
+
+                                    {{ category.category_name|truncatechars:19 }}
+
+                                        {% for level in structure.closed_levels %}</option>
+                                {% endfor %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="header_search_button trans_300" value="Submit"><img src="media/images/search.png" alt=""></button>
+                </form>
             </div>
-          </div>
- </form>
+        </div>
+    </div>
 </div>

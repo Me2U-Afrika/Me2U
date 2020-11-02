@@ -45,7 +45,7 @@
                 <fieldset class="my_account">
                     <legend>Account Settings</legend>
                     <ul>
-                        <li><a href="{% url 'password-change' %}">Change Password</a></li>
+                        <li><a href="{% url 'users:password-change' %}">Change Password</a></li>
                         <li><a href="{% url 'users:personal-info' %}">Edit Personal information</a></li>
                         <li><a href="{% url 'users:address_list' %}">Edit Billing/Shipping Information</a></li>
                     </ul>
@@ -62,7 +62,7 @@
     </div>
     <h3>Order History</h3>
     <div class="col-md-6 mb-4">
-       <form class="navbar-form" role="search" action="{% url 'search_results' %}">
+       <form class="navbar-form" role="search" action="">
 
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Search Order" name="article">

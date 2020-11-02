@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      <title>{% block title %}{% if page_title %}{{ page_title }} - {% endif %} {{ site_name }}{% endblock %}</title>
+            <!-- Font Awesome -->
+        {% block meta_tags %}
+        {% endblock  %}
+
+
+        {% block base_stylesheet %}
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn. com/bootstrap/3.3.5/css/bootstrap.min.css" />
+        {% endblock %}
+
+        {% block stylesheet %}
+        {% endblock %}
+
+        {% block base_js %}
+            <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+            <script src="//code.jquery.com/jquery-migrate-1.2.1.min. js"></script>        <script src="https://maxcdn.bootstrapcdn.com/ bootstrap/3.3.5/js/bootstrap.min.js"></script>        <script src="{% url "js_settings" %}"></script>    {% endblock %}
+
+        {% block js %}
+        {% endblock %}
+
+        {% block extrahead %}
+        {% endblock %}
+
+</head>
+<body>
+
+</body>
+</html>

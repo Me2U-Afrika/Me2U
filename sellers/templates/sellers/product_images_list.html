@@ -1,0 +1,81 @@
+{% extends 'me2ushop/base_template.html' %}
+{% load crispy_forms_tags %}
+
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
+<!--contact styles-->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
+
+{% endblock %}
+
+{% block navbar %}
+        {% include 'sellers/seller_navbar.html' %}
+  {% endblock %}
+
+<body>
+
+{% block site_wrapper %}
+
+<div class="super_container">
+<div class="container mt-5">
+<h3>{{ object.title }} Images: {{ product_image.count }}</h3>
+
+        <div class="card card-body">
+           <div class="text-center font-small wow fadeIn">
+               {% if product_image.count < 4 %}
+                <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a>
+               {% endif %}
+               <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product' object.slug %}">View Product</a>
+                <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-create' %}"
+                   role="button">Add New Product
+                </a>
+               <a class="btn btn-outline-yellow" href="{% url 'sellers:seller_home' %}">Dashboard</a>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-10">
+                {% for image in product_image %}
+                    <div class="col-lg-4 col-md-6 mb-4 mt-4 product-snippet">
+                        <div class="card card-height">
+                            <!--Card image-->
+                            <div class="view overlay zoom">
+                               <a href="{% url 'me2ushop:product_image_update' image.id%}">
+                                   <img src="{{ image.image.medium.url }}" class="card-img-top img-fluid"/></a>
+                            </div>
+                            {% if image.in_display %}
+                            <p class="outline-green">Currently Displayed</p>
+                            {% endif %}
+                            <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_update' image.id%}">Update</a>
+                            <a class="btn btn-outline-danger" href="{% url 'me2ushop:product_image_delete' image.id %}">Delete</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+</div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+<!-- contact styles-->
+<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
+
+{% endblock %}
+</body>
+

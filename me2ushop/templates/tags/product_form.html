@@ -1,0 +1,26 @@
+{% extends 'navigation.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+.level-0 {    margin-left: 0; }
+.level-1 {    margin-left: 20px; }
+.level-2 {    margin-left: 40px; }
+</style>
+
+        <div class=" container content-section mt-5">
+            <form method="POST" enctype="multipart/form-data">
+<!--                protect form from attacks-->
+                {% csrf_token %}
+
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Add a Product</legend>
+<!--                    Call the form from views-->
+                    {{ form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Submit</button>
+                </div>
+            </form>
+
+        </div>
+{% endblock %}

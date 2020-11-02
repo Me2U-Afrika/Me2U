@@ -24,12 +24,13 @@ def recommended_from_search(request):
     # Get the common words from the stored searches
     common_words = frequent_search_words(request)
     # print('common words:', common_words)
+    category = 'All Categories'
 
     matching = []
     for words in range(len(common_words)):
         # print(words)
         while words < len(common_words):
-            results = search.productSearched(common_words[words]).get('products', [])
+            results = search.productSearched(common_words[words], category).get('products', [])
             # print('results for common:', results)
 
             for r in results:

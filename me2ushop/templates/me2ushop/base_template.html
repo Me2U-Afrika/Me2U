@@ -1,0 +1,468 @@
+{% load bootstrap3 %}
+{% load bootstrap4 %}
+{% load static %}
+{% load search_tags %}
+{% load catalog_filters %}
+{% load cart_template_tag %}
+{% load mptt_tags %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html PUBLIC "_//W3C//DTD XHTML+RDFa 1.0//EN"
+        "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html lang="en">
+<head>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-179027185-1');
+    </script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Me2U Afrika Shopping Mall">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{% block title %}{% if page_title %}{{ page_title }} - {% endif %} {{ site_name }}{% endblock %}</title>
+
+	<meta name="google-site-verification" content="m99rTgHStqJaWoR2y0EqD02MxvoJXP_lLhSQ9VeMjqc"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+
+	<!-- Google Fonts Roboto -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+
+    <!-- Bootstrap core CSS -->
+
+	<!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href=" {{ STATIC_URL }}css/mdb.min.css">
+
+	 <!-- Your custom styles (optional) -->
+<!--	<link href="{{ STATIC_URL }}css/style.css" rel="stylesheet">-->
+
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap4/bootstrap.min.css">
+    <link href="{{ STATIC_URL }}css/plugins/fontawesome-free-5.0.1/css/fontawesome-all.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.theme.default.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/animate.css">
+
+
+    {% block headblock %}
+    {% endblock headblock %}
+
+	<style>
+	.alert-top-message {
+	    margin-top: 5%;
+	    margin-bottom: 0px;
+	    padding: 0px;
+	    border-radius: 0px;
+	    text-align: center;
+	    background-color: #DBDBDB;
+	}
+	.alert-top-message h3{
+	    margin: 0 auto;
+	}
+	.modal-dialog {
+	    margin-top: 12%;
+	}
+     </style>
+
+</head>
+
+    {% block sms %}
+    <div class="pt-0 ms">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} " role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    {% endblock %}
+
+{% block navbar %}
+
+<!-- Header -->
+
+<header class="header">
+
+    {% block top_bar %}
+    <div class="top_bar">
+        <div class="container">
+            <div class="row">
+                <div class="col d-flex flex-row">
+                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ MEDIA_URL }}images/phone.png" alt=""></div><strong>369</strong> Toll Free</div>
+                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ MEDIA_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                    <div class="top_bar_content ml-auto">
+                        <div class="top_bar_menu">
+                            <ul class="standard_dropdown top_bar_dropdown">
+                                <li>
+                                    <a href="#">English<i class="fas fa-chevron-down"></i></a>
+                                    <ul>
+                                        <li><a href="#">Kiswahili</a></li>
+                                        <li><a href="#">Kinyarwanda</a></li>
+                                        <li><a href="#">French</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">$ US dollar<i class="fas fa-chevron-down"></i></a>
+                                    <ul>
+                                        <li><a href="#">KES Ksh</a></li>
+                                        <li><a href="#">RWF Rwandan Francs</a></li>
+                                        <li><a href="#">JPY Japanese Yen</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="top_bar_user">
+                            {% if request.user.is_authenticated %}
+                            <div class="user_icon"><img src="{{ MEDIA_URL }}images/user.svg" alt=""></div>
+                            <div><a href="{% url 'users:profile' %}">Karibu {{ request.user.username }}</a></div>
+                            <div><a href="{% url 'logout' %}">LogOut</a></div>
+                            {% else %}
+                            <div class="user_icon"><img src="{{ MEDIA_URL }}images/user.svg" alt=""></div>
+                            <div><a href="{% url 'users:register' %}">Register</a></div>
+                            <div><a href="{% url 'login' %}">Sign in</a></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+
+    <!-- Header Main -->
+
+    {% block header_main %}
+    <div class="header_main">
+        <div class="container">
+            <div class="row">
+
+                <!-- Logo -->
+                <div class="col-lg-2 col-sm-3 col-3 order-1">
+                    <div class="logo_container">
+                        <div class="logo mr-0 "><a href="{% url 'me2ushop:home' %}">Me2U|Afrika</a></div>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                            {% search_box request %}
+
+
+                <!-- Wishlist -->
+                <div class="col-lg-4 col-9 order-lg-3 order-2 text-lg-left text-right">
+
+                    <div class="wishlist_cart d-flex flex-row align-items-center justify-content-end">
+                        {% if request.user.is_authenticated %}
+
+                        <div class="wishlist d-flex flex-row align-items-center justify-content-end">
+                            <div class="wishlist_icon"><img src="media/images/heart.png" alt=""></div>
+                            <div class="wishlist_content">
+                                <div class="wishlist_text"><a href="{% url 'me2ushop:wishlist_summary' %}">Wishlist</a></div>
+                                <div class="wishlist_count">{{ request|wish_list_count }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Cart -->
+                        <div class="cart">
+                            <div class="cart_container d-flex flex-row align-items-center justify-content-end">
+                                <div class="cart_icon">
+                                    <img src="media/images/cart.png" alt="">
+                                    <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>
+                                </div>
+                                <div class="cart_content">
+                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}">Cart</a></div>
+                                    <div class="cart_price">${{ request|cart_item_total}} </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    <!-- Main Navigation -->
+
+    {% block main_nav %}
+    <nav class="main_nav">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="main_nav_content d-flex flex-row">
+
+                        <!-- Categories Menu -->
+
+                        <div class="cat_menu_container">
+                            <div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
+                                <div class="cat_burger"><span></span><span></span><span></span></div>
+                                <div class="cat_menu_text">Departments</div>
+                            </div>
+                            {% department_list request.path %}
+                        </div>
+
+                        <!-- Main Nav Menu -->
+
+                        <div class="main_nav_menu ml-auto">
+                            <ul class="standard_dropdown main_nav_dropdown">
+                                <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
+                                <li class="hassubs">
+                                    <a href="#">Super Deals<i class="fas fa-chevron-down"></i></a>
+                                    <ul>
+                                        <li>
+                                            <a href="#">Menu Item<i class="fas fa-chevron-down"></i></a>
+                                            <ul>
+                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                    </ul>
+                                </li>
+                                <li class="hassubs">
+                                    <a href="#">Featured Brands<i class="fas fa-chevron-down"></i></a>
+                                    <ul>
+                                        <li>
+                                            <a href="#">Menu Item<i class="fas fa-chevron-down"></i></a>
+                                            <ul>
+                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                    </ul>
+                                </li>
+                                <li class="hassubs">
+                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>
+                                    <ul>
+                                        <li><a href="shop.html">Simba<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="product.html">Lamane<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="blog.html">KFC<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="regular.html">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="cart.html">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="contact.html">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="{%  url 'sellers:seller_home' %}" target="_blank">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                                <li><a href="{% url 'users:automobile_create' %}">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Menu Trigger -->
+
+                        <div class="menu_trigger_container ml-auto">
+                            <div class="menu_trigger d-flex flex-row align-items-center justify-content-end">
+                                <div class="menu_burger">
+                                    <div class="menu_trigger_text">menu</div>
+                                    <div class="cat_burger menu_burger_inner"><span></span><span></span><span></span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <!-- Menu -->
+
+    <div class="page_menu">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+
+                    <div class="page_menu_content">
+
+                        {% search_menu request %}
+
+                        <ul class="page_menu_nav">
+                            <li class="page_menu_item has-children">
+                                <a href="#">Language<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                    <li><a href="#">English<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Kiswahili<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Kinyarwanda<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">French<i class="fa fa-angle-down"></i></a></li>
+                                </ul>
+                            </li>
+                            <li class="page_menu_item has-children">
+                                <a href="#">Currency<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                    <li><a href="#">US Dollar<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">KES Shilling<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">RWF Francs<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">JPY Francs<i class="fa fa-angle-down"></i></a></li>
+                                </ul>
+                            </li>
+                            <li class="page_menu_item">
+                                <a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a>
+                            </li>
+                            <li class="page_menu_item has-children">
+                                <a href="#">Super Deals<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                    <li><a href="#">Super Deals<i class="fa fa-angle-down"></i></a></li>
+                                    <li class="page_menu_item has-children">
+                                        <a href="#">Menu Item<i class="fa fa-angle-down"></i></a>
+                                        <ul class="page_menu_selection">
+                                            <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                            <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                            <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                            <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                </ul>
+                            </li>
+                            <li class="page_menu_item has-children">
+                                <a href="#">Featured Brands<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                    <li><a href="#">Featured Brands<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                </ul>
+                            </li>
+                            <li class="page_menu_item has-children">
+                                <a href="#">Trending Styles<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                    <li><a href="#">Trending Styles<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                </ul>
+                            </li>
+                            <li class="page_menu_item"><a href="blog.html">blog<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="contact.html">contact<i class="fa fa-angle-down"></i></a></li>
+                        </ul>
+
+                        <div class="menu_contact">
+                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{MEDIA_URL }}images/phone_white.png" alt=""></div>+250 785011413</div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{MEDIA_URL }}images/mail_white.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>
+{% endblock %}
+
+
+
+
+<body>
+
+    {% block site_wrapper %}
+
+
+    {% endblock %}
+    {% include "tags/modal.html" %}
+
+
+
+    {% block footer %}
+        {% include "me2ushop/footer.html" %}
+    {% endblock %}
+
+
+
+    <!-- Optional JavaScript -->
+    <script src="{{ STATIC_URL }}js/jquery-3.3.1.min.js"></script>
+    <script src="{{ STATIC_URL }}css/bootstrap4/popper.js"></script>
+    <script src="{{ STATIC_URL }}css/bootstrap4/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}css/plugins/greensock/TweenMax.min.js"></script>
+    <script src="{{ STATIC_URL }}css/plugins/greensock/TimelineMax.min.js"></script>
+    <script src="{{ STATIC_URL }}css/plugins/scrollmagic/ScrollMagic.min.js"></script>
+    <script src="{{ STATIC_URL }}css/plugins/greensock/animation.gsap.min.js"></script>
+    <script src="{{ STATIC_URL }}css/plugins/greensock/ScrollToPlugin.min.js"></script>
+    <script src="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
+    <script src="{{ STATIC_URL }}css/plugins/easing/easing.js"></script>
+
+
+
+    {% block extra_scripts %}
+    {% endblock extra_scripts %}
+
+
+	<!-- Bootstrap tooltips -->
+	<script type="text/javascript" src="{{ STATIC_URL }}js/popper.min.js"></script>
+
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+
+	<!-- MDB core JavaScript -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/mdb.min.js"></script>
+
+    <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
+
+	 <script type="text/javascript">
+        $('.alert').alert()
+        $(".alert").alert('close')
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179027185-1"></script>
+    <script>
+            $(document).ready(function(){
+            {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path %}
+
+                function showModal(){
+                    $("#marketingModal").modal("show").setTimeout(showModal, 5000);
+                }
+                setTimeout(showModal, 5000);
+
+                $("#sendMarketingForm").click(function(e){
+                    e.preventDefault()
+                    var mform = $("#sendForm").serialize()
+                    console.log(mform)
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'marketing:ajax_email_signup' %}",
+                        data: mform,
+                        success: function(data){
+                        console.log(data)
+                        $("#modalMessage").html("<p style='color:green'>" + data + "</p>")
+                        $("#marketingModal").modal("hide");
+                        },
+                        error: function(data){
+                        console.log('error!')
+                        console.log(data)
+                        console.log(data.responseJSON)
+                        var obj = data.responseJSON
+                        $("#modalMessage").html("<p style='color:red'>" + obj.email + "</p>")
+                        },
+                    });
+                });
+
+            {% endif %}
+        });
+
+    </script>
+
+
+</body>
+
+</html>

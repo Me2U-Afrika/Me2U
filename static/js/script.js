@@ -180,17 +180,6 @@ function preparedDocument(){
         };
     });
 
-
-    add_new_shipping.addEventListener('change', function(event) {
-      event.preventDefault();
-
-        if (add_new_shipping.checked) {
-          hideable_shipping_form.show();
-        } else {
-          hideable_shipping_form.hide();
-        };
-    });
-
     // var form = document.getElementById('use_default_billing');
     // form.addEventListener('change', function(event) {
 

@@ -1,5 +1,8 @@
 {% load bootstrap3 %}
+{% load bootstrap4 %}
 {% load static %}
+
+
 
 <!DOCTYPE html PUBLIC "_//W3C//DTD XHTML+RDFa 1.0//EN"
         "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
@@ -12,10 +15,10 @@
 
   gtag('config', 'UA-179027185-1');
 </script>
-    <meta charset="utf-8">
+      <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>{% block title %}{% if page_title %}{{ page_title }} - {% endif %} {{ site_name }}{% endblock %}</title>
+      <title>{% block title %}{% if page_title %}{{ page_title }} - {% endif %} {{ site_name }}{% endblock %}</title>
             <!-- Font Awesome -->
             {% block headblock %}
             {% endblock headblock %}
@@ -90,7 +93,20 @@
 #noscript_padder{
     height:30px;
     }
-
+.alert-top-message {
+    margin-top: 5%;
+    margin-bottom: 0px;
+    padding: 0px;
+    border-radius: 0px;
+    text-align: center;
+    background-color: #DBDBDB;
+}
+.alert-top-message h3{
+    margin: 0 auto;
+}
+.modal-dialog {
+    margin-top: 12%;
+}
 
       </style>
     <!--    Me2U Version:{{ VERSION }}-->
@@ -101,18 +117,18 @@
 </head>
 
 <body>
-    <div class="mt-5 pt-4 ms">
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} mt-5" role="alert">
+    <div class="pt-4 ms">
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} " role="alert">
             {{ message }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-    </div>
         {% endfor %}
         {% endif %}
+    </div>
 
 <!--    Javascript requirement status update-->
 <!--    <a href="#content" class="skip_link">-->
@@ -122,9 +138,13 @@
         <div id="noscript_padder"></div>
     </noscript>
 
-      {% block site_wrapper %}
 
-      {% endblock %}
+    {% block site_wrapper %}
+
+    {% endblock %}
+    {% include "tags/modal.html" %}
+
+
 
     <!-- Optional JavaScript -->
         {% block extra_scripts %}
@@ -132,14 +152,13 @@
         {% endblock extra_scripts %}
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
-  <!-- Bootstrap tooltips -->
+    <!-- Bootstrap tooltips -->
       <script type="text/javascript" src="{% static 'js/popper.min.js'%}"></script>
       <!-- Bootstrap core JavaScript -->
       <script type="text/javascript" src="{% static 'js/bootstrap.min.js'%}"></script>
@@ -153,13 +172,50 @@
          <script
             src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js">
         </script>
-    <script type="text/javascript" >
+    <script type="text/javascript">
         $('.alert').alert()
         $(".alert").alert('close')
     </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-179027185-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179027185-1"></script>
+    <script>
+            $(document).ready(function(){
+            {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path %}
 
+                function showModal(){
+                    $("#marketingModal").modal("show").setTimeout(showModal, 10000);
+                }
+                setTimeout(showModal, 10000);
+
+                $("#sendMarketingForm").click(function(e){
+                    e.preventDefault()
+                    var mform = $("#sendForm").serialize()
+                    console.log(mform)
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'marketing:ajax_email_signup' %}",
+                        data: mform,
+                        success: function(data){
+                        console.log(data)
+                        $("#modalMessage").html("<p style='color:green'>" + data + "</p>")
+                        $("#marketingModal").modal("hide");
+                        },
+                        error: function(data){
+                        console.log('error!')
+                        console.log(data)
+                        console.log(data.responseJSON)
+                        var obj = data.responseJSON
+                        $("#modalMessage").html("<p style='color:red'>" + obj.email + "</p>")
+                        },
+                    });
+                });
+
+            {% endif %}
+        });
+
+    </script>
 
 </body>
+
 </html>
