@@ -80,7 +80,7 @@
 						<div class="char_icon"><img src="{{ MEDIA_URL }}images/char_2.png" alt=""></div>
 						<div class="char_content">
 							<div class="char_title">Round the Clock Customer Care</div>
-							<div class="char_subtitle">dial <strong>369</strong> Toll Free</div>
+							<div class="char_subtitle">dial <strong>+250 785011413</strong> To Order</div>
 						</div>
 					</div>
 				</div>
@@ -129,21 +129,27 @@
 							<div class="owl-carousel owl-theme deals_slider">
 
 								<!-- Deals Item -->
+								{% for deal in deals %}
+
 								<div class="owl-item deals_item">
-									{% for deal in deals %}
-									{% if deal.link_url %}
-									<div class="deals_image"><img src="{{ deal.link_url }}" alt=""></div>
-									{% else %}
-									<div class="deals_image"><img src="{{MEDIA_URL}}{{ deal.image.deal_size }}" alt=""></div>
+									{% for image in deal.product.get_images %}
+									{% if image.in_display %}
+
+										<div class="deals_image">
+											<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.medium }}" alt="{{ product.title }}"></a>
+										</div>
+
 									{% endif %}
+									{% endfor %}
+
 									<div class="deals_content">
 										<div class="deals_info_line d-flex flex-row justify-content-start">
 											<div class="deals_item_category"><a href="#">{{ deal.product.get_category_choice_display }}</a></div>
-											<div class="deals_item_price_a ml-auto">${{ deal.product.price }}</div>
+											<div class="deals_item_price_a ml-auto">{{ deal.product.price|currency }}</div>
 										</div>
 										<div class="deals_info_line d-flex flex-row justify-content-start">
 											<div class="deals_item_name">{{ deal.product.title }}</div>
-											<div class="deals_item_price ml-auto">${{ deal.deal_discount_price }}</div>
+											<div class="deals_item_price ml-auto">{{ deal.deal_discount_price|currency }}</div>
 										</div>
 										<div class="available">
 											<div class="available_line d-flex flex-row justify-content-start">
@@ -175,8 +181,9 @@
 											</div>
 										</div>
 									</div>
-									{% endfor %}
 								</div>
+								{% endfor %}
+
 
 							</div>
 
@@ -194,8 +201,8 @@
 							<div class="tabs">
 								<ul class="clearfix">
 									<li class="active">Featured</li>
-									<li>On Sale</li>
 									<li>Best Rated</li>
+									<li>Recommended</li>
 								</ul>
 								<div class="tabs_line"><span></span></div>
 							</div>
@@ -209,29 +216,21 @@
 									<div class="featured_slider_item">
 										<div class="border_active"></div>
 										<div class="product_item discount d-flex flex-column align-items-center justify-content-center text-center">
-											{% if product.image_url %}
-
-												<div class="product_image d-flex flex-column align-items-center justify-content-center">
-													<a href="{{ product.get_absolute_url }}"><img src="{{ product.image_url }}" alt=""></a>
-												</div>
-
-											{% else %}
 											{% for image in product.get_images %}
 											{% if image.in_display %}
 
 												<div class="product_image d-flex flex-column align-items-center justify-content-center">
-													<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+													<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt="{{ product.title }}"></a>
 												</div>
 
 											{% endif %}
 											{% endfor %}
-											{% endif %}
 
 											<div class="product_content">
 												{% if product.discount_price %}
-												<div class="product_price discount">${{ product.discount_price }}<span>${{ product.price }}</span></div>
+												<div class="product_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 												{% else %}
-												<div class="product_price">${{ product.price }}</div>
+												<div class="product_price">{{ product.price|currency }}</div>
 												{% endif %}
 												<div class="product_name"><div><a href="{{ product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -240,12 +239,18 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{% url 'me2ushop:add_cart' product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{% url 'me2ushop:add_cart' product.slug %}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
-											<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
-												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i>
-												</div>
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+												{% for wish in wish_list %}
+												{% if wish.product == product %}
+												<div class="product_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+												{% endif %}
+												{% endfor %}
+
 											</a>
 											<ul class="product_marks">
 												{% if product.discount_price %}
@@ -265,33 +270,25 @@
 								<div class="featured_slider slider">
 
 									<!-- Slider Item -->
-									{% for product in featuring %}
+									{% for product in bestrated %}
 									<div class="featured_slider_item">
 										<div class="border_active"></div>
 										<div class="product_item discount d-flex flex-column align-items-center justify-content-center text-center">
-											{% if product.image_url %}
-
-												<div class="product_image d-flex flex-column align-items-center justify-content-center">
-													<a href="{{ product.get_absolute_url }}"><img src="{{ product.image_url }}" alt=""></a>
-												</div>
-
-											{% else %}
 											{% for image in product.get_images %}
 											{% if image.in_display %}
 
 												<div class="product_image d-flex flex-column align-items-center justify-content-center">
-													<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+													<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt="{{ product.title }}"></a>
 												</div>
 
 											{% endif %}
 											{% endfor %}
-											{% endif %}
 
 											<div class="product_content">
 												{% if product.discount_price %}
-												<div class="product_price discount">${{ product.discount_price }}<span>${{ product.price }}</span></div>
+												<div class="product_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 												{% else %}
-												<div class="product_price">${{ product.price }}</div>
+												<div class="product_price">{{ product.price|currency }}</div>
 												{% endif %}
 												<div class="product_name"><div><a href="{{ product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -300,10 +297,19 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{% url 'me2ushop:add_cart' product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{% url 'me2ushop:add_cart' product.slug %}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
-											<div class="product_fav"><i class="fas fa-heart"><a href="{% url 'me2ushop:add_wishlist' product.slug %}"></a></i></div>
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+												{% for wish in wish_list %}
+												{% if wish.product == product %}
+												<div class="product_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+												{% endif %}
+												{% endfor %}
+
+											</a>
 											<ul class="product_marks">
 												{% if product.discount_price %}
 												<li class="product_mark product_discount">-{{ product.total_discount }}%</li>
@@ -322,33 +328,25 @@
 								<div class="featured_slider slider">
 
 									<!-- Slider Item -->
-									{% for product in featuring %}
+									{% for product in view_recomms %}
 									<div class="featured_slider_item">
 										<div class="border_active"></div>
 										<div class="product_item discount d-flex flex-column align-items-center justify-content-center text-center">
-											{% if product.image_url %}
-
-												<div class="product_image d-flex flex-column align-items-center justify-content-center">
-													<a href="{{ product.get_absolute_url }}"><img src="{{ product.image_url }}" alt=""></a>
-												</div>
-
-											{% else %}
 											{% for image in product.get_images %}
 											{% if image.in_display %}
 
 												<div class="product_image d-flex flex-column align-items-center justify-content-center">
-													<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+													<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt="{{ product.title }}"></a>
 												</div>
 
 											{% endif %}
 											{% endfor %}
-											{% endif %}
 
 											<div class="product_content">
 												{% if product.discount_price %}
-												<div class="product_price discount">${{ product.discount_price }}<span>${{ product.price }}</span></div>
+												<div class="product_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 												{% else %}
-												<div class="product_price">${{ product.price }}</div>
+												<div class="product_price">{{ product.price|currency }}</div>
 												{% endif %}
 												<div class="product_name"><div><a href="{{ product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -357,10 +355,19 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{% url 'me2ushop:add_cart' product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{% url 'me2ushop:add_cart' product.slug %}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
-											<div class="product_fav"><a href="{% url 'me2ushop:add_wishlist' product.slug %}"><i class="fas fa-heart"></i></a></div>
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+												{% for wish in wish_list %}
+												{% if wish.product == product %}
+												<div class="product_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+												{% endif %}
+												{% endfor %}
+
+											</a>
 											<ul class="product_marks">
 												{% if product.discount_price %}
 												<li class="product_mark product_discount">-{{ product.total_discount }}%</li>
@@ -481,9 +488,9 @@
 						<div class="tabs clearfix tabs-right">
 							<div class="new_arrivals_title">Hot New Arrivals</div>
 							<ul class="clearfix">
-								<li class="active">Featured</li>
-								<li>Audio & Video</li>
-								<li>Laptops & Computers</li>
+								<li class="active">Recent</li>
+								<li>Deals</li>
+								<li>Top Picks</li>
 							</ul>
 							<div class="tabs_line"><span></span></div>
 						</div>
@@ -522,7 +529,16 @@
 													<form action="{% url 'me2ushop:add_cart' product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
-											<div class="product_fav"><i class="fas fa-heart"></i></div>
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+												{% for wish in wish_list %}
+												{% if wish.product == product %}
+												<div class="product_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+												{% endif %}
+												{% endfor %}
+
+											</a>
 											<ul class="product_marks">
 												{% if product.discount_price %}
 												<li class="product_mark product_discount">-{{ product.total_discount }}%</li>
@@ -541,45 +557,42 @@
 									<div class="arrivals_slider slider">
 
 										<!-- Slider Item -->
-										{% for product in recent_products %}
+										{% for product in deals %}
 										<div class="arrivals_slider_item">
 											<div class="border_active"></div>
 											<div class="product_item is_new  d-flex flex-column align-items-center justify-content-center text-center">
-
-											{% if product.image_url %}
-
-												<div class="product_image d-flex flex-column align-items-center justify-content-center"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
-
-											{% else %}
-											{% for image in product.get_images %}
+											{% for image in product.product.get_images %}
 											{% if image.in_display %}
-												<div class="product_image d-flex flex-column align-items-center justify-content-center"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
+												<div class="product_image d-flex flex-column align-items-center justify-content-center"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
 
 											{% endif %}
 											{% endfor %}
-											{% endif %}
 
 											<div class="product_content">
-												{% if product.discount_price %}
-												<div class="product_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
-												{% else %}
-												<div class="product_price">{{ product.price|currency }}</div>
+												{% if product.deal_discount_price %}
+												<div class="product_price discount">{{ product.deal_discount_price|currency }}<span>{{ product.product.price|currency }}</span></div>
 												{% endif %}
-												<div class="product_name"><div><a href="product.html">{{ product.title|truncatechars:18 }}</a></div></div>
+												<div class="product_name"><div><a href="product.html">{{ product.product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
 													<div class="product_color">
 														<input type="radio" checked name="product_color" style="background:#b19c83">
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{% url 'me2ushop:add_cart' product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{% url 'me2ushop:add_cart' product.product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
-											<div class="product_fav"><i class="fas fa-heart"></i></div>
-											<ul class="product_marks">
-												{% if product.discount_price %}
-												<li class="product_mark product_discount">-{{ product.total_discount }}%</li>
+											<a href="{% url 'me2ushop:add_wishlist' product.product.slug %}" target="_blank">
+												<div class="product_fav" id="{{ product.product.slug}}"><i class="fas fa-heart"></i></div>
+
+												{% for wish in wish_list %}
+												{% if wish.product == product.product %}
+												<div class="product_fav active" id="{{ product.product.slug}}"><i class="fas fa-heart"></i></div>
 												{% endif %}
+												{% endfor %}
+
+											</a>
+											<ul class="product_marks">
 												<li class="product_mark product_new">new</li>
 											</ul>
 										</div>
@@ -594,23 +607,16 @@
 									<div class="arrivals_slider slider">
 
 										<!-- Slider Item -->
-										{% for product in recent_products %}
+										{% for product in search_recomms %}
 										<div class="arrivals_slider_item">
 											<div class="border_active"></div>
 											<div class="product_item is_new  d-flex flex-column align-items-center justify-content-center text-center">
-
-											{% if product.image_url %}
-
-												<div class="product_image d-flex flex-column align-items-center justify-content-center"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
-
-											{% else %}
 											{% for image in product.get_images %}
 											{% if image.in_display %}
-												<div class="product_image d-flex flex-column align-items-center justify-content-center"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
+												<div class="product_image d-flex flex-column align-items-center justify-content-center"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
 
 											{% endif %}
 											{% endfor %}
-											{% endif %}
 
 											<div class="product_content">
 												{% if product.discount_price %}
@@ -628,7 +634,16 @@
 													<form action="{% url 'me2ushop:add_cart' product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
-											<div class="product_fav"><i class="fas fa-heart"></i></div>
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+												{% for wish in wish_list %}
+												{% if wish.product == product %}
+												<div class="product_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+												{% endif %}
+												{% endfor %}
+
+											</a>
 											<ul class="product_marks">
 												{% if product.discount_price %}
 												<li class="product_mark product_discount">-{{ product.total_discount }}%</li>
@@ -648,19 +663,13 @@
 							<div class="col-lg-3">
 								<div class="arrivals_single clearfix">
 									<div class="d-flex flex-column align-items-center justify-content-center">
-										{% if best_seller_banner.image_url %}
-
-											<div class="arrivals_single_image"><img src="{{ best_seller_banner.image_url }}" alt=""></div>
-
-										{% else %}
-										{% for image in best_seller_banner.product.productimage_set.all %}
+										{% for image in best_seller_banner.product.get_images %}
 										{% if image.in_display %}
 
-											<div class="arrivals_single_image"><img src="{{ MEDIA_URL }}{{ image.image }}" alt=""></div>
+											<div class="arrivals_single_image"><img src="{{ MEDIA_URL }}{{ image.image.medium }}" alt=""></div>
 
 										{% endif %}
 										{% endfor %}
-										{% endif %}
 
 										<div class="arrivals_single_content">
 											<div class="arrivals_single_category"><a href="#">{{ best_seller_banner.product.get_category_choice_display }}</a></div>
@@ -671,7 +680,16 @@
 											<div class="rating_r rating_r_4 arrivals_single_rating"><i></i><i></i><i></i><i></i><i></i></div>
 											<form action="{% url 'me2ushop:add_cart' best_seller_banner.product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
 										</div>
-										<div class="arrivals_single_fav product_fav active"><i class="fas fa-heart"></i></div>
+											<a href="{% url 'me2ushop:add_wishlist' best_seller_banner.product.slug %}" target="_blank">
+											<div class="arrivals_single_fav product_fav" id="{{ best_seller_banner.product.slug}}"><i class="fas fa-heart"></i></div>
+
+											{% for wish in wish_list %}
+											{% if wish.product == best_seller_banner.product %}
+											<div class="product_fav active" id="{{ best_seller_banner.product.slug}}"><i class="fas fa-heart"></i></div>
+											{% endif %}
+											{% endfor %}
+
+										</a>
 										<ul class="arrivals_single_marks product_marks">
 											<li class="arrivals_single_mark product_mark product_new">new</li>
 										</ul>
@@ -696,11 +714,15 @@
 				<div class="col">
 					<div class="tabbed_container">
 						<div class="tabs clearfix tabs-right">
-							<div class="new_arrivals_title">Hot Best Sellers</div>
+							<div class="new_arrivals_title">Best Sellers</div>
 							<ul class="clearfix">
 								<li class="active">Top 20</li>
-								<li>Audio & Video</li>
-								<li>Laptops & Computers</li>
+								{% if rand_department_1 %}
+								<li>{{ rand_department_1}}</li>
+								{% endif %}
+								{% if rand_department_2 %}
+								<li>{{ rand_department_2}}</li>
+								{% endif %}
 							</ul>
 							<div class="tabs_line"><span></span></div>
 						</div>
@@ -717,20 +739,13 @@
 								<div class="bestsellers_item discount">
 									<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
 
-										{% if product.image_url %}
-
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
-
-										{% else %}
-										{% for image in product.productimage_set.all %}
+										{% for image in product.get_images %}
 										{% if image.in_display %}
 
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image }}" alt="{{ product.title }}"></a></div>
+										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
 
 										{% endif %}
 										{% endfor %}
-										{% endif %}
-
 										<div class="bestsellers_content">
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
@@ -738,7 +753,16 @@
 											<div class="bestsellers_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 										</div>
 									</div>
-									<div class="bestsellers_fav active"><i class="fas fa-heart"></i></div>
+									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+										<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+										{% for wish in wish_list %}
+										{% if wish.product.slug == product.slug %}
+										<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+										{% endif %}
+										{% endfor %}
+
+									</a>
 									<ul class="bestsellers_marks">
 										<li class="bestsellers_mark bestsellers_discount">-{{ product.total_discount }}%</li>
 										<li class="bestsellers_mark bestsellers_new">new</li>
@@ -750,19 +774,14 @@
 								<!-- Best Sellers Item -->
 								<div class="bestsellers_item">
 									<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
-										{% if product.image_url %}
-
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
-
-										{% else %}
-										{% for image in product.productimage_set.all %}
+										{% for image in product.get_images %}
 										{% if image.in_display %}
 
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
+										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
 
 										{% endif %}
 										{% endfor %}
-										{% endif %}
+
 										<div class="bestsellers_content">
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
@@ -770,7 +789,17 @@
 											<div class="bestsellers_price">{{ product.price|currency }}</div>
 										</div>
 									</div>
-									<div class="bestsellers_fav"><i class="fas fa-heart"></i></div>
+
+										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+											<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+											{% for wish in wish_list %}
+											{% if wish.product.slug == product.slug %}
+											<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+											{% endif %}
+											{% endfor %}
+
+										</a>
 									<ul class="bestsellers_marks">
 										<li class="bestsellers_mark bestsellers_new">new</li>
 									</ul>
@@ -788,26 +817,19 @@
 
 							<div class="bestsellers_slider slider">
 
-								{% for product in bestselling %}
+								{% for product in rand_department_1.product_set.all %}
 								{% if product.discount_price %}
 								<!-- Best Sellers Item -->
 								<div class="bestsellers_item discount">
 									<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
 
-										{% if product.image_url %}
-
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
-
-										{% else %}
-										{% for image in product.productimage_set.all %}
+										{% for image in product.get_images %}
 										{% if image.in_display %}
 
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
+										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
 
 										{% endif %}
 										{% endfor %}
-										{% endif %}
-
 										<div class="bestsellers_content">
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
@@ -815,7 +837,16 @@
 											<div class="bestsellers_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 										</div>
 									</div>
-									<div class="bestsellers_fav active"><i class="fas fa-heart"></i></div>
+									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+										<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+										{% for wish in wish_list %}
+										{% if wish.product.slug == product.slug %}
+										<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+										{% endif %}
+										{% endfor %}
+
+									</a>
 									<ul class="bestsellers_marks">
 										<li class="bestsellers_mark bestsellers_discount">-{{ product.total_discount }}%</li>
 										<li class="bestsellers_mark bestsellers_new">new</li>
@@ -827,19 +858,14 @@
 								<!-- Best Sellers Item -->
 								<div class="bestsellers_item">
 									<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
-										{% if product.image_url %}
-
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
-
-										{% else %}
-										{% for image in product.productimage_set.all %}
+										{% for image in product.get_images %}
 										{% if image.in_display %}
 
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
+										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
 
 										{% endif %}
 										{% endfor %}
-										{% endif %}
+
 										<div class="bestsellers_content">
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
@@ -847,7 +873,17 @@
 											<div class="bestsellers_price">{{ product.price|currency }}</div>
 										</div>
 									</div>
-									<div class="bestsellers_fav"><i class="fas fa-heart"></i></div>
+
+										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+											<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+											{% for wish in wish_list %}
+											{% if wish.product.slug == product.slug %}
+											<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+											{% endif %}
+											{% endfor %}
+
+										</a>
 									<ul class="bestsellers_marks">
 										<li class="bestsellers_mark bestsellers_new">new</li>
 									</ul>
@@ -865,34 +901,36 @@
 
 							<div class="bestsellers_slider slider">
 
-								{% for product in bestselling %}
+								{% for product in rand_department_2.get_products %}
 								{% if product.discount_price %}
 								<!-- Best Sellers Item -->
 								<div class="bestsellers_item discount">
 									<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
 
-										{% if product.image_url %}
-
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
-
-										{% else %}
-										{% for image in product.productimage_set.all %}
+										{% for image in product.get_images %}
 										{% if image.in_display %}
 
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
+										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
 
 										{% endif %}
 										{% endfor %}
-										{% endif %}
-
 										<div class="bestsellers_content">
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 											<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<div class="bestsellers_price discount">${{ product.discount_price }}<span>${{ product.price }}</span></div>
+											<div class="bestsellers_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 										</div>
 									</div>
-									<div class="bestsellers_fav active"><i class="fas fa-heart"></i></div>
+									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+										<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+										{% for wish in wish_list %}
+										{% if wish.product.slug == product.slug %}
+										<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+										{% endif %}
+										{% endfor %}
+
+									</a>
 									<ul class="bestsellers_marks">
 										<li class="bestsellers_mark bestsellers_discount">-{{ product.total_discount }}%</li>
 										<li class="bestsellers_mark bestsellers_new">new</li>
@@ -904,27 +942,32 @@
 								<!-- Best Sellers Item -->
 								<div class="bestsellers_item">
 									<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
-										{% if product.image_url %}
-
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
-
-										{% else %}
-										{% for image in product.productimage_set.all %}
+										{% for image in product.get_images %}
 										{% if image.in_display %}
 
-										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ product.image_url }}" alt="{{ product.title }}"></a></div>
+										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
 
 										{% endif %}
 										{% endfor %}
-										{% endif %}
+
 										<div class="bestsellers_content">
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 											<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<div class="bestsellers_price">${{ product.price }}</div>
+											<div class="bestsellers_price">{{ product.price|currency }}</div>
 										</div>
 									</div>
-									<div class="bestsellers_fav"><i class="fas fa-heart"></i></div>
+
+										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+											<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+											{% for wish in wish_list %}
+											{% if wish.product.slug == product.slug %}
+											<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+											{% endif %}
+											{% endfor %}
+
+										</a>
 									<ul class="bestsellers_marks">
 										<li class="bestsellers_mark bestsellers_new">new</li>
 									</ul>
@@ -944,57 +987,62 @@
 
 	<!-- Adverts -->
 
-	<div class="adverts">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-4 advert_col">
+<!--	<div class="adverts">-->
+<!--		<div class="container">-->
+<!--			<div class="row">-->
+<!--				<div class="col-lg-4 advert_col">-->
 
-					<!-- Advert Item -->
+<!--					&lt;!&ndash; Advert Item &ndash;&gt;-->
 
-					<div class="advert d-flex flex-row align-items-center justify-content-start">
-						<div class="advert_content">
-							<div class="advert_title"><a href="#">Trends 2018</a></div>
-							<div class="advert_text">Lorem ipsum dolor sit amet, consectetur adipiscing Donec et.</div>
-						</div>
-						<div class="ml-auto"><div class="advert_image"><img src="media/images/adv_1.png" alt=""></div></div>
-					</div>
-				</div>
+<!--					<div class="advert d-flex flex-row align-items-center justify-content-start">-->
+<!--						<div class="advert_content">-->
+<!--							<div class="advert_title"><a href="#">Trends 2018</a></div>-->
+<!--							<div class="advert_text">Lorem ipsum dolor sit amet, consectetur adipiscing Donec et.</div>-->
+<!--						</div>-->
+<!--						<div class="ml-auto"><div class="advert_image"><img src="media/images/adv_1.png" alt=""></div></div>-->
+<!--					</div>-->
+<!--				</div>-->
 
-				<div class="col-lg-4 advert_col">
+<!--				<div class="col-lg-4 advert_col">-->
 
-					<!-- Advert Item -->
+<!--					&lt;!&ndash; Advert Item &ndash;&gt;-->
 
-					<div class="advert d-flex flex-row align-items-center justify-content-start">
-						<div class="advert_content">
-							<div class="advert_subtitle">Trends 2018</div>
-							<div class="advert_title_2"><a href="#">Sale -45%</a></div>
-							<div class="advert_text">Lorem ipsum dolor sit amet, consectetur.</div>
-						</div>
-						<div class="ml-auto"><div class="advert_image"><img src="{{ MEDIA_URL }}images/adv_2.png" alt=""></div></div>
-					</div>
-				</div>
+<!--					<div class="advert d-flex flex-row align-items-center justify-content-start">-->
+<!--						<div class="advert_content">-->
+<!--							<div class="advert_subtitle">Trends 2018</div>-->
+<!--							<div class="advert_title_2"><a href="#">Sale -45%</a></div>-->
+<!--							<div class="advert_text">Lorem ipsum dolor sit amet, consectetur.</div>-->
+<!--						</div>-->
+<!--						<div class="ml-auto"><div class="advert_image"><img src="{{ MEDIA_URL }}images/adv_2.png" alt=""></div></div>-->
+<!--					</div>-->
+<!--				</div>-->
 
-				<div class="col-lg-4 advert_col">
+<!--				<div class="col-lg-4 advert_col">-->
 
-					<!-- Advert Item -->
+<!--					&lt;!&ndash; Advert Item &ndash;&gt;-->
 
-					<div class="advert d-flex flex-row align-items-center justify-content-start">
-						<div class="advert_content">
-							<div class="advert_title"><a href="#">Trends 2018</a></div>
-							<div class="advert_text">Lorem ipsum dolor sit amet, consectetur.</div>
-						</div>
-						<div class="ml-auto"><div class="advert_image"><img src="{{ MEDIA_URL }}images/adv_3.png" alt=""></div></div>
-					</div>
-				</div>
+<!--					<div class="advert d-flex flex-row align-items-center justify-content-start">-->
+<!--						<div class="advert_content">-->
+<!--							<div class="advert_title"><a href="#">Trends 2018</a></div>-->
+<!--							<div class="advert_text">Lorem ipsum dolor sit amet, consectetur.</div>-->
+<!--						</div>-->
+<!--						<div class="ml-auto"><div class="advert_image"><img src="{{ MEDIA_URL }}images/adv_3.png" alt=""></div></div>-->
+<!--					</div>-->
+<!--				</div>-->
 
-			</div>
-		</div>
-	</div>
+<!--			</div>-->
+<!--		</div>-->
+<!--	</div>-->
 
 	<!-- Trends -->
 
+	{% for trend_info in trend_info %}
+
 	<div class="trends">
-		<div class="trends_background" style="background-image:url({{ MEDIA_URL }}images/trends_background.jpg)"></div>
+		{% if trend_info.trend_background %}
+			<div class="trends_background" style="background-image:url({{ trend_info.trend_background.url }})"></div>
+
+		{% endif %}
 		<div class="trends_overlay"></div>
 		<div class="container">
 			<div class="row">
@@ -1002,8 +1050,8 @@
 				<!-- Trends Content -->
 				<div class="col-lg-3">
 					<div class="trends_container">
-						<h2 class="trends_title">Trends 2018</h2>
-						<div class="trends_text"><p>Get latest electronics and gadgets at affordable rates</p></div>
+						<h2 class="trends_title">{{ trend_info.trend_header }}</h2>
+						<div class="trends_text"><p>{{ trend_info.trend_text }}</p></div>
 						<div class="trends_slider_nav">
 							<div class="trends_prev trends_nav"><i class="fas fa-angle-left ml-auto"></i></div>
 							<div class="trends_next trends_nav"><i class="fas fa-angle-right ml-auto"></i></div>
@@ -1020,22 +1068,41 @@
 						<div class="owl-carousel owl-theme trends_slider">
 
 							<!-- Trends Slider Item -->
-							{% for trend in trending %}
+							{% for trend in trends %}
 							<div class="owl-item">
 								<div class="trends_item is_new">
-									<div class="trends_image d-flex flex-column align-items-center justify-content-center"><a href="{{ trend.product.get_absolute_url }}"><img src="{{trend.image_url}}" alt="{{trend.product.title }}"></a></div>
+
+									{% for image in trend.product.get_images %}
+									{% if image.in_display %}
+
+									<div class="trends_image d-flex flex-column align-items-center justify-content-center"><a href="{{ trend.product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{trend.product.title }}"></a></div>
+
+
+									{% endif %}
+									{% endfor %}
 									<div class="trends_content">
-										<div class="trends_category"> <a href="{{ trend.product.get_absolute_url }}">{{trend.product.get_category_choice_display}}</a></div>
+										<div class="trends_category"> <a href="{{ trend.product.get_absolute_url }}" target="_blank">{{trend.product.get_category_choice_display}}</a></div>
 										<div class="trends_info clearfix">
-											<div class="trends_name"><a href="{{ trend.product.get_absolute_url }}">{{ trend.product.title|truncatechars:18 }}</a></div>
+											<div class="trends_name"><a href="{{ trend.product.get_absolute_url }}" target="_blank">{{ trend.product.title|truncatechars:18 }}</a></div>
 											<div class="trends_price">{{ trend.product.price|currency }}</div>
 										</div>
 									</div>
 									<ul class="trends_marks">
+										{% if trend.product.discount_price %}
 										<li class="trends_mark trends_discount">-{{ trend.product.total_discount }}%</li>
+										{% endif %}
 										<li class="trends_mark trends_new">new</li>
 									</ul>
-									<div class="trends_fav"><i class="fas fa-heart"></i></div>
+									<a href="{% url 'me2ushop:add_wishlist' trend.product.slug %}" target="_blank">
+										<div class="trends_fav" id="{{ trend.product.slug}}"><i class="fas fa-heart"></i></div>
+
+										{% for wish in wish_list %}
+										{% if wish.product == trend.product %}
+										<div class="trends_fav active" id="{{ trend.product.slug}}"><i class="fas fa-heart"></i></div>
+										{% endif %}
+										{% endfor %}
+
+									</a>
 								</div>
 							</div>
 							{% endfor %}
@@ -1047,6 +1114,9 @@
 		</div>
 	</div>
 
+	{% endfor %}
+
+
 	<!-- Reviews -->
 
 
@@ -1057,7 +1127,7 @@
 
 					<div class="reviews_title_container">
 						<h3 class="reviews_title">Latest Reviews</h3>
-						<div class="reviews_all ml-auto"><a href="#">view all <span>reviews</span></a></div>
+<!--						<div class="reviews_all ml-auto"><a href="#">view all <span>reviews</span></a></div>-->
 					</div>
 
 					<div class="reviews_slider_container">

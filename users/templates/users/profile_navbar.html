@@ -1,0 +1,217 @@
+{% load search_tags %}
+{% load catalog_filters %}
+{% load cart_template_tag %}
+{% load mptt_tags %}
+{% load crispy_forms_tags %}
+<header class="header">
+
+    <div class="top_bar">
+        <div class="container">
+            <div class="row">
+                <div class="col d-flex flex-row">
+                    <div class="top_bar_contact_item"><div class="top_bar_icon"></div><a href="{% url 'me2ushop:home' %}">Me2U|Afrika</a></div>
+                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ MEDIA_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                    <div class="top_bar_content ml-auto">
+                        <div class="top_bar_menu">
+                            <ul class="standard_dropdown top_bar_dropdown">
+                                <li>
+                                    <a href="#">English<i class="fas fa-chevron-down"></i></a>
+                                    <ul>
+                                        <li><a href="#">Kiswahili</a></li>
+                                        <li><a href="#">Kinyarwanda</a></li>
+                                        <li><a href="#">French</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">$ US dollar<i class="fas fa-chevron-down"></i></a>
+                                    <ul>
+                                        <li><a href="#">KES Ksh</a></li>
+                                        <li><a href="#">RWF Rwandan Francs</a></li>
+                                        <li><a href="#">JPY Japanese Yen</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="top_bar_user">
+                            <div class="user_icon"><img src="{{ MEDIA_URL }}images/user.svg" alt=""></div>
+                            <div><a href="{% url 'users:profile' %}">Karibu {{ request.user.username }}</a></div>
+                            <div><a href="{% url 'logout' %}">LogOut</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="main_nav">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="main_nav_content d-flex flex-row">
+
+                        <!-- Categories Menu -->
+
+                        <div class="cat_menu_container">
+                            <div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
+                                <div class="cat_burger"><span></span><span></span><span></span></div>
+                                <div class="cat_menu_text">Departments</div>
+                            </div>
+                            {% include 'tags/department_list.html' %}
+                        </div>
+
+                        <!-- Main Nav Menu -->
+
+                        <div class="main_nav_menu ml-auto">
+                            <ul class="standard_dropdown main_nav_dropdown">
+                                <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
+                                <li class="hassubs">
+                                    <a href="#">Top Deals<i class="fas fa-chevron-down"></i></a>
+                                    <ul>
+                                        <li>
+                                            <a href="#">Menu Item<i class="fas fa-chevron-down"></i></a>
+                                            <ul>
+                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                    </ul>
+                                </li>
+                                <li class="hassubs">
+                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>
+                                    <ul>
+                                        <li><a href="shop.html">Simba<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="product.html">Lamane<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="blog.html">KFC<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="regular.html">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="cart.html">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="contact.html">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="contact.html">Register My Shop<i class="fas fa-chevron-down"></i></a></li>
+                                    </ul>
+                                </li>
+                                <li class="hassubs">
+                                    <a href="#">Account Settings<i class="fas fa-chevron-down"></i></a>
+                                    <ul>
+                                        <li><a href="{% url 'users:password_change' %}" target="_blank">Change Password</a></li>
+                                        <li><a href="{% url 'users:personal_info' %}" target="_blank">Edit Personal information</a></li>
+                                        <li><a href="{% url 'users:address_list' %}" target="_blank">Edit Billing/Shipping Information</a></li>
+                                        <li>
+                                            <a href="" target="_blank">Manage Account<i class="fas fa-chevron-down"></i></a>
+                                            <ul>
+                                                <li><a href="#">Unsubscribe<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="#">Customer Care<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="#">Report Abuse<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="#">Delete<i class="fas fa-chevron-down"></i></a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><a href="#">Deliver on Me2U<i class="fas fa-chevron-down"></i></a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Menu Trigger -->
+
+                        <div class="menu_trigger_container ml-auto">
+                            <div class="menu_trigger d-flex flex-row align-items-center justify-content-end">
+                                <div class="menu_burger">
+                                    <div class="menu_trigger_text">menu</div>
+                                    <div class="cat_burger menu_burger_inner"><span></span><span></span><span></span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu -->
+
+    <div class="page_menu">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+
+                    <div class="page_menu_content">
+
+                        {% search_menu request %}
+
+                        <ul class="page_menu_nav">
+                            <li class="page_menu_item has-children">
+                                <a href="#">Language<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                    <li><a href="#">English<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Kiswahili<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Kinyarwanda<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">French<i class="fa fa-angle-down"></i></a></li>
+                                </ul>
+                            </li>
+                            <li class="page_menu_item has-children">
+                                <a href="#">Currency<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                    <li><a href="#">US Dollar<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">KES Shilling<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">RWF Francs<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">JPY Francs<i class="fa fa-angle-down"></i></a></li>
+                                </ul>
+                            </li>
+                            <li class="page_menu_item">
+                                <a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a>
+                            </li>
+                            <li class="page_menu_item has-children">
+                                <a href="#">Super Deals<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                    <li><a href="#">Super Deals<i class="fa fa-angle-down"></i></a></li>
+                                    <li class="page_menu_item has-children">
+                                        <a href="#">Menu Item<i class="fa fa-angle-down"></i></a>
+                                        <ul class="page_menu_selection">
+                                            <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                            <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                            <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                            <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                </ul>
+                            </li>
+                            <li class="page_menu_item has-children">
+                                <a href="#">Featured Brands<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                    <li><a href="#">Featured Brands<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                </ul>
+                            </li>
+                            <li class="page_menu_item has-children">
+                                <a href="#">Account Settings<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                        <li><a href="{% url 'users:password_change' %}" target="_blank">Change Password</a></li>
+                                        <li><a href="{% url 'users:personal_info' %}" target="_blank">Edit Personal information</a></li>
+                                        <li><a href="{% url 'users:address_list' %}" target="_blank">Edit Billing/Shipping Information</a></li>
+
+                                </ul>
+                            </li>
+                            <li class="page_menu_item"><a href="blog.html" target="_blank">Deliver on Me2U<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="contact.html" target="_blank">contact<i class="fa fa-angle-down"></i></a></li>
+                        </ul>
+
+                        <div class="menu_contact">
+                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{MEDIA_URL }}images/phone_white.png" alt=""></div>+250 785011413</div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{MEDIA_URL }}images/mail_white.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>

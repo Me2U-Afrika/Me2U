@@ -86,7 +86,7 @@
 
 					<div class="shop_content">
 						<div class="shop_bar clearfix">
-							<div class="shop_product_count"><span>{{ results.count }}</span> products found</div>
+							<div class="shop_product_count"><span>{{ matching_count }}</span> product{{ matching_count|pluralize:"s" }} found</div>
 							<div class="shop_sorting">
 								<span>Sort by:</span>
 								<ul>
@@ -111,14 +111,7 @@
 							<!-- Product Item -->
 							<div class="product_item discount">
 								<div class="product_border"></div>
-								{% if product.image_url %}
-
-									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ product.image_url }}" alt=""></a>
-									</div>
-
-								{% else %}
-								{% for image in product.productimage_set.all %}
+								{% for image in product.get_images %}
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
@@ -127,7 +120,6 @@
 
 								{% endif %}
 								{% endfor %}
-								{% endif %}
 								<div class="product_content">
 									<div class="product_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 									<div class="product_name"><div><a href="#" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
@@ -142,15 +134,7 @@
 							<!-- Product Item -->
 							<div class="product_item">
 								<div class="product_border"></div>
-
-								{% if product.image_url %}
-
-									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ product.image_url }}" alt=""></a>
-									</div>
-
-								{% else %}
-								{% for image in product.productimage_set.all %}
+								{% for image in product.get_images %}
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
@@ -159,7 +143,6 @@
 
 								{% endif %}
 								{% endfor %}
-								{% endif %}
 								<div class="product_content">
 									<div class="product_price">{{ product.price|currency }}</div>
 									<div class="product_name"><div><a href="#" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
@@ -228,7 +211,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">${{ product.discount_price }}<span>{{ product.price|currency }}</span></div>
+										<div class="viewed_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -297,7 +280,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">${{ product.discount_price }}<span>${{ product.price }}</span></div>
+										<div class="viewed_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -317,7 +300,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ product.price }}</div>
+										<div class="viewed_price">{{ product.price|currency }}</div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">

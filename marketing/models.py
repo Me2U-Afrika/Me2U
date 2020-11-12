@@ -23,9 +23,6 @@ class MarketingManager(models.Manager):
     def get_queryset(self):
         return MarketingQueryset(self.model, using=self._db)
 
-    def all(self):
-        return self.get_queryset().active()
-
     def bestselling(self):
         return self.get_queryset().bestselling()
 
@@ -120,14 +117,38 @@ class Banner(CreationModificationDateMixin):
         return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
 
 
+class TrendInfo(CreationModificationDateMixin):
+    trend_background = StdImageField(upload_to='images/marketing/trends', blank=True, null=True)
+    trend_header = models.CharField(max_length=120)
+
+    trend_text = models.TextField(max_length=300)
+
+    def __str__(self):
+        return str(self.trend_header)
+
+
+class Trend(CreationModificationDateMixin):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+    end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+
+    objects = MarketingManager()
+
+    class Meta:
+        ordering = ['-start_date', '-end_date']
+
+    def __str__(self):
+        return str(self.product.title)
+
+    def get_absolute_url(self):
+        return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
+
+
 class Deals(CreationModificationDateMixin):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
-        'deals_size': (365, 365, True),
-
-    }, delete_orphans=True)
-    link_url = models.CharField(max_length=250, null=True, blank=True)
     deal_discount_price = models.DecimalField(max_digits=9, decimal_places=2)
+    is_featured = models.BooleanField(default=False, blank=True, null=True)
     start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
 
@@ -145,7 +166,6 @@ class Deals(CreationModificationDateMixin):
                 total += order_item.quantity
 
         return total
-
 
 
 class MarketingEmails(CreationModificationDateMixin):

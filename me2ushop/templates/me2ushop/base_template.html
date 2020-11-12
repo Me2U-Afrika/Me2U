@@ -47,6 +47,8 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.theme.default.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/animate.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
+
 
 
     {% block headblock %}
@@ -97,7 +99,7 @@
         <div class="container">
             <div class="row">
                 <div class="col d-flex flex-row">
-                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ MEDIA_URL }}images/phone.png" alt=""></div><strong>369</strong> Toll Free</div>
+                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ MEDIA_URL }}images/phone.png" alt=""></div><strong>+250 785 011 413</strong> </div>
                     <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ MEDIA_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
                     <div class="top_bar_content ml-auto">
                         <div class="top_bar_menu">
@@ -123,7 +125,7 @@
                         <div class="top_bar_user">
                             {% if request.user.is_authenticated %}
                             <div class="user_icon"><img src="{{ MEDIA_URL }}images/user.svg" alt=""></div>
-                            <div><a href="{% url 'users:profile' %}">Karibu {{ request.user.username }}</a></div>
+                            <div><a href="{% url 'users:profile' %}" target="_blank">Karibu {{ request.user.username }}</a></div>
                             <div><a href="{% url 'logout' %}">LogOut</a></div>
                             {% else %}
                             <div class="user_icon"><img src="{{ MEDIA_URL }}images/user.svg" alt=""></div>
@@ -161,16 +163,16 @@
                 <div class="col-lg-4 col-9 order-lg-3 order-2 text-lg-left text-right">
 
                     <div class="wishlist_cart d-flex flex-row align-items-center justify-content-end">
-                        {% if request.user.is_authenticated %}
 
                         <div class="wishlist d-flex flex-row align-items-center justify-content-end">
                             <div class="wishlist_icon"><img src="media/images/heart.png" alt=""></div>
                             <div class="wishlist_content">
-                                <div class="wishlist_text"><a href="{% url 'me2ushop:wishlist_summary' %}">Wishlist</a></div>
+                                <div class="wishlist_text"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank">Wishlist</a></div>
+                                {% if not wish_list == None %}
                                 <div class="wishlist_count">{{ request|wish_list_count }}</div>
+                                {% endif %}
                             </div>
                         </div>
-                        {% endif %}
 
                         <!-- Cart -->
                         <div class="cart">
@@ -180,8 +182,8 @@
                                     <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>
                                 </div>
                                 <div class="cart_content">
-                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}">Cart</a></div>
-                                    <div class="cart_price">${{ request|cart_item_total}} </div>
+                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}" target="_blank">Cart</a></div>
+                                    <div class="cart_price">{{ request|cart_item_total|currency }} </div>
                                 </div>
                             </div>
                         </div>
@@ -209,7 +211,8 @@
                                 <div class="cat_burger"><span></span><span></span><span></span></div>
                                 <div class="cat_menu_text">Departments</div>
                             </div>
-                            {% department_list request.path %}
+                            {% include 'tags/department_list.html' %}
+
                         </div>
 
                         <!-- Main Nav Menu -->
@@ -220,48 +223,39 @@
                                 <li class="hassubs">
                                     <a href="#">Super Deals<i class="fas fa-chevron-down"></i></a>
                                     <ul>
-                                        <li>
-                                            <a href="#">Menu Item<i class="fas fa-chevron-down"></i></a>
-                                            <ul>
-                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
-                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
-                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+                                        {% for deal in deals %}
+                                        {% if deal.is_featured %}
+                                        <li><a href="{{ deal.product.get_absolute_url }}" target="_blank">{{ deal }}<i class="fas fa-chevron-down"></i></a></li>
+                                        {% endif %}
+                                        {% endfor %}
+
                                     </ul>
                                 </li>
                                 <li class="hassubs">
                                     <a href="#">Featured Brands<i class="fas fa-chevron-down"></i></a>
                                     <ul>
-                                        <li>
-                                            <a href="#">Menu Item<i class="fas fa-chevron-down"></i></a>
-                                            <ul>
-                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
-                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
-                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+
+                                        {% for brand in brands %}
+                                        {% if brand.is_featured %}
+                                        <li><a href="{% url 'me2ushop:seller_page' brand.id %}" target="_blank">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
+                                        {% endif %}
+                                        {% endfor %}
+
                                     </ul>
                                 </li>
                                 <li class="hassubs">
                                     <a href="#">Shops<i class="fas fa-chevron-down"></i></a>
                                     <ul>
-                                        <li><a href="shop.html">Simba<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="product.html">Lamane<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="blog.html">KFC<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="regular.html">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="cart.html">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="contact.html">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">KFC<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>
                                     </ul>
                                 </li>
                                 <li><a href="{%  url 'sellers:seller_home' %}" target="_blank">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
-                                <li><a href="{% url 'users:automobile_create' %}">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                                <li><a href="{% url 'users:automobile_create' %}" target="_blank">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
                             </ul>
                         </div>
 

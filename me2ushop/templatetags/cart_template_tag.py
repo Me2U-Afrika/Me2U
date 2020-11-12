@@ -128,6 +128,8 @@ def wish_list_count(request):
     #         return qs[0].items.count()
 
     if request.user:
-        wish_list = WishList.objects.filter(user=request.user)
-        return wish_list.count()
+        from utils import context_processors
+        wishlist = context_processors.me2u(request)['wish_list']
+        # print(wishlist)
+        return wishlist.count()
     return 0

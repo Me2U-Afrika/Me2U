@@ -1,67 +1,166 @@
 {% extends 'me2ushop/base_template.html' %}
-{% load crispy_forms_tags %}
+{% load mptt_tags %}
 
 {% block headblock %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
 
-<!--contact styles-->
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
-
 {% endblock %}
 
-{% block navbar %}
-        {% include 'sellers/seller_navbar.html' %}
-  {% endblock %}
 
 <body>
 
 {% block site_wrapper %}
 
 <div class="super_container">
-<div class="container mt-5">
-<h3>{{ object.title }} Images: {{ product_image.count }}</h3>
 
-        <div class="card card-body">
-           <div class="text-center font-small wow fadeIn">
-               {% if product_image.count < 4 %}
-                <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a>
-               {% endif %}
-               <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product' object.slug %}">View Product</a>
-                <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-create' %}"
-                   role="button">Add New Product
-                </a>
-               <a class="btn btn-outline-yellow" href="{% url 'sellers:seller_home' %}">Dashboard</a>
+	<!-- Shop -->
 
-            </div>
-        </div>
+	<div class="shop">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
 
-        <div class="row">
-            <div class="col-lg-10">
-                {% for image in product_image %}
-                    <div class="col-lg-4 col-md-6 mb-4 mt-4 product-snippet">
-                        <div class="card card-height">
-                            <!--Card image-->
-                            <div class="view overlay zoom">
-                               <a href="{% url 'me2ushop:product_image_update' image.id%}">
-                                   <img src="{{ image.image.medium.url }}" class="card-img-top img-fluid"/></a>
-                            </div>
-                            {% if image.in_display %}
-                            <p class="outline-green">Currently Displayed</p>
-                            {% endif %}
-                            <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_update' image.id%}">Update</a>
-                            <a class="btn btn-outline-danger" href="{% url 'me2ushop:product_image_delete' image.id %}">Delete</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
+					<!-- Shop Content -->
+					<div class="shop_content">
+						<div class="shop_bar clearfix">
+							<div class="shop_product_count"><span>{{ product_image.count }}</span> {{ object.title }} Images</div>
+							<div class="shop_sorting">
+								<span>Manage Page:</span>
+								<ul>
+									<li>
+										<span class="sorting_text"><i class="fas fa-chevron-down"></i></span>
+										<ul>
+											<li class="shop_sorting_button"><a href="{% url 'me2ushop:product' object.slug %}">View Product</a></li>
+											<li class="shop_sorting_button" data-isotope-option='{ "sortBy": "name" }'>
+												<a href="{% url 'me2ushop:product-create' %}">Add New Product</a>
+											</li>
+											<li class="shop_sorting_button" data-isotope-option='{ "sortBy": "price" }'>
+												<a href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="product_grid">
+							<div class="product_grid_border"></div>
+
+							<!-- Product Item -->
+
+
+                            {% for image in product_image %}
+
+							<div class="product_item is_new">
+								<div class="product_border"></div>
+								<div class="product_image d-flex flex-column align-items-center justify-content-center"><a href="{{object.get_absolute_url}}"><img src="{{ image.image.medium.url }}" alt=""></a></div>
+								<div class="product_content">
+                                    <div class="product_price"><a href="{% url 'me2ushop:product_image_update' image.id%}">update</a></div>
+                                    <div class="product_price"><a href="{% url 'me2ushop:product_image_delete' image.id%}">Delete</a></div>
+                                    {% if image.in_display %}
+
+									<div class="product_name"><div><a href="#" tabindex="0">Currently Displayed</a></div></div>
+
+                                    {% endif %}
+								</div>
+							</div>
+                            {% endfor %}
+
+						</div>
+
+						<!-- Shop Page Navigation -->
+
+						<div class="shop_page_nav d-flex flex-row">
+							<div class="page_prev d-flex flex-column align-items-center justify-content-center"><i class="fas fa-chevron-left"></i></div>
+							<ul class="page_nav d-flex flex-row">
+								<li><a href="#">1</a></li>
+								<li><a href="#">2</a></li>
+								<li><a href="#">3</a></li>
+								<li><a href="#">...</a></li>
+								<li><a href="#">21</a></li>
+							</ul>
+							<div class="page_next d-flex flex-column align-items-center justify-content-center"><i class="fas fa-chevron-right"></i></div>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Recently Viewed -->
+    {% if recently_viewed %}
+	<div class="viewed">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class="viewed_title_container">
+						<h3 class="viewed_title">Recently Viewed</h3>
+						<div class="viewed_nav_container">
+							<div class="viewed_nav viewed_prev"><i class="fas fa-chevron-left"></i></div>
+							<div class="viewed_nav viewed_next"><i class="fas fa-chevron-right"></i></div>
+						</div>
+					</div>
+
+					<div class="viewed_slider_container">
+
+						<!-- Recently Viewed Slider -->
+
+						<div class="owl-carousel owl-theme viewed_slider">
+
+							<!-- Recently Viewed Item -->
+							{% for product in recently_viewed %}
+							{% if product.discount_price %}
+							<div class="owl-item">
+								<div class="viewed_item discount d-flex flex-column align-items-center justify-content-center text-center">
+									{% for image in product.get_images %}
+									{% if image.in_display %}
+									<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
+									{% endif %}
+									{% endfor %}
+									<div class="viewed_content text-center">
+										<div class="viewed_price">${{ product.discount_price }}<span>${{ product.price }}</span></div>
+										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+									</div>
+									<ul class="item_marks">
+										<li class="item_mark item_discount">-{{ product.total_discount }}%</li>
+										<li class="item_mark item_new">new</li>
+									</ul>
+								</div>
+							</div>
+							{% else %}
+
+							<!-- Recently Viewed Item -->
+							<div class="owl-item">
+								<div class="viewed_item d-flex flex-column align-items-center justify-content-center text-center">
+									{% for image in product.get_images %}
+									{% if image.in_display %}
+									<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
+									{% endif %}
+									{% endfor %}
+									<div class="viewed_content text-center">
+										<div class="viewed_price">{{ product.price }}</div>
+										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+									</div>
+									<ul class="item_marks">
+										<li class="item_mark item_new">new</li>
+									</ul>
+								</div>
+							</div>
+							{% endif %}
+							{% endfor %}
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+
 </div>
-
-</div>
-
 
 {% endblock %}
 
@@ -72,9 +171,6 @@
 <script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 <script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
 <script src="{{ STATIC_URL }}js/shop_custom.js"></script>
-
-<!-- contact styles-->
-<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
 
 {% endblock %}
 </body>

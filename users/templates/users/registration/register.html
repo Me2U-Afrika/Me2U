@@ -2,9 +2,6 @@
 {% load mptt_tags %}
 {% load crispy_forms_tags %}
 
-
-
-
 {% block headblock %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
@@ -70,28 +67,12 @@
             {% include "includes/field.html" with field=form.password1 %}
             {% include "includes/field.html" with field=form.password2 %}
 
-<!--      <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required>-->
-<!--      <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>-->
-<!--      <input type="password" name="password1" id="inputPassword1" class="form-control" placeholder="Password" required>-->
-<!--      <input type="password" name="password2" id="inputPassword2" class="form-control" placeholder="Confirm password" required>-->
-<!--      {% for field in form %}-->
-<!--        {% for error in field.errors %}-->
-<!--          <p style="color: red">{{ error }}</p>-->
-<!--        {% endfor %}-->
-<!--      {% endfor %}-->
-
-<!--      {% if form.non_field_errors %}-->
-<!--        <div style="color: red">-->
-<!--          <p>{{form.non_field_errors}}</p>-->
-<!--        </div>-->
-<!--        {% endif %}-->
-
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
                 <div class="border-top pt-3">
-                <small class="text-muted">
-                    Already Have An Account? <a class="ml-2" href="{% url 'login' %}">Login In</a>
-                </small>
-            </div>
+                    <small class="text-muted">
+                        Already Have An Account? <a class="ml-2" href="{% url 'login' %}">LogIn</a>
+                    </small>
+                </div>
 
 </form>
 </div>

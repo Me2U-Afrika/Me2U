@@ -1,10 +1,12 @@
 {% extends 'me2ushop/base_template.html' %}
+{% load catalog_filters %}
 {% load mptt_tags %}
 
 {% block headblock %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
 
 {% endblock %}
 
@@ -20,7 +22,7 @@
 		<div class="home_background parallax-window" data-parallax="scroll" data-image-src="images/shop_background.jpg"></div>
 		<div class="home_overlay"></div>
 		<div class="home_content d-flex flex-column align-items-center justify-content-center">
-			<h2 class="home_title">{{object.category_name}}</h2>
+			<h2 class="home_title">{{ object.category_name }}</h2>
 		</div>
 	</div>
 
@@ -76,6 +78,7 @@
 
 					</div>
 
+
 				</div>
 
 				<div class="col-lg-9">
@@ -84,7 +87,7 @@
 
 					<div class="shop_content">
 						<div class="shop_bar clearfix">
-							<div class="shop_product_count"><span>186</span> products found</div>
+							<div class="shop_product_count"><span>{{ object.product_set.all.count}}</span> products found</div>
 							<div class="shop_sorting">
 								<span>Sort by:</span>
 								<ul>
@@ -104,306 +107,75 @@
 							<div class="product_grid_border"></div>
 
 							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/new_5.jpg" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$225</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Philips BT6900A</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
+							{% for product in object.product_set.all %}
+							{% if product.discount_price %}
 							<!-- Product Item -->
 							<div class="product_item discount">
 								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/featured_1.png" alt=""></div>
+								{% for image in product.get_images %}
+								{% if image.in_display %}
+
+									<div class="product_image d-flex flex-column align-items-center justify-content-center">
+										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+									</div>
+
+								{% endif %}
+								{% endfor %}
 								<div class="product_content">
-									<div class="product_price">$225<span>$300</span></div>
-									<div class="product_name"><div><a href="#" tabindex="0">Huawei MediaPad...</a></div></div>
+									<div class="product_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+									<div class="product_name"><div><a href="#" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
+								<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+									<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+									{% for wish in wish_list %}
+									{% if wish.product == product %}
+									<div class="product_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+									{% endif %}
+									{% endfor %}
+
+								</a>
 								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
+									<li class="product_mark product_discount">-{{product.total_discount}}%</li>
 									<li class="product_mark product_new">new</li>
 								</ul>
 							</div>
-
+							{% else %}
 							<!-- Product Item -->
 							<div class="product_item">
 								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/featured_2.png" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$379</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Apple iPod shuffle</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
+								{% for image in product.get_images %}
+								{% if image.in_display %}
 
-							<!-- Product Item -->
-							<div class="product_item">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/featured_3.png" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$225</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Sony MDRZX310W</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
+									<div class="product_image d-flex flex-column align-items-center justify-content-center">
+										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+									</div>
 
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/featured_4.png" alt=""></div>
+								{% endif %}
+								{% endfor %}
 								<div class="product_content">
-									<div class="product_price">$379</div>
-									<div class="product_name"><div><a href="#" tabindex="0">LUNA Smartphone</a></div></div>
+									<div class="product_price"><a href="{{ product.get_absolute_url }}">{{ product.price|currency }}</a></div>
+									<div class="product_name"><div><a href="{{ product.get_absolute_url }}" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
+									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+									<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/shop_1.jpg" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$379</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Canon IXUS 175...</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
+									{% for wish in wish_list %}
+									{% if wish.product == product %}
+									<div class="product_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+									{% endif %}
+									{% endfor %}
 
-							<!-- Product Item -->
-							<div class="product_item">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/featured_5.png" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$379<span>$300</span></div>
-									<div class="product_name"><div><a href="#" tabindex="0">Canon STM Kit...</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
+								</a>
 								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
 									<li class="product_mark product_new">new</li>
 								</ul>
 							</div>
-
-							<!-- Product Item -->
-							<div class="product_item">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/featured_6.png" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$225<span>$300</span></div>
-									<div class="product_name"><div><a href="#" tabindex="0">Samsung J330F</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/featured_7.png" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$225</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Lenovo IdeaPad</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/featured_8.png" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$379</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Digitus EDNET...</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/new_1.jpg" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$225</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Astro M2 Black</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/new_2.jpg" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$225</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Transcend T.Sonic</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/new_3.jpg" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$225</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Xiaomi Band 2...</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/new_4.jpg" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$379</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Rapoo T8 White</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item discount">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/featured_1.png" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$225<span>$300</span></div>
-									<div class="product_name"><div><a href="#" tabindex="0">Huawei MediaPad...</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/new_6.jpg" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$379</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Nokia 3310 (2017)</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/new_7.jpg" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$225</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Rapoo 7100p Gray</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/new_8.jpg" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$379</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Canon EF</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/shop_2.jpg" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$225</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Gembird SPK-103</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
-
-							<!-- Product Item -->
-							<div class="product_item is_new">
-								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/featured_5.png" alt=""></div>
-								<div class="product_content">
-									<div class="product_price">$379</div>
-									<div class="product_name"><div><a href="#" tabindex="0">Canon STM Kit...</a></div></div>
-								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
-								<ul class="product_marks">
-									<li class="product_mark product_discount">-25%</li>
-									<li class="product_mark product_new">new</li>
-								</ul>
-							</div>
+							{% endif %}
+							{% endfor %}
 
 						</div>
+
 
 						<!-- Shop Page Navigation -->
 
@@ -425,6 +197,78 @@
 			</div>
 		</div>
 	</div>
+
+
+
+<!-- Recommended from previous search -->
+    {% if search_recs %}
+	<div class="viewed">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class="viewed_title_container">
+						<h3 class="viewed_title">Recommended for you</h3>
+						<div class="viewed_nav_container">
+							<div class="viewed_nav viewed_prev"><i class="fas fa-chevron-left"></i></div>
+							<div class="viewed_nav viewed_next"><i class="fas fa-chevron-right"></i></div>
+						</div>
+					</div>
+
+					<div class="viewed_slider_container">
+
+						<!-- Recently Viewed Slider -->
+
+						<div class="owl-carousel owl-theme viewed_slider">
+
+							<!-- Recently Viewed Item -->
+							{% for product in search_recored %}
+							{% if product.discount_price %}
+							<div class="owl-item">
+								<div class="viewed_item discount d-flex flex-column align-items-center justify-content-center text-center">
+									{% for image in product.get_images %}
+									{% if image.in_display %}
+									<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
+									{% endif %}
+									{% endfor %}
+									<div class="viewed_content text-center">
+										<div class="viewed_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+									</div>
+									<ul class="item_marks">
+										<li class="item_mark item_discount">-{{ product.total_discount }}%</li>
+										<li class="item_mark item_new">new</li>
+									</ul>
+								</div>
+							</div>
+							{% else %}
+
+							<!-- Recently Viewed Item -->
+							<div class="owl-item">
+								<div class="viewed_item d-flex flex-column align-items-center justify-content-center text-center">
+									{% for image in product.get_images %}
+									{% if image.in_display %}
+									<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
+									{% endif %}
+									{% endfor %}
+									<div class="viewed_content text-center">
+										<div class="viewed_price">{{ product.price|currency }}</div>
+										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+									</div>
+									<ul class="item_marks">
+										<li class="item_mark item_new">new</li>
+									</ul>
+								</div>
+							</div>
+							{% endif %}
+							{% endfor %}
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endif %}
 	<!-- Recently Viewed -->
     {% if recently_viewed %}
 	<div class="viewed">
@@ -456,7 +300,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">${{ product.discount_price }}<span>${{ product.price }}</span></div>
+										<div class="viewed_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -476,7 +320,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ product.price }}</div>
+										<div class="viewed_price">{{ product.price|currency }}</div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -494,6 +338,7 @@
 		</div>
 	</div>
 	{% endif %}
+
 
 </div>
 

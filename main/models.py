@@ -6,6 +6,18 @@ from django.core.validators import MinValueValidator
 
 from me2ushop.models import Product
 
+
+class ContactUs(models.Model):
+    name = models.CharField(max_length=50)
+    phone = models.CharField(max_length=30)
+    email = models.EmailField
+    message = models.TextField(max_length=600, help_text='Max length is 600 characters. Make your inquiry brief and '
+                                                         'to the point')
+
+    def __str__(self):
+        return str(self.name)
+
+
 AINA_YA_NDAI = (
     ('BI', 'Baiskeli'),
     ('MK', 'MotorBike'),
@@ -38,7 +50,6 @@ class MaDere(models.Model):
 
     def __str__(self):
         return self.name
-
 
 # Same as the Order class
 # class Basket(models.Model):

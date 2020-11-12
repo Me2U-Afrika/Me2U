@@ -1,59 +1,129 @@
-{% extends "navigation.html" %}
+{% extends 'me2ushop/base_template.html' %}
+{% load crispy_forms_tags %}
 
-{% block content %}
-<div class="container mt-5">
-<h1>List of your addresses: {{ object_list.count }}</h1>
-{% for address in object_list %}
-    {% if address.address_type == 'B' %}
-        <h3> Billing Address</h3>
-        <hr>
-    {% else %}
-            <h3> Shipping Address</h3>
-        <hr>
-    {% endif %}
-    <p>
-        Name : {{ address.name }}<br>
-        Email : {{ address.email }}<br>
-        Phone : {{ address.phone }}<br>
-        Street Address : {{ address.street_address }}<br>
-        Apartment/suite/building : {{ address.apartment_address }}<br>
-        Country : {{ address.get_country_display }}<br>
-        City : {{ address.city }}<br>
-        Address Type : {{ address.get_address_type_display }} <br>
-        Default {{ address.get_address_type_display }} address : {{ address.default }}<br>
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
 
-    </p>
-    <p>
-        <a href="{% url 'users:address_update' address.id %}">Update address</a>
-    </p>
-    <p>
-        <a href="{% url 'users:address_delete' address.id %}">Delete address</a>
-    </p>
-    {% if not forloop.last %}
-    <hr>
-    {% endif %}
-    {% endfor %}
+<!--contact styles-->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
 
-    {% if object_list.count < 3   %}
-        {% for address in object_list %}
-                {% if address.address_type == 'B' %}
-                    <p>
-                         <a href="{% url 'users:address_create' %}">Add a Shipping Address</a>
-                    </p>
-                {% else %}
-                 <p>
-                     <a href="{% url 'users:address_create' %}">Add a Billing Address</a>
-                </p>
-                {% endif %}
-        {% endfor %}
-        {% endif %}
+{% endblock %}
+
+{% block header_main %}
+{% endblock header_main %}
 
 
-    {% if object_list.count == 0 %}
-             <p>
-                 <a href="{% url 'users:address_create' %}">Add a New Address</a>
-             </p>
+<body>
 
-    {% endif %}
-    </div>
-    {% endblock content %}
+{% block site_wrapper %}
+
+<div class="super_container">
+
+	<!-- Cart -->
+	<div class="cart_section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-5 offset-lg-1">
+					<div class="cart_container mt-3">
+                        <div class="cart_title"><h3>List of your addresses:{{ object_list.count }}</h3></div>
+                            <div class="container mt-5">
+                                {% for address in object_list %}
+                                    {% if address.address_type == 'B' %}
+                                        <h3> Billing Address</h3>
+                                        <p>
+                                            Name : {{ address.name }}<br>
+                                            Email : {{ address.email }}<br>
+                                            Phone : {{ address.phone }}<br>
+                                            Street Address : {{ address.street_address }}<br>
+                                            Apartment/suite/building : {{ address.apartment_address }}<br>
+                                            Country : {{ address.get_country_display }}<br>
+                                            City : {{ address.city }}<br>
+                                            Address Type : {{ address.get_address_type_display }} <br>
+                                            Default {{ address.get_address_type_display }} address : {{ address.default }}<br>
+
+                                        </p>
+                                        <p>
+                                            <a href="{% url 'users:address_update' address.id %}">Update address</a>
+                                        </p>
+                                        <p>
+                                            <a href="{% url 'users:address_delete' address.id %}">Delete address</a>
+                                        </p>
+                                        {% if not forloop.last %}
+                                        <hr>
+                                        {% endif %}
+                                        {% endif %}
+                                        {% endfor %}
+
+                                    {% if object_list.count < 3   %}
+
+                                                 <p>
+                                                     <a href="{% url 'users:address_create' %}">Add An Address</a>
+                                                </p>
+
+                                        {% endif %}
+                                    </div>
+					</div>
+				</div>
+				<div class="col-lg-5 offset-lg-1">
+					<div class="cart_container">
+                        <div class="cart_title"></div>
+                            <div class="container mt-5">
+                                {% for address in object_list %}
+                                    {% if address.address_type == 'S' %}
+                                        <h3> Shipping Address</h3>
+                                        <p>
+                                            Name : {{ address.name }}<br>
+                                            Email : {{ address.email }}<br>
+                                            Phone : {{ address.phone }}<br>
+                                            Street Address : {{ address.street_address }}<br>
+                                            Apartment/suite/building : {{ address.apartment_address }}<br>
+                                            Country : {{ address.get_country_display }}<br>
+                                            City : {{ address.city }}<br>
+                                            Address Type : {{ address.get_address_type_display }} <br>
+                                            Default {{ address.get_address_type_display }} address : {{ address.default }}<br>
+
+                                        </p>
+                                        <p>
+                                            <a href="{% url 'users:address_update' address.id %}">Update address</a>
+                                        </p>
+                                        <p>
+                                            <a href="{% url 'users:address_delete' address.id %}">Delete address</a>
+                                        </p>
+                                        {% if not forloop.last %}
+                                        <hr>
+                                        {% endif %}
+                                        {% endif %}
+                                        {% endfor %}
+
+                                    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+<!-- contact styles-->
+<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
+
+{% endblock %}
+</body>
+
+
+

@@ -124,7 +124,6 @@ class DispatchersProductAdmin(ProductAdmin):
                        'is_featured',
                        'additional_information',
                        'category_choice',
-                       'label',
                        'discount_price',
                        "price", 'made_in_africa', 'created_at', 'updated_at', 'meta_keywords',
                        'meta_description',
@@ -169,7 +168,7 @@ class SellersProductAdmin(ProductAdmin):
                     'meta_description',
                     ]
     list_editable = ('stock',)
-    readonly_fields = ("is_bestseller", "is_featured", 'in_stock')
+    readonly_fields = ("brand_name", "is_bestseller", "is_featured", "is_active", "is_bestrated", 'in_stock')
     prepopulated_fields = {'slug': ('title',)}
     autocomplete_fields = ()
 
@@ -180,8 +179,9 @@ class SellersProductAdmin(ProductAdmin):
         return qs.filter(brand_name=brand)
 
     def save_model(self, request, obj, form, change):
-        # if not obj.seller:
-        #     obj.seller = request.user
+        brand = Brand.objects.get(user=request.user)
+        if not obj.brand_name:
+            obj.brand_name = brand
         if obj.stock < 1:
             obj.in_stock = False
             obj.is_active = False
@@ -191,8 +191,9 @@ class SellersProductAdmin(ProductAdmin):
 
 
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ('title', 'user',)
+    list_display = ('title', 'user', 'is_featured')
     search_fields = ('title',)
+    list_editable = ('is_featured',)
 
 
 class ProductImageAdmin(admin.ModelAdmin):
@@ -335,12 +336,22 @@ class CentralOfficeOrderAdmin(admin.ModelAdmin):
 class SellersOrderAdmin(admin.ModelAdmin):
     list_display = (
         'user',
+        'created',
+        'modified',
         'order_date',
         'status',
         'being_delivered',
         'received',
     )
-    list_editable = ['being_delivered', 'received']
+    # list_editable = ['being_delivered', 'received']
+    readonly_fields = (
+        'user',
+        'order_date',
+        'items',
+        'status',
+        'being_delivered',
+        'received',
+    )
 
     list_filter = ("status", "shipping_country", "order_date",)
     fieldsets = (
@@ -370,8 +381,51 @@ class SellersOrderAdmin(admin.ModelAdmin):
 
     # Dispatchers are only allowed to see order that# are ready to be shipped
     def get_queryset(self, request):
+        from utils import context_processors
         qs = super().get_queryset(request)
-        return qs.filter(user=request.user)
+        brand = context_processors.me2u(request)['brand']
+        print('qs:', qs.filter(items__item__brand_name=brand[0]))
+        print('brand:', brand)
+
+        if brand:
+            return qs.filter(items__item__brand_name=brand[0])
+
+
+
+class SellersOrderItemAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'item',
+        'order_received',
+        'status',
+        'created',
+        'modified',
+        'ordered',
+        'delivered_by'
+    )
+    # list_editable = ['being_delivered', 'received']
+    list_display_links = ('item',)
+    readonly_fields = (
+        'user',
+        'item',
+        'status',
+        'ordered',
+        'delivered_by',
+    )
+
+    list_filter = ("status", "ordered", "item",)
+    list_editable = ('order_received',)
+
+    # Dispatchers are only allowed to see order that# are ready to be shipped
+    def get_queryset(self, request):
+        from utils import context_processors
+        qs = super().get_queryset(request)
+        brand = context_processors.me2u(request)['brand']
+        print('qs:', qs.filter(items__item__brand_name=brand[0]))
+        print('brand:', brand)
+
+        if brand:
+            return qs.filter(items__item__brand_name=brand[0])
 
 
 class DispatchersOrderAdmin(admin.ModelAdmin):
@@ -649,6 +703,8 @@ class SellersAdminSite(ColoredAdminSite):
         return request.user.is_active and request.user.is_seller
 
 
+
+
 main_admin = OwnersAdminSite()
 
 admin.site.register(Product, ProductAdmin)
@@ -687,3 +743,4 @@ dispatchers_admin.register(Order, DispatchersOrderAdmin)
 sellers_admin = SellersAdminSite("sellers-admin")
 sellers_admin.register(Product, SellersProductAdmin)
 sellers_admin.register(Order, SellersOrderAdmin)
+sellers_admin.register(OrderItem, SellersOrderItemAdmin)

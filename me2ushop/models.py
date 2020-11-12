@@ -82,12 +82,13 @@ class Brand(CreationModificationDateMixin):
     title = models.CharField(max_length=100, unique=True, help_text='Unique title to identify Your store and your '
                                                                     'product line')
     active = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False, blank=True, null=True)
     image = StdImageField(upload_to='images/brands/brand_background', blank=True, null=True,
                           help_text='wallpaper for your store.Leave blank if you don\'t have one',
                           default='images/brands/brand_background/default.jpg')
     logo = StdImageField(upload_to='images/brands/brand_logo', blank=True, null=True, help_text='logo for your store, '
                                                                                                 'Leave blank if you '
-                                                                                                'don\'t have one',)
+                                                                                                'don\'t have one', )
 
     def __str__(self):
         return str(self.title)
@@ -100,7 +101,6 @@ class Product(models.Model):
                             help_text='Unique value for product page URL, created from the product title.')
     brand_name = models.ForeignKey('Brand', on_delete=models.SET_NULL, blank=True, null=True,
                                    help_text='Your store name')
-    image_url = models.CharField(max_length=250, null=True, blank=True)
     stock = models.IntegerField(default=1)
     sku = models.CharField(max_length=120)
     in_stock = models.BooleanField(default=True, blank=True, null=True)
@@ -111,7 +111,6 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True)
     is_bestseller = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
-    is_on_offer = models.BooleanField(default=False)
     is_bestrated = models.BooleanField(default=False)
 
     description = models.TextField()
@@ -132,20 +131,7 @@ class Product(models.Model):
     category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
                                        help_text='Choose the main category for the product'
                                        )
-    label = models.CharField(choices=LABEL_CHOICES,
-                             max_length=1,
-                             blank=True,
-                             null=True,
-                             help_text='tags the product NEW upon upload for the next 24 hours'
-                                       'primary blue, '
-                                       'danger red, '
-                                       'secondary purple')
-    # product_categories = models.ManyToManyField(Category, blank=True,
-    #                                             help_text='input the category above and any other where the '
-    #                                                       'product can be found in.')
-    # product_categories = models.ManyToManyField(Category,
-    #
-    #                                             help_text='input the subcategory.')
+
     product_categories = models.ManyToManyField(Department,
 
                                                 help_text='input the subcategory.')
@@ -305,10 +291,11 @@ class DisplayImageManager(models.Manager):
 
 
 class ProductImage(CreationModificationDateMixin):
-    item = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
-    image = StdImageField(upload_to='images/products', blank=True, null=True, variations={
+    item = models.ForeignKey(Product, on_delete=models.CASCADE)
+    image = StdImageField(upload_to='images/products', variations={
         'thumbnail': (170, 115, True),
         'medium': (365, 365),
+        'deals_size': (365, 365, True),
         'large': (415, 470, True),
 
     }, delete_orphans=True)
@@ -374,7 +361,7 @@ class WishList(CreationModificationDateMixin):
         return str(self.product.title)
 
 
-class OrderItem(models.Model):
+class OrderItem(CreationModificationDateMixin):
     # from stats.models import ProductView
     NEW = 10
     PROCESSING = 20
@@ -382,6 +369,7 @@ class OrderItem(models.Model):
     CANCELLED = 40
     IN_TRANSIT = 45
     DELIVERED = 50
+
     STATUSES = ((NEW, "New"),
                 (PROCESSING, "Processing"),
                 (SENT, "Sent"),
@@ -395,6 +383,7 @@ class OrderItem(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     date_ordered = models.DateTimeField(auto_now=True)
     status = models.IntegerField(choices=STATUSES, default=NEW)
+    order_received = models.BooleanField(default=False)
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Product, on_delete=models.PROTECT, unique=False, blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
@@ -449,7 +438,7 @@ class OrderItem(models.Model):
         return ",".join(pieces)
 
 
-class Order(models.Model):
+class Order(CreationModificationDateMixin):
     NEW = 10
     PAID = 20
     DONE = 30
@@ -489,7 +478,7 @@ class Order(models.Model):
                                        on_delete=models.SET_NULL)
 
     class Meta:
-        ordering = ['-order_date']
+        ordering = ['-modified']
 
     # def __str__(self):
     #     return self.user.email
@@ -630,14 +619,11 @@ class RequestRefund(models.Model):
 
     def __str__(self):
         return f"{self.pk}"
-# class OrderAnonymous(OrderInfo):
-#     from stats.models import ProductView
-#     cart_id = models.ForeignKey(ProductView, max_length=70, blank=True, null=True, on_delete=models.CASCADE)
-#     billing_address = models.ForeignKey('Address', related_name='billing_address_anonymous', on_delete=models.SET_NULL,
-#                                         blank=True, null=True)
-#     shipping_address = models.ForeignKey('Address', related_name='shipping_address_anonymous',
-#                                          on_delete=models.SET_NULL,
-#                                          blank=True, null=True)
+# class OrderAnonymous(OrderInfo): from stats.models import ProductView cart_id = models.ForeignKey(ProductView,
+# max_length=70, blank=True, null=True, on_delete=models.CASCADE) billing_address = models.ForeignKey('Address',
+# related_name='billing_address_anonymous', on_delete=models.SET_NULL, blank=True, null=True) shipping_address =
+# models.ForeignKey('Address', related_name='shipping_address_anonymous', on_delete=models.SET_NULL, blank=True,
+# null=True)
 #
 #     class Meta:
 #         ordering = ['-order_date']

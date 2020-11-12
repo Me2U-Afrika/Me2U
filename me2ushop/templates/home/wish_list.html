@@ -6,7 +6,9 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+<style>
 
+</style>
 
 {% endblock %}
 
@@ -86,7 +88,7 @@
 
 					<div class="shop_content">
 						<div class="shop_bar clearfix">
-							<div class="shop_product_count"><span>{{ wish_list.count }}</span> products found</div>
+							<div class="shop_product_count"><span>{{ wish_list.count }}</span> product{{ wish_list.count|pluralize:"s" }} found</div>
 							<div class="shop_sorting">
 								<span>Sort by:</span>
 								<ul>
@@ -111,11 +113,11 @@
 							<!-- Product Item -->
 							<div class="product_item discount">
 								<div class="product_border"></div>
-								{% for image in product.product.productimage_set.all %}
+								{% for image in product.product.get_images %}
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+										<a href="{{ product.product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
 									</div>
 
 								{% endif %}
@@ -124,7 +126,9 @@
 									<div class="product_price">{{ product.product.discount_price|currency }}<span>{{ product.product.price|currency }}</span></div>
 									<div class="product_name"><div><a href="#" tabindex="0">{{ product.product.title|truncatechars:19}}</a></div></div>
 								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
+								<a href="{% url 'me2ushop:add_wishlist' product.product.slug %}" target="_blank">
+									<div class="arrivals_single product_fav active" id="{{ product.product.slug}}"><i class="fas fa-heart"></i></div>
+								</a>
 								<ul class="product_marks">
 									<li class="product_mark product_discount">-{{product.product.total_discount}}%</li>
 									<li class="product_mark product_new">new</li>
@@ -134,20 +138,23 @@
 							<!-- Product Item -->
 							<div class="product_item">
 								<div class="product_border"></div>
-								{% for image in product.product.productimage_set.all %}
+								{% for image in product.product.get_images %}
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+										<a href="{{ product.product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
 									</div>
 
 								{% endif %}
 								{% endfor %}
 								<div class="product_content">
-									<div class="product_price">{{ product.product.price|currency }}</div>
-									<div class="product_name"><div><a href="#" tabindex="0">{{ product.product.title|truncatechars:19}}</a></div></div>
+									<div class="product_price"><a href="{{ product.product.get_absolute_url }}">{{ product.product.price|currency }}</a></div>
+									<div class="product_name"><div><a href="{{ product.product.get_absolute_url }}" tabindex="0">{{ product.product.title|truncatechars:19}}</a></div></div>
 								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
+									<a href="{% url 'me2ushop:add_wishlist' product.product.slug %}" target="_blank">
+										<div class="arrivals_single product_fav active" id="{{ product.product.slug}}"><i class="fas fa-heart"></i></div>
+
+								</a>
 								<ul class="product_marks">
 									<li class="product_mark product_new">new</li>
 								</ul>
@@ -212,7 +219,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">${{ product.discount_price }}<span>{{ product.price|currency }}</span></div>
+										<div class="viewed_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -281,7 +288,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">${{ product.discount_price }}<span>${{ product.price }}</span></div>
+										<div class="viewed_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -301,7 +308,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ product.price }}</div>
+										<div class="viewed_price">{{ product.price|currency }}</div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">

@@ -1,13 +1,15 @@
 from django.core.mail import send_mail
 from django import forms
 import logging
+from .models import ContactUs
 
 logger = logging.getLogger(__name__)
 
 
-class ContactForm(forms.Form):
-    name = forms.CharField(label='Your Name', max_length=100)
-    message = forms.CharField(max_length=600, widget=forms.Textarea)
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = ContactUs
+        fields = '__all__'
 
     def send_mail(self):
         logger.info('Send Email To Customer Service')

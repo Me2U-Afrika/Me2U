@@ -1,66 +1,49 @@
-{% extends 'navigation.html' %}
+{% extends 'me2ushop/base_template.html' %}
+{% load mptt_tags %}
 {% load crispy_forms_tags %}
 
-{% block content %}
-<style>
-    .mg-t{
-    margin-top:100px
-    }
-    fieldset.my_account{
-        padding:10px;
-        }
-    fieldset.my_account legend{
-        font-weight:bold;
-        }
-    fieldset.my_account ul{
-         list-style:none;
-         }
-    fieldset.my_account ul li{
-        margin-bottom:5px;
-        }
-</style>
-<!--    <h1>{{ user.username }}</h1>-->
-<div class="container mg-t">
-    <div class="row">
-        <div class="col-lg-6">
 
 
-            <div class="media">
-                <img src="{{ user.profile.image.thumbnail.url }}" class="card-img-top rounded-circle account-img" style="height:120px; width:160px">
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/seller_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
+{% endblock %}
+
+{% block navbar %}
+        {% include 'users/profile_navbar.html' %}
+  {% endblock %}
+
+
+<body>
+{% block site_wrapper %}
+
+<div class="super_container">
+	<!-- Home -->
+	<div class="home">
+
+		<div class="home_background parallax-window" data-parallax="scroll" data-image-src=""></div>
+
+		<div class="home_overlay"></div>
+		<div class="home_content d-flex flex-column align-items-center justify-content-center">
+
+            <div class="logo_container">
+                <div class="logo mr-0 "><img src="{{ user.profile.image.thumbnail.url }}" class="card-img-top rounded-circle account-img" style="height:130px; width:150px; background-size: contain;"></div>
             </div>
-            <div class="media-body">
-                <strong class="account-heading">Welcome {{ name|capfirst }}!</strong>
-                <br/>
-                <p class="text-secondary">Email: {{ user.email }}</p>
-                <br>
-                {% if profile_user.phone %}
+
+			<h2 class="home_title">Welcome {{ name|capfirst }}!</h2>
+            <p class="text-secondary">Email: {{ user.email }}</p>
+            {% if profile_user.phone %}
                     <p class="text-secondary">Phone Number: {{ user.profile.phone }}</p>
-                {% endif %}
+            {% endif %}
 
+		</div>
+	</div>
 
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <section class="text-right">
-                <fieldset class="my_account">
-                    <legend>Account Settings</legend>
-                    <ul>
-                        <li><a href="{% url 'users:password-change' %}">Change Password</a></li>
-                        <li><a href="{% url 'users:personal-info' %}">Edit Personal information</a></li>
-                        <li><a href="{% url 'users:address_list' %}">Edit Billing/Shipping Information</a></li>
-                    </ul>
-                </fieldset>
-                <div class="cb">
-                    <br>
-                    <br>
-                </div>
-            </section>
-        </div>
-    </div>
-    <div class="cb">
-        <br><br>
-    </div>
-    <h3>Order History</h3>
+    {% include 'sellers/status.html' %}
+
     <div class="col-md-6 mb-4">
        <form class="navbar-form" role="search" action="">
 
@@ -72,33 +55,78 @@
           </div>
 
         </form>
-        </div>
-
-        <div class="table-responsive tb">
-              <table class="table" id="order_id">
-                  <thead>
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+            <h5>Stores</h5>
+            <hr>
+            <div class="card card-body">
+                <a class="btn btn-primary btn-sm btn-block" href=""></a>
+                <table class="table table-sm">
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Order #ID</th>
-                      <th scope="col">Order Date</th>
-                      <th scope="col">More Details </th>
+                        <th>#</th>
+                        <th>Store #ID</th>
+                        <th>Last Order Date</th>
+                        <th>status</th>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {% for order in orders %}
-                        <tr>
-                          <th scope="row">{{ forloop.counter }}</th>
-                            <td> order #{{ order.id }} </td>
-                            <td> {{ order.order_date|date }} </td>
-                            <td><a href="{{ order.get_absolute_url }}">View Order</a></td>
-                        </tr>
+                        {% for order in orders %}
+
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>order #{{ order.id }}</td>
+                        <td>{{ order.order_date|date }}</td>
+                        <td><a href="{{ order.get_absolute_url }}" target="_blank">View Order</a></td>
+                    </tr>
                     {% empty %}
                         You have no past orders.
                     {% endfor %}
-              </tbody>
-            </table>
-          </div>
+                </table>
+            </div>
+        </div>
 
-        <br/>
+
+        <div class="col-md-7">
+        <h5>My recent Orders</h5>
+        <hr>
+        <div class="card card-body">
+            <a class="btn btn-primary btn-sm btn-block" href="">Request Refund</a>
+            <table class="table table-sm">
+                <tr>
+                    <th>#</th>
+                    <th>Order #ID</th>
+                    <th>Order Date</th>
+                    <th>status</th>
+                </tr>
+                {% for order in orders %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>order #{{ order.id }}</td>
+                    <td>{{ order.order_date|date }}</td>
+                    <td><a href="{{ order.get_absolute_url }}" target="_blank">View Order</a></td>
+                </tr>
+                {% empty %}
+                    You have no past orders.
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    </div>
+
 </div>
+
 {% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+{% endblock %}
+</body>
+
+
+
+

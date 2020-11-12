@@ -35,6 +35,7 @@ class ContactUsView(FormView):
 
     def form_valid(self, form):
         form.send_mail()
+        form.save()
         messages.info(self.request, 'Your Message has been sent successfully! Thank you!')
         return super().form_valid(form)
 

@@ -171,7 +171,7 @@ class EmailConfirmed(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = StdImageField(upload_to='images/profile_pics', blank=True, null=True, default='default.svg', variations={
-        'thumbnail': (300, 300),
+        'thumbnail': (200, 200),
     }, delete_orphans=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
 

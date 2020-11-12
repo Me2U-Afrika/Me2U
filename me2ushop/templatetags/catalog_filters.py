@@ -29,34 +29,6 @@ def product_list(products, header_text):
     }
 
 
-@register.inclusion_tag("tags/category_list.html")
-def category_list(request_path):
-    active_departments = Department.active.all()
-    return {
-        'departments': active_departments,
-        'request_path': request_path
-    }
-
-
-@register.inclusion_tag("tags/department_list.html")
-def department_list(request_path):
-    active_departments = Department.objects.all().filter(is_active=True)
-    return {
-        'active_departments': active_departments,
-        'request_path': request_path
-    }
-
-
-@register.inclusion_tag("me2ushop/footer.html")
-def recently_viewed_list(request_path):
-    recently_viewed = stats.get_recently_viewed(request)
-    if recently_viewed:
-        return {
-            'recently_viewed': recently_viewed,
-            'request': request
-        }
-
-
 @register.inclusion_tag("department_children.html")
 def department_children(department):
     return {

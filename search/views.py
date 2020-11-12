@@ -18,7 +18,7 @@ def search_results(request, template_name="home/search_results.html"):
     print(request)
     q = request.GET.get('q', '')
     category = request.GET.get('category_searched', '')
-    print('name:', category)
+    # print('name:', category)
     prepared_words = _prepare_words(q)
     # print(prepared_words)
 
@@ -58,19 +58,20 @@ def search_results(request, template_name="home/search_results.html"):
         results = paginator.page(1).object_list
 
     # store the search
+    matching_count = len(matching)
+    print('matching count:', matching_count)
     search.store(request, q)
 
     # recent views
-    recent_views = stats.get_recently_viewed(request)
-    if recent_views:
-        recently_viewed = recent_views
+    # recent_views = stats.get_recently_viewed(request)
+    # if recent_views:
+    #     recently_viewed = recent_views
 
     # recommended from previous search
     search_recored = stats.recommended_from_search(request)
     if search_recored:
         search_recored = search_recored
 
-    brands = Brand.objects.filter(active=True)
 
     # the usual…
     if category != '':

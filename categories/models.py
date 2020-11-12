@@ -65,6 +65,9 @@ class Department(MPTTModel, CreationModificationDateMixin):
     def get_absolute_africa_made_url(self):
         return reverse('categories:categoryView_africa_made', kwargs={'slug': self.slug})
 
+    def get_products(self):
+        return self.product_set.all()
+
 
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),

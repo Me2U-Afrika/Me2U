@@ -19,7 +19,7 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from categories.models import Category, Department
-from marketing.models import MarketingMessage, Banner, Slider, Deals
+from marketing.models import MarketingMessage, Banner, Slider, Deals, Trend, TrendInfo
 
 from .models import *
 
@@ -143,26 +143,34 @@ class HomeView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         super(HomeView, self).get_context_data(**kwargs)
-
+        from utils import context_processors
         context = {}
 
         active_products = Product.active.all()
         bestselling = active_products.filter(is_bestseller=True)
+        bestrated = active_products.filter(is_bestrated=True)
+        categories = context_processors.me2u(self.request)['active_departments']
+        rand_department = random.choices(categories, k=3)
+        if rand_department:
+            context.update({
+                'rand_department_1': rand_department[0],
+                'rand_department_2': rand_department[1],
+                'rand_department_3': rand_department[2]
+            })
 
         if bestselling:
             context.update({'bestselling': bestselling})
+
+        if bestrated:
+            context.update({'bestrated': bestrated})
 
         bestselling_banner = Banner.objects.bestselling()[:20]
         if bestselling_banner:
             context.update({'best_seller_banner': bestselling_banner[0]})
 
-        deals = Deals.objects.all()
-        if deals:
-            context.update({'deals': deals})
-
         featuring = active_products.filter(is_featured=True)
         if featuring:
-            print('featuring:', featuring)
+            # print('featuring:', featuring)
             context.update({'featuring': featuring})
 
         marketing_messages = MarketingMessage.objects.get_featured_item()
@@ -189,10 +197,15 @@ class HomeView(ListView):
         if sliders:
             context.update({'sliders': sliders, })
 
-        trending_banner = Banner.objects.filter(is_trending=True)
-        if trending_banner:
+        trends = Trend.objects.all()
+        trend_info = TrendInfo.objects.all()
+        print('trend_info:', trend_info)
+        if trend_info:
+            context.update({'trend_info': trend_info})
+
+        if trends:
             # print('trending:', trending_banner)
-            context.update({'trending': trending_banner})
+            context.update({'trends': trends})
 
         top_banner = Banner.objects.filter(top_display=True)
         if top_banner:
@@ -333,12 +346,12 @@ def homeView(request):
     template_name = 'home/home.html'
 
     search_recored = stats.recommended_from_search(request)
-    print('search:', search_recored)
+    # print('search:', search_recored)
 
     if search_recored:
         for record in search_recored:
             search_recs = record
-            print('search:', search_recs)
+            # print('search:', search_recs)
             top_search = search_recored[0]
 
     featuring = Product.featured.all()
@@ -396,6 +409,8 @@ class ProductDetailedView(DetailView):
         formset = CartAddFormSet()
 
         product = Product.objects.filter(title=kwargs['object'])[0]
+        pending_item = product.orderitem_set.filter(status=10)
+
         if product.brand_name:
             brand_id = product.brand_name.id
             print('brand_id:', brand_id)
@@ -426,8 +441,10 @@ class ProductDetailedView(DetailView):
         # tags_product =
         context.update({
             'object': product,
+            'pending_item': pending_item,
             'review_form': review_form,
             'product_reviews': product_reviews,
+            'page_title': str(self.get_object()),
             'formset': formset,
             'product_image': product_image
         })
@@ -519,7 +536,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     template_name = 'sellers/product_confirm_delete.html'
-    success_url = '/me2ushop'
+    success_url = reverse_lazy('sellers:seller_products')
 
     def test_func(self):
         product_posted = self.get_object()
@@ -598,7 +615,7 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
     # fields = ["item", "image", "in_display"]
     form_class = ProductImageCreate
 
-    # success_url = reverse_lazy("me2ushop:product_images")
+    # success_url = reverse_lazy("sellers:seller_products")
     def get_form_kwargs(self):
         kwargs = super(ProductImageCreateView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
@@ -645,7 +662,7 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
 
 class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = ProductImage
-    template_name = 'tags/product_image_update_form.html'
+    template_name = 'sellers/product_image_update_form.html'
     fields = ["image", "in_display"]
 
     def form_valid(self, form):
@@ -682,7 +699,7 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
 class ProductImageDeleteView(LoginRequiredMixin, DeleteView):
     model = ProductImage
     template_name = 'sellers/product_image_delete.html'
-    # success_url = reverse_lazy("me2ushop:home")
+    success_url = reverse_lazy("sellers:seller_products")
 
     # def get_queryset(self):
     #     return self.model.objects.filter(item__seller=self.request.user)
@@ -1249,25 +1266,25 @@ def add_wishlist(request, slug):
     return redirect("me2ushop:wish_list")
 
 
-class WishListView(ListView, LoginRequiredMixin):
+class WishListView(LoginRequiredMixin, ListView):
     model = WishList
-    page_title = 'MyWishList'
     template_name = 'home/wish_list.html'
     paginate_by = 20
 
     def get_context_data(self, *, object_list=None, **kwargs):
         super(WishListView, self).get_context_data(**kwargs)
 
-        wishlist = WishList.objects.filter(user=self.request.user)
+        # wishlist = WishList.objects.filter(user=self.request.user)
+        #
+        # if wishlist.exists():
+        #     print('wishlist:', wishlist)
+        page_title = 'MyWishList'
 
-        if wishlist.exists():
-            print('wishlist:', wishlist)
-
-            context = {
-                'wishlist': wishlist,
+        context = {
+                'page_title': page_title,
             }
 
-            return context
+        return context
 
 
 @receiver(user_logged_in)
@@ -1545,7 +1562,7 @@ class Order_summary_view(View):
             return redirect("me2ushop:home")
 
 
-class WishList_Summary(View, LoginRequiredMixin):
+class WishList_Summary(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
             if self.request.user.is_authenticated:
