@@ -38,11 +38,16 @@ django-environ==0.4.5
 django-extensions==3.0.8
 django-filter==2.3.0
 django-heroku==0.3.1
+django-js-asset==1.2.2
+django-mptt==0.11.0
+django-mptt-admin==2.0.0
+django-mptt-tree-editor==0.1.2
 django-resized==0.3.11
 django-stdimage==5.1.1
 django-storages==1.9.1
 django-tables2==2.3.1
 django-tagging==0.5.0
+django-treebeard==4.3.1
 django-webpack-loader==0.7.0
 django-widget-tweaks==1.4.8
 djangorestframework==3.11.1
