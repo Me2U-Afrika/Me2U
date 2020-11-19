@@ -81,26 +81,37 @@ class OrderItemInline(admin.TabularInline):
     raw_id_fields = ('item',)
 
 
+class ProductDetailInline(admin.TabularInline):
+    # list_display = ('product', 'attribute', 'value')
+    model = ProductDetail
+    raw_id_fields = ('attribute',)
+
+
 # class OrderInline(admin.TabularInline):
 #     model = Order
 #     raw_id_fields = ('items',)
 
+class StatusCodeAdmin(admin.ModelAdmin):
+    list_display = ("short_name", "name",)
+
 
 class ProductAdmin(admin.ModelAdmin):
     # form = ProductAdminForm()
-    list_display = ('title', 'price', 'in_stock', 'stock', 'is_active', 'made_in_africa', 'created_at', 'updated_at',)
+    list_display = (
+        'title', 'price', 'brand_name', 'in_stock', 'stock', 'is_active', 'made_in_africa', 'created_at', 'updated_at',)
     list_display_links = ('title',)
     list_per_page = 50
     ordering = ['-created_at']
     list_editable = ('in_stock',)
+    list_filter = ('brand_name',)
 
-    search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'made_in_africa']
+    search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'made_in_africa', 'brand_name']
     exclude = ('created_at', 'updated_at',)
 
     prepopulated_fields = {'slug': ('title',)}
     # autocomplete_fields = ('product_categories',)
 
-    inlines = (OrderItemInline,)
+    inlines = (ProductDetailInline, OrderItemInline,)
     actions = [make_active, make_inactive]
 
     def get_readonly_fields(self, request, obj=None):
@@ -246,12 +257,21 @@ class WishListAdmin(admin.ModelAdmin):
     list_filter = ("user",)
 
 
+class ProductDetailAdmin(admin.ModelAdmin):
+    list_display = ('product', 'attribute', 'value',)
+
+
+class ProductAttributeAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
 class Ordered(admin.ModelAdmin):
     list_display = (
         'user',
         'last_spoken_to',
         'order_date',
         'ordered',
+        "status_code",
         'payment',
         'coupon',
         'ref_code',
@@ -273,7 +293,7 @@ class Ordered(admin.ModelAdmin):
         'ref_code',
     ]
     fieldsets = (
-        (None, {"fields": ("user", 'ordered', "status", "items")}),
+        (None, {"fields": ("user", 'ordered', "status", "status_code", "items")}),
         ("Shipping info",
          {"fields": (
              "name",
@@ -298,6 +318,7 @@ class Ordered(admin.ModelAdmin):
          ),
     )
     autocomplete_fields = ('items',)
+    # inlines = (OrderItemInline,)
 
     actions = [make_refund_accepted, being_delivered]
 
@@ -351,9 +372,23 @@ class SellersOrderAdmin(admin.ModelAdmin):
         'status',
         'being_delivered',
         'received',
+        "name",
+        "email",
+        "phone",
+        "shipping_address1",
+        "shipping_address2",
+        "shipping_zip_code",
+        "shipping_city",
+        "shipping_country",
+        "billing_address1",
+        "billing_address2",
+        "billing_zip_code",
+        "billing_city",
+        "billing_country",
     )
 
     list_filter = ("status", "shipping_country", "order_date",)
+
     fieldsets = (
         (None, {"fields": ("user", "status", "items")}),
         ("Shipping info",
@@ -386,10 +421,15 @@ class SellersOrderAdmin(admin.ModelAdmin):
         brand = context_processors.me2u(request)['brand']
         print('qs:', qs.filter(items__item__brand_name=brand[0]))
         print('brand:', brand)
+        products = brand[0].product_set.all()
+        print('products:', products)
 
         if brand:
-            return qs.filter(items__item__brand_name=brand[0])
+            return qs.filter(items__item__in=products).distinct()
 
+            # for order in qs:
+            #     print('items:', order, order.items.filter(item__brand_name=brand[0]))
+            #     return order.items.filter(item__brand_name=brand[0])
 
 
 class SellersOrderItemAdmin(admin.ModelAdmin):
@@ -405,6 +445,8 @@ class SellersOrderItemAdmin(admin.ModelAdmin):
     )
     # list_editable = ['being_delivered', 'received']
     list_display_links = ('item',)
+    # inlines = (OrderInline,)
+
     readonly_fields = (
         'user',
         'item',
@@ -421,11 +463,11 @@ class SellersOrderItemAdmin(admin.ModelAdmin):
         from utils import context_processors
         qs = super().get_queryset(request)
         brand = context_processors.me2u(request)['brand']
-        print('qs:', qs.filter(items__item__brand_name=brand[0]))
+        print('qs:', qs.filter(item__brand_name=brand[0]))
         print('brand:', brand)
 
         if brand:
-            return qs.filter(items__item__brand_name=brand[0])
+            return qs.filter(item__brand_name=brand[0])
 
 
 class DispatchersOrderAdmin(admin.ModelAdmin):
@@ -703,8 +745,6 @@ class SellersAdminSite(ColoredAdminSite):
         return request.user.is_active and request.user.is_seller
 
 
-
-
 main_admin = OwnersAdminSite()
 
 admin.site.register(Product, ProductAdmin)
@@ -724,11 +764,13 @@ admin.site.register(StripePayment, Payment)
 
 admin.site.register(Coupon, CouponDisplay)
 
+admin.site.register(StatusCode, StatusCodeAdmin)
+
 admin.site.register(RequestRefund, RefundDisplay)
 
 admin.site.register(Address, AddressAdmin)
-admin.site.register(Variation)
-admin.site.register(Variation_options)
+admin.site.register(ProductDetail, ProductDetailAdmin)
+admin.site.register(ProductAttribute, ProductAttributeAdmin)
 
 central_office_admin = CentralOfficeAdminSite("central-office-admin")
 central_office_admin.register(Product, ProductAdmin)

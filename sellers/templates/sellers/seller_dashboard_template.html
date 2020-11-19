@@ -80,7 +80,6 @@
                     <th>Date Ordered</th>
                     <th>Status</th>
                     <th>Update</th>
-                    <th>Remove</th>
                 </tr>
                   {% for order in orders %}
                 <tr>
@@ -88,8 +87,7 @@
                     <td><a href="{% url 'sellers:customer_details' order.id %}">{{ order }}</a></td>
                     <td>{{ order.date_ordered }}</td>
                     <td>{{ order.get_status_display }}</td>
-                    <td><a>Update</a></td>
-                    <td><a>Delete</a></td>
+                    <td><a href="/seller-admin" target="_blank">Update</a></td>
                 </tr>
                 {% endfor %}
             </table>

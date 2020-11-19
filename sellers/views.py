@@ -115,14 +115,18 @@ def customer_details(request, id, template_name="sellers/customer_details_templa
     from utils import context_processors
     context = context_processors.me2u(request)
     brand_name = context['brand'][0]
-    products = brand_name.product_set.all()
-    user_orders = OrderItem.objects.filter(id=id, item__in=products)
-    print(user_orders)
-    if user_orders:
-        for user_order in user_orders:
-            if user_order.user:
-                customer_email = user_order.user.email
-                customer_name = user_order.user.username
+
+    # products = brand_name.product_set.all()
+    customer_orders = OrderItem.objects.filter(id=id)
+
+    print('customer orders:', customer_orders)
+    if customer_orders:
+        for order in customer_orders:
+            customer_email = order.customer_order.email
+            customer_name = order.customer_order.name
+            if order.user:
+                previous_orders = OrderItem.objects.filter(user=order.user, item__brand_name=brand_name)
+                # print('previous:', previous_orders)
 
     # print('user_items:', user_orders)
     page_title = 'Customer Order Details'
@@ -146,12 +150,12 @@ def order_details(request, order_id, template_name="users/order-details.html"):
 
 
 def customer_address(request, id, template_name="sellers/customer_address.html"):
+    from utils import context_processors
+    context = context_processors.me2u(request)
+    brand_name = context['brand'][0]
+
     customer_address_info = Address.objects.filter(user__id=id)
     print('customer add:', customer_address_info)
-    user_orders = OrderItem.objects.filter(user_id=id, item__seller=request.user)
-    print('user_items:', user_orders)
-    orders = Order.objects.filter(user=id, items__item__seller=request.user)
-    if orders:
-        order = orders[0]
+    order = OrderItem.objects.filter(id=id)[0]
 
     return render(request, template_name, locals())

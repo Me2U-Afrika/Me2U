@@ -625,6 +625,7 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
     #
+    #
     #     context['object'] = object
     #     return context
 
@@ -809,6 +810,8 @@ def cart_basket(request):
 
 def add_cart(request, slug):
     print('in add_cart')
+    # print(request.cart)
+    # print(request.cart.id)
     item = get_object_or_404(Product, slug=slug)
     stats.log_product_view(request, item)
 
@@ -829,25 +832,32 @@ def add_cart(request, slug):
 
         request.session['cart_id'] = cart.id
     if request.method == "POST":
+        print('we came to post')
         form = CartAddFormSet(request.POST or None)
         if form.is_valid():
             try:
                 # Get quantity from useronline
                 quantity = form.cleaned_data.get('quantity')
-                # print("qty:", quantity)
+                print("qty:", quantity)
                 item = get_object_or_404(Product, slug=slug)
-                # print("item we found:", item)
+                print("item we found:", item)
 
                 order_item, created = OrderItem.objects.get_or_create(
-                    order=cart,
+                    customer_order=cart,
                     item=item,
                     ordered=False
                 )
                 # print("order_item:", order_item)
                 # print("created:", created)
+                # print("order id:", order_item.customer_order)
+                status = StatusCode.objects.get(short_name=10)
+                # print('status:', status)
+                order_item.status_code = status
+                order_item.save()
+                # print(order_item.status_code)
 
                 order_query_set = Order.objects.filter(id=cart.id, ordered=False)
-                # print("cart_id found:", order_query_set)
+                print("cart_id found:", order_query_set)
 
                 if order_query_set.exists():
                     order = order_query_set[0]
@@ -886,18 +896,23 @@ def add_cart(request, slug):
                 messages.info(request, 'ERROR.')
                 return redirect("me2ushop:product", slug=slug)
     else:
-        # print("user logged in adding qty without form")
+        print("user adding qty without form")
         # user is logged in but not using form to add quantity
         try:
             item = get_object_or_404(Product, slug=slug)
 
             order_item, created = OrderItem.objects.get_or_create(
-                order=cart,
+                customer_order=cart,
                 item=item,
                 ordered=False
             )
             # print("order_item:", order_item)
             # print("created:", created)
+            status = StatusCode.objects.get(short_name=10)
+            # print('status:', status)
+            order_item.status_code = status
+            order_item.save()
+            # print(order_item.status_code)
 
             order_query_set = Order.objects.filter(id=cart.id, ordered=False)
             # print("cart_id found:", order_query_set)
@@ -1281,8 +1296,8 @@ class WishListView(LoginRequiredMixin, ListView):
         page_title = 'MyWishList'
 
         context = {
-                'page_title': page_title,
-            }
+            'page_title': page_title,
+        }
 
         return context
 
@@ -1541,6 +1556,7 @@ class Order_summary_view(View):
 
                 context = {
                     'object': order,
+                    'page_title': 'Order Summary'
                 }
                 return render(self.request, 'home/order_summary.html', context)
 

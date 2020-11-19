@@ -336,21 +336,36 @@ VAR_CATEGORIES = (
 )
 
 
-class Variation(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    variation_name = models.CharField(max_length=120)
-    active = models.BooleanField(default=True)
+class ProductDetail(CreationModificationDateMixin):
+    """    The ``ProductDetail`` model represents information unique to a
+    specific product. This is a generic design that can be used
+    to extend the information contained in the ``Product`` model with
+    specific, extra details.
+    """
+    product = models.ForeignKey("Product", related_name="Details", on_delete=models.CASCADE)
+    attribute = models.ForeignKey('ProductAttribute', on_delete=models.CASCADE)
+    value = models.CharField(max_length=500)
+    description = models.TextField(blank=True)
 
     def __str__(self):
-        return str(self.variation_name)
+        return u'%s: %s - %s' % (self.product,
+                                 self.attribute,
+                                 self.value)
 
 
-class Variation_options(models.Model):
-    variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
-    variation_choices = models.CharField(max_length=120)
+class ProductAttribute(CreationModificationDateMixin):
+    """
+    The ``ProductAttribute`` model represents a class of feature found
+    across a set of products. It does not store any data values related to the attribute,
+    but only describes what kind of a product feature we are trying to capture. Possible attributes include things such 4
+    as materials, colors, sizes, and many, many more.
+    """
+
+    name = models.CharField(max_length=300)
+    description = models.TextField(blank=True)
 
     def __str__(self):
-        return str(self.variation_choices)
+        return u'%s' % self.name
 
 
 class WishList(CreationModificationDateMixin):
@@ -359,6 +374,36 @@ class WishList(CreationModificationDateMixin):
 
     def __str__(self):
         return str(self.product.title)
+
+
+class StatusCode(CreationModificationDateMixin):
+    """
+    The StatusCode model represents the status of an order in the
+    system.
+    """
+    NEW = 10
+    PAID = 20
+    PROCESSING = 30
+    SENT = 40
+    CANCELLED = 50
+    IN_TRANSIT = 60
+    DELIVERED = 70
+
+    STATUSES = ((NEW, "New"),
+                (PAID, "Paid"),
+                (PROCESSING, "Processing"),
+                (SENT, "Sent"),
+                (CANCELLED, "Cancelled"),
+                (IN_TRANSIT, "in_transit"),
+                (DELIVERED, "Delivered"),
+                )
+
+    short_name = models.IntegerField(choices=STATUSES, default=NEW)
+    name = models.CharField(max_length=300)
+    description = models.TextField()
+
+    def __str__(self):
+        return str(self.short_name)
 
 
 class OrderItem(CreationModificationDateMixin):
@@ -379,14 +424,17 @@ class OrderItem(CreationModificationDateMixin):
                 )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    customer_order = models.ForeignKey('Order', blank=True, null=True, on_delete=models.SET_NULL)
     cart_id = models.CharField(max_length=40, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     date_ordered = models.DateTimeField(auto_now=True)
     status = models.IntegerField(choices=STATUSES, default=NEW)
+    status_code = models.ForeignKey('StatusCode', on_delete=models.SET_NULL, blank=True, null=True)
     order_received = models.BooleanField(default=False)
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Product, on_delete=models.PROTECT, unique=False, blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    comments = models.TextField(blank=True)
     delivered_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='dispatcher', on_delete=models.SET_NULL,
                                      blank=True, null=True)
 
@@ -443,9 +491,11 @@ class Order(CreationModificationDateMixin):
     PAID = 20
     DONE = 30
     STATUSES = ((NEW, 'New'), (PAID, 'Paid'), (DONE, 'Done'))
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, db_index=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
+                                 db_index=True)
     cart_id = models.CharField(max_length=40, blank=True, null=True)
     status = models.IntegerField(choices=STATUSES, default=NEW)
+    status_code = models.ForeignKey('StatusCode', on_delete=models.SET_NULL, blank=True, null=True)
     items = models.ManyToManyField('OrderItem')
     ref_code = models.CharField(max_length=20)
     start_date = models.DateTimeField(auto_now_add=True)
@@ -473,6 +523,7 @@ class Order(CreationModificationDateMixin):
     shipping_zip_code = models.CharField(max_length=12)
     shipping_country = models.CharField(max_length=3)
     shipping_city = models.CharField(max_length=12, blank=True, null=True)
+    comments = models.TextField(blank=True)
 
     last_spoken_to = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, related_name="cs_chats",
                                        on_delete=models.SET_NULL)
@@ -480,8 +531,8 @@ class Order(CreationModificationDateMixin):
     class Meta:
         ordering = ['-modified']
 
-    # def __str__(self):
-    #     return self.user.email
+    def __str__(self):
+        return str(self.id)
 
     def get_absolute_url(self):
 
