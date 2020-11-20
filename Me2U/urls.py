@@ -40,6 +40,8 @@ urlpatterns = [
     url('', include('me2ushop.urls')),
     url('marketing/', include('marketing.urls')),
 
+    # url(r'^cache/', include('django_memcached.urls')),
+
     url('categories', include('categories.urls', namespace='categories')),
 
     # url('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),

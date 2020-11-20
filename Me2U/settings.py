@@ -69,6 +69,9 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'django_tables2',
     'django.contrib.sitemaps',
+    'django_memcached',
+    'redis_cache',
+
     'main',
     'bootstrap3',
     'bootstrap4',
@@ -213,7 +216,6 @@ if not DEBUG:
     db_from_env = dj_database_url.config(conn_max_age=600)
     DATABASES['default'].update(db_from_env)
 
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -305,6 +307,27 @@ else:
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
+
+
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache'
+#     }
+# }
+
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+# CACHES = {
+#     "default": {
+#         "BACKEND": "redis_cache.cache.RedisCache",
+#         "LOCATION": "127.0.0.1:6379:1",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "redis_cache.client.DefaultClient",
+#         }
+#     }
+# }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
