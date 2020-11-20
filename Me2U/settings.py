@@ -69,8 +69,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'django_tables2',
     'django.contrib.sitemaps',
-    'django_memcached',
-    'redis_cache',
+    # 'django_memcached',
+    # 'redis_cache',
 
     'main',
     'bootstrap3',
@@ -335,7 +335,7 @@ PRODUCTS_PER_ROW = 12
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+# CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 try:
     from settings_local import *
