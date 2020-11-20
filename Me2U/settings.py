@@ -38,10 +38,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
-# DEBUG = False
+# DEBUG = bool(os.environ.get('LOCAL_DEBUG', ''))
+DEBUG = True
 
 SITE_URL = 'me2uafrika.herokuapp.com'
+
 if DEBUG:
     SITE_URL = 'http://127.0.0.1:8000/'
 
