@@ -18,7 +18,7 @@ def currency(value):
         locale.setlocale(locale.LC_ALL, '')
 
     loc = locale.localeconv()
-    return locale.currency(value, loc['currency_symbol'], grouping=True)
+    return str(locale.currency(value, loc['currency_symbol'], grouping=True))
 
 
 @register.inclusion_tag("tags/product_list.html")

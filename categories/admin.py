@@ -15,13 +15,15 @@ from . import models
 from me2ushop import admin as admin_register
 from django_mptt_admin.admin import DjangoMpttAdmin
 from mptt.admin import MPTTModelAdmin, DraggableMPTTAdmin
+from me2ushop.admin import make_active, make_inactive
 
 logger = logging.getLogger(__name__)
 
 
 class DepartmentAdmin(DraggableMPTTAdmin):
-    list_display = ('tree_actions', 'indented_title', 'created', 'modified',)
+    list_display = ('tree_actions', 'indented_title', 'is_active', 'created', 'modified',)
     list_display_links = ('indented_title',)
+    actions = [make_active, make_inactive]
 
 
 class CategoryAdmin(admin.ModelAdmin):

@@ -132,6 +132,7 @@ class Trend(CreationModificationDateMixin):
 
     start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+    active = models.BooleanField(default=True)
 
     objects = MarketingManager()
 

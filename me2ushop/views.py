@@ -183,7 +183,7 @@ class HomeView(ListView):
         recent_products = active_products.order_by('-created_at')
         if recent_products:
             print('recent_products:', recent_products)
-            context.update({'recent_products': recent_products})
+            context.update({'recent_products': recent_products[:20]})
 
         # recently_viewed = stats.get_recently_viewed(self.request)
         # if recently_viewed:
@@ -199,15 +199,15 @@ class HomeView(ListView):
         if sliders:
             context.update({'sliders': sliders, })
 
-        trends = Trend.objects.all()
+        # trends = Trend.objects.all()
         trend_info = TrendInfo.objects.all()
         print('trend_info:', trend_info)
         if trend_info:
             context.update({'trend_info': trend_info})
 
-        if trends:
-            # print('trending:', trending_banner)
-            context.update({'trends': trends})
+        # if trends:
+        #     # print('trending:', trending_banner)
+        #     context.update({'trends': trends})
 
         top_banner = Banner.objects.filter(top_display=True)
         if top_banner:

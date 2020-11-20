@@ -96,7 +96,7 @@
                                 </div>
                                 <div class="cart_content">
                                     <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}">Cart</a></div>
-                                    <div class="cart_price">${{ request|cart_item_total}} </div>
+                                    <div class="cart_price">{{ request|cart_item_total|currency}} </div>
                                 </div>
                             </div>
                         </div>

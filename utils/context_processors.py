@@ -5,27 +5,27 @@ import os
 from django.conf import settings
 
 from stats import stats
-from marketing.models import Deals
+from marketing.models import Deals, Trend
 
 
 def me2u(request):
+    context = {}
     brand = None
     wish_list = None
 
     if request.user.is_authenticated and request.user.is_seller:
         brand = Brand.objects.get(user=request.user),
+
     if request.user.is_authenticated:
         wish_list = WishList.objects.filter(user=request.user)
-    #
-    # deals = Deals.objects.all(),
-    # if deals:
 
-    return {'active_categories': Category.active.all(),
-            'active_departments': Department.active.all(),
+    return {
+            'active_departments': Department.objects.filter(is_active=True),
             'reviews': ProductReview.objects.all().order_by('-date'),
             'recently_viewed': stats.get_recently_viewed(request),
             'brand': brand,
             'brands': Brand.objects.filter(active=True),
+            'trends': Trend.objects.filter(active=True),
             'deals': Deals.objects.all(),
             'wish_list': wish_list,
             'site_name': settings.SITE_NAME,
