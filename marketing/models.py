@@ -80,7 +80,7 @@ class Slider(CreationModificationDateMixin):
         ordering = ['-start_date', '-end_date']
 
     def __str__(self):
-        return str(self.header_text)
+        return str(self.product.title)
 
 
 class Banner(CreationModificationDateMixin):
@@ -174,4 +174,4 @@ class MarketingEmails(CreationModificationDateMixin):
     subscribed = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(self.email)
+        return str(self.subscribed)

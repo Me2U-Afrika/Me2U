@@ -1,3 +1,4 @@
+from decimal import Decimal
 from urllib import request
 
 from django import template
@@ -16,9 +17,9 @@ def currency(value):
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
     except:
         locale.setlocale(locale.LC_ALL, '')
-
+    value = Decimal(value)
     loc = locale.localeconv()
-    return str(locale.currency(value, loc['currency_symbol'], grouping=True))
+    return locale.currency(value, loc['currency_symbol'], grouping=True)
 
 
 @register.inclusion_tag("tags/product_list.html")

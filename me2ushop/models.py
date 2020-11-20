@@ -144,7 +144,7 @@ class Product(models.Model):
     # made_in_africa = ActiveAfricaProductManager()
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     # def clean(self):
     #     # Don't allow draft entries to have a pub_date.
