@@ -150,8 +150,8 @@ class HomeView(ListView):
         bestselling = active_products.filter(is_bestseller=True)
         bestrated = active_products.filter(is_bestrated=True)
         categories = context_processors.me2u(self.request)['active_departments']
-        rand_department = random.choices(categories, k=3)
-        if rand_department:
+        if categories:
+            rand_department = random.choices(categories, k=3)
             context.update({
                 'rand_department_1': rand_department[0],
                 'rand_department_2': rand_department[1],
@@ -164,7 +164,9 @@ class HomeView(ListView):
         if bestrated:
             context.update({'bestrated': bestrated})
 
-        bestselling_banner = Banner.objects.bestselling()[:20]
+        bestselling_banner = Banner.objects.bestselling()
+        # print('banner:', bestselling_banner)
+
         if bestselling_banner:
             context.update({'best_seller_banner': bestselling_banner[0]})
 
@@ -340,45 +342,45 @@ class HomeView(ListView):
 #         return context
 
 
-def homeView(request):
-    site_name = 'Me2U|Market'
-    # template_name = 'home-page.html'
-    template_name = 'home/home.html'
-
-    search_recored = stats.recommended_from_search(request)
-    # print('search:', search_recored)
-
-    if search_recored:
-        for record in search_recored:
-            search_recs = record
-            # print('search:', search_recs)
-            top_search = search_recored[0]
-
-    featuring = Product.featured.all()
-    bestselling = Product.bestseller.all()[0:PRODUCTS_PER_ROW]
-    recently_viewed = stats.get_recently_viewed(request)
-    view_recored = stats.recommended_from_views(request)
-    if view_recored:
-        view_recs = view_recored[0:PRODUCTS_PER_ROW]
-
-    if featuring or bestselling:
-        featured = featuring[0:PRODUCTS_PER_ROW]
-        bestseller = bestselling[0:PRODUCTS_PER_ROW]
-        if bestseller:
-            top_bestseller = [bestseller[0]]
-
-    # print('view recs:', view_recs)
-    return render(request, template_name, locals())
-    # model = Product
-    # paginate_by = 8
-    # template_name = 'home-page.html'
-    #
-    # def get_context_data(self, **kwargs):
-    #     context = super(HomeView, self).get_context_data(**kwargs)
-    #     categories = Category.objects.all()
-    #     context['categories'] = categories
-    #
-    #     return context
+# def homeView(request):
+#     site_name = 'Me2U|Market'
+#     # template_name = 'home-page.html'
+#     template_name = 'home/home.html'
+#
+#     search_recored = stats.recommended_from_search(request)
+#     # print('search:', search_recored)
+#
+#     if search_recored:
+#         for record in search_recored:
+#             search_recs = record
+#             # print('search:', search_recs)
+#             top_search = search_recored[0]
+#
+#     featuring = Product.featured.all()
+#     bestselling = Product.bestseller.all()
+#     recently_viewed = stats.get_recently_viewed(request)
+#     view_recored = stats.recommended_from_views(request)
+#     if view_recored:
+#         view_recs = view_recored[0:PRODUCTS_PER_ROW]
+#
+#     if featuring or bestselling:
+#         featured = featuring[0:PRODUCTS_PER_ROW]
+#         bestseller = bestselling[0:PRODUCTS_PER_ROW]
+#         if bestseller:
+#             top_bestseller = [bestseller[0]]
+#
+#     # print('view recs:', view_recs)
+#     return render(request, template_name, locals())
+#     # model = Product
+#     # paginate_by = 8
+#     # template_name = 'home-page.html'
+#     #
+#     # def get_context_data(self, **kwargs):
+#     #     context = super(HomeView, self).get_context_data(**kwargs)
+#     #     categories = Category.objects.all()
+#     #     context['categories'] = categories
+#     #
+#     #     return context
 
 
 class ProductListView(ListView):
