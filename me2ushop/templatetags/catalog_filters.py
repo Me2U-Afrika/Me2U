@@ -1,7 +1,7 @@
-from decimal import Decimal
 from urllib import request
 
 from django import template
+from decimal import Decimal
 import locale
 
 from categories.models import Category, Department
@@ -19,7 +19,7 @@ def currency(value):
         locale.setlocale(locale.LC_ALL, '')
     value = Decimal(value)
     loc = locale.localeconv()
-    return locale.currency(value, loc['currency_symbol'], grouping=True)
+    return locale.currency(abs(int(value)), loc['currency_symbol'], grouping=True)
 
 
 @register.inclusion_tag("tags/product_list.html")
