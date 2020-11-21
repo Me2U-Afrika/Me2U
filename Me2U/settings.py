@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'django_tables2',
     'django.contrib.sitemaps',
-    # 'django_memcached',
+    'django_memcached',
     # 'redis_cache',
 
     'main',
@@ -309,12 +309,14 @@ else:
     EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 
 
-# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache'
-#     }
-# }
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
 
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 # CACHES = {
@@ -327,7 +329,7 @@ else:
 #     }
 # }
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+# SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
