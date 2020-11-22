@@ -40,6 +40,7 @@ from django import forms as django_forms
 from django.db import models as django_models
 import django_filters
 from django_filters.views import FilterView
+from django.views.decorators.cache import cache_page
 
 import random
 import string
