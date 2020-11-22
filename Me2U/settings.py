@@ -28,7 +28,7 @@ env = environ.Env(
 environ.Env.read_env()
 
 # Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
@@ -56,6 +56,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
 DEBUG = env('DEBUG')
+
+# DEBUG = False
 # print('debug:', DEBUG)
 
 SITE_URL = 'me2uafrika.herokuapp.com'
@@ -223,8 +225,8 @@ if not DEBUG:
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'me2uafrica',
-            'USER': env('USER'),
-            'PASSWORD': env('PASSWORD'),
+            'USER': os.environ.get('USER'),
+            'PASSWORD': os.environ.get('PASSWORD'),
             'HOST': 'localhost',
         }
     }
@@ -294,16 +296,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 if DEBUG:
     # test keys
-    STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_kEY')
-    STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
+    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     ALLOWED_HOSTS = ['*']
 
 else:
     # ALLOWED_HOSTS = ['www.me2uafrika.com', 'me2uafrika.com', 'localhost', 'me2uafrica.herokuapp.com']
     ALLOWED_HOSTS = ['*']
-    STRIPE_PUBLISHABLE_kEY = env('STRIPE_PUBLISHABLE_kEY')
-    STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
+    STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
     # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
@@ -324,7 +326,7 @@ else:
     EMAIL_HOST = "smtp.gmail.com"
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = env('PASSWORD')
+    EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 
 #
 
@@ -344,9 +346,9 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 #     }
 # }
 
-servers = env('MEMCACHIER_SERVERS')
-username = env('MEMCACHIER_USERNAME')
-password = env('MEMCACHIER_PASSWORD')
+servers = os.environ.get('MEMCACHIER_SERVERS')
+username = os.environ.get('MEMCACHIER_USERNAME')
+password = os.environ.get('MEMCACHIER_PASSWORD')
 if not DEBUG:
     CACHES = {
         'default': {
