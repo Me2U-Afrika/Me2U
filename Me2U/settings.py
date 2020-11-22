@@ -185,7 +185,7 @@ WEBPACK_LOADER = {
 WSGI_APPLICATION = 'Me2U.wsgi.application'
 ASGI_APPLICATION = 'Me2U.routing.application'
 
-REDIS_URL = env('REDIS_URL')
+REDIS_URL = os.environ.get('REDIS_URL')
 
 s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
 
