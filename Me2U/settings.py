@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import pickle
 
 import bmemcached
+import redis
 from botocore.config import Config
 
 import boto3
@@ -60,7 +61,7 @@ DEBUG = env('DEBUG')
 # DEBUG = False
 # print('debug:', DEBUG)
 
-SITE_URL = 'me2uafrika.herokuapp.com'
+SITE_URL = 'me2uafrica.herokuapp.com'
 
 if DEBUG:
     SITE_URL = 'http://127.0.0.1:8000/'
@@ -188,6 +189,10 @@ WSGI_APPLICATION = 'Me2U.wsgi.application'
 ASGI_APPLICATION = 'Me2U.routing.application'
 
 REDIS_URL = os.environ.get('REDIS_URL')
+
+# REDIS_URL = 'localhost'
+# REDIS_URL = redis.StrictRedis(host="localhost", port=6379).keys()
+# print('redis_url', REDIS_URL)
 
 s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
 
@@ -349,29 +354,33 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
 password = os.environ.get('MEMCACHIER_PASSWORD')
-if not DEBUG:
-    CACHES = {
-        'default': {
-            # Use django-bmemcached
-            'BACKEND': 'django_bmemcached.memcached.BMemcached',
 
-            # TIMEOUT is not the connection timeout! It's the default expiration
-            # timeout that should be applied to keys! Setting it to `None`
-            # disables expiration.
-            # 'TIMEOUT': None,
-            'LOCATION': servers,
+mc = bmemcached.Client(servers, username=username, password=password)
 
-            'OPTIONS': {
-                'username': username,
-                'password': password,
-                'compression': None,
-                'socket_timeout': bmemcached.client.constants.SOCKET_TIMEOUT,
-                'pickler': pickle.Pickler,
-                'unpickler': pickle.Unpickler,
-                'pickle_protocol': 0
-            }
-        }
-    }
+mc.enable_retry_delay(True)
+# if not DEBUG:
+#     CACHES = {
+#         'default': {
+#             # Use django-bmemcached
+#             'BACKEND': 'django_bmemcached.memcached.BMemcached',
+#
+#             # TIMEOUT is not the connection timeout! It's the default expiration
+#             # timeout that should be applied to keys! Setting it to `None`
+#             # disables expiration.
+#             # 'TIMEOUT': None,
+#             'LOCATION': servers,
+#
+#             'OPTIONS': {
+#                 'username': username,
+#                 'password': password,
+#                 'compression': None,
+#                 'socket_timeout': bmemcached.client.constants.SOCKET_TIMEOUT,
+#                 'pickler': pickle.Pickler,
+#                 'unpickler': pickle.Unpickler,
+#                 'pickle_protocol': 0
+#             }
+#         }
+#     }
 
 # CACHES = {
 #     "default": {
@@ -382,8 +391,6 @@ if not DEBUG:
 #         }
 #     }
 # }
-
-# SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
