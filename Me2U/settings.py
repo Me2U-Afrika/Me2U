@@ -355,32 +355,32 @@ servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
 password = os.environ.get('MEMCACHIER_PASSWORD')
 
-mc = bmemcached.Client(servers, username=username, password=password)
+# mc = bmemcached.Client(servers, username=username, password=password)
+#
+# mc.enable_retry_delay(True)
+if not DEBUG:
+    CACHES = {
+        'default': {
+            # Use django-bmemcached
+            'BACKEND': 'django_bmemcached.memcached.BMemcached',
 
-mc.enable_retry_delay(True)
-# if not DEBUG:
-#     CACHES = {
-#         'default': {
-#             # Use django-bmemcached
-#             'BACKEND': 'django_bmemcached.memcached.BMemcached',
-#
-#             # TIMEOUT is not the connection timeout! It's the default expiration
-#             # timeout that should be applied to keys! Setting it to `None`
-#             # disables expiration.
-#             # 'TIMEOUT': None,
-#             'LOCATION': servers,
-#
-#             'OPTIONS': {
-#                 'username': username,
-#                 'password': password,
-#                 'compression': None,
-#                 'socket_timeout': bmemcached.client.constants.SOCKET_TIMEOUT,
-#                 'pickler': pickle.Pickler,
-#                 'unpickler': pickle.Unpickler,
-#                 'pickle_protocol': 0
-#             }
-#         }
-#     }
+            # TIMEOUT is not the connection timeout! It's the default expiration
+            # timeout that should be applied to keys! Setting it to `None`
+            # disables expiration.
+            # 'TIMEOUT': None,
+            'LOCATION': servers,
+
+            'OPTIONS': {
+                'username': username,
+                'password': password,
+                'compression': None,
+                'socket_timeout': bmemcached.client.constants.SOCKET_TIMEOUT,
+                'pickler': pickle.Pickler,
+                'unpickler': pickle.Unpickler,
+                'pickle_protocol': 0
+            }
+        }
+    }
 
 # CACHES = {
 #     "default": {
