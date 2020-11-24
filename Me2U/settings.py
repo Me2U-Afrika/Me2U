@@ -335,7 +335,6 @@ else:
 
 #
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 # CACHES = {
 #     'default': {
@@ -356,6 +355,8 @@ username = os.environ.get('MEMCACHIER_USERNAME')
 password = os.environ.get('MEMCACHIER_PASSWORD')
 
 if DEBUG:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -368,6 +369,8 @@ if DEBUG:
 # #
 # # mc.enable_retry_delay(True)
 if not DEBUG:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
     CACHES = {
         'default': {
             # Use django-bmemcached
