@@ -355,14 +355,24 @@ servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
 password = os.environ.get('MEMCACHIER_PASSWORD')
 
-# mc = bmemcached.Client(servers, username=username, password=password)
+if DEBUG:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': '127.0.0.1:11211',
+        }
+    }
+
 #
-# mc.enable_retry_delay(True)
+# # mc = bmemcached.Client(servers, username=username, password=password)
+# #
+# # mc.enable_retry_delay(True)
 if not DEBUG:
     CACHES = {
         'default': {
             # Use django-bmemcached
-            'BACKEND': 'django_bmemcached.memcached.BMemcached',
+            # 'BACKEND': 'django_bmemcached.memcached.BMemcached',
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
 
             # TIMEOUT is not the connection timeout! It's the default expiration
             # timeout that should be applied to keys! Setting it to `None`
@@ -373,11 +383,11 @@ if not DEBUG:
             'OPTIONS': {
                 'username': username,
                 'password': password,
-                'compression': None,
-                'socket_timeout': bmemcached.client.constants.SOCKET_TIMEOUT,
-                'pickler': pickle.Pickler,
-                'unpickler': pickle.Unpickler,
-                'pickle_protocol': 0
+                # 'compression': None,
+                # 'socket_timeout': bmemcached.client.constants.SOCKET_TIMEOUT,
+                # 'pickler': pickle.Pickler,
+                # 'unpickler': pickle.Unpickler,
+                # 'pickle_protocol': 0
             }
         }
     }
