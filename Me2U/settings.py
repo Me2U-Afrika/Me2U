@@ -56,9 +56,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
-DEBUG = env('DEBUG')
+# DEBUG = env('DEBUG')
 
-# DEBUG = False
+DEBUG = False
 # print('debug:', DEBUG)
 
 SITE_URL = 'me2uafrica.herokuapp.com'
@@ -293,9 +293,12 @@ LOGIN_REDIRECT_URL = 'me2ushop:home'
 LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "/Me2U/staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
+
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # stripe settings
 
@@ -420,4 +423,6 @@ except ImportError:
 # Activate Django-Heroku.
 django_heroku.settings(locals())
 
-del DATABASES['default']['OPTIONS']['sslmode']
+# add ENV=development in the .env file for the below to work:
+if os.environ.get('ENV') == 'development':
+    del DATABASES['default']['OPTIONS']['sslmode']
