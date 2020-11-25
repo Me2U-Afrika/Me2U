@@ -56,9 +56,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
-# DEBUG = env('DEBUG')
+DEBUG = env('DEBUG')
 
-DEBUG = False
+# DEBUG = False
 # print('debug:', DEBUG)
 
 SITE_URL = 'me2uafrica.herokuapp.com'
@@ -424,5 +424,5 @@ except ImportError:
 django_heroku.settings(locals())
 
 # add ENV=development in the .env file for the below to work:
-if os.environ.get('ENV') == 'development':
+if not DEBUG:
     del DATABASES['default']['OPTIONS']['sslmode']

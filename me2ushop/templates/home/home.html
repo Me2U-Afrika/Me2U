@@ -136,7 +136,7 @@
 									{% if image.in_display %}
 
 										<div class="deals_image">
-											<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.medium }}" alt="{{ product.title }}"></a>
+											<a href="{{ deal.product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.medium }}" alt="{{ product.title }}"></a>
 										</div>
 
 									{% endif %}
@@ -148,7 +148,7 @@
 											<div class="deals_item_price_a ml-auto">{{ deal.product.price|currency }}</div>
 										</div>
 										<div class="deals_info_line d-flex flex-row justify-content-start">
-											<div class="deals_item_name">{{ deal.product.title }}</div>
+											<div class="deals_item_name"><a href="{{ deal.product.get_absolute_url }}"> {{ deal.product.title }}</a></div>
 											<div class="deals_item_price ml-auto">{{ deal.deal_discount_price|currency }}</div>
 										</div>
 										<div class="available">
