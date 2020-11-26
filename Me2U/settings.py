@@ -349,7 +349,7 @@ if not DEBUG:
     CACHES = {
         'default': {
             # Use django-bmemcached
-            'BACKEND': 'django_bmemcached.memcached.BMemcached',
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
 
             # TIMEOUT is not the connection timeout! It's the default expiration
             # timeout that should be applied to keys! Setting it to `None`
