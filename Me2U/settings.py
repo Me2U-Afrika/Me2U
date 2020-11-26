@@ -294,11 +294,11 @@ LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, "/Me2U/staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
+# STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+# print(STATICFILES_STORAGE)
 
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # stripe settings
 
@@ -315,8 +315,6 @@ else:
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-    # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
     # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # SECURE_SSL_REDIRECT = True
