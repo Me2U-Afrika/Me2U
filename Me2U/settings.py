@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import pickle
 
+import bmemcached
 import boto3
 import django_heroku
 import environ
@@ -327,6 +329,7 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
+print(EMAIL_HOST_PASSWORD)
 
 servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
@@ -349,7 +352,7 @@ if not DEBUG:
     CACHES = {
         'default': {
             # Use django-bmemcached
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'BACKEND': 'django_bmemcached.memcached.BMemcached',
 
             # TIMEOUT is not the connection timeout! It's the default expiration
             # timeout that should be applied to keys! Setting it to `None`
@@ -360,11 +363,11 @@ if not DEBUG:
             'OPTIONS': {
                 'username': username,
                 'password': password,
-                # 'compression': None,
-                # 'socket_timeout': bmemcached.client.constants.SOCKET_TIMEOUT,
-                # 'pickler': pickle.Pickler,
-                # 'unpickler': pickle.Unpickler,
-                # 'pickle_protocol': 0
+                'compression': None,
+                'socket_timeout': bmemcached.client.constants.SOCKET_TIMEOUT,
+                'pickler': pickle.Pickler,
+                'unpickler': pickle.Unpickler,
+                'pickle_protocol': 0
             }
         }
     }
