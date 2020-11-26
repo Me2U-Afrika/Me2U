@@ -9,16 +9,13 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-import pickle
 
-import bmemcached
-import redis
-from botocore.config import Config
+import os
 
 import boto3
 import django_heroku
-import os
 import environ
+from botocore.config import Config
 
 env = environ.Env(
     # set casting, default value
@@ -56,9 +53,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
-# DEBUG = env('DEBUG')
+DEBUG = env('DEBUG')
 
-DEBUG = False
+# DEBUG = False
 # print('debug:', DEBUG)
 
 SITE_URL = 'me2uafrica.herokuapp.com'
@@ -295,9 +292,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "/Me2U/staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #
 
-# STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-
+STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False
 
 # stripe settings
@@ -331,8 +327,6 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
-# print(os.environ.get('PASSWORD'))
-
 
 servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
@@ -349,9 +343,38 @@ if DEBUG:
     }
 
 
+if not DEBUG:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+    CACHES = {
+        'default': {
+            # Use django-bmemcached
+            'BACKEND': 'django_bmemcached.memcached.BMemcached',
+
+            # TIMEOUT is not the connection timeout! It's the default expiration
+            # timeout that should be applied to keys! Setting it to `None`
+            # disables expiration.
+            'TIMEOUT': None,
+            'LOCATION': servers,
+
+            'OPTIONS': {
+                'username': username,
+                'password': password,
+                # 'compression': None,
+                # 'socket_timeout': bmemcached.client.constants.SOCKET_TIMEOUT,
+                # 'pickler': pickle.Pickler,
+                # 'unpickler': pickle.Unpickler,
+                # 'pickle_protocol': 0
+            }
+        }
+    }
+
+
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
 
+# SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # CRISPY_TEMPLATE_PACK = "bootstrap4"
 
