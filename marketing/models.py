@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils import timezone
 from django.db import models
@@ -84,17 +85,10 @@ class Slider(CreationModificationDateMixin):
 
 
 class Banner(CreationModificationDateMixin):
-    image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
-        'banner_size': (520, 460, True),
-
-    }, delete_orphans=True)
-    image_url = models.CharField(max_length=250, null=True, blank=True)
-    link_url = models.CharField(max_length=250, null=True, blank=True)
 
     banner_text = models.CharField(max_length=200, null=True, blank=True)
     banner_header = models.CharField(max_length=120, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    banner_discount_price = models.DecimalField(max_digits=9, decimal_places=2)
     active = models.BooleanField(default=True)
     featured = models.BooleanField(default=False)
     bestselling = models.BooleanField(default=False)

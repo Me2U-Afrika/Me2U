@@ -136,7 +136,7 @@ class EmailConfirmed(models.Model):
     confirmed = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.confirmed)
+        return str(self.user.email)
 
     def activate_user_email(self):
         activation_url = "%s%s" % (settings.SITE_URL, reverse('users:activation_view', args=[self.activationKey]))
@@ -147,11 +147,26 @@ class EmailConfirmed(models.Model):
         }
         message = render_to_string('users/activation_message.txt', context)
         subject = settings.EMAIL_SUBJECT_PREFIX + "Activate Your Email"
-        self.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
+        self.email_user(subject, message, settings.EMAIL_HOST_USER)
         # print(message)
 
     def email_user(self, subject, message, from_email=None, *kwargs):
         send_mail(subject, message, from_email, [self.user.email], kwargs)
+
+    def send_mail(self):
+        context = {
+
+            "user": self.user.username
+        }
+
+        message = render_to_string('users/message_from_ceo.txt', context)
+        email_subject = 'Welcome to Me2U|Africa. Message from CEO'
+        send_mail(
+            email_subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [self.user.email], fail_silently=True,
+        )
 
 
 # class user_type(models.Model):
@@ -210,7 +225,8 @@ class SellerProfile(CreationModificationDateMixin):
     date_of_registration = models.DateField
     tax_country = CountryField(multiple=False)
     business_description = models.TextField
-    subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE, help_text='Select a monthly recurring subscription fees')
+    subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
+                                         help_text='Select a monthly recurring subscription fees')
     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
     active = models.BooleanField(default=True)
 

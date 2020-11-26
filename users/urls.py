@@ -32,6 +32,7 @@ urlpatterns = [
                 name='seller_confirm'),
     url(r'^activate/(?P<activationKey>[\w-]+)/$', views.activation_view, name='activation_view'),
     url('login/', auth_views.LoginView.as_view(template_name='users/registration/login.html'), name='login'),
+    # url('login/', views.Login, name='login'),
     url('logout/', auth_views.LogoutView.as_view(template_name='users/registration/logout.html'), name='logout'),
     url('password-change/', auth_views.PasswordChangeView.as_view(template_name='users/registration/password_change'
                                                                                 '.html'),

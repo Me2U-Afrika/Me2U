@@ -1,6 +1,7 @@
-from django.http import Http404
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
@@ -33,15 +34,25 @@ def register(request):
         form = UserRegisterForm(request.POST)
         # Checking for validity
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
             username = form.cleaned_data.get('username')
+            current_site = get_current_site(request)
+            print('curr site:', current_site)
             # email = form.cleaned_data.get('email')
             # raw_password = form.cleaned_data.get('password1')
             # account = authenticate(email=email, password=raw_password)
             # login(request, account)
             # form.send_mail()
             messages.success(request, f'Account created for {username}! Check your email to confirm before login')
-            return redirect('login')
+            # return redirect('login')
+            page_message = 'Account Created! Please confirm your email address to complete the registration'
+            context = {
+                'page_message': page_message
+            }
+            return render(request, 'users/activation_complete.html', context)
+
         else:
             messages.warning(request, 'Invalid details, please try again')
             form = UserRegisterForm(request.POST)
@@ -62,18 +73,22 @@ SHA1_RE = re.compile('^[a-f0-9]{40}$')
 def activation_view(request, activationKey):
     if SHA1_RE.search(activationKey):
         print('real')
+        print('user:', request.user)
         try:
             instance = EmailConfirmed.objects.get(activationKey=activationKey)
         except EmailConfirmed.DoesNotExist:
             instance = None
             raise Http404
         if instance is not None and not instance.confirmed:
-            page_message = 'Confirmation Successful! Welcome'
+            page_message = 'Confirmation Successful! You can now login!'
             instance.confirmed = True
-            # instance.activationKey = 'Confirmed'
             instance.save()
+            instance.send_mail()
+            user = User.objects.get(email=instance.user.email)
+            user.is_active = True
+            user.save()
         elif instance is not None and instance.confirmed:
-            page_message = "Already Confirmed"
+            page_message = "Email Address has Already Been Confirmed. Login to start shopping"
         else:
             page_message = ''
         context = {
@@ -84,31 +99,31 @@ def activation_view(request, activationKey):
         raise Http404
 
 
-def register_seller(request, template_name="users/seller_register.html"):
-    pass
-    # create an instance of form
-    # if request.method == 'POST':
-    #     form = SellerRegisterForm(request.POST)
-    #     # Checking for validity
-    #     if form.is_valid():
-    #         form.save()
-    #         username = form.cleaned_data.get('username')
-    #         messages.success(request, f'Account created for {username}!. You can now login!')
-    #         return redirect('login_seller')
-    #     return redirect('login_seller')
-    #
-    # else:
-    #     form_seller = SellerRegisterForm
-    #
-    #     page_title = 'seller Registration'
-    #     context = {
-    #         'form': form_seller,
-    #         'page_title': page_title
-    #     }
-    #     # context_instance = RequestContext(request)
-    #     # print('contxt inst:', context_instance)
-    #     return render(request, template_name, context)
-
+# def Login(request):
+#     if request.method == 'POST':
+#
+#         # AuthenticationForm_can_also_be_used__
+#
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             email_confirmed = EmailConfirmed.objects.get(user=user)
+#             if email_confirmed:
+#                 login(request, user)
+#                 messages.success(request, f' wecome {username} !!')
+#                 return redirect('/')
+#             else:
+#                 messages.warning(request, 'Activate your email prior to login')
+#                 return redirect('login')
+#         else:
+#             messages.warning(request, 'Sign In')
+#         form = AuthenticationForm
+#
+#         return render(request, 'users/registration/login.html', {'form': form, 'title': 'log in'})
+#
+#     form = AuthenticationForm()
+#     return render(request, 'users/registration/login.html', {'form': form, 'title': 'log in'})
 
 @login_required()
 def profile(request):

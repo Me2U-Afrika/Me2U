@@ -105,7 +105,7 @@ class Product(models.Model):
     sku = models.CharField(max_length=120)
     in_stock = models.BooleanField(default=True, blank=True, null=True)
     price = models.DecimalField(max_digits=9, decimal_places=2)
-    discount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, default=0.00)
+    discount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, validators=[MinValueValidator(1.0)])
     made_in_africa = models.BooleanField(default=False)
 
     is_active = models.BooleanField(default=True)

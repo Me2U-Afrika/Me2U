@@ -229,13 +229,13 @@ GA_TRACKER_ID = '123'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'me2uafrica',
+        'NAME': 'me2u',
         'USER': os.environ.get('USER'),
-        'PASSWORD': os.environ.get('PASSWORD'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
         'HOST': 'localhost',
     }
 }
-
+# print(os.environ.get('DATABASE_PASSWORD'))
 import dj_database_url
 
 db_from_env = dj_database_url.config(conn_max_age=600)
@@ -306,7 +306,7 @@ if DEBUG:
     # test keys
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     ALLOWED_HOSTS = ['*']
 
 else:
@@ -328,13 +328,13 @@ else:
 
     # Email Config
     # Email server
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST_USER = "danielmakori0@gmail.com"
-    DEFAULT_FROM_EMAIL = "Me2U|Afrika"
-    EMAIL_HOST = "smtp.gmail.com"
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST_USER = "me2uafrika@gmail.com"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
+print(os.environ.get('PASSWORD'))
 
 #
 
@@ -425,4 +425,5 @@ django_heroku.settings(locals())
 
 # add ENV=development in the .env file for the below to work:
 if not DEBUG:
-    del DATABASES['default']['OPTIONS']['sslmode']
+    if os.environ.get('ENV') == 'development':
+        del DATABASES['default']['OPTIONS']['sslmode']

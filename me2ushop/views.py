@@ -3,7 +3,7 @@ import tempfile
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import user_logged_in
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -52,6 +52,8 @@ from users.models import User
 from users.models import Profile
 
 from marketing.models import Slider
+
+from users.models import EmailConfirmed
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -202,7 +204,7 @@ class HomeView(ListView):
 
         # trends = Trend.objects.all()
         trend_info = TrendInfo.objects.all()
-        print('trend_info:', trend_info)
+        # print('trend_info:', trend_info)
         if trend_info:
             context.update({'trend_info': trend_info})
 
@@ -211,6 +213,7 @@ class HomeView(ListView):
         #     context.update({'trends': trends})
 
         top_banner = Banner.objects.filter(top_display=True)
+
         if top_banner:
             # print('top banner:', top_banner)
             context.update({'top_banner': top_banner[0]})

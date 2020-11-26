@@ -1,5 +1,6 @@
 {% extends 'me2ushop/base_template.html' %}
 {% load mptt_tags %}
+{% load crispy_forms_tags %}
 
 
 
@@ -55,8 +56,8 @@
   </div>
 
   <h1 class="h3 mb-3 font-weight-normal">Login</h1>
-    {% include "includes/field.html" with field=form.username %}
-    {% include "includes/field.html" with field=form.password %}
+
+   {{ form|crispy }}
 
     {% for field in form %}
       <p>
