@@ -302,7 +302,7 @@ if DEBUG:
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
     # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     ALLOWED_HOSTS = ['*']
-    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+    # SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 
 else:
@@ -311,10 +311,10 @@ else:
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # SECURE_SSL_REDIRECT = True
+    # SESSION_COOKIE_SECURE = True
+    # CSRF_COOKIE_SECURE = True
 
     # turn to true during production
     # ENABLE_SSL = False
@@ -328,6 +328,8 @@ else:
 
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
