@@ -1,18 +1,12 @@
 import os
-import sendgrid
 
-from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.conf import settings
-import django.contrib.auth.validators
-from django.core.mail import send_mail
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
 from django.template.loader import render_to_string
 from django.urls import reverse
-
 from django_countries.fields import CountryField
-from django_resized import ResizedImageField
 from stdimage import StdImageField
-
 from utils.models import CreationModificationDateMixin
 
 ADDRESS_CHOICES = (
