@@ -341,9 +341,9 @@ servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
 password = os.environ.get('MEMCACHIER_PASSWORD')
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 if DEBUG:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
     CACHES = {
         'default': {
