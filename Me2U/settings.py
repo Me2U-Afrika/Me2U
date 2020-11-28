@@ -11,9 +11,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-import pickle
-
-import bmemcached
 import boto3
 import django_heroku
 import environ
@@ -50,8 +47,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# CANON_URL_HOST = 'www.me2uafricaherokuapp.com/'
-# CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com']
+# CANON_URL_HOST = 'https://me2uafricaherokuapp.com/'
+# CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com', 'me2uafrica.herokuapp.com']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
@@ -60,7 +57,7 @@ DEBUG = env('DEBUG')
 # DEBUG = False
 # print('debug:', DEBUG)
 
-SITE_URL = 'me2uafrica.herokuapp.com'
+SITE_URL = 'https://me2uafrica.herokuapp.com'
 
 if DEBUG:
     SITE_URL = 'http://127.0.0.1:8000/'
@@ -295,7 +292,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #
 
 STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False
 
 # stripe settings
@@ -306,6 +302,8 @@ if DEBUG:
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
     # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     ALLOWED_HOSTS = ['*']
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+
 
 else:
     # ALLOWED_HOSTS = ['www.me2uafrika.com', 'me2uafrika.com', 'localhost', 'me2uafrica.herokuapp.com']
@@ -323,20 +321,27 @@ else:
 
 # Email Config
 # Email server
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST_USER = "me2uafrika@gmail.com"
-EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
-print(EMAIL_HOST_PASSWORD)
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
 servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
 password = os.environ.get('MEMCACHIER_PASSWORD')
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
 if DEBUG:
-    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
     CACHES = {
         'default': {
@@ -345,10 +350,7 @@ if DEBUG:
         }
     }
 
-
 if not DEBUG:
-    SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-
     CACHES = {
         'default': {
             # Use django-bmemcached
@@ -358,16 +360,12 @@ if not DEBUG:
             # timeout that should be applied to keys! Setting it to `None`
             # disables expiration.
             'TIMEOUT': None,
+
             'LOCATION': servers,
 
             'OPTIONS': {
                 'username': username,
                 'password': password,
-                'compression': None,
-                'socket_timeout': bmemcached.client.constants.SOCKET_TIMEOUT,
-                'pickler': pickle.Pickler,
-                'unpickler': pickle.Unpickler,
-                'pickle_protocol': 0
             }
         }
     }
@@ -386,6 +384,7 @@ try:
 except ImportError:
     pass
 
+    # print(e.message)
 # Activate Django-Heroku.
 django_heroku.settings(locals())
 

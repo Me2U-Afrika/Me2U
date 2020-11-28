@@ -55,6 +55,8 @@ from marketing.models import Slider
 
 from users.models import EmailConfirmed
 
+
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 

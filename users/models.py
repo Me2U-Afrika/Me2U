@@ -1,3 +1,6 @@
+import os
+import sendgrid
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.conf import settings
@@ -151,22 +154,112 @@ class EmailConfirmed(models.Model):
         # print(message)
 
     def email_user(self, subject, message, from_email=None, *kwargs):
-        send_mail(subject, message, from_email, [self.user.email], kwargs)
+        # send_mail(subject, message, from_email, [self.user.email], kwargs)
+
+        from sendgrid import SendGridAPIClient
+        from sendgrid.helpers.mail import Mail
+
+        message = Mail(
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to_emails=self.user.email,
+            subject=subject,
+            html_content=message)
+        try:
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e)
+
+        # sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+        # data = {
+        #     "personalizations": [
+        #         {
+        #             "to": [
+        #                 {
+        #                     "email": self.user.email
+        #                 }
+        #             ],
+        #             "subject": subject
+        #         }
+        #     ],
+        #     "from": {
+        #         "email": from_email
+        #     },
+        #     "content": [
+        #         {
+        #             "type": "text/plain",
+        #             "value": message
+        #         }
+        #     ]
+        # }
+        # response = sg.client.mail.send.post(request_body=data)
+        # print(response.status_code)
+        # print(response.body)
+        # print(response.headers)
 
     def send_mail(self):
+
         context = {
 
             "user": self.user.username
         }
 
         message = render_to_string('users/message_from_ceo.txt', context)
-        email_subject = 'Welcome to Me2U|Africa. Message from CEO'
-        send_mail(
-            email_subject,
-            message,
-            settings.EMAIL_HOST_USER,
-            [self.user.email], fail_silently=True,
-        )
+        email_subject = settings.EMAIL_SUBJECT_PREFIX + 'Welcome to Me2U|AfriKa. Message from CEO'
+        # send_mail(
+        #     email_subject,
+        #     message,
+        #     settings.EMAIL_HOST_USER,
+        #     [self.user.email], fail_silently=True,
+        # )
+        # from sendgrid.helpers.mail import Mail
+
+        from sendgrid import SendGridAPIClient
+        from sendgrid.helpers.mail import Mail
+
+        message = Mail(
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to_emails=self.user.email,
+            subject=email_subject,
+            html_content=message)
+        try:
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e)
+
+        # sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+        # data = {
+        #     "personalizations": [
+        #         {
+        #             "to": [
+        #                 {
+        #                     "email": self.user.email
+        #                 }
+        #             ],
+        #             "subject": email_subject
+        #         }
+        #     ],
+        #     "from": {
+        #         "email": settings.DEFAULT_FROM_EMAIL,
+        #     },
+        #     "content": [
+        #         {
+        #             "type": "text/plain",
+        #             "value": message
+        #         }
+        #     ]
+        # }
+        # response = sg.client.mail.send.post(request_body=data)
+        # print(response.status_code)
+        # print(response.body)
+        # print(response.headers)
 
 
 # class user_type(models.Model):
