@@ -271,9 +271,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-SITE_NAME = 'Me2U|Africa'
-META_KEYWORDS = 'ONLINE MARKET, AFRICA BIGGEST ECOMMERCE,BUY ONLINE TODAY'
-META_DESCRIPTION = 'Me2U|Africa is an online self sustaining ecommerce tailored towards delivering best services and ' \
+SITE_NAME = 'Me2U|Afrika'
+META_KEYWORDS = 'ONLINE MARKET, AFRICA BIGGEST ECOMMERCE, BUY ONLINE TODAY'
+META_DESCRIPTION = 'Me2U|Afrika is an online self sustaining ecommerce tailored towards delivering best services and ' \
                    'products' \
                    'Across the globe with a major focus in African Markets.'
 

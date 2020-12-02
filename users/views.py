@@ -34,24 +34,24 @@ def register(request):
         form = UserRegisterForm(request.POST)
         # Checking for validity
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
+            # user = form.save(commit=False)
+            # user.is_active = False
+            # user.save()
             username = form.cleaned_data.get('username')
             current_site = get_current_site(request)
-            print('curr site:', current_site)
+            # print('curr site:', current_site)
             # email = form.cleaned_data.get('email')
             # raw_password = form.cleaned_data.get('password1')
             # account = authenticate(email=email, password=raw_password)
             # login(request, account)
             # form.send_mail()
             messages.success(request, f'Account created for {username}! Check your email to confirm before login')
-            # return redirect('login')
-            page_message = 'Account Created! Please confirm your email address to complete the registration'
-            context = {
-                'page_message': page_message
-            }
-            return render(request, 'users/activation_complete.html', context)
+            return redirect('login')
+            # page_message = 'Account Created! Please confirm your email address to complete the registration'
+            # context = {
+            #     'page_message': page_message
+            # }
+            # return render(request, 'users/activation_complete.html', context)
 
         else:
             messages.warning(request, 'Invalid details, please try again')
@@ -83,7 +83,7 @@ def activation_view(request, activationKey):
             page_message = 'Confirmation Successful! You can now login!'
             instance.confirmed = True
             instance.save()
-            instance.send_mail()
+            # instance.send_mail()
             user = User.objects.get(email=instance.user.email)
             user.is_active = True
             user.save()
