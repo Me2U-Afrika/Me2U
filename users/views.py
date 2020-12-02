@@ -1,26 +1,23 @@
-from django.contrib.sites.shortcuts import get_current_site
-from django.http import Http404, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib import messages
-from django.utils import timezone
-from django.views.decorators.csrf import csrf_protect
-from django.views.generic import ListView
-
-from .forms import UserRegisterForm
-from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
-from me2ushop.models import Order, OrderItem, Product, Brand
-from .profile import retrieve_profile, set_profile, set_personal, set_pic
-from .forms import AddressForm, PersonalInfoForm, ProfilePicForm
-from .models import Profile, User, SellerProfile, AutomobileProfile, EmailConfirmed
-from django.contrib.auth import authenticate, login
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic.edit import (FormView, CreateView, UpdateView, DeleteView, )
 import logging
 import re
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import Http404
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.views.generic import ListView
+from django.views.generic.edit import (CreateView, UpdateView, DeleteView, )
 from me2ushop import models
+from me2ushop.models import Order, OrderItem, Product, Brand
+
+from .forms import PersonalInfoForm, ProfilePicForm
+from .forms import UserRegisterForm
+from .models import Profile, User, SellerProfile, AutomobileProfile, EmailConfirmed
+from .profile import retrieve_profile, set_pic
 
 logger = logging.getLogger(__name__)
 
@@ -411,7 +408,6 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         print('registering brand')
-        from django.contrib.auth.models import Group
         obj = form.save(commit=False)
         print('obj:', obj)
 

@@ -97,7 +97,7 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return str(self.email)
+        return str(self.email,)
 
     def get_absolute_url(self):
         return "/users/%i/" % self.pk

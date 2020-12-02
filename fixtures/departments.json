@@ -1,0 +1,401 @@
+[
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-02T13:46:21.002Z",
+    "modified": "2020-10-08T01:22:57.607Z",
+    "parent": null,
+    "category_name": "Computers & Laptops",
+    "icon_url": "images/popular_2.png",
+    "slug": "Computer-laptops",
+    "description": "awww",
+    "is_active": true,
+    "is_bestselling": true,
+    "image": "",
+    "meta_keywords": "awww",
+    "meta_description": "awww",
+    "lft": 1,
+    "rght": 10,
+    "tree_id": 1,
+    "level": 0
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-02T13:47:36.912Z",
+    "modified": "2020-10-08T01:23:24.351Z",
+    "parent": 1,
+    "category_name": "Mobile Phones",
+    "icon_url": "images/popular_1.png",
+    "slug": "mobile-phone",
+    "description": "awww",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "awww",
+    "meta_description": "awww",
+    "lft": 2,
+    "rght": 3,
+    "tree_id": 1,
+    "level": 1
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-02T13:51:23.953Z",
+    "modified": "2020-10-05T19:34:16.683Z",
+    "parent": null,
+    "category_name": "Books collection",
+    "icon_url": null,
+    "slug": "books",
+    "description": "awww",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "awww",
+    "meta_description": "awww",
+    "lft": 1,
+    "rght": 6,
+    "tree_id": 2,
+    "level": 0
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-02T13:51:35.187Z",
+    "modified": "2020-10-05T19:34:30.932Z",
+    "parent": 8,
+    "category_name": "Novels",
+    "icon_url": null,
+    "slug": "novels",
+    "description": "awww",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "awww",
+    "meta_description": "awww",
+    "lft": 2,
+    "rght": 3,
+    "tree_id": 2,
+    "level": 1
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-02T18:16:11.518Z",
+    "modified": "2020-10-05T19:34:42.691Z",
+    "parent": 8,
+    "category_name": "Romance love",
+    "icon_url": null,
+    "slug": "romance",
+    "description": "awww",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "awww",
+    "meta_description": "awww",
+    "lft": 4,
+    "rght": 5,
+    "tree_id": 2,
+    "level": 1
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-02T18:19:28.414Z",
+    "modified": "2020-10-05T19:34:01.284Z",
+    "parent": null,
+    "category_name": "Art & Craft",
+    "icon_url": null,
+    "slug": "art-craft",
+    "description": "awww",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "awww",
+    "meta_description": "awww",
+    "lft": 1,
+    "rght": 4,
+    "tree_id": 3,
+    "level": 0
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-02T18:34:57.949Z",
+    "modified": "2020-10-05T19:33:50.326Z",
+    "parent": null,
+    "category_name": "Furniture",
+    "icon_url": null,
+    "slug": "furniture",
+    "description": "awww",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "awww",
+    "meta_description": "awww",
+    "lft": 1,
+    "rght": 4,
+    "tree_id": 4,
+    "level": 0
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-02T18:35:25.248Z",
+    "modified": "2020-10-05T19:35:20.649Z",
+    "parent": 12,
+    "category_name": "Beds",
+    "icon_url": null,
+    "slug": "beds",
+    "description": "awww",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "awww",
+    "meta_description": "awww",
+    "lft": 2,
+    "rght": 3,
+    "tree_id": 4,
+    "level": 1
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-03T12:46:57.146Z",
+    "modified": null,
+    "parent": 11,
+    "category_name": "Art Photographs",
+    "icon_url": null,
+    "slug": "art-photographs",
+    "description": "kjfkfjkdjfk",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "images/category/Denim_jeans_VNvTxHF.jpg",
+    "meta_keywords": "Electronics, cameras, phones",
+    "meta_description": "Get cheap Electronics",
+    "lft": 2,
+    "rght": 3,
+    "tree_id": 3,
+    "level": 1
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-05T17:25:23.960Z",
+    "modified": null,
+    "parent": 1,
+    "category_name": "Laptops",
+    "icon_url": null,
+    "slug": "laptops",
+    "description": "Get quality cheap laptops today",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "images/category/15_PpmtM7q.jpg",
+    "meta_keywords": "Electronics, cameras, phones",
+    "meta_description": "Get cheap Electronics",
+    "lft": 4,
+    "rght": 7,
+    "tree_id": 1,
+    "level": 1
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-05T19:57:56.795Z",
+    "modified": "2020-10-08T01:17:51.177Z",
+    "parent": 1,
+    "category_name": "Electric Charges",
+    "icon_url": null,
+    "slug": "electric",
+    "description": "Awww",
+    "is_active": true,
+    "is_bestselling": true,
+    "image": "",
+    "meta_keywords": "Electronics, cameras, phones",
+    "meta_description": "Fresh from the Farm products",
+    "lft": 8,
+    "rght": 9,
+    "tree_id": 1,
+    "level": 1
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-06T18:58:04.388Z",
+    "modified": "2020-10-08T01:36:49.384Z",
+    "parent": null,
+    "category_name": "Cameras & Photos",
+    "icon_url": null,
+    "slug": "cameras-photos",
+    "description": "Get quality camera with high resolution in our stores",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "Electronics, cameras, photos",
+    "meta_description": "Get cheap Electronics cameras and photos from different designers and artists",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 5,
+    "level": 0
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-06T18:59:36.810Z",
+    "modified": null,
+    "parent": null,
+    "category_name": "Hardware",
+    "icon_url": null,
+    "slug": "hardware",
+    "description": "Get Hardware at your convenience",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "Hardware, construction",
+    "meta_description": "Hardware materials available",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 6,
+    "level": 0
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-06T19:01:51.096Z",
+    "modified": null,
+    "parent": null,
+    "category_name": "TV & Audio",
+    "icon_url": null,
+    "slug": "tv-audio",
+    "description": "Get amazing screens and quality televisions and music from our stores.",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "Tv, audio, buy tv",
+    "meta_description": "Buy screens and audio music",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 7,
+    "level": 0
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-06T19:03:31.955Z",
+    "modified": "2020-10-08T01:23:58.527Z",
+    "parent": null,
+    "category_name": "Gadgets",
+    "icon_url": "images/popular_3.png",
+    "slug": "gadgets",
+    "description": "Get cheap gadgets in our stores",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "gadgets, accessories",
+    "meta_description": "Get gadgets at cheap affordable prices.",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 8,
+    "level": 0
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-06T19:05:11.677Z",
+    "modified": null,
+    "parent": null,
+    "category_name": "Car Electronics",
+    "icon_url": null,
+    "slug": "car-electronics",
+    "description": "Get cheap car elelctronics for your ride",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "Car hardware, car electronics",
+    "meta_description": "Get Car electronics at affordable prices.",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 9,
+    "level": 0
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-06T19:07:37.368Z",
+    "modified": "2020-10-08T01:24:31.034Z",
+    "parent": null,
+    "category_name": "Video Games  & Consoles",
+    "icon_url": "images/popular_4.png",
+    "slug": "video-games-consoles",
+    "description": "Get latest games and consoles at affordable rates",
+    "is_active": true,
+    "is_bestselling": true,
+    "image": "",
+    "meta_keywords": "video, consoles, gadgets",
+    "meta_description": "Get video consoles",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 10,
+    "level": 0
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-06T23:15:55.472Z",
+    "modified": null,
+    "parent": 17,
+    "category_name": "Dell",
+    "icon_url": null,
+    "slug": "dellll",
+    "description": "Awwwesome",
+    "is_active": true,
+    "is_bestselling": false,
+    "image": "",
+    "meta_keywords": "Electronics, cameras, phones",
+    "meta_description": "Fresh from the Farm products",
+    "lft": 5,
+    "rght": 6,
+    "tree_id": 1,
+    "level": 2
+  }
+},
+{
+  "model": "categories.department",
+  "fields": {
+    "created": "2020-10-08T01:25:30.105Z",
+    "modified": null,
+    "parent": null,
+    "category_name": "Accessories",
+    "icon_url": "images/popular_5.png",
+    "slug": "accessories",
+    "description": "Get accessories of any kind",
+    "is_active": true,
+    "is_bestselling": true,
+    "image": "",
+    "meta_keywords": "Get accessories of any kind",
+    "meta_description": "Get accessories of any kind",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 11,
+    "level": 0
+  }
+}
+]
