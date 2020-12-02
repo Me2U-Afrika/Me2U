@@ -372,23 +372,34 @@ if DEBUG:
     }
 
 if not DEBUG:
+    # CACHES = {
+    #     'default': {
+    #         # Use django-bmemcached
+    #         # 'BACKEND': 'django_bmemcached.memcached.BMemcached',
+    #         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+    #
+    #         # TIMEOUT is not the connection timeout! It's the default expiration
+    #         # timeout that should be applied to keys! Setting it to `None`
+    #         # disables expiration.
+    #         'TIMEOUT': None,
+    #
+    #         'LOCATION': servers,
+    #
+    #         'OPTIONS': {
+    #             'username': username,
+    #             'password': password,
+    #         }
+    #     }
+    # }
+
     CACHES = {
         'default': {
-            # Use django-bmemcached
-            # 'BACKEND': 'django_bmemcached.memcached.BMemcached',
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-
-            # TIMEOUT is not the connection timeout! It's the default expiration
-            # timeout that should be applied to keys! Setting it to `None`
-            # disables expiration.
-            'TIMEOUT': None,
-
-            'LOCATION': servers,
-
+            'BACKEND': 'django_bmemcached.memcached.BMemcached',
+            'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS').split(','),
             'OPTIONS': {
-                'username': username,
-                'password': password,
-            }
+                        'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
+                        'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
+                }
         }
     }
 
