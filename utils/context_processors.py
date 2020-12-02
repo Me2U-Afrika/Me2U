@@ -17,7 +17,10 @@ def me2u(request):
     wish_list = None
 
     if request.user.is_authenticated and request.user.is_seller:
-        brand = Brand.objects.get(user=request.user),
+        try:
+            brand = Brand.objects.get(user=request.user)
+        except Exception:
+            brand = None
 
     if request.user.is_authenticated:
         wish_list = WishList.objects.filter(user=request.user)
