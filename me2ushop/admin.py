@@ -186,8 +186,9 @@ class SellersProductAdmin(ProductAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         brand = Brand.objects.get(user=request.user)
+        if brand:
 
-        return qs.filter(brand_name=brand)
+            return qs.filter(brand_name=brand)
 
     def save_model(self, request, obj, form, change):
         brand = Brand.objects.get(user=request.user)
@@ -419,12 +420,13 @@ class SellersOrderAdmin(admin.ModelAdmin):
         from utils import context_processors
         qs = super().get_queryset(request)
         brand = context_processors.me2u(request)['brand']
-        print('qs:', qs.filter(items__item__brand_name=brand[0]))
-        print('brand:', brand)
-        products = brand[0].product_set.all()
-        print('products:', products)
-
+        # print('qs:', qs.filter(items__item__brand_name=brand[0]))
+        # print('brand:', brand)
         if brand:
+
+            products = brand[0].product_set.all()
+            # print('products:', products)
+
             return qs.filter(items__item__in=products).distinct()
 
             # for order in qs:
@@ -463,8 +465,6 @@ class SellersOrderItemAdmin(admin.ModelAdmin):
         from utils import context_processors
         qs = super().get_queryset(request)
         brand = context_processors.me2u(request)['brand']
-        print('qs:', qs.filter(item__brand_name=brand[0]))
-        print('brand:', brand)
 
         if brand:
             return qs.filter(item__brand_name=brand[0])
