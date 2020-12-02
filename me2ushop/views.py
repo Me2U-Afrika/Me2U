@@ -55,8 +55,6 @@ from marketing.models import Slider
 
 from users.models import EmailConfirmed
 
-
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -113,8 +111,8 @@ class SellerView(ListView):
         # user = get_object_or_404(User, id=self.kwargs.get('id'))
         brand = get_object_or_404(Brand, id=self.kwargs.get('id'))
         # print('user:', self.kwargs)
-
-        return Product.active.filter(brand_name=brand).order_by('-created_at')
+        if brand:
+            return Product.active.filter(brand_name=brand).order_by('-created_at')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         super(SellerView, self).get_context_data(**kwargs)
@@ -122,21 +120,19 @@ class SellerView(ListView):
         # user = get_object_or_404(User, id=self.kwargs.get('id'))
         store = get_object_or_404(Brand, id=self.kwargs.get('id'))
         brand = Brand.objects.get(title=store)
-        brands = Brand.objects.filter(active=True).exclude(title=store)
-        print('brand:', brand)
-
-        print('user:', store)
+        if brand:
+            brands = Brand.objects.filter(active=True).exclude(title=store)
 
         # products = Product.active.filter(seller=user).order_by('-created_at')
-        products = Product.active.filter(brand_name=store).order_by('-created_at')
-        context = {
-            'products': products,
-            'brand': brand,
-            'brands': brands,
+            products = Product.active.filter(brand_name=store).order_by('-created_at')
+            context = {
+                'products': products,
+                'brand': brand,
+                'brands': brands,
 
-        }
+            }
 
-        return context
+            return context
 
 
 class HomeView(ListView):
@@ -421,7 +417,7 @@ class ProductDetailedView(DetailView):
 
         if product.brand_name:
             brand_id = product.brand_name.id
-            print('brand_id:', brand_id)
+            # print('brand_id:', brand_id)
             context.update({'brand_id': brand_id})
 
         product_image = ProductImage.displayed.filter(item=product)
