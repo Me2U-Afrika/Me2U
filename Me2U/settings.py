@@ -48,7 +48,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # CANON_URL_HOST = 'https://me2uafricaherokuapp.com/'
-# CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com', 'me2uafrica.herokuapp.com']
+# CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com', 'me2u africa.herokuapp.com']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
@@ -60,7 +60,7 @@ DEBUG = env('DEBUG')
 SITE_URL = 'https://me2uafrica.herokuapp.com'
 
 if DEBUG:
-    SITE_URL = 'http://127.0.0.1:8000/'
+    SITE_URL = 'http://127.0.0.1:8000'
 
 EMAIL_SUBJECT_PREFIX = '[Me2U|Afrika]'
 
@@ -321,19 +321,38 @@ else:
 
 # Email Config
 # Email server
+
+# MAILGUM SMTP WORKING
+# MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_ACCESS_KEY', '')
+# MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY', '')
+# MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN', '')
+# EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER', '')
+# EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT', '')
+# EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN', '')
+# EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD', '')
+
+
 # EMAIL_HOST = "smtp.gmail.com"
 # EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 # EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+# EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+# SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+# SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+#
+# EMAIL_HOST = 'smtp.sendgrid.net'
+# EMAIL_HOST_USER = 'apikey'
+# EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+# EMAIL_PORT = 587
+MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_ACCESS_KEY', '')
+MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY', '')
+MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN', '')
+EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER', '')
+EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT', '')
+EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN', '')
+EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD', '')
 
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
@@ -356,7 +375,8 @@ if not DEBUG:
     CACHES = {
         'default': {
             # Use django-bmemcached
-            'BACKEND': 'django_bmemcached.memcached.BMemcached',
+            # 'BACKEND': 'django_bmemcached.memcached.BMemcached',
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
 
             # TIMEOUT is not the connection timeout! It's the default expiration
             # timeout that should be applied to keys! Setting it to `None`
