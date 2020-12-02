@@ -490,7 +490,8 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         obj = form.save(commit=False)
         stock = obj.stock
         brand = Brand.objects.get(user=self.request.user)
-        obj.brand_name = brand
+        if brand:
+            obj.brand_name = brand
         if stock > 0:
             obj.is_active = True
         obj.save()
@@ -518,14 +519,15 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         form.instance.seller = self.request.user
         obj = form.save(commit=False)
         stock = obj.stock
-        print('stock:', stock)
+        # print('stock:', stock)
         if stock >= 1:
             obj.is_active = True
         else:
             obj.is_active = False
 
         brand = Brand.objects.get(user=self.request.user)
-        obj.brand_name = brand
+        if brand:
+            obj.brand_name = brand
 
         obj.save()
         return super(ProductUpdateView, self).form_valid(form)
@@ -572,23 +574,23 @@ def product_image_create(request, slug):
 
     product_image = ProductImage.objects.filter(item__brand_name__user=request.user, item=product)
     if request.method == 'POST':
-        print('we came to post')
+        # print('we came to post')
         form = ProductImageCreate(request.POST, request.FILES, instance=request.user)
-        print('form', form)
+        # print('form', form)
         if form.is_valid():
             print(form.is_valid())
             # obj = form.save(commit=False)
             in_display = form.cleaned_data.get('in_display')
             image = form.cleaned_data.get('image')
             item = form.cleaned_data.get('item')
-            print('item:', item)
-            print('indisplay', in_display)
-            print('image:', image)
+            # print('item:', item)
+            # print('indisplay', in_display)
+            # print('image:', image)
 
             if product.brand_name.user == request.user:
 
                 current_saved_default = ProductImage.displayed.filter(item__brand_name__user=request.user, item=product)
-                print('current', current_saved_default)
+                # print('current', current_saved_default)
                 if current_saved_default.exists():
                     if in_display:
                         current_saved = current_saved_default[0]
@@ -650,7 +652,7 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
         if item.brand_name.user == self.request.user:
 
             current_saved_default = ProductImage.displayed.filter(item__brand_name__user=user, item=item)
-            print('current', current_saved_default)
+            # print('current', current_saved_default)
 
             if default_image:
                 if current_saved_default.exists():
@@ -672,15 +674,15 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        print('obj', obj)
+        # print('obj', obj)
 
         item = obj.item
-        print('item:', item)
+        # print('item:', item)
         user = self.request.user
         default_image = obj.in_display
 
         current_saved_default = ProductImage.displayed.filter(item__brand_name__user=user, item=item)
-        print('current', current_saved_default)
+        # print('current', current_saved_default)
 
         if default_image:
             if current_saved_default.exists():

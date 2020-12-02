@@ -1,16 +1,11 @@
-from django.shortcuts import render
-from django.template import RequestContext
-from . import search
-from django.conf import settings
-from django.views.generic import ListView, DetailView, View
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
-
-from .search import _prepare_words
 from Me2U.settings import PRODUCTS_PER_ROW
-
+from django.conf import settings
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.shortcuts import render
 from stats import stats
 
-from me2ushop.models import Brand
+from . import search
+from .search import _prepare_words
 
 
 def search_results(request, template_name="home/search_results.html"):

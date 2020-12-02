@@ -1,19 +1,15 @@
-from django.shortcuts import render
 from .models import Category, Department
-from me2ushop.models import Product
-from django.views.generic import ListView, DetailView, View
-from django.shortcuts import render, get_object_or_404
-from django.shortcuts import redirect
-from stats import stats
-from Me2U.settings import PRODUCTS_PER_ROW
-from django.http import HttpResponse
 from django.core import serializers
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.generic import DetailView
+from me2ushop.models import Product
+
+from .models import Category, Department
 
 
 # from django.template import RequestContext
-# from me2ushop.forms import CartAddProductForm
-#
-#
+
 def get_json_products(request):
     products = Product.active.all()
     json_products = serializers.serialize("json", products)

@@ -1,27 +1,22 @@
+import logging
+import tempfile
+# from .models import Item, OrderItem, Order, Address, StripePayment, Coupon, RequestRefund
+from datetime import datetime, timedelta
+
+from django import forms
 from django.conf.urls import url
 from django.contrib import admin
-# from .models import Item, OrderItem, Order, Address, StripePayment, Coupon, RequestRefund
-from django.utils.html import format_html
-from datetime import datetime, timedelta
-import logging
-from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-from django.utils.html import format_html
 from django.db.models.functions import TruncDay
-from django.db.models import Avg, Count, Min, Sum
-from django.urls import path
-from django.template.response import TemplateResponse
-from django import forms
-
-from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
+from django.utils.html import format_html
 from weasyprint import HTML
-import tempfile
 
 logger = logging.getLogger(__name__)
 
 from .models import *
-from users.models import User
 
 
 # This mixin will be used for the invoice functionality, which is
@@ -187,19 +182,19 @@ class SellersProductAdmin(ProductAdmin):
         qs = super().get_queryset(request)
         brand = Brand.objects.get(user=request.user)
         if brand:
-
             return qs.filter(brand_name=brand)
 
     def save_model(self, request, obj, form, change):
         brand = Brand.objects.get(user=request.user)
-        if not obj.brand_name:
-            obj.brand_name = brand
-        if obj.stock < 1:
-            obj.in_stock = False
-            obj.is_active = False
-        else:
-            obj.in_stock = True
-        obj.save()
+        if brand:
+            if not obj.brand_name:
+                obj.brand_name = brand
+            if obj.stock < 1:
+                obj.in_stock = False
+                obj.is_active = False
+            else:
+                obj.in_stock = True
+            obj.save()
 
 
 class BrandAdmin(admin.ModelAdmin):
@@ -419,12 +414,15 @@ class SellersOrderAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         from utils import context_processors
         qs = super().get_queryset(request)
-        brand = context_processors.me2u(request)['brand']
+        try:
+
+            brand = context_processors.me2u(request)['brand'][0]
+        except Exception:
+            brand = None
         # print('qs:', qs.filter(items__item__brand_name=brand[0]))
         # print('brand:', brand)
         if brand:
-
-            products = brand[0].product_set.all()
+            products = brand.product_set.all()
             # print('products:', products)
 
             return qs.filter(items__item__in=products).distinct()
@@ -464,10 +462,13 @@ class SellersOrderItemAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         from utils import context_processors
         qs = super().get_queryset(request)
-        brand = context_processors.me2u(request)['brand']
+        try:
+            brand = context_processors.me2u(request)['brand'][0]
+        except Exception:
+            brand = None
 
         if brand:
-            return qs.filter(item__brand_name=brand[0])
+            return qs.filter(item__brand_name=brand)
 
 
 class DispatchersOrderAdmin(admin.ModelAdmin):

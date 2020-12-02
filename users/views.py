@@ -415,17 +415,20 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
         print('obj:', obj)
 
         from django.contrib.auth.models import Group
+
         seller_group = Group.objects.get(name='Sellers')
+
         obj = form.save(commit=False)
-        print('obj:', obj)
+        # print('obj:', obj)
         user = self.request.user
         # user_instance = User.objects.get(email=user)
-        print(seller_group)
+        # print(seller_group)
         # print(user_instance)
-        seller_group.user_set.add(user)
-        user.is_staff = True
-        user.save()
-        print(user.is_seller)
+        if seller_group:
+            seller_group.user_set.add(user)
+            user.is_staff = True
+            user.save()
+        # print(user.is_seller)
 
         obj.user = user
         obj.save()
