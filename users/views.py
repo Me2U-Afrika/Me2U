@@ -34,6 +34,7 @@ def register(request):
         form = UserRegisterForm(request.POST)
         # Checking for validity
         if form.is_valid():
+            form.save()
             # user = form.save(commit=False)
             # user.is_active = False
             # user.save()
