@@ -50,7 +50,7 @@ urlpatterns = [
 
     url(r'^checkout/', views.Checkout_page.as_view(), {'SSL': True}, name='checkout'),
     url(r'^add_coupon/', views.add_coupon, name='add_coupon'),
-    url(r'^checkout-done/(?P<order_id>[\w-]+)/$', views.checkout_done, name='checkout_done'),
+    url(r'^checkout-done/', views.checkout_done, name='checkout-done'),
 
     url(r'payment/(?P<payment_option>[\w-]+)/$', views.PaymentView.as_view(), {'SSL': True}, name='payment'),
     url('request_refund/', views.RefundView.as_view(), name='request_refund'),

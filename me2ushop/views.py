@@ -123,7 +123,7 @@ class SellerView(ListView):
         if brand:
             brands = Brand.objects.filter(active=True).exclude(title=store)
 
-        # products = Product.active.filter(seller=user).order_by('-created_at')
+            # products = Product.active.filter(seller=user).order_by('-created_at')
             products = Product.active.filter(brand_name=store).order_by('-created_at')
             context = {
                 'products': products,
@@ -2166,9 +2166,10 @@ class PaymentView(View):
         # `source` is obtained with Stripe.js; see
         # https://stripe.com/docs/payments/accept-a-payment-charges#web-create-token
 
-        order = ''
+        order = None
         if self.request.user.is_authenticated:
             order = Order.objects.get(user=self.request.user, ordered=False)
+
         else:
             if self.request.cart:
                 order = Order.objects.get(id=self.request.cart.id, ordered=False)
@@ -2178,97 +2179,91 @@ class PaymentView(View):
 
         if form.is_valid():
             print('valid payment form')
+            print('order:', order)
             token = self.request.POST['stripeToken']
-
-            use_default = form.cleaned_data.get('use_default')
-            save = form.cleaned_data.get('save')
 
             amount = int(order.get_total() * 100)  # get in ksh
 
-            try:
+            # try:
+            charge = stripe.Charge.create(
+                amount=amount,
+                currency="usd",
+                source=token,
+            )
 
-                charge = stripe.Charge.create(
-                    amount=amount,
-                    currency="usd",
-                    source=token,
-                )
+            # print(charge)
+            # create payment
+            payment = StripePayment()
+            payment.stripe_charge_id = charge['id']
+            print(payment.stripe_charge_id)
 
-                # print(charge)
-                # create payment
-                payment = StripePayment()
-                payment.stripe_charge_id = charge['id']
-                print(payment.stripe_charge_id)
-                if self.request.user.is_authenticated:
-                    payment.user = self.request.user
-                # else:
-                #     payment.cart_id = self.request.cart_id
-                payment.amount = amount
-                payment.save()
+            if self.request.user.is_authenticated:
+                payment.user = self.request.user
+            else:
+                payment.user = None
+            payment.amount = amount
+            payment.save()
 
-                # Assign payment to user
-                order.payment = payment
-                if order.payment:
-                    order.ordered = True
-                    order.status = 20
-                    # Assigning the order a ref code during checkout payment
-                    order.ref_code = create_ref_code()
-                    order.save()
-                    del self.request.session['cart_id']
+            order.ordered = True
+            print(order.ordered)
+            status = StatusCode.objects.get(short_name=20)
+            order.status_code = status
+            print(order.status_code)
+            # Assigning the order a ref code during checkout payment
+            order.ref_code = create_ref_code()
 
-                    # Changing order_items in cart to ordered
-                    order_items = order.items.all()
-                    order_items.update(ordered=True)
-                    for item in order_items:
-                        item.save()
+            # Changing order_items in cart to ordered
+            order_items = order.items.all()
+            order_items.update(ordered=True)
+            for item in order_items:
+                item.save()
 
-                    # if order.ordered:
-                    #     if order.coupon:
-                    #         order.coupon.valid = False
-                    #         order.coupon.save()
-                    #         messages.success(self.request, "Coupon was SUCCESSFUL")
-
-                    messages.success(self.request, " CONGRATULATIONS YOUR ORDER WAS SUCCESSFUL")
-                return redirect("me2ushop:checkout_done", kwargs={'order_id': order.id})
-
-            except stripe.error.CardError as e:
-                # Since it's a decline, stripe.error.CardError will be caught
-                body = e.json_body
-                err = body.get('error', {})
-                messages.error(self.request, f"{err.get('message')}")
-                return redirect("me2ushop:home")
-
-            except stripe.error.RateLimitError as e:
-                messages.error(self.request, "Rate Limit Error ")
-                return redirect("me2ushop:home")
-
-            except stripe.error.InvalidRequestError as e:
-                # Invalid parameters were supplied to Stripe's API
-                messages.error(self.request, "Invalid parameters")
-                return redirect("me2ushop:home")
-
-            except stripe.error.AuthenticationError as e:
-                # Authentication with Stripe's API failed
-                # (maybe you changed API keys recently)
-                messages.error(self.request, "Not authenticated")
-                return redirect("me2ushop:home")
-
-            except stripe.error.APIConnectionError as e:
-                # Network communication with Stripe failed
-                messages.error(self.request, "Network error ")
-                return redirect("me2ushop:home")
-
-            except stripe.error.StripeError as e:
-                # Display a very generic error to the user, and maybe send
-                # yourself an email
-                messages.error(self.request,
-                               "Something went wrong. You were not charged. Please try again or contact us")
-                return redirect("me2ushop:home")
-
-            except Exception:
-                # Something else happened, completely unrelated to Stripe
-                messages.error(self.request,
-                               "Order recorded,  we have been notified. You will receive a call for order confirmation ")
-                return redirect("me2ushop:home")
+            order.save()
+            del self.request.session['cart_id']
+            messages.success(self.request, " CONGRATULATIONS YOUR ORDER WAS SUCCESSFUL")
+            print(order.id)
+            return redirect("me2ushop:checkout-done")
+            #
+            # except stripe.error.CardError as e:
+            #     # Since it's a decline, stripe.error.CardError will be caught
+            #     body = e.json_body
+            #     err = body.get('error', {})
+            #     messages.error(self.request, f"{err.get('message')}")
+            #     return redirect("me2ushop:home")
+            #
+            # except stripe.error.RateLimitError as e:
+            #     messages.error(self.request, "Rate Limit Error ")
+            #     return redirect("me2ushop:home")
+            #
+            # except stripe.error.InvalidRequestError as e:
+            #     # Invalid parameters were supplied to Stripe's API
+            #     messages.error(self.request, "Invalid parameters")
+            #     return redirect("me2ushop:home")
+            #
+            # except stripe.error.AuthenticationError as e:
+            #     # Authentication with Stripe's API failed
+            #     # (maybe you changed API keys recently)
+            #     messages.error(self.request, "Not authenticated")
+            #     return redirect("me2ushop:home")
+            #
+            # except stripe.error.APIConnectionError as e:
+            #     # Network communication with Stripe failed
+            #     messages.error(self.request, "Network error ")
+            #     return redirect("me2ushop:home")
+            #
+            # except stripe.error.StripeError as e:
+            #     # Display a very generic error to the user, and maybe send
+            #     # yourself an email
+            #     messages.error(self.request,
+            #                    "Something went wrong. You were not charged. Please try again or contact us")
+            #     return redirect("me2ushop:home")
+            #
+            # except Exception:
+            #     # Something else happened, completely unrelated to Stripe
+            #     print("unkown error")
+            #     messages.error(self.request,
+            #                    "Order recorded,  we have been notified. You will receive a call for order confirmation ")
+            #     return redirect("me2ushop:home")
 
         else:
             messages.error(self.request, "Invalid form ")
@@ -2276,17 +2271,23 @@ class PaymentView(View):
 
 
 @login_required()
-def checkout_done(request, order_id):
-    order = Order.objects.get(pk=order_id)
+def checkout_done(request):
+    # order = Order.objects.get(pk=order_id)
+    orders = Order.objects.filter(user=request.user, ordered=True)
+    if orders.exists():
+        order = orders[0]
 
-    context = {
-        'order': order,
+        context = {
+            'order': order,
 
-    }
-    if order.user == request.user:
-        return render(request, 'home/checkout_done.html', context)
+        }
+        if order.user == request.user:
+            return render(request, 'home/checkout_done.html', context)
+        else:
+            messages.warning(request, "Not Authorized to view this order")
+            return redirect('me2ushop:home')
     else:
-        messages.warning(request, "Not Authorized")
+        messages.warning(request, "No active orders")
         return redirect('me2ushop:home')
 
 

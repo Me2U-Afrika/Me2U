@@ -104,7 +104,7 @@
                     <div class="top_bar_content ml-auto">
                         <div class="top_bar_menu">
                             <ul class="standard_dropdown top_bar_dropdown">
-                                <li>
+                                <li class="disabled">
                                     <a href="#">English<i class="fas fa-chevron-down"></i></a>
                                     <ul>
                                         <li><a href="#">Kiswahili</a></li>
@@ -112,13 +112,16 @@
                                         <li><a href="#">French</a></li>
                                     </ul>
                                 </li>
-                                <li>
+                                <li class="disabled">
                                     <a href="#">$ US dollar<i class="fas fa-chevron-down"></i></a>
                                     <ul>
                                         <li><a href="#">KES Ksh</a></li>
                                         <li><a href="#">RWF Rwandan Francs</a></li>
                                         <li><a href="#">JPY Japanese Yen</a></li>
                                     </ul>
+                                </li>
+                                <li>
+                                    <a href="{%  url 'me2ushop:checkout' %}">Checkout<i class="fas fa-chevron-down"></i></a>
                                 </li>
                             </ul>
                         </div>
@@ -224,7 +227,7 @@
                             <ul class="standard_dropdown main_nav_dropdown">
                                 <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
                                 <li class="hassubs">
-                                    <a href="#">Super Deals<i class="fas fa-chevron-down"></i></a>
+                                    <a href="#">Deals<i class="fas fa-chevron-down"></i></a>
                                     <ul>
                                         {% for deal in deals %}
                                         {% if deal.is_featured %}

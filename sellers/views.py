@@ -19,40 +19,39 @@ def seller_page(request):
     # if not request.user.is_authenticated:
     #     return redirect('login/?next=/sellers/')
     if request.user.is_seller:
-        try:
-            from utils import context_processors
-            utils = context_processors.me2u(request)
-            brand = utils['brand']
-            if brand:
-                brand_name = brand[0]
+        from utils import context_processors
+        utils = context_processors.me2u(request)
+        brand = utils['brand']
+        if brand:
+            print(brand)
+            brand_name = brand
 
-                # print(brand_name.id)
+            # print(brand_name.id)
 
-                products = brand_name.product_set.all()
-                orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
-                items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
-                # print('items:', items_delivered)
+            products = brand_name.product_set.all()
+            orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
+            items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
+            # print('items:', items_delivered)
 
-                # orders = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
-                # status=20).distinct()
-                orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
-                    status=30).distinct()
+            # orders = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(status=20).distinct()
+            orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
+                status=30).distinct()
 
-                order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
-                    status__gt=20).distinct()
+            order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
+                status__gt=20).distinct()
 
-                total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
+            total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
 
-                cancelled = total_orders.filter(status=40)
-                delivered = OrderItem.objects.filter(status=50, item__in=products)
-                pending = total_orders.filter(status=10)
-                in_transit = total_orders.filter(status=45)
-                page_title = 'Seller-Central'
-                return render(request, 'sellers/seller_dashboard_template.html', locals())
-            else:
-                return redirect("users:brand_create")
-        except ObjectDoesNotExist:
-            return redirect("users:brand_create")
+            cancelled = total_orders.filter(status=40)
+            delivered = OrderItem.objects.filter(status=50, item__in=products)
+            pending = total_orders.filter(status=10)
+            in_transit = total_orders.filter(status=45)
+            page_title = 'Seller-Central'
+
+            return render(request, 'sellers/seller_dashboard_template.html', locals())
+        else:
+            messages.warning(request, "You Do not have a registered brand.")
+            return redirect('users:brand_create')
 
     else:
         messages.warning(request, "You are not a registered Me2U seller Sign Up")

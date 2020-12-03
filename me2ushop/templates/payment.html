@@ -128,31 +128,6 @@ label {
               <script src="https://js.stripe.com/v3/"></script>
 
 
-<!--                {% if card %}-->
-<!--                <div style="padding: 5px 30px;">-->
-<!--                  <div class="custom-control custom-checkbox">-->
-<!--                    <input type="checkbox" class="custom-control-input" name="use_default_card" id="use_default_card">-->
-<!--                    <label class="custom-control-label" for="use_default_card">-->
-<!--                      use_default_card: **** **** **** {{ card.last4 }}-->
-<!--                      <span>Exp: {{ card.exp_month }}/{{ card.exp_year }}</span>-->
-<!--                      </label>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                -->
-
-<!--                <div class="current-card-form">-->
-<!--                  <form action="." method="post" class="stripe-form">-->
-<!--                    {% csrf_token %}-->
-<!--                    <input type="hidden" name="use_default" value="true">-->
-<!--                    <div class="col-md-12 mb-4">-->
-<!--                      <button id="stripeBtn"> Submit Payment </button>-->
-<!--                    </div>-->
-<!--                    <div id="card-errors" role="alert">-->
-<!--                    </div>-->
-<!--                  </form>-->
-<!--                </div>-->
-<!--                {% endif %}-->
-
                 <div class="new-card-form">
                   <form action="." method="post" id="stripe-form">
                     {% csrf_token %}
@@ -169,9 +144,9 @@ label {
                     <div class="stripe-form-row">
                       <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" name="save" id="save">
-                      <label class="custom-control-label" for="save">
-                        Save card info
-                        </label>
+<!--                      <label class="custom-control-label" for="save">-->
+<!--                        Save card info-->
+<!--                        </label>-->
                       </div>
                     </div>
                   </form>

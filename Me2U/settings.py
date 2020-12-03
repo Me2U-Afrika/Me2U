@@ -294,16 +294,19 @@ STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 
 if DEBUG:
     # test keys
+    ALLOWED_HOSTS = ['*']
+
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+
+    print(STRIPE_SECRET_KEY)
+    print(STRIPE_PUBLISHABLE_KEY)
     # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    ALLOWED_HOSTS = ['*']
     # SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 
 else:
-    # ALLOWED_HOSTS = ['www.me2uafrika.com', 'me2uafrika.com', 'localhost', 'me2uafrica.herokuapp.com']
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000']
     STRIPE_PUBLISHABLE_kEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 

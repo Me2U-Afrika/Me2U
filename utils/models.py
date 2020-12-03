@@ -19,13 +19,13 @@ class CreationModificationDateMixin(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            print('true we came to create')
-            print('true we came to create', self.created)
+            # print('true we came to create')
+            # print('true we came to create', self.created)
 
             self.created = timezone_now()
 
         else:
-            print('true we came to modify')
+            # print('true we came to modify')
             # self.created = timezone_now()
             self.modified = timezone_now()
 

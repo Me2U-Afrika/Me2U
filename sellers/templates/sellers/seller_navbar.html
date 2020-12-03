@@ -105,9 +105,9 @@
                                         <li>
                                             <a href="">Active Products<i class="fas fa-chevron-down"></i></a>
                                             <ul>
-                                                {% for store in brand %}
-                                                <li><a href="{% url 'me2ushop:seller_page' store.id %}">All<i class="fas fa-chevron-down"></i></a></li>
-                                                {% endfor %}
+                                                {% if brand %}
+                                                <li><a href="{% url 'me2ushop:seller_page' brand.id %}">All<i class="fas fa-chevron-down"></i></a></li>
+                                                {% endif %}
                                                 <li><a href="#">Most Bought<i class="fas fa-chevron-down"></i></a></li>
                                                 <li><a href="#">On offer<i class="fas fa-chevron-down"></i></a></li>
                                                 <li><a href="#">Trending<i class="fas fa-chevron-down"></i></a></li>
