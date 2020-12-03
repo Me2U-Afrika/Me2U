@@ -1,6 +1,5 @@
 import logging
 import tempfile
-# from .models import Item, OrderItem, Order, Address, StripePayment, Coupon, RequestRefund
 from datetime import datetime, timedelta
 
 from django import forms
