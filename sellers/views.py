@@ -22,47 +22,34 @@ def seller_page(request):
         try:
             from utils import context_processors
             utils = context_processors.me2u(request)
-            brand_name = utils['brand'][0]
-            # print(brand_name.id)
+            brand = utils['brand']
+            if brand:
+                brand_name = brand[0]
 
-            products = brand_name.product_set.all()
-            orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
-            items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
-            # print('items:', items_delivered)
+                # print(brand_name.id)
 
-            # orders = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(status=20).distinct()
-            orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
-                status=30).distinct()
-            # print('orders:', orders)
-            # print('order_id:', orders[0].id)
-            # print('order_set:', orders[0].order_set.all())
-            # customers = {}
-            # order = Order.objects.filter(items__id=orders[0].id)
-            # print('order:', order)
-            # # print('order name:', order[0].user)
-            # for order in order:
-            #     if order.name not in customers:
-            #         customers[order.user] = order.phone
-            # print(customers)
-            order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
-                status__gt=20).distinct()
+                products = brand_name.product_set.all()
+                orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
+                items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
+                # print('items:', items_delivered)
 
-            total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
-            # for order in total_orders:
-            #     if order.user:
-            #         customers[order.user] = order.order_set.get
-            #         print('order.user:', order.user)
-            #         print(customers)
-            #     elif request.cart:
-            #         customers['name'] = order.request.cart
-            #         print('session cart id:', order.request.cart.id)
-            cancelled = total_orders.filter(status=40)
-            delivered = OrderItem.objects.filter(status=50, item__in=products)
-            pending = total_orders.filter(status=10)
-            in_transit = total_orders.filter(status=45)
-            page_title = 'Seller-Central'
+                # orders = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
+                # status=20).distinct()
+                orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
+                    status=30).distinct()
 
-            return render(request, 'sellers/seller_dashboard_template.html', locals())
+                order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
+                    status__gt=20).distinct()
+
+                total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
+
+                cancelled = total_orders.filter(status=40)
+                delivered = OrderItem.objects.filter(status=50, item__in=products)
+                pending = total_orders.filter(status=10)
+                in_transit = total_orders.filter(status=45)
+                page_title = 'Seller-Central'
+
+                return render(request, 'sellers/seller_dashboard_template.html', locals())
         except ObjectDoesNotExist:
             return redirect("users:brand_create")
 
