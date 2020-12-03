@@ -48,8 +48,9 @@ def seller_page(request):
                 pending = total_orders.filter(status=10)
                 in_transit = total_orders.filter(status=45)
                 page_title = 'Seller-Central'
-
                 return render(request, 'sellers/seller_dashboard_template.html', locals())
+            else:
+                return redirect("users:brand_create")
         except ObjectDoesNotExist:
             return redirect("users:brand_create")
 
