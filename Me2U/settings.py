@@ -36,12 +36,6 @@ ADMINS = (
     ('Me2U|Africa IT', 'danielmakori0@gmail.com'),
 )
 
-# AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-# AWS_S3_FILE_OVERWRITE = False
-# AWS_DEFAULT_ACL = None
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -124,9 +118,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':
         ('rest_framework.authentication.SessionAuthentication',
          'rest_framework.authentication.TokenAuthentication',
-         'rest_framework.authentication.BasicAuthentication',
-
-         ),
+         'rest_framework.authentication.BasicAuthentication',),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.DjangoModelPermissions',),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', 'PAGE_SIZE': 100
@@ -190,7 +182,10 @@ REDIS_URL = os.environ.get('REDIS_URL')
 # REDIS_URL = redis.StrictRedis(host="localhost", port=6379).keys()
 # print('redis_url', REDIS_URL)
 
-s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
+# Amazon Web Services (AWS) SDK for Python. It enables Python
+# developers to create, configure, and manage AWS services
+
+# s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
 
 CHANNEL_LAYERS = {
     'default': {
@@ -231,7 +226,6 @@ DATABASES = {
         'HOST': 'localhost',
     }
 }
-# print(os.environ.get('DATABASE_PASSWORD'))
 import dj_database_url
 
 db_from_env = dj_database_url.config(conn_max_age=600)
@@ -287,12 +281,14 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'me2ushop:home'
 LOGIN_URL = 'login'
-STATIC_ROOT = os.path.join(BASE_DIR, "/Me2U/staticfiles")
+# STATIC_ROOT = os.path.join(BASE_DIR, "/Me2U/staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #
 
 STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
-WHITENOISE_MANIFEST_STRICT = False
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WHITENOISE_MANIFEST_STRICT = False
 
 # stripe settings
 
