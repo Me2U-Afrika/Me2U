@@ -272,7 +272,7 @@ META_DESCRIPTION = 'Me2U|Afrika is an online self sustaining ecommerce tailored 
                    'Across the globe with a major focus in African Markets.'
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/static/'
+MEDIA_URL = '/media/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
@@ -283,7 +283,7 @@ LOGIN_REDIRECT_URL = 'me2ushop:home'
 LOGIN_URL = 'login'
 # STATIC_ROOT = os.path.join(BASE_DIR, "/Me2U/staticfiles")
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 #
 
 STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
