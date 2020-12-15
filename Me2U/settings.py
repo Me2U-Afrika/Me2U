@@ -272,7 +272,7 @@ META_DESCRIPTION = 'Me2U|Afrika is an online self sustaining ecommerce tailored 
                    'Across the globe with a major focus in African Markets.'
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/staticfiles/'
+MEDIA_URL = '/media/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
