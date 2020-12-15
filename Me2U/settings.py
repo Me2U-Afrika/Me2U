@@ -11,10 +11,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-import boto3
+
 import django_heroku
 import environ
-from botocore.config import Config
 
 env = environ.Env(
     # set casting, default value
@@ -299,8 +298,8 @@ if DEBUG:
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-    print(STRIPE_SECRET_KEY)
-    print(STRIPE_PUBLISHABLE_KEY)
+    # print(STRIPE_SECRET_KEY)
+    # print(STRIPE_PUBLISHABLE_KEY)
     # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     # SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
@@ -371,25 +370,6 @@ if DEBUG:
     }
 
 if not DEBUG:
-    # CACHES = {
-    #     'default': {
-    #         # Use django-bmemcached
-    #         # 'BACKEND': 'django_bmemcached.memcached.BMemcached',
-    #         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-    #
-    #         # TIMEOUT is not the connection timeout! It's the default expiration
-    #         # timeout that should be applied to keys! Setting it to `None`
-    #         # disables expiration.
-    #         'TIMEOUT': None,
-    #
-    #         'LOCATION': servers,
-    #
-    #         'OPTIONS': {
-    #             'username': username,
-    #             'password': password,
-    #         }
-    #     }
-    # }
 
     CACHES = {
         'default': {
