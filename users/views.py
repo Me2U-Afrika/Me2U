@@ -69,9 +69,12 @@ SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
 
 def activation_view(request, activationKey):
+    print('We are in users activation view')
+
     if SHA1_RE.search(activationKey):
-        print('real')
+
         print('user:', request.user)
+
         try:
             instance = EmailConfirmed.objects.get(activationKey=activationKey)
         except EmailConfirmed.DoesNotExist:

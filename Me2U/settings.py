@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
 import django_heroku
 import environ
 
@@ -39,6 +38,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000', 'me2uafrika.com', 'www.me2uafrika.com', 'karibume2u.com']
 
 # CANON_URL_HOST = 'https://me2uafricaherokuapp.com/'
 # CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com', 'me2u africa.herokuapp.com']
@@ -293,19 +293,12 @@ STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 
 if DEBUG:
     # test keys
-    ALLOWED_HOSTS = ['*']
 
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-    # print(STRIPE_SECRET_KEY)
-    # print(STRIPE_PUBLISHABLE_KEY)
-    # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    # SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-
 
 else:
-    ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000']
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 

@@ -16,14 +16,14 @@ def create_profile(sender, instance, created, **kwargs):
         Token.objects.create(user=user)
 
         email_confirmed, email_created = EmailConfirmed.objects.get_or_create(user=user)
-        if email_created:
-            short_hash = hashlib.sha1(codecs.encode(str(random.random()))).hexdigest()[:5]
-            # print(user.username)
-            username = user.username
-            activation_key = hashlib.sha1(codecs.encode(short_hash + username)).hexdigest()
-            email_confirmed.activationKey = activation_key
-            email_confirmed.save()
-            email_confirmed.activate_user_email()
+        # if email_created:
+        #     short_hash = hashlib.sha1(codecs.encode(str(random.random()))).hexdigest()[:5]
+        #     # print(user.username)
+        #     username = user.username
+        #     activation_key = hashlib.sha1(codecs.encode(short_hash + username)).hexdigest()
+        #     email_confirmed.activationKey = activation_key
+        #     email_confirmed.save()
+        #     email_confirmed.activate_user_email()
 
 
 @receiver(post_save, sender=User)
