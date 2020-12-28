@@ -53,6 +53,8 @@ http {
 
 	server {
 
+	    listen 80;
+
 		listen <%= ENV["PORT"] %>;
 
 		server_name _;
@@ -72,6 +74,12 @@ http {
 			proxy_set_header Host $http_host;
 			proxy_redirect off;
 			proxy_pass http://me2uafrica.herokuapp.com;
+		}
+		location /static {
+
+		}
+		location /media {
+
 		}
 		keepalive_timeout 5;
 		client_max_body_size <%= ENV['NGINX_CLIENT_MAX_BODY_SIZE'] || 1 %>M;
