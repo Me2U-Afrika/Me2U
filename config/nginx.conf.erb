@@ -75,6 +75,19 @@ http {
 			proxy_redirect off;
 			proxy_pass http://me2uafrica.herokuapp.com;
 		}
+		location /static {
+        sendfile  on;
+        sendfile_max_chunk 25m;
+        alias /static;
+        }
+
+        location /media {
+            sendfile  on;
+            sendfile_max_chunk 50m;
+            internal;
+            alias /media;
+        }
+
 		try_files $uri proxy_pass;
 
 		keepalive_timeout 5;
