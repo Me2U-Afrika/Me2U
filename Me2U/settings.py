@@ -11,8 +11,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+
+import boto3
 import django_heroku
 import environ
+from botocore.config import Config
 
 env = environ.Env(
     # set casting, default value
@@ -38,16 +41,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000', 'me2uafrika.com', 'www.me2uafrika.com', 'karibume2u.com']
+ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000', 'me2uafrika.com', 'www.me2uafrika.com']
 
 # CANON_URL_HOST = 'https://me2uafricaherokuapp.com/'
 # CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com', 'me2u africa.herokuapp.com']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
-DEBUG = env('DEBUG')
+# DEBUG = env('DEBUG')
 
-# DEBUG = False
+DEBUG = False
 # print('debug:', DEBUG)
 
 SITE_URL = 'https://me2uafrica.herokuapp.com'
@@ -185,7 +188,7 @@ REDIS_URL = os.environ.get('REDIS_URL')
 # Amazon Web Services (AWS) SDK for Python. It enables Python
 # developers to create, configure, and manage AWS services
 
-# s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
+# s3 = boto3.client('s3', config=Config(signature_version='S3_USE_SIGV4'))
 
 CHANNEL_LAYERS = {
     'default': {
@@ -290,6 +293,13 @@ STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # WHITENOISE_MANIFEST_STRICT = False
 
+# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+# AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
+
+
 # stripe settings
 
 if DEBUG:
@@ -302,8 +312,10 @@ if DEBUG:
 else:
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+    # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    # DEFAULT_FILE_STORAGE = 'Me2U.storage.MediaStorage'
 
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # SECURE_SSL_REDIRECT = True
     # SESSION_COOKIE_SECURE = True
     # CSRF_COOKIE_SECURE = True
@@ -352,7 +364,6 @@ servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
 password = os.environ.get('MEMCACHIER_PASSWORD')
 
-
 if DEBUG:
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
@@ -364,26 +375,68 @@ if DEBUG:
     }
 
 if not DEBUG:
-
     CACHES = {
         'default': {
             'BACKEND': 'django_bmemcached.memcached.BMemcached',
             'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS').split(','),
             'OPTIONS': {
-                        'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
-                        'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
-                }
+                'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
+                'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
+            }
         }
     }
-
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.environ.get('SECRET_KEY')
-
 # CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+        },
+        "null": {
+            "class": "django.utils.log.NullHandler",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+            "include_html": True,
+        }
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+        },
+        "django.request": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django.security": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "py.warnings": {
+            "handlers": ["console"],
+        },
+    }
+}
 
 try:
     from settings_local import *
@@ -395,5 +448,5 @@ except ImportError:
 django_heroku.settings(locals())
 
 # add ENV=development in the .env file for the below to work:
-if not DEBUG:
-    del DATABASES['default']['OPTIONS']['sslmode']
+# if not DEBUG:
+#     del DATABASES['default']['OPTIONS']['sslmode']
