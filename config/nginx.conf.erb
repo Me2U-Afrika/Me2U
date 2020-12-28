@@ -1,7 +1,5 @@
 daemon off;
-worker_processes <%= ENV['NGINX_WORKERS'] || 4 %>;;
-pid /run/nginx.pid;
-include /etc/nginx/modules-enabled/*.conf;
+worker_processes <%= ENV['NGINX_WORKERS'] || 4 %>;
 
 events {
 	use epoll;
