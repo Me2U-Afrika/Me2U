@@ -29,7 +29,11 @@ http {
 
 	server {
 		listen <%= ENV["PORT"] %>;
-		server_name _;
+		server_name www.me2uafrika.com;
+		 root /var/www/me2uafrika.com;
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
 		keepalive_timeout 5;
 		client_max_body_size <%= ENV['NGINX_CLIENT_MAX_BODY_SIZE'] || 1 %>M;
 
@@ -44,7 +48,5 @@ http {
 
             alias /home/dogechi/PycharmProjects/me2u;
         }
-
-		root /var/www/html; # path to your app
 	}
 }
