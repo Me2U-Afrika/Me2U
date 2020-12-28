@@ -2,7 +2,6 @@ daemon off;
 # Heroku dynos have at least 4 cores.
 worker_processes <%= ENV['NGINX_WORKERS'] || 4 %>;
 
-
 events {
 	use epoll;
 	accept_mutex on;
@@ -28,24 +27,14 @@ http {
 	# Must read the body in 5 seconds.
 	client_body_timeout <%= ENV['NGINX_CLIENT_BODY_TIMEOUT'] || 5 %>;
 
-# 	upstream app_server {
-# 		server unix:/etc/systemd/system/gunicorn.socket fail_timeout=0;
-# 	}
-
 	server {
 		listen <%= ENV["PORT"] %>;
-
-		server_name www.me2uafrika.com me2uafrika.com;
-
-		large_client_header_buffers 4 16k;
-
+		server_name _;
 		keepalive_timeout 5;
 		client_max_body_size <%= ENV['NGINX_CLIENT_MAX_BODY_SIZE'] || 1 %>M;
 
-        location / {
-            root   /usr/share/nginx/html;
-            index  index.html index.htm;
-        }
+		large_client_header_buffers 4 16k;
+
 
 		location /static {
 
@@ -56,6 +45,6 @@ http {
             alias /home/dogechi/PycharmProjects/me2u;
         }
 
+		root /home/dogechi/PycharmProjects/me2u # path to your app
 	}
 }
-
