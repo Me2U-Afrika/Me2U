@@ -48,7 +48,6 @@ http {
     client_body_timeout <%= ENV['NGINX_CLIENT_BODY_TIMEOUT'] || 5 %>;
 
     upstream proxy {
-      server localhost:8000;
       server me2uafrica.herokuapp.com;
     }
 
