@@ -47,6 +47,11 @@ http {
 
     client_body_timeout <%= ENV['NGINX_CLIENT_BODY_TIMEOUT'] || 5 %>;
 
+    upstream uwsgicluster {
+      server unix://tmp/uwsgi.sock;
+      server https://me2uafrica.herokuapp.com;
+    }
+
 	##
 	# Virtual Host Configs
 	##
@@ -60,11 +65,6 @@ http {
 		large_client_header_buffers 4 16k;
 
 # 		root /me2u;
-
-        upstream uwsgicluster {
-          server unix://tmp/uwsgi.sock;
-          server https://me2uafrica.herokuapp.com;
-        }
 
 
 		location / {
