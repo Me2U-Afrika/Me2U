@@ -60,7 +60,15 @@ http {
 
 		large_client_header_buffers 4 16k;
 
-		root /me2u;
+		root /var/www/me2uafrica.herokuapp.com;
+
+		location /media {
+		    root /media;
+		}
+
+        location /static {
+            root /static;
+		}
 
 
 		location / {
