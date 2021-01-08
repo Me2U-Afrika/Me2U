@@ -8,6 +8,7 @@
     "build": "webpack",
     "watch": "webpack --config webpack.config.js --watch --mode development",
     "build-prod": "webpack --config webpack.prod.config.js",
+    "node": "12.18.*"
   },
   "jest": {
     "moduleDirectories": [
