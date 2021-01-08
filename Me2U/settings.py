@@ -14,8 +14,6 @@ import os
 import django_heroku
 import environ
 
-port = int(os.environ.get('PORT', 5000))
-
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
