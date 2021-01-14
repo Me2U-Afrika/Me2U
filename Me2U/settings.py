@@ -15,7 +15,6 @@ import boto3
 import django_heroku
 import environ
 from botocore.config import Config
-
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
@@ -46,9 +45,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
-# DEBUG = env('DEBUG')
-
-DEBUG = False
+DEBUG = env('DEBUG')
+#
+# DEBUG = False
 # print('debug:', DEBUG)
 
 SITE_URL = 'https://me2uafrica.herokuapp.com'
@@ -421,5 +420,5 @@ except ImportError:
 django_heroku.settings(locals())
 
 # add ENV=development in the .env file for the below to work:
-# if not DEBUG:
-#     del DATABASES['default']['OPTIONS']['sslmode']
+if not DEBUG:
+    del DATABASES['default']['OPTIONS']['sslmode']
