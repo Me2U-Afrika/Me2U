@@ -46,9 +46,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
-DEBUG = env('DEBUG')
+# DEBUG = env('DEBUG')
 
-# DEBUG = False
+DEBUG = False
 # print('debug:', DEBUG)
 
 SITE_URL = 'https://me2uafrica.herokuapp.com'
@@ -272,7 +272,7 @@ META_DESCRIPTION = 'Me2U|Afrika is an online self sustaining ecommerce tailored 
                    'Across the globe with a major focus in African Markets.'
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/staticfiles/'
+MEDIA_URL = '/media/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
@@ -421,5 +421,5 @@ except ImportError:
 django_heroku.settings(locals())
 
 # add ENV=development in the .env file for the below to work:
-if not DEBUG:
-    del DATABASES['default']['OPTIONS']['sslmode']
+# if not DEBUG:
+#     del DATABASES['default']['OPTIONS']['sslmode']
