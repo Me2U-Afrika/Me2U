@@ -2155,8 +2155,18 @@ class PaymentView(View):
                     'DISPLAY_COUPON_FORM': False
 
                 }
-
-                return render(self.request, 'home/payment.html', context)
+                if order.payment_option == 'S':
+                    return render(self.request, 'home/payment.html', context)
+                elif order.payment_option == 'P':
+                    return render(self.request, 'home/paypal_payment.html', context)
+                elif order.payment_option == 'FW':
+                    return render(self.request, 'home/flutterwave_payment.html', context)
+                elif order.payment_option == 'M':
+                    return render(self.request, 'home/mpesa_payment.html', context)
+                elif order.payment_option == 'MO':
+                    return render(self.request, 'home/momo_payment.html', context)
+                else:
+                    return render(self.request, 'home/payment.html', context)
 
         else:
             messages.warning(self.request, "Please fill in your valid delivery address prior to payment")

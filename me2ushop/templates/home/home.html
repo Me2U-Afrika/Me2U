@@ -67,7 +67,7 @@
 				<div class="col-lg-3 col-md-6 char_col">
 
 					<div class="char_item d-flex flex-row align-items-center justify-content-start">
-						<div class="char_icon"><img src="{{ MEDIA_URL }}images/char_1.png" alt=""></div>
+						<div class="char_icon"><img src="{{ STATIC_URL }}img/char_1.png" alt=""></div>
 						<div class="char_content">
 							<div class="char_title">On-Time Delivery</div>
 							<div class="char_subtitle"> <strong><i>Shop Near Me!</i></strong></div>
@@ -79,7 +79,7 @@
 				<div class="col-lg-3 col-md-6 char_col">
 
 					<div class="char_item d-flex flex-row align-items-center justify-content-start">
-						<div class="char_icon"><img src="{{ MEDIA_URL }}images/char_2.png" alt=""></div>
+						<div class="char_icon"><img src="{{ STATIC_URL }}img/char_2.png" alt=""></div>
 						<div class="char_content">
 							<div class="char_title">Round the Clock Customer Care</div>
 							<div class="char_subtitle">dial <strong>+250 785011413</strong> To Order</div>
@@ -91,7 +91,7 @@
 				<div class="col-lg-3 col-md-6 char_col">
 
 					<div class="char_item d-flex flex-row align-items-center justify-content-start">
-						<div class="char_icon"><img src="{{ MEDIA_URL }}images/char_3.png" alt=""></div>
+						<div class="char_icon"><img src="{{ STATIC_URL }}img/char_3.png" alt=""></div>
 						<div class="char_content">
 							<div class="char_title">Secure Payments</div>
 							<div class="char_subtitle">10% cashback on checkout using <strong>QuiqPay</strong></div>
@@ -103,7 +103,7 @@
 				<div class="col-lg-3 col-md-6 char_col">
 
 					<div class="char_item d-flex flex-row align-items-center justify-content-start">
-						<div class="char_icon"><img src="{{ MEDIA_URL }}images/char_4.png" alt=""></div>
+						<div class="char_icon"><img src="{{ STATIC_URL }}img/char_4.png" alt=""></div>
 						<div class="char_content">
 							<div class="char_title">Product Tracking</div>
 							<div class="char_subtitle">Track your order using our <strong>Me2UApp</strong></div>
@@ -138,7 +138,7 @@
 									{% if image.in_display %}
 
 										<div class="deals_image">
-											<a href="{{ deal.product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.medium }}" alt="{{ product.title }}"></a>
+											<a href="{{ deal.product.get_absolute_url }}"><img src="{{ image.image.medium.url }}" alt="{{ product.title }}"></a>
 										</div>
 
 									{% endif %}
@@ -222,7 +222,7 @@
 											{% if image.in_display %}
 
 												<div class="product_image d-flex flex-column align-items-center justify-content-center">
-													<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt="{{ product.title }}"></a>
+													<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a>
 												</div>
 
 											{% endif %}
@@ -280,7 +280,7 @@
 											{% if image.in_display %}
 
 												<div class="product_image d-flex flex-column align-items-center justify-content-center">
-													<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt="{{ product.title }}"></a>
+													<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a>
 												</div>
 
 											{% endif %}
@@ -338,7 +338,7 @@
 											{% if image.in_display %}
 
 												<div class="product_image d-flex flex-column align-items-center justify-content-center">
-													<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt="{{ product.title }}"></a>
+													<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a>
 												</div>
 
 											{% endif %}
@@ -420,7 +420,7 @@
 
 							<div class="owl-item">
 								<div class="popular_category d-flex flex-column align-items-center justify-content-center">
-									<div class="popular_category_image"><img src="{{ MEDIA_URL }}{{ node.icon_url }}" alt=""></div>
+									<div class="popular_category_image"><img src="{{ node.icon_url.url }}" alt=""></div>
 									<div class="popular_category_text"><a href="{{ node.get_absolute_url }}">{{ node.category_name }}</a></div>
 								</div>
 							</div>
@@ -435,7 +435,7 @@
 
 	<!-- Banner -->
 	<div class="banner_2">
-		<div class="banner_2_background" style="background-image:url({{ MEDIA_URL }}images/banner_2_background.jpg)"></div>
+		<div class="banner_2_background" style="background-image:url({{ STATIC_URL }}img/banner_2_background.jpg)"></div>
 		<div class="banner_2_container">
 			<div class="banner_2_dots"></div>
 			<!-- Banner 2 Slider -->
@@ -464,11 +464,15 @@
 								</div>
 								<div class="col-lg-8 col-md-6 fill_height">
 									<div class="banner_2_image_container">
-										{% if slider.image_url %}
-										<div class="banner_2_image"><img src="{{ MEDIA_URL }}{{ slider.image_url }}" alt=""></div>
-										{% else %}
-										<div class="banner_2_image"><img src="{{ MEDIA_URL }}{{ slider.image }}" alt=""></div>
-										{% endif %}
+											{% for image in slider.product.get_images %}
+											{% if image.in_display %}
+
+												<div class="banner_2_image">
+													<a href="{{ slider.product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ slider.product.title }}"></a>
+												</div>
+
+											{% endif %}
+											{% endfor %}
 									</div>
 								</div>
 							</div>
@@ -668,7 +672,7 @@
 										{% for image in best_seller_banner.product.get_images %}
 										{% if image.in_display %}
 
-											<div class="arrivals_single_image"><img src="{{ MEDIA_URL }}{{ image.image.medium }}" alt=""></div>
+											<div class="arrivals_single_image"><img src="{{ image.image.medium.url }}" alt=""></div>
 
 										{% endif %}
 										{% endfor %}
