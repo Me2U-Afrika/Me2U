@@ -37,7 +37,7 @@
 			<div class="row fill_height">
 				{% if top_banner.product.get_images %}
 				{% for image in top_banner.product.get_images %}
-				<div class="banner_product_image"><img src="{{ image.image.large.url }}" alt="{{ top_banner.product.title}}"></div>
+				<div class="banner_product_image"><img src="{{ image.image.url }}" alt="{{ top_banner.product.title}}"></div>
 				{% endfor %}
 				{% endif %}
 				<div class="col-lg-5 offset-lg-4 fill_height">
