@@ -296,7 +296,7 @@ class ProductImage(CreationModificationDateMixin):
         'thumbnail': (170, 115, True),
         'medium': (365, 365),
         'deals_size': (365, 365, True),
-        'large': (415, 470, True),
+        'large': (415, 470, ),
 
     }, delete_orphans=True)
     in_display = models.BooleanField(default=True)

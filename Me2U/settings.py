@@ -15,6 +15,7 @@ import boto3
 import django_heroku
 import environ
 from botocore.config import Config
+
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
@@ -290,16 +291,6 @@ STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 # WHITENOISE_MANIFEST_STRICT = False
 
 
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = "afrikame2u"
-AWS_S3_REGION_NAME = 'us-east-2'
-
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-
 # stripe settings
 
 if DEBUG:
@@ -309,16 +300,19 @@ if DEBUG:
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-    print(STRIPE_SECRET_KEY)
-    print(STRIPE_PUBLISHABLE_KEY)
-    # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    # SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-
-
 else:
     ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000']
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = "afrikame2u"
+    AWS_S3_REGION_NAME = 'us-east-2'
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
+
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
     # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # SECURE_SSL_REDIRECT = True
@@ -369,49 +363,17 @@ servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
 password = os.environ.get('MEMCACHIER_PASSWORD')
 
-
-if DEBUG:
-    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': '127.0.0.1:11211',
-        }
-    }
-
 if not DEBUG:
-    # CACHES = {
-    #     'default': {
-    #         # Use django-bmemcached
-    #         # 'BACKEND': 'django_bmemcached.memcached.BMemcached',
-    #         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-    #
-    #         # TIMEOUT is not the connection timeout! It's the default expiration
-    #         # timeout that should be applied to keys! Setting it to `None`
-    #         # disables expiration.
-    #         'TIMEOUT': None,
-    #
-    #         'LOCATION': servers,
-    #
-    #         'OPTIONS': {
-    #             'username': username,
-    #             'password': password,
-    #         }
-    #     }
-    # }
-
     CACHES = {
         'default': {
             'BACKEND': 'django_bmemcached.memcached.BMemcached',
             'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS').split(','),
             'OPTIONS': {
-                        'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
-                        'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
-                }
+                'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
+                'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
+            }
         }
     }
-
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
