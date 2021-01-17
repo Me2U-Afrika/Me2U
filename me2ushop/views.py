@@ -1587,16 +1587,16 @@ class Order_summary_view(View):
 
 class WishList_Summary(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
-        try:
-            if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated:
+            try:
                 wish_list = WishList.objects.filter(user=self.request.user)
-                print(wish_list)
-
                 return render(self.request, 'home/wish_list.html', locals())
 
-        except ObjectDoesNotExist:
-            messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE WISH")
-            return redirect("me2ushop:home")
+            except ObjectDoesNotExist:
+                messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE WISH")
+                return redirect("me2ushop:home")
+        else:
+            return redirect("login")
 
 
 import logging
