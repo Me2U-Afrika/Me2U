@@ -10,8 +10,6 @@ autobahn==20.7.1
 Automat==20.2.0
 backcall==0.2.0
 beautifulsoup4==4.9.1
-boto3==1.16.51
-botocore==1.19.51
 boto3==1.16.55
 botocore==1.19.55
 cairocffi==1.1.0
