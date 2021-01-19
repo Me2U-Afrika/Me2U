@@ -20,7 +20,7 @@ def categoriesHomePage(request):
     # print('request', request)
     page_title = 'Categories'
     site_name = 'Me2U|Market'
-    template_name = 'index.html'
+    template_name = 'categories.html'
 
     return render(request, template_name, locals())
 

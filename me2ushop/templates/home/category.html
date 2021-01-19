@@ -19,7 +19,7 @@
 	<!-- Home -->
 
 	<div class="home">
-		<div class="home_background parallax-window" data-parallax="scroll" data-image-src="images/shop_background.jpg"></div>
+		<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ object.image.url }}"></div>
 		<div class="home_overlay"></div>
 		<div class="home_content d-flex flex-column align-items-center justify-content-center">
 			<h2 class="home_title">{{ object.category_name }}</h2>
@@ -116,7 +116,7 @@
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+										<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt=""></a>
 									</div>
 
 								{% endif %}
@@ -148,7 +148,7 @@
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+										<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt=""></a>
 									</div>
 
 								{% endif %}

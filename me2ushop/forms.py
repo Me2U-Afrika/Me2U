@@ -18,8 +18,8 @@ PAYMENT_CHOICES = {
     ('P', "Paypal"),
     ('S', "Stripe"),
     ('DC', "Debit Card/Credit Card"),
-    ('C', "Cash On Delivery"),
     ('FW', "FlutterWave"),
+    ('MO', "MobileMoney"),
 
 }
 

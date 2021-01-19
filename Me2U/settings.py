@@ -46,7 +46,7 @@ ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000', 'm
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
 DEBUG = env('DEBUG')
-
+#
 # DEBUG = False
 # print('debug:', DEBUG)
 
@@ -294,7 +294,7 @@ STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 # AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 # AWS_STORAGE_BUCKET_NAME = "afrikame2u"
 # AWS_DEFAULT_REGION = "us-east-2"
-# # AWS_REGION = "us-east-2"
+# AWS_REGION = "us-east-2"
 # AWS_S3_FILE_OVERWRITE = False
 # AWS_DEFAULT_ACL = None
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
@@ -307,12 +307,20 @@ if DEBUG:
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-
 else:
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
     # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     # DEFAULT_FILE_STORAGE = 'Me2U.storage.MediaStorage'
+
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = "afrikame2u"
+    AWS_S3_REGION_NAME = 'us-east-2'
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
+
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
     # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # SECURE_SSL_REDIRECT = True
@@ -388,7 +396,10 @@ if not DEBUG:
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
 
-# CRISPY_TEMPLATE_PACK = "bootstrap4"
+# SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = os.environ.get('SECRET_KEY')
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 LOGGING = {
     "version": 1,
@@ -447,5 +458,5 @@ except ImportError:
 django_heroku.settings(locals())
 
 # add ENV=development in the .env file for the below to work:
-if not DEBUG:
-    del DATABASES['default']['OPTIONS']['sslmode']
+# if not DEBUG:
+#     del DATABASES['default']['OPTIONS']['sslmode']

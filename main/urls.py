@@ -1,3 +1,4 @@
+
 from django.conf.urls import url
 from django.urls import path
 
@@ -13,7 +14,7 @@ urlpatterns = [
     url('contact-us/', views.ContactUsView.as_view(), name='contact_us'),
     url('ourdrivers/', views.our_drivers, name='ourdrivers'),
     # url('add_to_cart/', views.add_to_cart, name='add_to_cart'),
-    path('', views.index, name='index'),
+    # path('', views.index, name='index'),
     path('<str:room_name>/', views.room, name='room'),
 
 ]

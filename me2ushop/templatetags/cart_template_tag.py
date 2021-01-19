@@ -129,7 +129,10 @@ def wish_list_count(request):
 
     if request.user:
         from utils import context_processors
-        wishlist = context_processors.me2u(request)['wish_list']
-        # print(wishlist)
-        return wishlist.count()
+        try:
+            wishlist = context_processors.me2u(request)['wish_list']
+            # print(wishlist)
+            return wishlist.count()
+        except Exception:
+            return 0
     return 0
