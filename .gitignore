@@ -11,6 +11,8 @@ __pycache__/
 .vscode/
 latest.dump
 .Python
+.vs
+.vscode
 media/
 nginx/
 staticfiles/

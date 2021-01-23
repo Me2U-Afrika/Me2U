@@ -549,48 +549,44 @@
 								<!-- Recently Viewed Item -->
 								{% for product in recently_viewed %}
 								{% if product.slug != object.slug %}
+								{% if product.discount_price %}
 								<div class="owl-item">
 									<div class="viewed_item discount d-flex flex-column align-items-center justify-content-center text-center">
 										{% for image in product.get_images %}
 										{% if image.in_display %}
-<!--										<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>-->
-
-										<!-- Card -->
-									      <div class="viewed_image">
-
-									        <div class="view zoom overlay z-depth-2 rounded">
-									          <img class="img-fluid w-100"
-									            src="{{ image.image.thumbnail.url}}" alt="Sample">
-									          <a href="{{ product.get_absolute_url }}">
-									            <div class="mask">
-									              <img class="img-fluid w-100"
-									                src="{{ image.image.medium.url }}">
-									              <div class="mask rgba-black-slight"></div>
-									            </div>
-									          </a>
-									        </div>
-
-									        <div class="pt-4">
-
-									          <h5>{{ product.title }}</h5>
-
-										        {% if product.discount_price %}
-											        <span class="text-danger mr-1">{{ product.discount_price|currency }}</span>
-											        <span class="text-grey"><s>{{ product.price|currency }}</s></span>
-										        {% else %}
-									                <h6>{{ product.price|currency }}</h6>
-										        {% endif %}
-									        </div>
-
-									      </div>
-									    <!-- Card -->
-
+										<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
 										{% endif %}
 										{% endfor %}
-
-
+										<div class="viewed_content text-center">
+											<div class="viewed_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+											<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+										</div>
+										<ul class="item_marks">
+											<li class="item_mark item_discount">-{{ product.total_discount }}%</li>
+											<li class="item_mark item_new">new</li>
+										</ul>
 									</div>
 								</div>
+								{% else %}
+
+								<!-- Recently Viewed Item -->
+								<div class="owl-item">
+									<div class="viewed_item d-flex flex-column align-items-center justify-content-center text-center">
+										{% for image in product.get_images %}
+										{% if image.in_display %}
+										<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
+										{% endif %}
+										{% endfor %}
+										<div class="viewed_content text-center">
+											<div class="viewed_price">{{ product.price|currency }}</div>
+											<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+										</div>
+										<ul class="item_marks">
+											<li class="item_mark item_new">new</li>
+										</ul>
+									</div>
+								</div>
+								{% endif %}
 								{% endif %}
 								{% endfor %}
 
