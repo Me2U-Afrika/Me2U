@@ -205,7 +205,7 @@ class Product(models.Model):
         return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
     def get_add_cart_url(self):
-        return reverse('me2ushop:add_cart', kwargs={'slug': self.slug})
+        return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
     def get_images(self):
         return self.productimage_set.all()

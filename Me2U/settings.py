@@ -456,5 +456,5 @@ except ImportError:
 django_heroku.settings(locals())
 
 # add ENV=development in the .env file for the below to work:
-if not DEBUG:
-    del DATABASES['default']['OPTIONS']['sslmode']
+# if not DEBUG:
+#     del DATABASES['default']['OPTIONS']['sslmode']

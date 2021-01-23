@@ -241,7 +241,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{% url 'me2ushop:add_cart' product.slug %}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -299,7 +299,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{% url 'me2ushop:add_cart' product.slug %}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -357,7 +357,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{% url 'me2ushop:add_cart' product.slug %}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -532,7 +532,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{% url 'me2ushop:add_cart' product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -585,7 +585,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{% url 'me2ushop:add_cart' product.product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.product.get_add_cart_url }}"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.product.slug %}" target="_blank">
@@ -637,7 +637,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{% url 'me2ushop:add_cart' product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">Add to Cart</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -684,7 +684,7 @@
 												<div class="arrivals_single_price text-right">{{ best_seller_banner.product.price|currency }}</div>
 											</div>
 											<div class="rating_r rating_r_4 arrivals_single_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<form action="{% url 'me2ushop:add_cart' best_seller_banner.product.slug %}"><button class="arrivals_single_button">Add to Cart</button></form>
+											<form action="{{ best_seller_banner.product.get_add_cart_url }}"><button class="arrivals_single_button">Add to Cart</button></form>
 										</div>
 											<a href="{% url 'me2ushop:add_wishlist' best_seller_banner.product.slug %}" target="_blank">
 											<div class="arrivals_single_fav product_fav" id="{{ best_seller_banner.product.slug}}"><i class="fas fa-heart"></i></div>
