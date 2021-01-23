@@ -1,4 +1,3 @@
-{% load bootstrap3 %}
 {% load bootstrap4 %}
 {% load static %}
 {% load search_tags %}
@@ -55,6 +54,8 @@
     {% endblock headblock %}
 
 	<style>
+	@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
+
 	.alert-top-message {
 	    margin-top: 5%;
 	    margin-bottom: 0px;
@@ -69,7 +70,12 @@
 	.modal-dialog {
 	    margin-top: 12%;
 	}
+
+
+    }
      </style>
+
+
 
 </head>
 
@@ -99,8 +105,8 @@
         <div class="container">
             <div class="row">
                 <div class="col d-flex flex-row">
-                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ MEDIA_URL }}images/phone.png" alt=""></div><strong>+250 785 011 413</strong> </div>
-                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ MEDIA_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/phone.png" alt=""></div><strong>+250 785 011 413</strong> </div>
+                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
                     <div class="top_bar_content ml-auto">
                         <div class="top_bar_menu">
                             <ul class="standard_dropdown top_bar_dropdown">
@@ -121,7 +127,7 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="{%  url 'me2ushop:checkout' %}">Checkout<i class="fas fa-chevron-down"></i></a>
+                                    <a href="{%  url 'sellers:seller_home' %}" target="_blank" style="color:MediumSeaGreen;">Advertise<i class="fas fa-chevron-down"></i></a>
                                 </li>
                             </ul>
                         </div>
@@ -171,7 +177,7 @@
                     <div class="wishlist_cart d-flex flex-row align-items-center justify-content-end">
 
                         <div class="wishlist d-flex flex-row align-items-center justify-content-end">
-                            <div class="wishlist_icon"><img src="media/images/heart.png" alt=""></div>
+                            <div class="wishlist_icon"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank"><img src="{{ STATIC_URL }}images/heart.png" alt=""></a></div>
                             <div class="wishlist_content">
                                 <div class="wishlist_text"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank">Wishlist</a></div>
                                 {% if not wish_list == None %}
@@ -180,21 +186,35 @@
                             </div>
                         </div>
 
-                        <!-- Cart -->
+<!--                        &lt;!&ndash; Cart &ndash;&gt;-->
+<!--                        <div class="cart">-->
+<!--                            <div class="cart_container d-flex flex-row align-items-center justify-content-end">-->
+<!--                                <div class="cart_icon">-->
+<!--                                    <img src="media/images/cart.png" alt="">-->
+<!--                                    <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>-->
+<!--                                </div>-->
+<!--                                <div class="cart_content">-->
+<!--                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}" target="_blank">Cart</a></div>-->
+<!--                                    <div class="cart_price">{{ request|cart_item_total|currency }} </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash; cart &ndash;&gt;-->
+
+                          <!-- Cart -->
                         <div class="cart">
                             <div class="cart_container d-flex flex-row align-items-center justify-content-end">
-                                <div class="cart_icon">
-                                    <img src="media/images/cart.png" alt="">
-                                    <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>
+                                <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}" target="_blank">
+                                    <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
                                 </div>
                                 <div class="cart_content">
-                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}" target="_blank">Cart</a></div>
-                                    <div class="cart_price">{{ request|cart_item_total|currency }} </div>
+                                    <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" target="_blank">Post Ad Free</a></div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <!-- cart -->
 
+                    </div>
                 </div>
             </div>
         </div>
@@ -204,7 +224,7 @@
     <!-- Main Navigation -->
 
     {% block main_nav %}
-    <nav class="main_nav">
+    <nav class="main_nav" id="menu_bar">
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -251,14 +271,14 @@
                                 </li>
                                 <li class="hassubs">
                                     <a href="#">Shops<i class="fas fa-chevron-down"></i></a>
-                                    <ul>
-                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">KFC<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>
-                                    </ul>
+<!--                                    <ul>-->
+<!--                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                        <li><a href="#">KFC<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                        <li><a href="#">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                    </ul>-->
                                 </li>
                                 <li><a href="{%  url 'sellers:seller_home' %}" target="_blank">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
                                 <li><a href="{% url 'users:automobile_create' %}" target="_blank">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
@@ -460,7 +480,6 @@
         });
 
     </script>
-
 
 </body>
 

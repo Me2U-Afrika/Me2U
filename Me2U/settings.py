@@ -11,10 +11,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-import boto3
 import django_heroku
 import environ
-from botocore.config import Config
+
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
@@ -39,6 +38,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000', 'me2uafrika.com', 'www.me2uafrika.com']
 
 # CANON_URL_HOST = 'https://me2uafricaherokuapp.com/'
 # CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com', 'me2u africa.herokuapp.com']
@@ -125,6 +125,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    # "sslify.middleware.SSLifyMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -150,7 +151,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
+        # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -162,6 +163,12 @@ TEMPLATES = [
                 'utils.context_processors.me2u',
                 'utils.context_processors.globals',
             ],
+            'loaders': [
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ]),
+            ]
 
         },
     },
@@ -184,7 +191,7 @@ REDIS_URL = os.environ.get('REDIS_URL')
 # Amazon Web Services (AWS) SDK for Python. It enables Python
 # developers to create, configure, and manage AWS services
 
-# s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
+# s3 = boto3.client('s3', config=Config(signature_version='S3_USE_SIGV4'))
 
 CHANNEL_LAYERS = {
     'default': {
@@ -289,25 +296,29 @@ STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # WHITENOISE_MANIFEST_STRICT = False
 
+
 # stripe settings
 
 if DEBUG:
     # test keys
-    ALLOWED_HOSTS = ['*']
 
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_kEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
-    print(STRIPE_SECRET_KEY)
-    print(STRIPE_PUBLISHABLE_KEY)
-    # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    # SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-
-
 else:
-    ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000']
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+    # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    # DEFAULT_FILE_STORAGE = 'Me2U.storage.MediaStorage'
+
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = "afrikame2u"
+    AWS_S3_REGION_NAME = 'us-east-2'
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
+
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
     # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # SECURE_SSL_REDIRECT = True
@@ -358,7 +369,6 @@ servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
 password = os.environ.get('MEMCACHIER_PASSWORD')
 
-
 if DEBUG:
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
@@ -370,37 +380,16 @@ if DEBUG:
     }
 
 if not DEBUG:
-    # CACHES = {
-    #     'default': {
-    #         # Use django-bmemcached
-    #         # 'BACKEND': 'django_bmemcached.memcached.BMemcached',
-    #         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-    #
-    #         # TIMEOUT is not the connection timeout! It's the default expiration
-    #         # timeout that should be applied to keys! Setting it to `None`
-    #         # disables expiration.
-    #         'TIMEOUT': None,
-    #
-    #         'LOCATION': servers,
-    #
-    #         'OPTIONS': {
-    #             'username': username,
-    #             'password': password,
-    #         }
-    #     }
-    # }
-
     CACHES = {
         'default': {
             'BACKEND': 'django_bmemcached.memcached.BMemcached',
             'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS').split(','),
             'OPTIONS': {
-                        'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
-                        'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
-                }
+                'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
+                'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
+            }
         }
     }
-
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
@@ -408,7 +397,54 @@ PRODUCTS_PER_ROW = 12
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = os.environ.get('SECRET_KEY')
 
-# CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+        },
+        "null": {
+            "class": "django.utils.log.NullHandler",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+            "include_html": True,
+        }
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+        },
+        "django.request": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django.security": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "py.warnings": {
+            "handlers": ["console"],
+        },
+    }
+}
 
 try:
     from settings_local import *

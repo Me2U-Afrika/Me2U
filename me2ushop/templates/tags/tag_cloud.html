@@ -6,6 +6,6 @@
     <h1 class="mt-5">Product Tag Cloud</h1>
     {% for tag in product_tags %}
         <a href="/me2ushop/tag/{{ tag.name }}/" style="font-size:
-        {{ tag.font_size|add:11 }}px;">#{{ tag.name|slugify }}</a>&nbsp;
+        {{ tag.font-size|add:11 }}px;">{{ tag.name|slugify }}</a>&nbsp;
     {% endfor %}
 {% endblock %}

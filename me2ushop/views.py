@@ -14,6 +14,7 @@ import json
 
 from weasyprint import HTML
 
+from search.search import _prepare_words
 from .forms import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
@@ -144,6 +145,7 @@ class HomeView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         super(HomeView, self).get_context_data(**kwargs)
+
         from utils import context_processors
         context = {}
 
@@ -403,8 +405,8 @@ class ProductListView(ListView):
 
 class ProductDetailedView(DetailView):
     model = Product
-    template_name = 'home/products_detailed_page.html'
-    # template_name = 'me2ushop/test_product_page.html'
+    # template_name = 'home/products_detailed_page.html'
+    template_name = 'home/product_detail.html'
     query_pk_and_slug = True
 
     def get_context_data(self, **kwargs):
@@ -489,7 +491,7 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         form.instance.seller = self.request.user
         obj = form.save(commit=False)
         stock = obj.stock
-        brand = Brand.objects.get(user=self.request.user)
+        brand = Brand.objects.get(user__user=self.request.user)
         if brand:
             obj.brand_name = brand
         if stock > 0:
@@ -525,7 +527,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         else:
             obj.is_active = False
 
-        brand = Brand.objects.get(user=self.request.user)
+        brand = Brand.objects.get(user__user=self.request.user)
         if brand:
             obj.brand_name = brand
 
@@ -534,7 +536,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         product_posted = self.get_object()
-        if self.request.user == product_posted.brand_name.user:
+        if self.request.user == product_posted.brand_name.user.user:
             return True
         return False
 
@@ -546,7 +548,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         product_posted = self.get_object()
-        if self.request.user == product_posted.brand_name.user:
+        if self.request.user == product_posted.brand_name.user.user:
             return True
         return False
 
@@ -558,7 +560,7 @@ def show_product_image(request, slug):
     # product_reviews = ProductReview.approved.filter(product=product).order_by('-date')[0:PRODUCTS_PER_ROW]
     # print('productreviews:', product_reviews)
     # review_form = ProductReviewForm()
-    product_image = ProductImage.objects.filter(item__brand_name__user=request.user, item=product)
+    product_image = ProductImage.objects.filter(item__brand_name__user__user=request.user, item=product)
 
     context = {
         'object': product,
@@ -572,7 +574,7 @@ def product_image_create(request, slug):
     product = get_object_or_404(Product, slug=slug)
     # print('slug:', slug)
 
-    product_image = ProductImage.objects.filter(item__brand_name__user=request.user, item=product)
+    product_image = ProductImage.objects.filter(item__brand_name__user__user=request.user, item=product)
     if request.method == 'POST':
         # print('we came to post')
         form = ProductImageCreate(request.POST, request.FILES, instance=request.user)
@@ -587,9 +589,9 @@ def product_image_create(request, slug):
             # print('indisplay', in_display)
             # print('image:', image)
 
-            if product.brand_name.user == request.user:
+            if product.brand_name.user.user == request.user:
 
-                current_saved_default = ProductImage.displayed.filter(item__brand_name__user=request.user, item=product)
+                current_saved_default = ProductImage.displayed.filter(item__brand_name__user__user=request.user, item=product)
                 # print('current', current_saved_default)
                 if current_saved_default.exists():
                     if in_display:
@@ -649,9 +651,9 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
 
         default_image = obj.in_display
 
-        if item.brand_name.user == self.request.user:
+        if item.brand_name.user.user == self.request.user:
 
-            current_saved_default = ProductImage.displayed.filter(item__brand_name__user=user, item=item)
+            current_saved_default = ProductImage.displayed.filter(item__brand_name__user__user=user, item=item)
             # print('current', current_saved_default)
 
             if default_image:
@@ -698,7 +700,7 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
     def test_func(self):
         image_posted = self.get_object()
         print(image_posted)
-        if self.request.user == image_posted.item.brand_name.user:
+        if self.request.user == image_posted.item.brand_name.user.user:
             return True
         return False
 
@@ -726,6 +728,7 @@ def add_tag(request):
         for tags in tags.split():
             print('tag_split', tags)
             tags.strip(',')
+
             print([tags])
             if len(tags) > 2:
                 print(tags)
@@ -1586,16 +1589,16 @@ class Order_summary_view(View):
 
 class WishList_Summary(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
-        try:
-            if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated:
+            try:
                 wish_list = WishList.objects.filter(user=self.request.user)
-                print(wish_list)
-
                 return render(self.request, 'home/wish_list.html', locals())
 
-        except ObjectDoesNotExist:
-            messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE WISH")
-            return redirect("me2ushop:home")
+            except ObjectDoesNotExist:
+                messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE WISH")
+                return redirect("me2ushop:home")
+        else:
+            return redirect("login")
 
 
 import logging
@@ -2141,132 +2144,150 @@ def add_coupon(request):
 class PaymentView(View):
 
     def get(self, *args, **kwargs):
-        order = None
-        if self.request.user.is_authenticated:
-            order = Order.objects.get(user=self.request.user, ordered=False)
-        elif self.request.cart:
-            order = Order.objects.get(id=self.request.cart.id, ordered=False)
 
-        # print('order:', order)
-        if order is not None:
-            if order.billing_country:
-                context = {
-                    'order': order,
-                    'DISPLAY_COUPON_FORM': False
+        try:
+            order = None
+            if self.request.user.is_authenticated:
+                order = Order.objects.get(user=self.request.user, ordered=False)
+            elif self.request.cart:
+                order = Order.objects.get(id=self.request.cart.id, ordered=False)
 
-                }
+            # print('order:', order)
+            if order is not None:
+                if order.billing_country:
+                    context = {
+                        'order': order,
+                        'DISPLAY_COUPON_FORM': False
 
-                return render(self.request, 'home/payment.html', context)
+                    }
+                    if order.payment == 'S':
+                        return render(self.request, 'home/payment.html', context)
+                    elif order.payment == 'P':
+                        return render(self.request, 'home/paypal_payment.html', context)
+                    elif order.payment == 'FW':
+                        return render(self.request, 'home/flutterwave_payment.html', context)
+                    elif order.payment == 'M':
+                        return render(self.request, 'home/mpesa_payment.html', context)
+                    elif order.payment == 'MO':
+                        return render(self.request, 'home/momo_payment.html', context)
+                    else:
+                        return render(self.request, 'home/payment.html', context)
 
-        else:
-            messages.warning(self.request, "Please fill in your valid delivery address prior to payment")
-            return redirect("me2ushop:checkout")
+            else:
+                messages.warning(self.request, "Please fill in your valid delivery address prior to payment")
+                return redirect("me2ushop:checkout")
+        except Exception:
+            return redirect("me2ushop:home")
 
     def post(self, *args, **kwargs):
         # `source` is obtained with Stripe.js; see
         # https://stripe.com/docs/payments/accept-a-payment-charges#web-create-token
 
-        order = None
-        if self.request.user.is_authenticated:
-            order = Order.objects.get(user=self.request.user, ordered=False)
+        try:
 
-        else:
-            if self.request.cart:
-                order = Order.objects.get(id=self.request.cart.id, ordered=False)
-
-        form = PaymentForm(self.request.POST)
-        # userprofile = UserProfile.objects.get(user=self.request.user)
-
-        if form.is_valid():
-            print('valid payment form')
-            print('order:', order)
-            token = self.request.POST['stripeToken']
-
-            amount = int(order.get_total() * 100)  # get in ksh
-
-            # try:
-            charge = stripe.Charge.create(
-                amount=amount,
-                currency="usd",
-                source=token,
-            )
-
-            # print(charge)
-            # create payment
-            payment = StripePayment()
-            payment.stripe_charge_id = charge['id']
-            print(payment.stripe_charge_id)
-
+            order = None
             if self.request.user.is_authenticated:
-                payment.user = self.request.user
+                order = Order.objects.get(user=self.request.user, ordered=False)
+
             else:
-                payment.user = None
-            payment.amount = amount
-            payment.save()
+                if self.request.cart:
+                    order = Order.objects.get(id=self.request.cart.id, ordered=False)
 
-            order.ordered = True
-            print(order.ordered)
-            status = StatusCode.objects.get(short_name=20)
-            order.status_code = status
-            print(order.status_code)
-            # Assigning the order a ref code during checkout payment
-            order.ref_code = create_ref_code()
+            form = PaymentForm(self.request.POST)
+            # userprofile = UserProfile.objects.get(user=self.request.user)
 
-            # Changing order_items in cart to ordered
-            order_items = order.items.all()
-            order_items.update(ordered=True)
-            for item in order_items:
-                item.save()
+            if form.is_valid():
+                print('valid payment form')
+                print('order:', order)
+                token = self.request.POST['stripeToken']
 
-            order.save()
-            del self.request.session['cart_id']
-            messages.success(self.request, " CONGRATULATIONS YOUR ORDER WAS SUCCESSFUL")
-            print(order.id)
-            return redirect("me2ushop:checkout-done")
-            #
-            # except stripe.error.CardError as e:
-            #     # Since it's a decline, stripe.error.CardError will be caught
-            #     body = e.json_body
-            #     err = body.get('error', {})
-            #     messages.error(self.request, f"{err.get('message')}")
-            #     return redirect("me2ushop:home")
-            #
-            # except stripe.error.RateLimitError as e:
-            #     messages.error(self.request, "Rate Limit Error ")
-            #     return redirect("me2ushop:home")
-            #
-            # except stripe.error.InvalidRequestError as e:
-            #     # Invalid parameters were supplied to Stripe's API
-            #     messages.error(self.request, "Invalid parameters")
-            #     return redirect("me2ushop:home")
-            #
-            # except stripe.error.AuthenticationError as e:
-            #     # Authentication with Stripe's API failed
-            #     # (maybe you changed API keys recently)
-            #     messages.error(self.request, "Not authenticated")
-            #     return redirect("me2ushop:home")
-            #
-            # except stripe.error.APIConnectionError as e:
-            #     # Network communication with Stripe failed
-            #     messages.error(self.request, "Network error ")
-            #     return redirect("me2ushop:home")
-            #
-            # except stripe.error.StripeError as e:
-            #     # Display a very generic error to the user, and maybe send
-            #     # yourself an email
-            #     messages.error(self.request,
-            #                    "Something went wrong. You were not charged. Please try again or contact us")
-            #     return redirect("me2ushop:home")
-            #
-            # except Exception:
-            #     # Something else happened, completely unrelated to Stripe
-            #     print("unkown error")
-            #     messages.error(self.request,
-            #                    "Order recorded,  we have been notified. You will receive a call for order confirmation ")
-            #     return redirect("me2ushop:home")
+                amount = int(order.get_total() * 100)  # get in ksh
 
-        else:
-            messages.error(self.request, "Invalid form ")
+                # try:
+                charge = stripe.Charge.create(
+                    amount=amount,
+                    currency="usd",
+                    source=token,
+                )
+
+                # print(charge)
+                # create payment
+                payment = StripePayment()
+                payment.stripe_charge_id = charge['id']
+                print(payment.stripe_charge_id)
+
+                if self.request.user.is_authenticated:
+                    payment.user = self.request.user
+                else:
+                    payment.user = None
+                payment.amount = amount
+                payment.save()
+
+                order.ordered = True
+                print(order.ordered)
+                status = StatusCode.objects.get(short_name=20)
+                order.status_code = status
+                print(order.status_code)
+                # Assigning the order a ref code during checkout payment
+                order.ref_code = create_ref_code()
+
+                # Changing order_items in cart to ordered
+                order_items = order.items.all()
+                order_items.update(ordered=True)
+                for item in order_items:
+                    item.save()
+
+                order.save()
+                del self.request.session['cart_id']
+                messages.success(self.request, " CONGRATULATIONS YOUR ORDER WAS SUCCESSFUL")
+                print(order.id)
+                return redirect("me2ushop:checkout-done")
+                #
+                # except stripe.error.CardError as e:
+                #     # Since it's a decline, stripe.error.CardError will be caught
+                #     body = e.json_body
+                #     err = body.get('error', {})
+                #     messages.error(self.request, f"{err.get('message')}")
+                #     return redirect("me2ushop:home")
+                #
+                # except stripe.error.RateLimitError as e:
+                #     messages.error(self.request, "Rate Limit Error ")
+                #     return redirect("me2ushop:home")
+                #
+                # except stripe.error.InvalidRequestError as e:
+                #     # Invalid parameters were supplied to Stripe's API
+                #     messages.error(self.request, "Invalid parameters")
+                #     return redirect("me2ushop:home")
+                #
+                # except stripe.error.AuthenticationError as e:
+                #     # Authentication with Stripe's API failed
+                #     # (maybe you changed API keys recently)
+                #     messages.error(self.request, "Not authenticated")
+                #     return redirect("me2ushop:home")
+                #
+                # except stripe.error.APIConnectionError as e:
+                #     # Network communication with Stripe failed
+                #     messages.error(self.request, "Network error ")
+                #     return redirect("me2ushop:home")
+                #
+                # except stripe.error.StripeError as e:
+                #     # Display a very generic error to the user, and maybe send
+                #     # yourself an email
+                #     messages.error(self.request,
+                #                    "Something went wrong. You were not charged. Please try again or contact us")
+                #     return redirect("me2ushop:home")
+                #
+                # except Exception:
+                #     # Something else happened, completely unrelated to Stripe
+                #     print("unkown error")
+                #     messages.error(self.request,
+                #                    "Order recorded,  we have been notified. You will receive a call for order confirmation ")
+                #     return redirect("me2ushop:home")
+
+            else:
+                messages.error(self.request, "Invalid form ")
+                return redirect("me2ushop:home")
+        except Exception:
             return redirect("me2ushop:home")
 
 

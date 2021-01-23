@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
 from categories.models import Category, Department
-from users.models import Profile
+from users.models import Profile, SellerProfile
 from utils.models import CreationModificationDateMixin
 from sellers.models import Sellers
 from PIL import Image
@@ -56,6 +56,15 @@ PAYMENT_CHOICES = {
 
 }
 
+CONDITION_CHOICES = {
+
+    ('N', "New"),
+    ('R', "Refurbished"),
+    ('U', "Used"),
+    ('C', "Certified"),
+
+}
+
 
 class ActiveProductManager(models.Manager):
     def all(self):
@@ -78,7 +87,7 @@ class ProductManager(models.Manager):
 
 
 class Brand(CreationModificationDateMixin):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, unique=True, help_text='Unique title to identify Your store and your '
                                                                     'product line')
     active = models.BooleanField(default=True)
@@ -104,8 +113,12 @@ class Product(models.Model):
     stock = models.IntegerField(default=1)
     sku = models.CharField(max_length=120)
     in_stock = models.BooleanField(default=True, blank=True, null=True)
+    condition = models.CharField(choices=CONDITION_CHOICES, max_length=2,
+                                 help_text='Choose the current condition for the product'
+                                 )
     price = models.DecimalField(max_digits=9, decimal_places=2)
-    discount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, validators=[MinValueValidator(1.0)])
+    discount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True,
+                                         default=0.00)
     made_in_africa = models.BooleanField(default=False)
 
     is_active = models.BooleanField(default=True)
@@ -134,7 +147,11 @@ class Product(models.Model):
 
     product_categories = models.ManyToManyField(Department,
 
-                                                help_text='input the subcategory.')
+                                                help_text='Check the box of the category where your product belongs. '
+                                                          'Please note that different categories attract different Ad '
+                                                          'charges. Be specific to one or two categories where your '
+                                                          'product '
+                                                          'belongs on the provided tree. Contact us for help')
 
     objects = ProductManager()
     active = ActiveProductManager()
@@ -188,7 +205,7 @@ class Product(models.Model):
         return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
     def get_add_cart_url(self):
-        return reverse('me2ushop:add_cart', kwargs={'slug': self.slug})
+        return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
     def get_images(self):
         return self.productimage_set.all()
@@ -296,7 +313,7 @@ class ProductImage(CreationModificationDateMixin):
         'thumbnail': (170, 115, True),
         'medium': (365, 365),
         'deals_size': (365, 365, True),
-        'large': (415, 470, True),
+        'large': (415, 470,),
 
     }, delete_orphans=True)
     in_display = models.BooleanField(default=True)
@@ -342,7 +359,7 @@ class ProductDetail(CreationModificationDateMixin):
     to extend the information contained in the ``Product`` model with
     specific, extra details.
     """
-    product = models.ForeignKey("Product", related_name="Details", on_delete=models.CASCADE)
+    product = models.ForeignKey("Product", on_delete=models.CASCADE)
     attribute = models.ForeignKey('ProductAttribute', on_delete=models.CASCADE)
     value = models.CharField(max_length=500)
     description = models.TextField(blank=True)
@@ -366,6 +383,18 @@ class ProductAttribute(CreationModificationDateMixin):
 
     def __str__(self):
         return u'%s' % self.name
+
+
+class Rentals(CreationModificationDateMixin):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    book_start = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    book_end = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    rental_price_day = models.DecimalField(max_digits=9, decimal_places=2)
+    discount_per_week = models.IntegerField(blank=True, null=True)
+    discount_per_month = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return u'%s' % self.product
 
 
 class WishList(CreationModificationDateMixin):
@@ -492,7 +521,7 @@ class Order(CreationModificationDateMixin):
     DONE = 30
     STATUSES = ((NEW, 'New'), (PAID, 'Paid'), (DONE, 'Done'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
-                                 db_index=True)
+                             db_index=True)
     cart_id = models.CharField(max_length=40, blank=True, null=True)
     status = models.IntegerField(choices=STATUSES, default=NEW)
     status_code = models.ForeignKey('StatusCode', on_delete=models.SET_NULL, blank=True, null=True)
