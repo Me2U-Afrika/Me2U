@@ -125,7 +125,6 @@ txaio==20.4.1
 uhashring==1.2
 unicorn==1.0.2
 urllib3==1.25.9
-uWSGI==2.0.19.1
 wcwidth==0.2.5
 WeasyPrint==51
 webencodings==0.5.1

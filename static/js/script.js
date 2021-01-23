@@ -86,6 +86,17 @@ function preparedDocument(){
           }, "json");
     }
 
+    // CONTACT SELLER
+    jQuery("#contact_seller").click(slideToggleSellerContact);
+    jQuery("#seller_contact").hide();
+
+
+    function slideToggleSellerContact(){
+        jQuery("#seller_contact").slideToggle();
+
+    }
+
+
 //    PRODUCT TAGS
     jQuery("#tag_product").click(slideToggleAddTag);
     jQuery("#add_tag").hide();

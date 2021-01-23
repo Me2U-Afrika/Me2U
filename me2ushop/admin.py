@@ -105,7 +105,7 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     # autocomplete_fields = ('product_categories',)
 
-    inlines = (ProductDetailInline, OrderItemInline,)
+    inlines = (ProductDetailInline,)
     actions = [make_active, make_inactive]
 
     def get_readonly_fields(self, request, obj=None):

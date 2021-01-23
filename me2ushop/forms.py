@@ -35,8 +35,7 @@ class ProductForm(forms.ModelForm):
         fields = ['title', 'slug', 'price', 'discount_price', 'stock', 'made_in_africa', 'description',
                   'additional_information',
                   'meta_keywords',
-                  'meta_description',
-                  'category_choice', 'product_categories']
+                  'meta_description', 'product_categories']
 
     def __int__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
@@ -213,7 +212,7 @@ class ProductImageCreate(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        queryset_item = Product.objects.filter(brand_name__user=user)
+        queryset_item = Product.objects.filter(brand_name__user__user=user)
 
         self.fields['item'].queryset = queryset_item
 

@@ -28,7 +28,7 @@ def me2u(request):
 
     if request.user.is_authenticated and request.user.is_seller:
         try:
-            brand = Brand.objects.get(user=request.user)
+            brand = Brand.objects.get(user__user=request.user)
             if brand:
                 context.update({'brand': brand})
         except Exception:

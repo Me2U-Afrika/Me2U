@@ -88,18 +88,6 @@
                                     </ul>
                                 </li>
                                 <li class="hassubs">
-                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>
-                                    <ul>
-                                        <li><a href="shop.html">Simba<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="product.html">Lamane<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="blog.html">KFC<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="regular.html">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="cart.html">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="contact.html">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="contact.html">Register My Shop<i class="fas fa-chevron-down"></i></a></li>
-                                    </ul>
-                                </li>
-                                <li class="hassubs">
                                     <a href="{% url 'sellers:seller_products' %}">Manage Products<i class="fas fa-chevron-down"></i></a>
                                     <ul>
                                         <li>
@@ -113,13 +101,14 @@
                                                 <li><a href="#">Trending<i class="fas fa-chevron-down"></i></a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fas fa-chevron-down"></i></a></li>
                                         <li><a href="{% url 'sellers:seller_products' %}">Manage Existing<i class="fas fa-chevron-down"></i></a></li>
                                         <li><a href="#">Recently Added<i class="fas fa-chevron-down"></i></a></li>
                                         <li><a href="#">Stock Analysis<i class="fas fa-chevron-down"></i></a></li>
                                         <li><a href="#">Restock<i class="fas fa-chevron-down"></i></a></li>
                                     </ul>
                                 </li>
+                                <li><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fas fa-chevron-down"></i></a></li>
+
                                 <li><a href="#">Deliver with Me2U<i class="fas fa-chevron-down"></i></a></li>
                             </ul>
                         </div>

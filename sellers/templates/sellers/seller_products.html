@@ -46,7 +46,7 @@
                             {% endif %}
                         {% endfor %}
                     {% else %}
-                        <td><a class="btn btn-outline-info btn-sm" href="{% url 'me2ushop:product_images' item.slug %}">Add Image</a></td>
+                        <td><a class="btn btn-outline-info btn-sm" href="{% url 'me2ushop:product_image_create' item.slug %}">Add Image</a></td>
                     {% endif %}
 
                     {% if item.discount_price %}

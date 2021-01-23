@@ -51,25 +51,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='SellerProfile',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(editable=False, verbose_name='creation date and time')),
-                ('modified', models.DateTimeField(editable=False, null=True, verbose_name='modification date and time')),
-                ('first_name', models.CharField(max_length=10)),
-                ('last_name', models.CharField(max_length=10)),
-                ('business_type', models.CharField(choices=[('Co', 'Company'), ('Sol', 'Sole Proprietorship')], max_length=4)),
-                ('tax_country', django_countries.fields.CountryField(max_length=2)),
-                ('subscription_type', models.CharField(choices=[('Bs', 'Basic'), ('Pr', 'Premium')], help_text='Select a monthly recurring subscription fees', max_length=2)),
-                ('application_status', models.IntegerField(choices=[(10, 'Under Review'), (20, 'Accepted'), (30, 'Denied')], default=10)),
-                ('active', models.BooleanField(default=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
-        migrations.CreateModel(
             name='Profile',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),

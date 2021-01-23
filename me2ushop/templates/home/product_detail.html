@@ -1,0 +1,679 @@
+{% extends 'me2ushop/base_template.html' %}
+{% load tagging_tags %}
+{% load render_bundle from webpack_loader %}
+{% load crispy_forms_tags %}
+{% load catalog_filters %}
+
+
+{% block headblock %}
+<!--product styles-->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_responsive.css">
+
+<!--shop styles-->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+
+<!--contact styles-->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
+
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<!--home styles-->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/responsive.css">
+
+<style>
+	@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
+	body{margin-top:20px}
+
+	.fa{font-size:24px;margin-right:5px}
+	.row-first{margin-bottom:10px;margin-top:8px}
+	.title-contact{margin-top:32px;display:none;}
+	.contact-email { display:none; }
+	a{transition:all .3s ease;-webkit-transition:all .3s ease;-moz-transition:all .3s ease;-o-transition:all .3s ease}
+	.quick-contact{color:#fff;background-color:#000;background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAiCAMAAADiW5DOAAAAaVBMVEUjIyMlJSUhISEaGhoZGRkcHBwREREHBwcMDAwODg4PDw8NDQ0LCwsICAgQEBAYGBgbGxsiIiIkJCQUFBQKCgoVFRUJCQkSEhITExMdHR0XFxcFBQUGBgYfHx8WFhYeHh4gICAEBAQmJiYtaDO6AAAC4UlEQVR42iVTi5arIAykl4cSMNAFeah1t/v/H3knXT3VyoQkMxmUUo8Hfv+0NtYtq6cQvI8bW53y8wsIbmAmy2VyCXElZscUatiNBpRtTlklqw0+EtL45r3rozjmtbK22Rid9TRqpozwiW/L1XMvY++uh3XIPiuZkkpG4lEPyTggS9nHcIFzxkpG9iOrel7Xspyr0eZ1e8TsexmO9m9j73pd57ks6ty2pbWz7drM3LkPhHRXtDV5LEuttZ2qtjVGkI1aJ3tIot7Z6W+T7/WKYFpXFSl48iFUhw5sD647Tzd4T2rN0wpMeSLX2YdaE6o9H0/R9CcbXVao5bhzUEIXilCsA0H5OyfQsVpbXwMxSg9SHiEDbH0teuojHeBrRPu+hi5SlK7wkst5D7WgmDnw0BAYarkBcOzKiWr7IJ+m1iK3aIdHmrdngfqtPrKhofHK4N7O7Trf55om5O88gPWhGFMcnbpshjm2Zavt2gYSvg5gaIcV0+hMvNusU2qtxRWaLsEk1NwJPiCnfpTY7OuF6em+Re+hFdUmiezr+fhV6qmmMSJIBqej1uAgqOPQ1iOLecSBVh1iwTtlaxNfyD1AmMg3B9QksdBEnoQNaMYmt0F6kYSYas9a1oHCq3hrKY6b2JVyQzYXKItQny4OeGy5zuusyaAauYGYUZiOqS3M8T6X81TbVdvW3sttjf52kqigoTExMwePAVxUrTFAkdrEY5k9PFZ8twafcQNRQCquwcNisXbpHFUcdRoZffSt+uA5eBXQqGNC0GHM/Pd4/H6p58/U6Y4tABnEij7zcrRuu3gLXBE6UYoatpcOTIkNZXCh7UeC/TA3vGAijqiwg0FXPIr8Ye+1zYhIH+n+TiTjIB2j/MXAq5TQg0nSuKig0zxIPHZ/YvZdTi9PUTq+r+u9vSN013NQH/dAreBQsXPPsszL1XAt8NjHKzR2VFAlgHt3xWI2d9wgGY5m88eE/QcLefcf4Go/mGyl89EAAAAASUVORK5CYII=');text-align:center}
+	.contact a{-webkit-border-radius:2px;-moz-border-radius:2px;-o-border-radius:2px;border-radius:2px;display:block;background-color:rgba(255,255,255,0.25);font-size:20px;text-align:center;color:#fff;padding:7px}
+	.contact a:hover{background-color:rgba(255,255,255,0.85);text-decoration:none}
+	.contact a.facebook:hover,.fa-facebook{color:#00aff0}
+	.contact a.instagram:hover,.fa-instagram{color:#ED8975}
+	.contact a.email:hover,.fa-globe{color:#0000CC}
+	.contact a.telegram:hover,.fa-paper-plane{color:#1a1aff}
+</style>
+
+{% endblock headblock %}
+
+
+{% block site_wrapper %}
+
+<body>
+
+<div class="super_container">
+
+	<!-- Single Product -->
+
+	<div class="single_product">
+
+		<div class="container-fluid">
+
+			<div class="row">
+
+					<!-- Images -->
+			<div class="col-lg-2 order-lg-1 order-2">
+
+				{% if object.cross_sells_hybrid %}
+
+				<ul class="image_list">
+					{% for product in object.cross_sells_hybrid %}
+					{% for image in product.get_images %}
+	                    {% if image.in_display %}
+	                    <li class="view overlay zoom">
+				            <img src="{{ image.image.thumbnail.url }}">
+		                    <a href="{{ product.get_absolute_url }}">
+				                <div class="mask rgba-black-slight">
+
+					                <div class="card-body text-center">
+
+						              <h6> {{ product.title }}</h6>
+					                </div>
+				                </div>
+		                    </a>
+
+	                        <div class="card-body text-center">
+				              <a href="{{ product.get_absolute_url }}">
+
+				                  <h6 class="font-weight-bold blue-text">
+
+				                  {% if product.discount_price %}
+				                      <span style="font-size:9px" class="grey-text"><del>{{ product.price|currency }}</del></span>
+				                     <br>
+				                    <span>{{ product.discount_price|currency }}</span>
+				                  {% else %}
+				                    {{ product.price|currency }}
+				                  {% endif %}
+
+				              </h6>
+			                  </a>
+			                </div>
+
+	                   </li>
+	                    {% endif %}
+	                    {% endfor %}
+					{% endfor %}
+
+
+				</ul>
+
+				{% endif %}
+
+			</div>
+
+				<!-- Selected Image -->
+
+				<div class="col-lg-5 order-lg-2 order-1">
+				{% for image in object.get_images %}
+				{% if image.in_display %}
+
+					<div class="image_selected" id="imagebox"><img src="{{ image.image.large.url }}" alt="{{ object.title }}"></div>
+
+				{% endif %}
+				{% endfor %}
+					</div>
+
+
+				<!-- Description -->
+				<div class="col-lg-5 order-3">
+					<div class="product_description">
+						<div class="product_category">{{ object.get_category_choice_display }}</div>
+						<div class="product_name">{{ object.title }}</div>
+						<div class="rating_r rating_r_4 product_rating"><i></i><i></i><i></i><i></i><i></i></div>
+						{% if brand_id %}
+	                        <div>
+	                            Brand: <a href="{% url 'me2ushop:seller_page' brand_id %}"> {{ object.brand_name }}</a>
+	                        </div>
+	                        {% endif %}
+						<div class="product_text"><p>{{ object.description|linebreaks }}</p></div>
+						<div class="order_info d-flex flex-row">
+							<form action="{{ object.get_add_cart_url }}" method="POST">
+								{% csrf_token %}
+								<div class="clearfix" style="z-index: 1000;">
+
+									 {% if object.stock > 0 %}
+		                            <p>Stock: {{ object.stock }}</p>
+		                            {% else %}
+		                            <p>Stock:Product Not in Stock</p>
+		                            {% endif %}
+
+<!--									&lt;!&ndash; Product Quantity &ndash;&gt;-->
+<!--									<div class="product_quantity clearfix">-->
+<!--										<span>Quantity: </span>-->
+<!--										<input id="quantity_input" name="quantity" type="number" pattern="[0-9]*" value="1">-->
+<!--										<div class="quantity_buttons">-->
+<!--											<div id="quantity_inc_button" class="quantity_inc quantity_control"><i class="fas fa-chevron-up"></i></div>-->
+<!--											<div id="quantity_dec_button" class="quantity_dec quantity_control"><i class="fas fa-chevron-down"></i></div>-->
+<!--										</div>-->
+<!--									</div>-->
+
+<!--									&lt;!&ndash; Product Color &ndash;&gt;-->
+<!--									<ul class="product_color">-->
+<!--										<li>-->
+<!--											<span>Color: </span>-->
+<!--											<div class="color_mark_container"><div id="selected_color" class="color_mark"></div></div>-->
+<!--											<div class="color_dropdown_button"><i class="fas fa-chevron-down"></i></div>-->
+
+<!--											<ul class="color_list">-->
+<!--												<li><div class="color_mark" style="background: #999999;"></div></li>-->
+<!--												<li><div class="color_mark" style="background: #b19c83;"></div></li>-->
+<!--												<li><div class="color_mark" style="background: #000000;"></div></li>-->
+<!--											</ul>-->
+<!--										</li>-->
+<!--									</ul>-->
+
+								</div>
+
+								<div class="product_price">{{ object.price|currency }}</div>
+								{% if object.brand_name.user.user == request.user %}
+	                            <div>
+	                                <a class="btn " href="{% url 'me2ushop:product-update' object.slug %}" target="_blank">Update</a>
+	                                <a class="btn " href="{% url 'me2ushop:product-create' %}" target="_blank">Add New</a>
+	                                <a class="btn " href="{% url 'me2ushop:product_images' object.slug %}" target="_blank">Product Images</a>
+	                                <a class="btn " href="{% url 'me2ushop:product_images' object.slug %}" target="_blank">Add Product Attributes</a>
+	                                {% if pending_item %}
+		                            <a class="btn text-muted disabled" href="#">Delete</a>
+		                            {% else %}
+		                            <a class="btn" href="{% url 'me2ushop:product-delete' object.slug %}" target="_blank">Delete</a>
+		                            {% endif %}
+
+	                                <a class="btn " href="{% url 'sellers:seller_products' %}" target="_blank">All Products</a>
+	                                <a class="btn " href="{% url 'sellers:seller_home' %}" target="_blank">Dashboard</a>
+	                            </div>
+								{% endif %}
+
+	<!--								<div class="button_container">-->
+	<!--									<button type="submit" class="button cart_button" >Add to Cart</button>-->
+	<!--									<div class="product_fav"><i class="fas fa-heart"></i></div>-->
+	<!--									<a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>-->
+	<!--								</div>-->
+	<!--							<div class="button_container">-->
+	<!--								<button type="submit" class="button cart_button" >Contact Seller</button>-->
+	<!--							</div>-->
+							</form>
+						</div>
+						{% if object.brand_name %}
+								<div class="mt-2">
+									<button class="button cart_button" id="contact_seller"><i class="fas fa-phone-square"> Contact Seller</i></button>
+
+									{% if request.user.wishlist_set.all %}
+										{% for product in request.user.wishlist_set.all %}
+										{% if product.product.slug == object.slug %}
+
+										{% else %}
+											<a href="{% url 'me2ushop:add_wishlist' object.slug %}" role="button" class="button cart_button"><i class="fas fa-heart"></i></a>
+										{% endif %}
+										{% endfor %}
+
+									{% else %}
+										<a href="{% url 'me2ushop:add_wishlist' object.slug %}" role="button" class="button cart_button"><i class="fas fa-heart"></i></a>
+									{% endif %}
+									<a href="{% url 'me2ushop:seller_page' brand_id %}" role="button" class="button cart_button"><i class="fas fa-store"> Visit Store</i></a>
+								</div>
+							{% endif %}
+						<br>
+						<div>
+	                    In categor{{ object.product_categories.count|pluralize:"y,ies" }}:
+	                            {% for c in object.product_categories.all %}
+	                                <a href="{{ c.get_absolute_url }}"><span property="v:product_categories">{{ c.category_name }}</span></a>
+	                            {% if not forloop.last %} , {% endif %}
+	                            {% endfor %}
+						</div>
+						<br>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="container">
+
+
+		{% if object.brand_name %}
+
+		<!--contact details-->
+		<div class="well well-sm quick-contact mt-3" id="seller_contact">
+	        <div class="row">
+	            <div class="col-md-12">
+	                <div class="row">
+	                    <div class="col-md-4">
+	                        <h1 class="title-contact">
+	                            Quick Contact</h1>
+	                    </div>
+
+
+	                    <div class="col-md-4 contact-email">
+	                        <h2>
+		                       <a href="mailto:{{ object.brand_name.user.email }}" target="_blank"><i class="fas fa-envelope-square" style="color:#20639B;"> Email</i></a>
+	                            </h2>
+	                        <h3>
+	                            {{ object.brand_name.user.phone }}</h3>
+	                    </div>
+	                    <div class="col-md-4">
+	                        <div class="row contact row-first">
+		                        {% if object.brand_name.user.facebook %}
+	                            <div class="col-md-6">
+	                                <a href="{{ object.brand_name.user.facebook }}" class="facebook" target="_blank"><i class="fa fa-facebook"></i>Facebook</a>
+	                            </div>
+		                        {% endif %}
+
+		                        {% if object.brand_name.user.instagram %}
+	                            <div class="col-md-6">
+	                                <a href="{{ object.brand_name.user.instagram }}" class="instagram" target="_blank"><i class="fa fa-instagram"></i>instagram</a>
+	                            </div>
+		                        {% endif %}
+	                        </div>
+	                        <div class="row contact">
+
+		                        {% if object.brand_name.user.website_link %}
+	                            <div class="col-md-6">
+	                                <a href="{{ object.brand_name.user.website_link }}" class="email" target="_blank"><i class="fa fa-globe"></i>Website</a>
+	                            </div>
+		                        {% endif %}
+
+		                        {% if object.brand_name.user.telegram %}
+	                            <div class="col-md-6">
+	                                <a href="{{ object.brand_name.user.telegram }}" class="telegram" target="_blank"><i class="far fa-paper-plane"></i>Telegram</a>
+	                            </div>
+		                        {% endif %}
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+		</div>
+		<!--contact details-->
+
+		{% endif %}
+
+
+		<!-- Classic tabs -->
+		<div class="classic-tabs border rounded px-4 pt-1 mt-4">
+
+	    <ul class="nav tabs-primary nav-justified" id="advancedTab" role="tablist">
+
+		     <li class="nav-item">
+	            <a class="nav-link active show" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Information</a>
+	        </li>
+	        <li class="nav-item">
+	            <a class="nav-link" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Product Tags</a>
+	        </li>
+	        <li class="nav-item">
+	            <a class="nav-link" id="detailed_description-tab" data-toggle="tab" href="#detailed_description" role="tab" aria-controls="detailed_description" aria-selected="false">Detailed Description</a>
+	        </li>
+	    </ul>
+
+
+	    <div class="tab-content" id="advancedTabContent">
+
+		    <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+	        <h5>Product Attributes</h5>
+
+			    {% if object.productimage_set.all %}
+
+		      <table class="table table-striped table-bordered mt-3">
+		        <thead>
+		          <tr>
+		            <th scope="row" class="w-150 dark-grey-text h6">Attribute</th>
+		            <td><em>Value</em></td>
+		          </tr>
+		        </thead>
+		        <tbody>
+
+		        {% for pdattribute in object.productdetail_set.all %}
+
+			          <tr>
+			            <th scope="row" class="w-150 dark-grey-text h6">{{ pdattribute.attribute }}</th>
+			            <td><em>{{ pdattribute.value }}</em></td>
+			          </tr>
+
+		        {% endfor %}
+		        </tbody>
+		      </table>
+
+		    {% endif %}
+	    </div>
+
+		    <div class="tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
+	        <h3>
+	            <a href="{% url 'me2ushop:tag_cloud' %}" style="text-color: orange;">View TagCloud</a>
+	        </h3>
+	         <div class="media mt-3 mb-4">
+	               <div id="tags" >
+	                    {% for tag in product.tags %}
+	                        {% include 'tags/tag_link.html' %}
+	                    {% empty %}
+		                    <div id="no_tags">
+		                        Help other sellers find this product easily. Add tags or create one. Tag the product in your local dialect.
+		                        <br>
+		                        i.e kiti, amata
+		                    </div>
+	                    {% endfor %}
+	               </div>
+
+	         </div>
+	        <hr>
+	        {% if request.user.is_authenticated %}
+	            <h5 class="mt-4"><a id="tag_product">Add a Tag</a></h5>
+			      <div>
+			        <!-- Your review -->
+			        <div class="md-form md-outline">
+			          <textarea id="id_tag" class="md-textarea form-control pr-6" rows="4"></textarea>
+			        </div>
+
+			        <div class="text-center pb-2">
+				        <input type="submit" value="Tag It" id="add_tag" />
+			        </div>
+
+
+			      </div>
+	        {% else %}
+	            <div><a href="{% url 'login' %}?next={{ request.path }}">
+	                Log in to tag this product.
+	            </a></div>
+	        {% endif %}
+	        </div>
+
+	    <div class="tab-pane fade" id="detailed_description" role="tabpanel" aria-labelledby="detailed_description-tab">
+	        <h5>Additional Information</h5>
+
+	        <div class="product_text"><p>{{ object.additional_information|linebreaks }}</p></div>
+	    </div>
+	  </div>
+	</div>
+		<!-- Classic tabs -->
+
+
+		{% if object.cross_sells_sellers %}
+		<!--Section: Block Content-->
+		<section class="text-center">
+
+		  <!-- Grid row -->
+		  <div class="row">
+			  <div class="col">
+			  <h2 class="viewed_title">Similar Products</h2>
+
+			  {% for product in object.cross_sells_hybrid %}
+					{% for image in product.get_images %}
+	                    {% if image.in_display %}
+
+				    <!-- Grid column -->
+				    <div class="col-md-6 col-lg-3 mb-5 mt-3">
+					    <!-- Card -->
+					      <div class="">
+
+					        <div class="view zoom overlay z-depth-2 rounded">
+					          <img class="img-fluid w-100"
+					            src="{{ image.image.medium.url}}" alt="Sample">
+					          <a href="{{ product.get_absolute_url }}">
+					            <div class="mask">
+					              <img class="img-fluid w-100"
+					                src="{{ image.image.large.url }}">
+					              <div class="mask rgba-black-slight"></div>
+					            </div>
+					          </a>
+					        </div>
+
+					        <div class="pt-4">
+
+					          <h5>{{ product.title }}</h5>
+
+						        {% if product.discount_price %}
+							        <span class="text-danger mr-1">{{ product.discount_price|currency }}</span>
+							        <span class="text-grey"><s>{{ product.price|currency }}</s></span>
+						        {% else %}
+					                <h6>{{ product.price|currency }}</h6>
+						        {% endif %}
+					        </div>
+
+					      </div>
+					    <!-- Card -->
+				    </div>
+				    <!-- Grid column -->
+
+			         {% endif %}
+			        {% endfor %}
+			    {% endfor %}
+
+			  </div>
+
+		  </div>
+		  <!-- Grid row -->
+
+		</section>
+		<!--Section: Block Content-->
+		{% endif %}
+
+		<div class="reviews">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class="reviews_title_container">
+						<h3 class="reviews_title">{{ object.title }} Reviews</h3>
+						{% if request.user.is_authenticated %}
+						{% if request.user != object.seller %}
+
+							<div class="reviews_all ml-auto"><a id="add_review" style=" color:blueviolet;">Add a <span>review</span></a></div>
+
+						{% endif %}
+
+						<div id="review_form">
+	                        <div id="review_errors"></div>
+
+	                            {% csrf_token %}
+	                            {{ review_form|crispy }}
+								<input type="hidden" id="id_slug" value="{{ object.slug }}"/>
+	                            <input type="submit" id="submit_review" value="Submit"/>
+	                            <input type="submit" id="cancel_review" value="Cancel|Close"/>
+
+	                    </div>
+
+	                    {% else %}
+
+	                    <div class="reviews_all ml-auto"><a href="{% url 'login' %}?next={{ request.path }}">
+	                    LogIn to <span>review</span></a></div>
+
+	                    {% endif %}
+
+					</div>
+
+					<div class="reviews_slider_container" >
+
+						<!-- Reviews Slider -->
+						<div class="owl-carousel owl-theme reviews_slider" id="reviews">
+
+							{% for review in product_reviews %}
+							<!-- Reviews Slider Item -->
+							<div class="owl-item">
+								<div class="review d-flex flex-row align-items-start justify-content-start">
+									{% for image in review.get_images %}
+									{% if image.in_display %}
+									<div ><div class="review_image"><a href="{{ review.product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ review.product.title }}"></a></div></div>
+									{% endif %}
+									{% endfor %}
+									<div class="review_content">
+										<div class="review_name">{{ review }} - {{ review.country }}</div>
+										<div class="review_rating_container">
+											<div class="rating_r rating_r_4 review_rating"><i></i><i></i><i></i><i></i><i></i><h4> {{ review.rating }}</h4></div>
+											<br>
+											<div class="rating_r rating_r_4 review_rating"><h4>{{ review.title }}</h4></div>
+											<br>
+											<div class="review_time">{{ review.date }}</div>
+										</div>
+										<div class="review_text"><a href="{{ review.product.get_absolute_url }}"><p>{{ review.content|linebreaks }}</p></a></div>
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+
+
+						</div>
+						<div class="reviews_dots"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+		<!-- Recently Viewed -->
+	    {% if recently_viewed %}
+		<div class="viewed">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="viewed_title_container">
+							<h3 class="viewed_title">Recently Viewed</h3>
+							<div class="viewed_nav_container">
+								<div class="viewed_nav viewed_prev"><i class="fas fa-chevron-left"></i></div>
+								<div class="viewed_nav viewed_next"><i class="fas fa-chevron-right"></i></div>
+							</div>
+						</div>
+
+						<div class="viewed_slider_container">
+
+							<!-- Recently Viewed Slider -->
+
+							<div class="owl-carousel owl-theme viewed_slider">
+
+								<!-- Recently Viewed Item -->
+								{% for product in recently_viewed %}
+								{% if product.slug != object.slug %}
+								<div class="owl-item">
+									<div class="viewed_item discount d-flex flex-column align-items-center justify-content-center text-center">
+										{% for image in product.get_images %}
+										{% if image.in_display %}
+<!--										<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>-->
+
+										<!-- Card -->
+									      <div class="viewed_image">
+
+									        <div class="view zoom overlay z-depth-2 rounded">
+									          <img class="img-fluid w-100"
+									            src="{{ image.image.thumbnail.url}}" alt="Sample">
+									          <a href="{{ product.get_absolute_url }}">
+									            <div class="mask">
+									              <img class="img-fluid w-100"
+									                src="{{ image.image.medium.url }}">
+									              <div class="mask rgba-black-slight"></div>
+									            </div>
+									          </a>
+									        </div>
+
+									        <div class="pt-4">
+
+									          <h5>{{ product.title }}</h5>
+
+										        {% if product.discount_price %}
+											        <span class="text-danger mr-1">{{ product.discount_price|currency }}</span>
+											        <span class="text-grey"><s>{{ product.price|currency }}</s></span>
+										        {% else %}
+									                <h6>{{ product.price|currency }}</h6>
+										        {% endif %}
+									        </div>
+
+									      </div>
+									    <!-- Card -->
+
+										{% endif %}
+										{% endfor %}
+
+
+									</div>
+								</div>
+								{% endif %}
+								{% endfor %}
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+		</div>
+	</div>
+</div>
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}js/product_custom.js"></script>
+
+<!--shop styles-->
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+<!---->
+
+<!-- contact styles-->
+<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
+<!---->
+
+<!--home styles-->
+<script src="{{ STATIC_URL }}js/custom.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.js"></script>
+
+<script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+
+
+
+{% if formset %}
+    {{ formset.media }}
+{% endif %}
+
+{% render_bundle 'imageswitcher' 'js' %}
+<script>
+    const e = React.createElement;
+    document.addEventListener("DOMContentLoaded",
+        function(event) {
+            var images = [
+                {% for image in object.productimage_set.all %}
+                    {"image": "{{image.image.url|safe }}",
+                        "thumbnail": "{{ image.image.thumbnail.url|safe }}"
+                    },
+                {% endfor %}
+            ]
+            ReactDOM.render(e(ImageBox,
+            {images: images,
+             imageStart:images[0]}),
+               document.getElementById('imagebox')
+            );
+        });
+</script>
+
+<script>
+	$(document).ready(function () {
+    $(".title-contact, .contact-email").fadeIn("slow");
+});
+</script>
+
+{% endblock %}
+
+</body>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

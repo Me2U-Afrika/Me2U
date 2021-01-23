@@ -95,7 +95,7 @@
 				<div class="col-lg-5 order-lg-2 order-1">
 				{% for image in object.get_images %}
 				{% if image.in_display %}
-					<div class="{{ MEDIA_URL }}image_selected" id="imagebox"><img src="{{ MEDIA_URL }}{{ image.image.large }}" alt="{{ object.title }}"></div>
+					<div class="image_selected" id="imagebox"><img src="{{ MEDIA_URL }}{{ image.image.large }}" alt="{{ object.title }}"></div>
 
 				{% endif %}
 				{% endfor %}

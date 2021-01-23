@@ -26,6 +26,7 @@
 					<div class="shop_content">
 						<div class="shop_bar clearfix">
 							<div class="shop_product_count"><span>{{ product_image.count }}</span> {{ object.title }} Images</div>
+							<div style="margin-right:5px;"><a href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a></div>
 							<div class="shop_sorting">
 								<span>Manage Page:</span>
 								<ul>

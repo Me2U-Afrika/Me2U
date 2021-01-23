@@ -22,8 +22,8 @@ def seller_page(request):
         from utils import context_processors
         utils = context_processors.me2u(request)
         brand = utils['brand']
+        print('brand', brand)
         if brand:
-            print(brand)
             brand_name = brand
 
             # print(brand_name.id)
@@ -83,7 +83,7 @@ def automobile_page(request):
 @login_required()
 def seller_products(request):
     user = request.user
-    products = Product.objects.filter(brand_name__user=user)
+    products = Product.objects.filter(brand_name__user__user=user)
 
     for obj in products:
         image = ProductImage.objects.filter(item=obj, in_display=True)
@@ -105,7 +105,7 @@ def customer_details(request, id, template_name="sellers/customer_details_templa
     brand_names = context['brand']
 
     if brand_names:
-        brand_name = brand_names[0]
+        brand_name = brand_names
 
         # products = brand_name.product_set.all()
         customer_orders = OrderItem.objects.filter(id=id)
@@ -146,7 +146,7 @@ def customer_address(request, id, template_name="sellers/customer_address.html")
     brand_names = context['brand']
 
     if brand_names:
-        brand_name = brand_names[0]
+        brand_name = brand_names
 
     customer_address_info = Address.objects.filter(user__id=id)
     print('customer add:', customer_address_info)

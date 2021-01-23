@@ -14,6 +14,7 @@ import json
 
 from weasyprint import HTML
 
+from search.search import _prepare_words
 from .forms import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
@@ -404,8 +405,8 @@ class ProductListView(ListView):
 
 class ProductDetailedView(DetailView):
     model = Product
-    template_name = 'home/products_detailed_page.html'
-    # template_name = 'me2ushop/test_product_page.html'
+    # template_name = 'home/products_detailed_page.html'
+    template_name = 'home/product_detail.html'
     query_pk_and_slug = True
 
     def get_context_data(self, **kwargs):
@@ -490,7 +491,7 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         form.instance.seller = self.request.user
         obj = form.save(commit=False)
         stock = obj.stock
-        brand = Brand.objects.get(user=self.request.user)
+        brand = Brand.objects.get(user__user=self.request.user)
         if brand:
             obj.brand_name = brand
         if stock > 0:
@@ -526,7 +527,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         else:
             obj.is_active = False
 
-        brand = Brand.objects.get(user=self.request.user)
+        brand = Brand.objects.get(user__user=self.request.user)
         if brand:
             obj.brand_name = brand
 
@@ -535,7 +536,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         product_posted = self.get_object()
-        if self.request.user == product_posted.brand_name.user:
+        if self.request.user == product_posted.brand_name.user.user:
             return True
         return False
 
@@ -547,7 +548,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         product_posted = self.get_object()
-        if self.request.user == product_posted.brand_name.user:
+        if self.request.user == product_posted.brand_name.user.user:
             return True
         return False
 
@@ -559,7 +560,7 @@ def show_product_image(request, slug):
     # product_reviews = ProductReview.approved.filter(product=product).order_by('-date')[0:PRODUCTS_PER_ROW]
     # print('productreviews:', product_reviews)
     # review_form = ProductReviewForm()
-    product_image = ProductImage.objects.filter(item__brand_name__user=request.user, item=product)
+    product_image = ProductImage.objects.filter(item__brand_name__user__user=request.user, item=product)
 
     context = {
         'object': product,
@@ -573,7 +574,7 @@ def product_image_create(request, slug):
     product = get_object_or_404(Product, slug=slug)
     # print('slug:', slug)
 
-    product_image = ProductImage.objects.filter(item__brand_name__user=request.user, item=product)
+    product_image = ProductImage.objects.filter(item__brand_name__user__user=request.user, item=product)
     if request.method == 'POST':
         # print('we came to post')
         form = ProductImageCreate(request.POST, request.FILES, instance=request.user)
@@ -588,9 +589,9 @@ def product_image_create(request, slug):
             # print('indisplay', in_display)
             # print('image:', image)
 
-            if product.brand_name.user == request.user:
+            if product.brand_name.user.user == request.user:
 
-                current_saved_default = ProductImage.displayed.filter(item__brand_name__user=request.user, item=product)
+                current_saved_default = ProductImage.displayed.filter(item__brand_name__user__user=request.user, item=product)
                 # print('current', current_saved_default)
                 if current_saved_default.exists():
                     if in_display:
@@ -650,9 +651,9 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
 
         default_image = obj.in_display
 
-        if item.brand_name.user == self.request.user:
+        if item.brand_name.user.user == self.request.user:
 
-            current_saved_default = ProductImage.displayed.filter(item__brand_name__user=user, item=item)
+            current_saved_default = ProductImage.displayed.filter(item__brand_name__user__user=user, item=item)
             # print('current', current_saved_default)
 
             if default_image:
@@ -699,7 +700,7 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
     def test_func(self):
         image_posted = self.get_object()
         print(image_posted)
-        if self.request.user == image_posted.item.brand_name.user:
+        if self.request.user == image_posted.item.brand_name.user.user:
             return True
         return False
 
@@ -727,6 +728,7 @@ def add_tag(request):
         for tags in tags.split():
             print('tag_split', tags)
             tags.strip(',')
+
             print([tags])
             if len(tags) > 2:
                 print(tags)

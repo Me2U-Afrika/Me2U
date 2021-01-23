@@ -378,7 +378,7 @@ def personal_info(request, template_name="users/personal-info.html"):
 class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = SellerProfile
     template_name = 'users/service_providers/seller_form.html'
-    fields = ['first_name', 'last_name', 'business_type', 'tax_country', 'subscription_type']
+    fields = ['first_name', 'last_name', 'email', 'phone', 'business_description', 'website_link', 'facebook', 'instagram', 'telegram', 'business_type', 'country']
     success_url = reverse_lazy("users:brand_create")
 
     def get_queryset(self):
@@ -390,12 +390,10 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def form_valid(self, form):
         print('registering business')
         obj = form.save(commit=False)
-        print('obj:', obj)
         user = self.request.user
 
         obj.user = user
         obj.save()
-        # form.save()
         return super().form_valid(form)
 
     def test_func(self):
@@ -419,13 +417,14 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
         seller_group = Group.objects.get(name='Sellers')
 
         obj = form.save(commit=False)
-        # print('obj:', obj)
-        user = self.request.user
+        seller = SellerProfile.objects.get(user=self.request.user)
+        print('seller:', seller)
+        user = seller
         # user_instance = User.objects.get(email=user)
         # print(seller_group)
         # print(user_instance)
         if seller_group:
-            seller_group.user_set.add(user)
+            seller_group.user_set.add(self.request.user)
             user.is_staff = True
             user.save()
         # print(user.is_seller)

@@ -290,17 +290,40 @@ class SellerProfile(CreationModificationDateMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=10)
     last_name = models.CharField(max_length=10)
+    business_description = models.TextField()
+    email = models.EmailField(max_length=254, unique=True, help_text='Provide Business email '
+                                                                     'where customers can send'
+                                                                     ' inquries')
+    phone = models.CharField(max_length=20, help_text='This number will be visible to buyers '
+                                                      'who would like to contact you for '
+                                                      'services. i.e +250785011413')
+    website_link = models.CharField(max_length=30, blank=True, null=True, help_text='If you have a website by which '
+                                                                                    'buyers can find out more about '
+                                                                                    'your services.e.g. '
+                                                                                    'https://www.facebook.com')
+    facebook = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a facebook page. '
+                                                                                 'Copy '
+                                                                                 'paste your page link here '
+                                                                                 'e.g.. '
+                                                                                 'https://www.facebook.com'
+                                                                                 '/Me2UAfrika')
+    instagram = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a instagram page. Copy '
+                                                                                  'paste your page link here eg. '
+                                                                                  'https://www.instagram.com'
+                                                                                  '/me2u_afrika/')
+    telegram = models.CharField(max_length=100, blank=True, null=True, help_text='Do you have a Telegram Channel. Copy '
+                                                                                 'paste your page link here. e.g.. '
+                                                                                 'https://t.me/me2uafrika')
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
     date_of_registration = models.DateField
-    tax_country = CountryField(multiple=False)
-    business_description = models.TextField
+    country = CountryField(multiple=False)
     subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
                                          help_text='Select a monthly recurring subscription fees')
     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(self.first_name)
+        return str(self.user.username)
 
 
 AUTOMOBILE_TYPE_CHOICE = (
