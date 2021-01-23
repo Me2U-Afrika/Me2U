@@ -390,6 +390,7 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def form_valid(self, form):
         print('registering business')
         obj = form.save(commit=False)
+        # (print)
         user = self.request.user
 
         obj.user = user
@@ -414,11 +415,14 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
 
         from django.contrib.auth.models import Group
 
-        seller_group = Group.objects.get(name='Sellers')
+        try:
+            seller_group = Group.objects.get(name='Sellers')
+
+        except DoesNotExist:
+            seller_group = Group.objects.create(name='Sellers')
 
         obj = form.save(commit=False)
         seller = SellerProfile.objects.get(user=self.request.user)
-        print('seller:', seller)
         user = seller
         # user_instance = User.objects.get(email=user)
         # print(seller_group)

@@ -116,14 +116,14 @@ class User(AbstractUser):
     @property
     def is_dispatcher(self):
         return self.is_active and (
-                self.is_superuser
+                self.is_staff
                 or self.groups.filter(name='Dispatchers').exists()
         )
 
     @property
     def is_seller(self):
         return self.is_active and (
-                self.is_superuser
+                self.is_staff
                 or self.groups.filter(name='Sellers').exists()
         )
 

@@ -94,10 +94,21 @@ class Brand(CreationModificationDateMixin):
     is_featured = models.BooleanField(default=False, blank=True, null=True)
     image = StdImageField(upload_to='images/brands/brand_background', blank=True, null=True,
                           help_text='wallpaper for your store.Leave blank if you don\'t have one',
-                          default='images/brands/brand_background/default.jpg')
+                          default='images/brands/brand_background/default.jpg', variations={
+            'medium': (365, 365),
+            'large': (415, 470,),
+
+        }, delete_orphans=True)
+
     logo = StdImageField(upload_to='images/brands/brand_logo', blank=True, null=True, help_text='logo for your store, '
                                                                                                 'Leave blank if you '
-                                                                                                'don\'t have one', )
+                                                                                                'don\'t have one',
+                         variations={
+                             'thumbnail': (200, 200, True),
+                             'medium': (300, 300),
+                             'large': (415, 470,),
+
+                         }, delete_orphans=True)
 
     def __str__(self):
         return str(self.title)
