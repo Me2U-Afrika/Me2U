@@ -117,7 +117,7 @@
 				{% for image in object.get_images %}
 				{% if image.in_display %}
 
-					<div class="image_selected" id="imagebox"><img src="{{ image.image.large.url }}" alt="{{ object.title }}"></div>
+					<div class="image_selected view overlay zoom" id="imagebox"><img src="{{ image.image.medium.url }}" alt="{{ object.title }}" style="object-fit: cover;"></div>
 
 				{% endif %}
 				{% endfor %}
@@ -174,7 +174,7 @@
 
 								</div>
 
-								<div class="product_price">{{ object.price|currency }}</div>
+								<div class="product_price" style="background-color:#f5e211;"><h3>{{ object.price|currency }}</h3></div>
 								{% if object.brand_name.user.user == request.user %}
 	                            <div>
 	                                <a class="btn " href="{% url 'me2ushop:product-update' object.slug %}" target="_blank">Update</a>
@@ -204,21 +204,11 @@
 						</div>
 						{% if object.brand_name %}
 								<div class="mt-2">
-									<button class="button cart_button" id="contact_seller"><i class="fas fa-phone-square"> Contact Seller</i></button>
+									<button class="button cart_button quick-contact" id="contact_seller"><i class="fas fa-phone-square"> Contact Seller</i></button>
 
-									{% if request.user.wishlist_set.all %}
-										{% for product in request.user.wishlist_set.all %}
-										{% if product.product.slug == object.slug %}
+									<a href="{% url 'me2ushop:add_wishlist' object.slug %}"  class="cart_button" style="color:red; background-color:white;"><i class="fas fa-heart"></i></a>
 
-										{% else %}
-											<a href="{% url 'me2ushop:add_wishlist' object.slug %}" role="button" class="button cart_button"><i class="fas fa-heart"></i></a>
-										{% endif %}
-										{% endfor %}
-
-									{% else %}
-										<a href="{% url 'me2ushop:add_wishlist' object.slug %}" role="button" class="button cart_button"><i class="fas fa-heart"></i></a>
-									{% endif %}
-									<a href="{% url 'me2ushop:seller_page' brand_id %}" role="button" class="button cart_button"><i class="fas fa-store"> Visit Store</i></a>
+									<a href="{% url 'me2ushop:seller_page' brand_id %}" role="button" class="button cart_button quick-contact"><i class="fas fa-store"> Visit Store</i></a>
 								</div>
 							{% endif %}
 						<br>

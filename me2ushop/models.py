@@ -104,9 +104,9 @@ class Brand(CreationModificationDateMixin):
                                                                                                 'Leave blank if you '
                                                                                                 'don\'t have one',
                          variations={
-                             'thumbnail': (200, 200, True),
-                             'medium': (300, 300),
-                             'large': (415, 470,),
+                             'thumbnail': (100, 100, True),
+                             'medium': (150, 150),
+                             'large': (200, 200,),
 
                          }, delete_orphans=True)
 

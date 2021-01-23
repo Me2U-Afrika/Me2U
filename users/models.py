@@ -274,11 +274,13 @@ SUBSCRIPTION_TYPE_CHOICE = (
 )
 
 UNDER_REVIEW = 10
-ACCEPTED = 20
+ACTIVE = 20
 DENIED = 30
+BLOCKED = 40
 STATUSES = ((UNDER_REVIEW, "Under Review"),
-            (ACCEPTED, "Accepted"),
+            (ACTIVE, "Active"),
             (DENIED, "Denied"),
+            (BLOCKED, "Blocked"),
             )
 
 

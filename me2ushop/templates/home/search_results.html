@@ -115,16 +115,25 @@
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+										<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt=""></a>
 									</div>
 
 								{% endif %}
 								{% endfor %}
 								<div class="product_content">
 									<div class="product_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
-									<div class="product_name"><div><a href="#" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
+									<div class="product_name"><div><a href="{{ product.get_absolute_url }}" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
+								<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+
+									{% for wish in wish_list %}
+									{% if wish.product == product %}
+									<div class="product_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+									{% else %}
+									<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+									{% endif %}
+									{% endfor %}
+								</a>
 								<ul class="product_marks">
 									<li class="product_mark product_discount">-{{product.total_discount}}%</li>
 									<li class="product_mark product_new">new</li>
@@ -138,16 +147,26 @@
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+										<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt=""></a>
 									</div>
 
 								{% endif %}
 								{% endfor %}
 								<div class="product_content">
 									<div class="product_price">{{ product.price|currency }}</div>
-									<div class="product_name"><div><a href="#" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
+									<div class="product_name"><div><a href="{{ product.get_absolute_url }}" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
-								<div class="product_fav"><i class="fas fa-heart"></i></div>
+								<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+
+									{% for wish in wish_list %}
+									{% if wish.product == product %}
+									<div class="product_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+									{% else %}
+									<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+									{% endif %}
+									{% endfor %}
+								</a>
 								<ul class="product_marks">
 									<li class="product_mark product_new">new</li>
 								</ul>

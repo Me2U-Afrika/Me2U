@@ -398,7 +398,8 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
     def test_func(self):
-        if not self.request.user.is_seller:
+        current_app = SellerProfile.objects.filter(user=self.request.user, application_status__gt=20)
+        if not current_app:
             return True
 
 

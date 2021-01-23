@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 # Create your views here.
 from django.urls import reverse
 from django.utils.html import format_html
-from users.models import User
+from users.models import User, SellerProfile
 
 from me2ushop.models import Product
 
@@ -50,8 +50,13 @@ def seller_page(request):
 
             return render(request, 'sellers/seller_dashboard_template.html', locals())
         else:
-            messages.warning(request, "You Do not have a registered brand.")
-            return redirect('users:brand_create')
+            try:
+                seller = SellerProfile.objects.get(user=request.user)
+                if seller:
+                    messages.warning(request, "You Do not have a registered brand.")
+                    return redirect('users:brand_create')
+            except ObjectDoesNotExist:
+                return redirect('users:seller_create')
 
     else:
         messages.warning(request, "You are not a registered Me2U seller Sign Up")
