@@ -9,6 +9,190 @@
 
 
 {% block headblock %}
+
+<style type="text/css">
+	a,a:hover {
+	    transition: all .2s ease-in-out;
+	    text-decoration: none
+	}
+
+
+	.disabled,:disabled {
+	    pointer-events: none!important
+	}
+
+	a {
+	    color: #007bff;
+	    cursor: pointer
+	}
+	body {
+    font-family: Roboto,sans-serif;
+    font-weight: 300
+	}
+
+	h1,h2,h3,h4,h5,h6 {
+	    font-weight: 300
+	}
+
+	.modal {
+    padding-right: 0!important
+	}
+
+	:root {
+    --blue:#007bff;--indigo:#6610f2;--purple:#6f42c1;--pink:#e83e8c;--red:#dc3545;--orange:#fd7e14;--yellow:#ffc107;--green:#28a745;--teal:#20c997;--cyan:#17a2b8;--white:#fff;--gray:#868e96;--gray-dark:#343a40;--primary:#007bff;--secondary:#868e96;--success:#28a745;--info:#17a2b8;--warning:#ffc107;--danger:#dc3545;--light:#f8f9fa;--dark:#343a40;--breakpoint-xs:0;--breakpoint-sm:576px;--breakpoint-md:768px;--breakpoint-lg:992px;--breakpoint-xl:1200px;--font-family-sans-serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--font-family-monospace:"SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+
+	*,::after,::before {
+    box-sizing: border-box
+	}
+
+	html {
+	    font-family: sans-serif;
+	    line-height: 1.15;
+	    -webkit-text-size-adjust: 100%;
+	    -ms-text-size-adjust: 100%;
+	    -ms-overflow-style: scrollbar;
+	    -webkit-tap-highlight-color: transparent
+	}
+
+	article,aside,dialog,figcaption,figure,footer,header,hgroup,main,nav,section {
+    display: block
+	}
+
+	body {
+	    margin: 0;
+	    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+	    font-size: 1rem;
+	    font-weight: 400;
+	    line-height: 1.5;
+	    color: #212529;
+	    text-align: left;
+	    background-color: #fff
+	}
+
+	h1,h2,h3,h4,h5,h6 {
+    margin-top: 0;
+    margin-bottom: .5rem
+	}
+
+	p {
+	    margin-top: 0;
+	    margin-bottom: 1rem
+	}
+	dl,ol,ul {
+    margin-top: 0;
+    margin-bottom: 1rem
+	}
+
+	ol ol,ol ul,ul ol,ul ul {
+	    margin-bottom: 0
+	}
+
+
+	b,strong {
+	    font-weight: bolder
+	}
+
+	small {
+	    font-size: 80%
+	}
+
+	a {
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects
+	}
+
+	img {
+    vertical-align: middle;
+    border-style: none
+	}
+
+	svg:not(:root) {
+	    overflow: hidden
+	}
+
+	[role=button],a,area,button,input:not([type=range]),label,select,summary,textarea {
+	    -ms-touch-action: manipulation;
+	    touch-action: manipulation
+	}
+
+	button {
+    border-radius: 0
+	}
+
+	button,input,optgroup,select,textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit
+	}
+
+	button,input {
+	    overflow: visible
+	}
+
+	button,select {
+	    text-transform: none
+	}
+
+	[type=reset],[type=submit],button,html [type=button] {
+	    -webkit-appearance: button
+	}
+
+	input[type=checkbox],input[type=radio] {
+    box-sizing: border-box;
+    padding: 0
+	}
+
+	.h1,.h2,.h3,.h4,.h5,.h6,h1,h2,h3,h4,h5,h6 {
+    margin-bottom: .5rem;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    color: inherit
+	}
+
+	.h1,h1 {
+	    font-size: 2.5rem
+	}
+
+	.h2,h2 {
+	    font-size: 2rem
+	}
+
+	.h3,h3 {
+	    font-size: 1.75rem
+	}
+
+	.h4,h4 {
+	    font-size: 1.5rem
+	}
+
+	.h5,h5 {
+	    font-size: 1.25rem
+	}
+
+	.small,small {
+    font-size: 80%;
+    font-weight: 400
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+
+<link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="styles.css"></noscript>
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main_styles.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/responsive.css">
