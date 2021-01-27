@@ -174,7 +174,14 @@
 
 								</div>
 
-								<div class="product_price red-text"><h3>{{ object.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</h3></div>
+								{% if object.discount_price %}
+								<span class="product_price grey-text"><del>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</del></span>
+				                     <br>
+								<span class="product_price red-text"><h3>{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</h3></span>
+								{% else %}
+								<span  class="product_price red-text"><h3>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</h3></span>
+								{% endif %}
+
 								{% if object.brand_name.user.user == request.user %}
 	                            <div>
 	                                <a class="btn " href="{% url 'me2ushop:product-update' object.slug %}" target="_blank">Update</a>
