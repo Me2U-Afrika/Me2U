@@ -159,7 +159,7 @@
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+										<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt=""></a>
 									</div>
 
 								{% endif %}
@@ -193,7 +193,7 @@
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+										<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt=""></a>
 									</div>
 
 								{% endif %}
