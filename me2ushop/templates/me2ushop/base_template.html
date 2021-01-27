@@ -333,22 +333,7 @@
 
                         <ul class="page_menu_nav">
                             <li class="page_menu_item has-children">
-                                <a href="#">Language<i class="fa fa-angle-down"></i></a>
-                                <ul class="page_menu_selection">
-                                    <li><a href="#">English<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">Kiswahili<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">Kinyarwanda<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">French<i class="fa fa-angle-down"></i></a></li>
-                                </ul>
-                            </li>
-                            <li class="page_menu_item has-children">
-                                <a href="#">Currency<i class="fa fa-angle-down"></i></a>
-                                <ul class="page_menu_selection">
-                                    <li><a href="#">US Dollar<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">KES Shilling<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">RWF Francs<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">JPY Francs<i class="fa fa-angle-down"></i></a></li>
-                                </ul>
+                                    {% include "currencies/navbar/currency-chooser-bs3fa.html" %}
                             </li>
                             <li class="page_menu_item">
                                 <a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a>
@@ -393,8 +378,8 @@
                         </ul>
 
                         <div class="menu_contact">
-                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{MEDIA_URL }}images/phone_white.png" alt=""></div>+250 785011413</div>
-                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{MEDIA_URL }}images/mail_white.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{STATIC_URL }}images/phone_white.png" alt=""></div>+250 785011413</div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{STATIC_URL }}images/mail_white.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
                         </div>
                     </div>
                 </div>
