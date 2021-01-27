@@ -62,6 +62,8 @@ EMAIL_SUBJECT_PREFIX = '[Me2U|Afrika]'
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'channels',
+    'categories',
+    'currencies',
     # 'suit',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -81,12 +83,10 @@ INSTALLED_APPS = [
     # 'django_memcached',
     'memcache_status',
     # 'redis_cache',
-
     'main',
     'bootstrap3',
     'bootstrap4',
     'users.apps.UsersConfig',
-    'categories',
     'me2ushop',
     'marketing',
     'crispy_forms',
@@ -162,6 +162,8 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'utils.context_processors.me2u',
                 'utils.context_processors.globals',
+                'currencies.context_processors.currencies',
+
             ],
             'loaders': [
                 ('django.template.loaders.cached.Loader', [
@@ -173,6 +175,7 @@ TEMPLATES = [
         },
     },
 ]
+
 WEBPACK_LOADER = {
     'DEFAULT': {'BUNDLE_DIR_NAME': 'bundles/',
                 'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
@@ -257,6 +260,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
+
+OPENEXCHANGERATES_APP_ID = os.environ.get('OPENEXCHANGERATES_APP_ID')
+
+DEFAULT_CURRENCY = 'USD'
 
 LANGUAGE_CODE = 'en-us'
 

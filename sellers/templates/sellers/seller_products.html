@@ -1,6 +1,7 @@
 {% extends 'me2ushop/base_template.html' %}
 {% load mptt_tags %}
 {% load catalog_filters %}
+{% load currency %}
 
 
 
@@ -9,6 +10,16 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/seller_styles.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
+<style>
+    .table th{
+        font-size: 20px;
+    }
+
+    .table td{
+        font-size: 15px;
+    }
+</style>
 
 {% endblock %}
 
@@ -50,9 +61,9 @@
                     {% endif %}
 
                     {% if item.discount_price %}
-                        <td>{{ item.discount_price|currency }}</td>
+                        <td>{{ item.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</td>
                     {% else %}
-                        <td>{{ item.price|currency }}</td>
+                        <td>{{ item.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</td>
                     {% endif %}
                     <td>
                         <nav>

@@ -37,3 +37,12 @@ manage.py dumpdata --exclude auth.permission --exclude contenttypes > categories
 Now you can use loaddata command with a fresh database
 
 ./manage.py loaddata db.json
+
+
+CURRENCIES
+
+-manage.py currencies --import=USD --import=EUR
+
+update exchange rates
+-manage.py updatecurrencies oxr --base=USD
+

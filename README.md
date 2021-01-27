@@ -1,5 +1,5 @@
-# Me2U
-Me2U Africa is a vast master of material transformation project that
+# Me2U Afrika
+Me2U Afrika is a vast master of material transformation project that
  aims to bridge the gaps and challenges we face in the ecommerce 
  world we live in today.  We hope to transform every human life and 
  enrich our beautiful continent in this amazing world.The website will be fully rounded,
@@ -12,21 +12,21 @@ We will also incooperate window shopping where a customer can save a collection 
 share the list with someone to pay on their behalf. This will also help us to automate orders for frequently used
 products such gloceries and end of month shopping list for household items.
 
-# Me2U investment
-At Me2U, our buyers can invest in us for monthly and weekly returns on investment. The investment will be used
+# Me2U Afrika investment
+
+At Me2U Afrika, our buyers can invest in us for monthly and weekly returns on investment. The investment will be used
  to empower small scale businesses to fund themselves mainly for restocking. The invested money from buyers will only
  be used in the platform even after gaining the expected interest. The money can be exchanged for a wide range of
  products and services we shall be offering in the platform.
  
  - Interested borrowers(retailers), will only be able to restock from our trusted wholesalers and suppliers. All the 
  money rent out, will be tracked to the last cent spending which will be mainly restocking their businesses.
- 
 
 
  
-# Me2U Agents
+# Me2U Afrika Agents
 
-Would you like to become our ambassador. At Me2U we about customer service
+Would you like to become our ambassador. At Me2U Afrika we about customer service
 and ensuring on-time delivery service. To become an agent, one has to have means of 
 transport in order to pick goods from our retailers near him/her.
 The agent is responsible for packaging and preprocessing of the received goods from a retailer.
@@ -99,7 +99,7 @@ amble time to pick up goods and process them.
 
 A customer places an online order.
 
-The application verifies the order in a separate environment.
+The application verifies the order.
 
 Once the app verifies the order, the payment processing application charges the customer.
 
@@ -110,11 +110,18 @@ The software records the workflow history in a database and the workflow ends wi
  
 #Me2U Blog
 
-Uder Me2U Africa News, we will majorly focus in publishing articles that portray the hidden potential of the 
+Under Me2U Afrika News, we majorly focus in publishing articles that portray the hidden potential of the 
 55 African Nations. Unique talented writers out their can sign up to write on our different topics that aim
-to make it kown to the world of the untold African heritage. The aim is to spread love, African culture and Unique talents
-we have within us. We hope to encourage all Africans to realize how unique we are and invite them back home where they
-really belong. Visit Africa with Me2U|Africa. Each successful participant gets a discount shopping coupon in our Me2U Market 
+to make it kown to the world of the untold Afrikan heritage. The aim is to spread love, Afrikan culture and Unique talents
+we have within us. We hope to encourage all Afrikans to realize how unique we are and invite them back home where they
+really belong. Visit Afrika with Me2U|Afrika. Each year we hold an event know as across afrika. We uniquely select countries
+and places to visit with willing participants from across the globe. Aim is to show case the opportunities and potential of 
+afrika as a whole. Still in preparation..... 
+
+
+Would you like to Blog for Us??
+
+Submit your Ideas to us today....Each successful participant gets a discount shopping coupon in our Me2U Market 
 and free shipping of their goods and services. No effort goes unrewarded. 
 
 To participate, send as an email with two of your recent written articles. Once accepted, we will send you 
@@ -123,21 +130,39 @@ is reviewed by our Editor team to ascertain originality and proof of research pr
 gets acknowledged in the platform and a good way to put their work out for the world. A link to their blogs or any online 
 social media is linked to their name. What a better way to advertise yourself!
 
-The blog will be fully tailored on African content, where writers will majorly focus on the untold African history
-and it's rich content. For a while we have consumed knowledge from outside and completely scrapped out how unique Africa 
-is and it's rich in history. We welcome volunteer writers across Africa to majorly report on topics that paints
+The blog will be fully tailored on Afrikan content and it's affiliations, where writers will majorly focus on the 
+untold African history and it's rich content. For a while we have consumed knowledge from outside and completely scrapped 
+out how unique Afrika is and it's rich in history. 
+Did you know the original meaning of the word 'Nigga for instance...'
+We welcome volunteer writers across Africa to majorly report on topics that paints
 the real picture of our continent. It's high time we embraced our own content and improve our trade relations,
 among us and the outside world.
 
+#Me2U Afrika Currency
+
+At Me2U Afrika we have different modes of payment which you can consider. Our Main currency is UAD....United Afrikan Dollar(AD) 
+which has same value with the united states dollar. Sellers and buyers are welcome to pay in UAD using their quiqpay wallets. 
+While using the UAD to pay for products, your products will be custom free and no import or export charges will be attached to them considering
+you paying for products made and processed within the continent. This is solely to promote afrikan markets. 
+
+UAD is a Digital Afrikan Currency that is used for exchange of goods and services on Me2U Afrika Market. At Me2U afrika we believe
+in unity and colaboration, thus products made and manufactured in Afrika can be bought and imported within afrikan markets 
+tax and custom free. Outside countries importing afrikan products through Me2U Afrika will also benefit as their sellers will be able to 
+export free and ship without cost thus cut down any overhead costs that hinder trade between our borders. 
+
 #Partnership With Alibaba
 
-At Me2U, we aim to partner with major leading online trade platforms to better serve our customers with a variety ,
-of affordable goods and services. Alibaba, is one of the biggest B2B online trading platform and our traders
+At Me2U Afrika, we aim to partner with major leading online trade platforms to better serve our customers with a variety,
+affordable goods and services. Alibaba, is one of the biggest B2B online trading platforms and our traders
 can benefit by getting goods we could not get easily on a normal day due to limitations in the manufacturing 
-industries in Africa. In turn we will also aim to use their vast market to resell purely African origin categories.
-At Me2U we shall introduce a line of african originated products that can be sold out their. As we bring the world to 
-Africa, We hope to take Africa to the world as well. We only import what we can produce locally, all our products,
-are majorly of african origin and we hope to empower products from all the 55 nations. Tell us about your country in 
-our Blog. 
+industries in Afrika. In turn we will also aim to use their vast market to resell purely Afrikan origin products.
+At Me2U Afrika we shall introduce a line of afrikan originated products that can be sold out their. As we bring the world to 
+Afrika, We hope to take Afrika to the world as well. We only import what we can't produce locally, all our products,
+are majorly of afrikan origin and we hope to empower products from all the 55 nations. Tell us about your business, country in 
+our Blog. We might pay you a visit!
+
+
+Market-->AfCFTA-->digital payments-->currency(AD-Afrikan Dollar)-->visafree--->digital tele--->One Pres!
+
 
 

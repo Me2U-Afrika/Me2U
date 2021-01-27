@@ -17,6 +17,7 @@ app_name = 'me2ushop'
 urlpatterns = [
 
     url(r'^$', views.HomeView.as_view(), name='home'),
+    # url('selectcurrency', views.selectcurrency, namespace='selectcurrency'),
     url('customer-service/(?P<order_id>[-\w]+)/$', views.room, name="cs_chat"),
     url('customer-service/', TemplateView.as_view(template_name='customer_service.html'),
         name="cs_main"),

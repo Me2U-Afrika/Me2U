@@ -9,6 +9,7 @@ from django.urls import reverse
 from django_countries.fields import CountryField
 from stdimage import StdImageField
 from utils.models import CreationModificationDateMixin
+from currencies.models import Currency
 
 ADDRESS_CHOICES = (
     ('B', 'Billing'),
@@ -258,6 +259,7 @@ class Profile(models.Model):
         'thumbnail': (200, 200),
     }, delete_orphans=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f'{self.user.email} profile'

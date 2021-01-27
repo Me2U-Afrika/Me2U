@@ -11,17 +11,17 @@ from stats import stats
 register = template.Library()
 
 
-@register.filter(name='currency')
-def currency(value):
-    try:
-        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-    except:
-        locale.setlocale(locale.LC_ALL, '')
-    if value != '':
-        value = Decimal(value)
-        loc = locale.localeconv()
-        return locale.currency(abs(int(value)), loc['currency_symbol'], grouping=True)
-    return value
+# @register.filter(name='currency')
+# def currency(value):
+#     try:
+#         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+#     except:
+#         locale.setlocale(locale.LC_ALL, '')
+#     if value != '':
+#         value = Decimal(value)
+#         loc = locale.localeconv()
+#         return locale.currency(abs(int(value)), loc['currency_symbol'], grouping=True)
+#     return value
 
 
 @register.inclusion_tag("tags/product_list.html")

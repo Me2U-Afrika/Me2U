@@ -5,6 +5,8 @@
 {% load cart_template_tag %}
 {% load mptt_tags %}
 {% load crispy_forms_tags %}
+{% load currency %}
+
 
 
 
@@ -215,24 +217,38 @@
 	<!-- Banner -->
 
 	<div class="banner">
-<!--		<div class="banner_background" style="background-image:url( {{ MEDIA_URL }}images/banner_background.jpg)"></div>-->
+		{% if top_banner.background_image %}
+		<div class="banner_background" style="background-image:url( {{ top_banner.background_image.back_size.url }})"></div>
+		{% else %}
 		<div class="banner_background" style="background-image:url( {{ STATIC_URL }}images/banner_background.jpg)"></div>
+		{% endif %}
 		<div class="container fill_height">
 			<div class="row fill_height">
-				{% if top_banner.product.get_images %}
-				{% for image in top_banner.product.get_images %}
-				{% if image.in_display %}
-				<div class="banner_product_image"><img src="{{ image.image.large.url }}" alt="{{ top_banner.product.title}}"></div>
-				{% endif %}
-				{% endfor %}
+				{% if top_banner.image %}
+
+					<div class="banner_product_image"><img src="{{ top_banner.image.top_size.url }}" alt="{{ top_banner.product.title}}"></div>
+
+				{% else %}
+					{% if top_banner.product.get_images %}
+
+					{% for image in top_banner.product.get_images %}
+					{% if image.in_display %}
+					<div class="banner_product_image"><img src="{{ image.image.large.url }}" alt="{{ top_banner.product.title}}"></div>
+					{% endif %}
+					{% endfor %}
+					{% endif %}
+
 				{% endif %}
 				<div class="col-lg-5 offset-lg-4 fill_height">
 					<div class="banner_content">
+						{% if top_banner.banner_text %}
 						<h1 class="banner_text">{{ top_banner.banner_text }}</h1>
+						{% endif %}
+
 						{% if top_banner.product.discount_price %}
-						<div class="banner_price"><span>{{ top_banner.product.price|currency  }}</span>{{ top_banner.product.discount_price|currency  }}</div>
+						<div class="banner_price"><span>{{ top_banner.product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span>{{ top_banner.product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 						{% else %}
-						<div class="product_price"><span></span>{{ top_banner.product.price|currency  }}</div>
+						<div class="banner_price"><span></span>{{ top_banner.product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 
 						{% endif %}
 						<div class="banner_product_name">{{ top_banner.product.title }}</div>
@@ -320,24 +336,33 @@
 								{% for deal in deals %}
 
 								<div class="owl-item deals_item">
-									{% for image in deal.product.get_images %}
-									{% if image.in_display %}
-
+									{% if deal.image %}
 										<div class="deals_image">
-											<a href="{{ deal.product.get_absolute_url }}"><img src="{{ image.image.medium.url }}" alt="{{ product.title }}"></a>
+											<a href="{{ deal.product.get_absolute_url }}"><img src="{{ deal.image.deal_size.url }}" alt="{{ product.title }}"></a>
 										</div>
 
+									{% else %}
+										{% for image in deal.product.get_images %}
+										{% if image.in_display %}
+
+											<div class="deals_image">
+												<a href="{{ deal.product.get_absolute_url }}"><img src="{{ image.image.medium.url }}" alt="{{ product.title }}"></a>
+											</div>
+
+										{% endif %}
+										{% endfor %}
 									{% endif %}
-									{% endfor %}
 
 									<div class="deals_content">
 										<div class="deals_info_line d-flex flex-row justify-content-start">
 											<div class="deals_item_category"><a href="#">{{ deal.product.get_category_choice_display }}</a></div>
-											<div class="deals_item_price_a ml-auto">{{ deal.product.price|currency }}</div>
+											<div class="deals_item_price_a ml-auto">{{ deal.product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 										</div>
 										<div class="deals_info_line d-flex flex-row justify-content-start">
 											<div class="deals_item_name"><a href="{{ deal.product.get_absolute_url }}"> {{ deal.product.title }}</a></div>
-											<div class="deals_item_price ml-auto">{{ deal.deal_discount_price|currency }}</div>
+											{% if deal.product.discount_price %}
+											<div class="deals_item_price ml-auto">{{ deal.product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
+											{% endif %}
 										</div>
 										<div class="available">
 											<div class="available_line d-flex flex-row justify-content-start">
@@ -416,9 +441,9 @@
 
 											<div class="product_content">
 												{% if product.discount_price %}
-												<div class="product_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+												<div class="product_price discount">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 												{% else %}
-												<div class="product_price">{{ product.price|currency }}</div>
+												<div class="product_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 												{% endif %}
 												<div class="product_name"><div><a href="{{ product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -427,7 +452,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -474,9 +499,9 @@
 
 											<div class="product_content">
 												{% if product.discount_price %}
-												<div class="product_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+												<div class="product_price discount">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 												{% else %}
-												<div class="product_price">{{ product.price|currency }}</div>
+												<div class="product_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 												{% endif %}
 												<div class="product_name"><div><a href="{{ product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -485,7 +510,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -532,9 +557,9 @@
 
 											<div class="product_content">
 												{% if product.discount_price %}
-												<div class="product_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+												<div class="product_price discount">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 												{% else %}
-												<div class="product_price">{{ product.price|currency }}</div>
+												<div class="product_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 												{% endif %}
 												<div class="product_name"><div><a href="{{ product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -543,7 +568,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -650,15 +675,23 @@
 								</div>
 								<div class="col-lg-8 col-md-6 fill_height">
 									<div class="banner_2_image_container">
-											{% for image in slider.product.get_images %}
-											{% if image.in_display %}
+											{% if slider.image %}
+												<a href="{{ slider.product.get_absolute_url }}"><img src="{{ slider.image.slider_size.url }}" alt="{{ slider.product.title }}"></a>
 
-												<div class="banner_2_image">
-													<a href="{{ slider.product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ slider.product.title }}"></a>
-												</div>
+											{% elif slider.image_url %}
+												<a href="{{ slider.product.get_absolute_url }}"><img src="{{ slider.image_url }}" alt="{{ slider.product.title }}"></a>
+											{% else %}
+												{% for image in slider.product.get_images %}
+												{% if image.in_display %}
 
-											{% endif %}
-											{% endfor %}
+													<div class="banner_2_image">
+														<a href="{{ slider.product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ slider.product.title }}"></a>
+													</div>
+
+												{% endif %}
+												{% endfor %}
+
+										{% endif %}
 									</div>
 								</div>
 							</div>
@@ -707,9 +740,9 @@
 
 											<div class="product_content">
 												{% if product.discount_price %}
-												<div class="product_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+												<div class="product_price discount">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 												{% else %}
-												<div class="product_price">{{ product.price|currency }}</div>
+												<div class="product_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 												{% endif %}
 												<div class="product_name"><div><a href="product.html">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -718,7 +751,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -762,7 +795,7 @@
 
 											<div class="product_content">
 												{% if product.deal_discount_price %}
-												<div class="product_price discount">{{ product.deal_discount_price|currency }}<span>{{ product.product.price|currency }}</span></div>
+												<div class="product_price discount">{{ product.deal_discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 												{% endif %}
 												<div class="product_name"><div><a href="product.html">{{ product.product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -771,7 +804,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.product.get_add_cart_url }}"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.product.slug %}" target="_blank">
@@ -812,9 +845,9 @@
 
 											<div class="product_content">
 												{% if product.discount_price %}
-												<div class="product_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+												<div class="product_price discount">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 												{% else %}
-												<div class="product_price">{{ product.price|currency }}</div>
+												<div class="product_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 												{% endif %}
 												<div class="product_name"><div><a href="product.html">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -823,7 +856,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">Add to Cart</button></form>
+													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -855,22 +888,26 @@
 							<div class="col-lg-3">
 								<div class="arrivals_single clearfix">
 									<div class="d-flex flex-column align-items-center justify-content-center">
-										{% for image in best_seller_banner.product.get_images %}
-										{% if image.in_display %}
+										{% if best_seller_banner.image %}
+											<div class="arrivals_single_image"><img src="{{ best_seller_banner.image.best_size.url }}" alt=""></div>
+										{% else %}
+											{% for image in best_seller_banner.product.get_images %}
+											{% if image.in_display %}
 
-											<div class="arrivals_single_image"><img src="{{ image.image.medium.url }}" alt=""></div>
+												<div class="arrivals_single_image"><img src="{{ image.image.medium.url }}" alt=""></div>
 
+											{% endif %}
+											{% endfor %}
 										{% endif %}
-										{% endfor %}
 
 										<div class="arrivals_single_content">
 											<div class="arrivals_single_category"><a href="#">{{ best_seller_banner.product.get_category_choice_display }}</a></div>
 											<div class="arrivals_single_name_container clearfix">
 												<div class="arrivals_single_name"><a href="#">{{ best_seller_banner.product.title }}</a></div>
-												<div class="arrivals_single_price text-right">{{ best_seller_banner.product.price|currency }}</div>
+												<div class="arrivals_single_price text-right">{{ best_seller_banner.product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 											</div>
 											<div class="rating_r rating_r_4 arrivals_single_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<form action="{{ best_seller_banner.product.get_add_cart_url }}"><button class="arrivals_single_button">Add to Cart</button></form>
+											<form action="{{ best_seller_banner.product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
 										</div>
 											<a href="{% url 'me2ushop:add_wishlist' best_seller_banner.product.slug %}" target="_blank">
 											<div class="arrivals_single_fav product_fav" id="{{ best_seller_banner.product.slug}}"><i class="fas fa-heart"></i></div>
@@ -942,7 +979,7 @@
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 											<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<div class="bestsellers_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+											<div class="bestsellers_price discount">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 										</div>
 									</div>
 									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -978,7 +1015,7 @@
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 											<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<div class="bestsellers_price">{{ product.price|currency }}</div>
+											<div class="bestsellers_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 										</div>
 									</div>
 
@@ -1026,7 +1063,7 @@
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 											<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<div class="bestsellers_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+											<div class="bestsellers_price discount">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 										</div>
 									</div>
 									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -1062,7 +1099,7 @@
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 											<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<div class="bestsellers_price">{{ product.price|currency }}</div>
+											<div class="bestsellers_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 										</div>
 									</div>
 
@@ -1110,7 +1147,7 @@
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 											<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<div class="bestsellers_price discount">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+											<div class="bestsellers_price discount">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 										</div>
 									</div>
 									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -1146,7 +1183,7 @@
 											<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
 											<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 											<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<div class="bestsellers_price">{{ product.price|currency }}</div>
+											<div class="bestsellers_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 										</div>
 									</div>
 
@@ -1276,7 +1313,7 @@
 										<div class="trends_category"><a href="{{ trend.product.get_absolute_url }}" target="_blank">{{trend.product.get_category_choice_display}}</a></div>
 										<div class="trends_info clearfix">
 											<div class="trends_name"><a href="{{ trend.product.get_absolute_url }}" target="_blank">{{ trend.product.title|truncatechars:18 }}</a></div>
-											<div class="trends_price">{{ trend.product.price|currency }}</div>
+											<div class="trends_price">{{ trend.product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 										</div>
 									</div>
 									<ul class="trends_marks">
@@ -1398,7 +1435,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+										<div class="viewed_price">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -1418,7 +1455,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ product.price|currency }}</div>
+										<div class="viewed_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">

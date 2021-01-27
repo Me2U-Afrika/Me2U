@@ -23,6 +23,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    url('currencies/', include('currencies.urls')),
     url(r'^main-admin/', admin.site.urls),
     url(r'^office-admin/', main_admin.central_office_admin.urls),
     url(r'^seller-admin/', main_admin.sellers_admin.urls),

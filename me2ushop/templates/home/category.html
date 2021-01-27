@@ -1,6 +1,7 @@
 {% extends 'me2ushop/base_template.html' %}
 {% load catalog_filters %}
 {% load mptt_tags %}
+{% load currency %}
 
 {% block headblock %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
@@ -124,8 +125,8 @@
 								{% endif %}
 								{% endfor %}
 								<div class="product_content">
-									<div class="product_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
-									<div class="product_name"><div><a href="#" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
+									<a href="{{ product.get_absolute_url }}" tabindex="0"><div class="product_price red-text">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div></a>
+									<div class="product_name"><div><a href="{{ product.get_absolute_url }}" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
 								<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
 									<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
@@ -156,7 +157,7 @@
 								{% endif %}
 								{% endfor %}
 								<div class="product_content">
-									<div class="product_price"><a href="{{ product.get_absolute_url }}">{{ product.price|currency }}</a></div>
+									<a href="{{ product.get_absolute_url }}" tabindex="0"><div class="product_price black-text">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div></a>
 									<div class="product_name"><div><a href="{{ product.get_absolute_url }}" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
 									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -233,7 +234,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+										<a href="{{ product.get_absolute_url }}"><div class="viewed_price red-text">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div></a>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -253,7 +254,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ product.price|currency }}</div>
+										<a href="{{ product.get_absolute_url }}"><div class="viewed_price black-text">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div></a>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -302,7 +303,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+										<a href="{{ product.get_absolute_url }}"><div class="viewed_price red-text">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div></a>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -322,7 +323,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ product.price|currency }}</div>
+										<a href="{{ product.get_absolute_url }}"><div class="viewed_price black-text">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div></a>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">

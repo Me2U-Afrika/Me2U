@@ -5,6 +5,10 @@
 {% load cart_template_tag %}
 {% load mptt_tags %}
 {% load crispy_forms_tags %}
+{% load currency %}
+{% currency_context %}
+
+
 
 <!DOCTYPE html PUBLIC "_//W3C//DTD XHTML+RDFa 1.0//EN"
         "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
@@ -24,15 +28,10 @@
 
 	<meta name="google-site-verification" content="m99rTgHStqJaWoR2y0EqD02MxvoJXP_lLhSQ9VeMjqc"/>
 
-    <style type="text/css">
-
-
-    </style>
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
 
     <link rel="preload" as="script" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
-
 
     <!-- Bootstrap core JavaScript -->
     <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
@@ -44,15 +43,13 @@
 
     <link rel="preload" as="script" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
 
-
     <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="styles.css"></noscript>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-	<!-- Font Awesome -->
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 
 	<!-- Google Fonts Roboto -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
@@ -141,14 +138,11 @@
                                         <li><a href="#">French</a></li>
                                     </ul>
                                 </li>
-                                <li class="disabled">
-                                    <a href="#">$ US dollar<i class="fas fa-chevron-down"></i></a>
-                                    <ul>
-                                        <li><a href="#">KES Ksh</a></li>
-                                        <li><a href="#">RWF Rwandan Francs</a></li>
-                                        <li><a href="#">JPY Japanese Yen</a></li>
-                                    </ul>
-                                </li>
+
+                                    {% with dropdown_extra_class="collapsed-nav red-text" %}
+                                    {% include "currencies/navbar/currency-chooser-bs3fa.html" %}
+                                    {% endwith %}
+
                                 <li>
                                     <a href="{%  url 'sellers:seller_home' %}" target="_blank" style="color:MediumSeaGreen;">Advertise<i class="fas fa-chevron-down"></i></a>
                                 </li>
@@ -218,7 +212,7 @@
 <!--                                </div>-->
 <!--                                <div class="cart_content">-->
 <!--                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}" target="_blank">Cart</a></div>-->
-<!--                                    <div class="cart_price">{{ request|cart_item_total|currency }} </div>-->
+<!--                                    <div class="cart_price">{{ request|cart_item_total }} </div>-->
 <!--                                </div>-->
 <!--                            </div>-->
 <!--                        </div>-->

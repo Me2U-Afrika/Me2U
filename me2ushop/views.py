@@ -20,7 +20,7 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from categories.models import Category, Department
-from marketing.models import MarketingMessage, Banner, Slider, Deals, Trend, TrendInfo
+from marketing.models import *
 
 from .models import *
 

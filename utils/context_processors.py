@@ -5,7 +5,7 @@ import os
 from django.conf import settings
 
 from stats import stats
-from marketing.models import Deals, Trend
+from marketing.models import *
 from django.views.decorators.cache import cache_page
 
 timeout = 600  # 10 min
@@ -17,8 +17,8 @@ def me2u(request):
         'reviews': ProductReview.objects.all().order_by('-date'),
         'recently_viewed': stats.get_recently_viewed(request),
         'brands': Brand.objects.filter(active=True),
-        'trends': Trend.objects.filter(active=True),
-        'deals': Deals.objects.all(),
+        'trends': Banner.objects.filter(active=True, is_trending=True),
+        'deals': Banner.objects.filter(active=True, is_deal=True),
         'site_name': settings.SITE_NAME,
         'meta_keywords': settings.META_KEYWORDS,
         'meta_description': settings.META_DESCRIPTION,

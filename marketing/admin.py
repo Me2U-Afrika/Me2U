@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MarketingMessage, Slider, MarketingEmails, Banner, Deals, Trend, TrendInfo
+from .models import MarketingMessage, Slider, MarketingEmails, Banner, Trend, TrendInfo
 
 
 # Register your models here.
@@ -38,4 +38,4 @@ admin.site.register(MarketingEmails, MarketingEmailsAdmin)
 admin.site.register(Banner, BannerAdmin)
 admin.site.register(Trend, TrendAdmin)
 admin.site.register(TrendInfo, TrendInfoAdmin)
-admin.site.register(Deals, DealsAdmin)
+# admin.site.register(Deals, DealsAdmin)

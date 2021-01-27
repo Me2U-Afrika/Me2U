@@ -62,6 +62,7 @@ class Slider(CreationModificationDateMixin):
     image = StdImageField(upload_to='images/marketing/slider', blank=True, null=True, variations={
         'slider_size': (520, 460),
 
+
     }, delete_orphans=True)
     image_url = models.CharField(max_length=250, null=True, blank=True)
     background_image_url = models.CharField(max_length=250, null=True, blank=True)
@@ -72,8 +73,11 @@ class Slider(CreationModificationDateMixin):
     featured = models.BooleanField(default=False)
     start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
-    banner_image = models.BooleanField(default=False)
-    banner_background = models.BooleanField(default=False)
+
+    background_image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
+        'back_size': (520, 460),
+
+    }, delete_orphans=True)
 
     objects = MarketingManager()
 
@@ -90,62 +94,28 @@ class Banner(CreationModificationDateMixin):
     banner_header = models.CharField(max_length=120, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
-    featured = models.BooleanField(default=False)
+    is_deal = models.BooleanField(default=False)
     bestselling = models.BooleanField(default=False)
     is_trending = models.BooleanField(default=False)
     top_display = models.BooleanField(default=False)
     start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
-    banner_image = models.BooleanField(default=False)
-    banner_background = models.BooleanField(default=False)
+    image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
+        'top_size': (520, 460),
+        'best_size': (520, 460),
+        'trend_size': (520, 460),
+        'deal_size': (520, 460),
+
+    }, delete_orphans=True)
+    background_image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
+        'back_size': (520, 460),
+
+    }, delete_orphans=True)
 
     objects = MarketingManager()
 
     class Meta:
         ordering = ['-start_date', '-end_date']
-
-    def __str__(self):
-        return str(self.product.title)
-
-    def get_absolute_url(self):
-        return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
-
-
-class TrendInfo(CreationModificationDateMixin):
-    trend_background = StdImageField(upload_to='images/marketing/trends', blank=True, null=True)
-    trend_header = models.CharField(max_length=120)
-
-    trend_text = models.TextField(max_length=300)
-
-    def __str__(self):
-        return str(self.trend_header)
-
-
-class Trend(CreationModificationDateMixin):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-    start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
-    end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
-    active = models.BooleanField(default=True)
-
-    objects = MarketingManager()
-
-    class Meta:
-        ordering = ['-start_date', '-end_date']
-
-    def __str__(self):
-        return str(self.product.title)
-
-    def get_absolute_url(self):
-        return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
-
-
-class Deals(CreationModificationDateMixin):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    deal_discount_price = models.DecimalField(max_digits=9, decimal_places=2)
-    is_featured = models.BooleanField(default=False, blank=True, null=True)
-    start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
-    end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
 
     def __str__(self):
         return str(self.product.title)
@@ -161,6 +131,67 @@ class Deals(CreationModificationDateMixin):
                 total += order_item.quantity
 
         return total
+
+
+class TrendInfo(CreationModificationDateMixin):
+    trend_header = models.CharField(max_length=120)
+
+    trend_text = models.TextField(max_length=300)
+    trend_background = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
+        'back_size': (520, 460),
+
+    }, delete_orphans=True)
+
+    def __str__(self):
+        return str(self.trend_header)
+
+
+class Trend(CreationModificationDateMixin):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+    end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+    active = models.BooleanField(default=True)
+    image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
+
+        'trend_size': (520, 460),
+
+    }, delete_orphans=True)
+
+    objects = MarketingManager()
+
+    class Meta:
+        ordering = ['-start_date', '-end_date']
+
+    def __str__(self):
+        return str(self.product.title)
+
+    def get_absolute_url(self):
+        return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
+
+
+
+# class Deals(CreationModificationDateMixin):
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+#     deal_discount_price = models.DecimalField(max_digits=9, decimal_places=2)
+#     is_featured = models.BooleanField(default=False, blank=True, null=True)
+#     start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+#     end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+#
+#     def __str__(self):
+#         return str(self.product.title)
+#
+#     def get_absolute_url(self):
+#         return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
+#
+#     def total_items_ordered(self):
+#         orders = self.product.orderitem_set.all()
+#         total = 0
+#         for order_item in orders:
+#             if order_item.ordered:
+#                 total += order_item.quantity
+#
+#         return total
 
 
 class MarketingEmails(CreationModificationDateMixin):

@@ -127,9 +127,13 @@ class Product(models.Model):
     condition = models.CharField(choices=CONDITION_CHOICES, max_length=2,
                                  help_text='Choose the current condition for the product'
                                  )
-    price = models.DecimalField(max_digits=9, decimal_places=2)
+    price = models.DecimalField(max_digits=9, decimal_places=2, help_text="Please note that the default currency is "
+                                                                          "RWF. Converty your product price to "
+                                                                          "Rwandan francs before listing")
     discount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True,
-                                         default=0.00)
+                                         help_text="Please note that the default currency is "
+                                                   "RWF. Converty your product price to "
+                                                   "Rwandan francs before listing")
     made_in_africa = models.BooleanField(default=False)
 
     is_active = models.BooleanField(default=True)
@@ -327,7 +331,7 @@ class ProductImage(CreationModificationDateMixin):
         'large': (415, 470,),
 
     }, delete_orphans=True)
-    in_display = models.BooleanField(default=True)
+    in_display = models.BooleanField(default=False)
 
     objects = ProductManager()
     displayed = DisplayImageManager()
