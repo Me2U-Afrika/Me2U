@@ -75,10 +75,10 @@ class OrderItemInline(admin.TabularInline):
     raw_id_fields = ('item',)
 
 
-class ProductDetailInline(admin.TabularInline):
-    # list_display = ('product', 'attribute', 'value')
-    model = ProductDetail
-    raw_id_fields = ('attribute',)
+# class ProductDetailInline(admin.TabularInline):
+#     # list_display = ('product', 'attribute', 'value')
+#     model = ProductDetail
+#     raw_id_fields = ('attribute',)
 
 
 # class OrderInline(admin.TabularInline):
@@ -92,7 +92,8 @@ class StatusCodeAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     # form = ProductAdminForm()
     list_display = (
-        'title', 'price', 'brand_name', 'in_stock', 'stock', 'is_active', 'made_in_africa', 'created_at', 'updated_at',)
+        'title', 'price', 'slug', 'sku', 'brand_name', 'in_stock', 'stock', 'is_active', 'made_in_africa', 'created_at',
+        'updated_at',)
     list_display_links = ('title',)
     list_per_page = 50
     ordering = ['-created_at']
@@ -102,33 +103,32 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'made_in_africa', 'brand_name']
     exclude = ('created_at', 'updated_at',)
 
-    prepopulated_fields = {'slug': ('title',)}
+    # prepopulated_fields = {'slug': ('title',)}
     # autocomplete_fields = ('product_categories',)
 
-    inlines = (ProductDetailInline,)
+    # inlines = (ProductDetailInline,)
     actions = [make_active, make_inactive]
 
-    def get_readonly_fields(self, request, obj=None):
-        if request.user.is_superuser or request.user.is_seller:
-            return self.readonly_fields
-        return list(self.readonly_fields) + ['slug', 'title']
-
-    def get_prepopulated_fields(self, request, obj=None):
-        if request.user.is_superuser or request.user.is_seller:
-            return self.prepopulated_fields
-        else:
-            return {}
+    # def get_readonly_fields(self, request, obj=None):
+    #     if request.user.is_superuser or request.user.is_seller:
+    #         return self.readonly_fields
+    #     return list(self.readonly_fields) + ['slug', 'title']
+    #
+    # def get_prepopulated_fields(self, request, obj=None):
+    #     if request.user.is_superuser or request.user.is_seller:
+    #         return self.prepopulated_fields
+    #     else:
+    #         return {}
 
 
 class DispatchersProductAdmin(ProductAdmin):
     readonly_fields = ('title',
                        'description',
-                       'slug',
+                       # 'slug',
                        'brand_name',
                        'is_bestseller',
                        'is_featured',
                        'additional_information',
-                       'category_choice',
                        'discount_price',
                        "price", 'made_in_africa', 'created_at', 'updated_at', 'meta_keywords',
                        'meta_description',
@@ -161,20 +161,17 @@ class SellersProductAdmin(ProductAdmin):
     # form = SellerForm
 
     list_display = ['title',
-                    'slug',
                     'brand_name',
                     'in_stock',
                     'stock',
                     'is_bestseller',
                     'is_featured',
-                    'category_choice',
                     'discount_price',
                     "price", 'created_at', 'updated_at', 'meta_keywords',
                     'meta_description',
                     ]
     list_editable = ('stock',)
     readonly_fields = ("brand_name", "is_bestseller", "is_featured", "is_active", "is_bestrated", 'in_stock')
-    prepopulated_fields = {'slug': ('title',)}
     autocomplete_fields = ()
 
     def get_queryset(self, request):
@@ -184,7 +181,7 @@ class SellersProductAdmin(ProductAdmin):
             return qs.filter(brand_name=brand)
 
     def save_model(self, request, obj, form, change):
-        brand = Brand.objects.get(user=request.user)
+        brand = Brand.objects.get(user__user=request.user)
         if brand:
             if not obj.brand_name:
                 obj.brand_name = brand
@@ -203,7 +200,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 
 class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ('item', 'thumbnail_tag',)
+    list_display = ('item', 'thumbnail_tag', 'in_display',)
     search_fields = ('item__title',)
 
     def thumbnail_tag(self, obj):
@@ -217,6 +214,19 @@ class ProductImageAdmin(admin.ModelAdmin):
 
     # def item_title(self, obj):
     #     return obj.item.title
+
+    def save_model(self, request, obj, form, change):
+
+        if obj.in_display:
+
+            current_saved_default = ProductImage.displayed.filter(item=obj.item)
+            print('current', current_saved_default)
+            if current_saved_default.exists():
+                current_saved = current_saved_default[0]
+                current_saved.in_display = False
+                current_saved.save()
+                # print('current', current_saved.default)
+            obj.save()
 
 
 class ProductReviewAdmin(admin.ModelAdmin):

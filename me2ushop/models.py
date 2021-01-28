@@ -17,6 +17,8 @@ from django.db import models
 from stdimage import StdImageField, JPEGField
 import collections
 from tagging.registry import register
+import itertools
+from django.utils.text import slugify
 
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
@@ -117,12 +119,15 @@ class Brand(CreationModificationDateMixin):
 class Product(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,
+                            default='',
+                            editable=False,
                             max_length=50,
-                            help_text='Unique value for product page URL, created from the product title.')
+                            )
     brand_name = models.ForeignKey('Brand', on_delete=models.SET_NULL, blank=True, null=True,
                                    help_text='Your store name')
     stock = models.IntegerField(default=1)
-    sku = models.CharField(max_length=120)
+    sku = models.CharField(max_length=120, default='',
+                           editable=False, )
     in_stock = models.BooleanField(default=True, blank=True, null=True)
     condition = models.CharField(choices=CONDITION_CHOICES, max_length=2,
                                  help_text='Choose the current condition for the product'
@@ -156,11 +161,15 @@ class Product(models.Model):
                                         )
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
-    category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
-                                       help_text='Choose the main category for the product'
-                                       )
+    # category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
+    #                                    help_text='Choose the main category for the product'
+    #                                    )
+    category_choice = models.ForeignKey(Department, related_name='category_choice', on_delete=models.SET_NULL, blank=True,
+                                      null=True,
+                                      help_text='Choose the main Category for the product.It\'s free'
+                                      )
 
-    product_categories = models.ManyToManyField(Department,
+    product_categories = models.ManyToManyField(Department, blank=True,
 
                                                 help_text='Check the box of the category where your product belongs. '
                                                           'Please note that different categories attract different Ad '
@@ -194,6 +203,40 @@ class Product(models.Model):
         db_table = 'Products'
         ordering = ['-created_at']
         verbose_name_plural = 'Products'
+
+    def _generate_slug(self):
+        max_length = self._meta.get_field('slug').max_length
+        value = self.title
+        slug_candidate = slug_original = slugify(value, allow_unicode=True)
+        for i in itertools.count(1):
+            if not Product.objects.filter(slug=slug_candidate).exists():
+                break
+            slug_candidate = '{}-{}'.format(slug_original, i)
+
+        self.slug = slug_candidate
+
+    def _generate_sku(self):
+        # Brand > Product > Category > Productcondition >
+
+        brand = str(self.brand_name)[:3]
+        title = str(self.title)[:3]
+        category = str(self.main_category)[:3]
+        condition = str(self.condition)
+
+        sku = '{}-{}-{}-{}'.format(brand, title, category, condition)
+
+        for i in itertools.count(1):
+            if not Product.objects.filter(sku=sku).exists():
+                break
+            sku = '{}-{}-{}-{}-{}'.format(brand, title, category, condition, i)
+        self.sku = sku
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self._generate_slug()
+            self._generate_sku()
+
+        super().save(*args, **kwargs)
 
     def sale_price(self):
         if self.discount_price:
@@ -375,7 +418,7 @@ class ProductDetail(CreationModificationDateMixin):
     specific, extra details.
     """
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
-    attribute = models.ForeignKey('ProductAttribute', on_delete=models.CASCADE)
+    attribute = models.CharField(max_length=50)
     value = models.CharField(max_length=500)
     description = models.TextField(blank=True)
 
@@ -383,6 +426,10 @@ class ProductDetail(CreationModificationDateMixin):
         return u'%s: %s - %s' % (self.product,
                                  self.attribute,
                                  self.value)
+
+    def get_absolute_url(self):
+        return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
+
 
 
 class ProductAttribute(CreationModificationDateMixin):

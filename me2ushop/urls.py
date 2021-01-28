@@ -33,12 +33,25 @@ urlpatterns = [
     url(r'^product/(?P<slug>[\w-]+)/$', views.ProductDetailedView.as_view(), name='product'),
     url(r'^full-catalog/', views.ProductListView.as_view(), name='full_catalog'),
     url('new-product/', views.ProductCreateView.as_view(), name='product-create'),
+    # NEW ATTRIBUTES
+    url(r'^product-attributes/(?P<slug>[\w-]+)/create$', views.ProductAttributesCreateView.as_view(),
+        name='product_attributes_create'),
+
+    url(r'^product-attribute-(?P<pk>[\w-]+)/update/$', views.ProductAttributeUpdateView.as_view(),
+        name="product_update_attributes"),
+
+    url(r'^product-attribute-(?P<pk>[\w-]+)/delete$', views.ProductAttributeDeleteView.as_view(),
+        name='product_delete_attributes'),
+
+    # PRODUCT ADDITIONAL INFO
+    url(r'^product-additional-info/(?P<slug>[\w-]+)/update$', views.ProductUpdateAdditionalInforView.as_view(),
+        name='product-update-additional-info'),
 
     url(r'^product/(?P<slug>[\w-]+)/update$', views.ProductUpdateView.as_view(), name='product-update'),
     url(r'^product/(?P<slug>[\w-]+)/delete$', views.ProductDeleteView.as_view(), name='product-delete'),
-
     url(r"^product-images/(?P<slug>[\w-]+)/$", views.show_product_image, name="product_images", ),
-    url(r'^product-images/(?P<slug>[\w-]+)/create$', views.ProductImageCreateView.as_view(), name='product_image_create'),
+    url(r'^product-images/(?P<slug>[\w-]+)/create$', views.ProductImageCreateView.as_view(),
+        name='product_image_create'),
     # url(r'^product-images/(?P<slug>[\w-]+)/create$', views.product_image_create, name='product_image_create'),
     url("^image-(?P<pk>[\w-]+)/update/$", views.ProductImageUpdateView.as_view(), name="product_image_update"),
     url('^image-(?P<pk>[\w-]+)/delete/$', views.ProductImageDeleteView.as_view(), name="product_image_delete"),
@@ -62,7 +75,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('mobile-api/auth/', authtoken_views.obtain_auth_token, name='mobile_token'),
     path('mobile-api/my-orders/', endpoints.my_orders, name='mobile_my_orders', ),
-    path('product-add/', views.productAdd, name='product_add', ),
+    # path('product-add/', views.productAdd, name='product_add', ),
     url("invoice-cs/(?P<order_id>[\w-]+)/$", views.invoice_for_order, name="invoice_cs", ),
 
 ]

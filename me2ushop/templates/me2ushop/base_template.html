@@ -330,11 +330,12 @@
                     <div class="page_menu_content">
 
                         {% search_menu request %}
-
-                        <ul class="page_menu_nav">
-                            <li class="page_menu_item has-children">
+                        <ul>
+                        {% with dropdown_extra_class="collapsed-nav red-text" %}
                                     {% include "currencies/navbar/currency-chooser-bs3fa.html" %}
-                            </li>
+                                {% endwith %}
+                        </ul>
+                        <ul class="page_menu_nav">
                             <li class="page_menu_item">
                                 <a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a>
                             </li>
@@ -444,9 +445,9 @@
             {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path %}
 
                 function showModal(){
-                    $("#marketingModal").modal("show").setTimeout(showModal, 5000);
+                    $("#marketingModal").modal("show").setTimeout(showModal, 25000);
                 }
-                setTimeout(showModal, 5000);
+                setTimeout(showModal, 25000);
 
                 $("#sendMarketingForm").click(function(e){
                     e.preventDefault()
