@@ -400,11 +400,12 @@ class ProductImage(CreationModificationDateMixin):
     item = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = StdImageField(upload_to='images/products', variations={
         'thumbnail': (170, 115, True),
-        'medium': (365, 365, True),
+        'medium': (365, 365),
         'deals_size': (365, 365, True),
-        'large': (415, 470, True),
+        'large': (415, 470),
 
     }, delete_orphans=True)
+
     in_display = models.BooleanField(default=True)
 
     objects = ProductManager()
@@ -413,11 +414,11 @@ class ProductImage(CreationModificationDateMixin):
     class Meta:
         ordering = ('-in_display',)
 
-    def natural_key(self):
-        return (self.slug,)
-
     def __str__(self):
         return str(self.item)
+
+    def natural_key(self):
+        return (self.item.slug,)
 
     def get_absolute_url(self):
         return reverse('me2ushop:product_images', kwargs={'slug': self.item.slug})

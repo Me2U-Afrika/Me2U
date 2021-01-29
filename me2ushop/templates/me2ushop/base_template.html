@@ -31,20 +31,12 @@
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
 
-    <link rel="preload" as="script" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
+    <link rel="preload" as="style" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
 
-    <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <link rel="preload" as="style" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
 
-	<!-- MDB core JavaScript -->
-    <script type="text/javascript" src="{{ STATIC_URL }}js/mdb.min.js"></script>
-
-    <link rel="preload" as="script" href="{{ STATIC_URL }}js/mdb.min.js">
-
-    <link rel="preload" as="script" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
-
-    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    <link rel="preload" href="{{ STATIC_URL }}css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ STATIC_URL }}css/style.css"></noscript>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -54,13 +46,11 @@
 	<!-- Google Fonts Roboto -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 
-    <!-- Bootstrap core CSS -->
-
 	<!-- Material Design Bootstrap -->
     <link rel="stylesheet" href=" {{ STATIC_URL }}css/mdb.min.css">
 
-	 <!-- Your custom styles (optional) -->
-<!--	<link href="{{ STATIC_URL }}css/style.css" rel="stylesheet">-->
+<!--	  Your custom styles (optional) -->
+	<link href="{{ STATIC_URL }}css/style.css" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap4/bootstrap.min.css">
     <link href="{{ STATIC_URL }}css/plugins/fontawesome-free-5.0.1/css/fontawesome-all.css" rel="stylesheet" type="text/css">
@@ -74,6 +64,7 @@
     {% endblock headblock %}
 
 	<style>
+	@import url(https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
 	@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
 
 	.alert-top-message {
@@ -150,11 +141,11 @@
                         </div>
                         <div class="top_bar_user">
                             {% if request.user.is_authenticated %}
-                            <div class="user_icon"><img src="{{ MEDIA_URL }}images/user.svg" alt=""></div>
+                            <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
                             <div><a href="{% url 'users:profile' %}" target="_blank">Karibu {{ request.user.username }}</a></div>
                             <div><a href="{% url 'logout' %}">LogOut</a></div>
                             {% else %}
-                            <div class="user_icon"><img src="{{ MEDIA_URL }}images/user.svg" alt=""></div>
+                            <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
                             <div><a href="{% url 'users:register' %}">Register</a></div>
                             <div><a href="{% url 'login' %}">Sign in</a></div>
                             {% endif %}
@@ -286,8 +277,8 @@
 
                                     </ul>
                                 </li>
-                                <li class="hassubs">
-                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>
+<!--                                <li class="hassubs">-->
+<!--                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>-->
 <!--                                    <ul>-->
 <!--                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>-->
 <!--                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>-->
@@ -296,9 +287,9 @@
 <!--                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>-->
 <!--                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>-->
 <!--                                    </ul>-->
-                                </li>
+<!--                                </li>-->
                                 <li><a href="{%  url 'sellers:seller_home' %}" target="_blank">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
-                                <li><a href="{% url 'users:automobile_create' %}" target="_blank">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                                <li class="disabled"><a href="{% url 'users:automobile_create' %}" target="_blank">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
                             </ul>
                         </div>
 
@@ -330,15 +321,19 @@
                     <div class="page_menu_content">
 
                         {% search_menu request %}
-                        <ul>
-                        {% with dropdown_extra_class="collapsed-nav red-text" %}
-                                    {% include "currencies/navbar/currency-chooser-bs3fa.html" %}
-                                {% endwith %}
-                        </ul>
+
                         <ul class="page_menu_nav">
                             <li class="page_menu_item">
                                 <a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a>
                             </li>
+                            <li class="page_menu_item">
+                                <a href="{%  url 'sellers:seller_home' %}" target="_blank">
+                                    Sell On Me2U
+                                    <img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;">
+                                </a>
+
+                            </li>
+
                             <li class="page_menu_item has-children">
                                 <a href="#">Super Deals<i class="fa fa-angle-down"></i></a>
                                     <ul class="page_menu_selection">
@@ -374,7 +369,7 @@
                                         {% endif %}
                                 </ul>
                             </li>
-                            <li class="page_menu_item"><a href="blog.html">blog<i class="fa fa-angle-down"></i></a></li>
+<!--                            <li class="page_menu_item disabled"><a href="blog.html">blog<i class="fa fa-angle-down"></i></a></li>-->
                             <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact<i class="fa fa-angle-down"></i></a></li>
                         </ul>
 
@@ -412,8 +407,18 @@
 
     <!-- Optional JavaScript -->
     <script src="{{ STATIC_URL }}js/jquery-3.3.1.min.js"></script>
+
+        <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+
+	<!-- MDB core JavaScript -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/mdb.min.js"></script>
+
+    <link rel="preload" as="script" href="{{ STATIC_URL }}js/mdb.min.js">
+
     <script src="{{ STATIC_URL }}css/bootstrap4/popper.js"></script>
     <script src="{{ STATIC_URL }}css/bootstrap4/bootstrap.min.js"></script>
+
     <script src="{{ STATIC_URL }}css/plugins/greensock/TweenMax.min.js"></script>
     <script src="{{ STATIC_URL }}css/plugins/greensock/TimelineMax.min.js"></script>
     <script src="{{ STATIC_URL }}css/plugins/scrollmagic/ScrollMagic.min.js"></script>

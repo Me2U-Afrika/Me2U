@@ -217,14 +217,14 @@
 			<div class="row fill_height">
 				{% if top_banner.image %}
 
-					<div class="banner_product_image"><img src="{{ top_banner.image.top_size.url }}" alt="{{ top_banner.product.title}}"></div>
+				<div class="banner_product_image"><a href="{{ top_banner.get_absolute_url }}"><img src="{{ top_banner.image.top_size.url }}" alt="{{ top_banner.product.title}}"></a></div>
 
 				{% else %}
 					{% if top_banner.product.get_images %}
 
 					{% for image in top_banner.product.get_images %}
 					{% if image.in_display %}
-					<div class="banner_product_image"><img src="{{ image.image.large.url }}" alt="{{ top_banner.product.title}}"></div>
+					<div class="banner_product_image"><a href="{{ top_banner.get_absolute_url }}"><img src="{{ image.image.large.url }}" alt="{{ top_banner.product.title}}"></a></div>
 					{% endif %}
 					{% endfor %}
 					{% endif %}

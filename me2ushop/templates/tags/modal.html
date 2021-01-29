@@ -1,4 +1,4 @@
-<div class="modal fade" id="marketingModal">
+<div class="modal fade modal-dialog id='marketingModal">
     <form method="POST" action="{% url 'marketing:ajax_email_signup' %}" id="sendForm">
         {% csrf_token %}
     <div class="modal-dialog">
