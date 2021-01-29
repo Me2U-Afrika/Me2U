@@ -305,7 +305,8 @@ class SellerProfile(CreationModificationDateMixin):
     phone = models.CharField(max_length=20, unique=True, help_text='This number will be visible to buyers. Start with '
                                                                    'country code . i.e +250 785011413')
 
-    verification_id = StdImageField(upload_to='images/sellerID', help_text='Upload your ID/Passport')
+    verification_id = StdImageField(upload_to='images/sellerID', blank=True, null=True, help_text='Upload your '
+                                                                                                  'ID/Passport') 
 
     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
     active = models.BooleanField(default=True)
