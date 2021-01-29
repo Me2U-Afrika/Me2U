@@ -17,6 +17,8 @@ from django.db import models
 from stdimage import StdImageField, JPEGField
 import collections
 from tagging.registry import register
+import itertools
+from django.utils.text import slugify
 
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
@@ -56,12 +58,22 @@ PAYMENT_CHOICES = {
 
 }
 
+SUBSCRIPTION_TYPE_CHOICE = (
+    ('Fr', 'Free'),
+    ('Bs', 'Basic'),
+    ('Pr', 'Premium')
+)
+
+BUSINESS_TYPE_CHOICE = (
+    ('Co', 'Company'),
+    ('Sol', 'Sole Proprietorship/Personal')
+)
+
 CONDITION_CHOICES = {
 
     ('N', "New"),
     ('R', "Refurbished"),
     ('U', "Used"),
-    ('C', "Certified"),
 
 }
 
@@ -87,9 +99,35 @@ class ProductManager(models.Manager):
 
 
 class Brand(CreationModificationDateMixin):
-    user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100, unique=True, help_text='Unique title to identify Your store and your '
-                                                                    'product line')
+    user = models.OneToOneField(SellerProfile, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, unique=True, help_text='Unique business title to identify Your store and '
+                                                                    'your product line')
+
+    business_description = models.TextField(blank=True, null=True, help_text="Tell us what you do and the kind of "
+                                                                             "products you sell")
+
+    website_link = models.CharField(max_length=30, blank=True, null=True, help_text='If you have a website by which '
+                                                                                    'buyers can find out more about '
+                                                                                    'your services.e.g. '
+                                                                                    'https://www.facebook.com')
+    facebook = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a facebook page. '
+                                                                                 'Copy '
+                                                                                 'paste your page link here '
+                                                                                 'e.g.. '
+                                                                                 'https://www.facebook.com'
+                                                                                 '/Me2UAfrika')
+    instagram = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a instagram page. Copy '
+                                                                                  'paste your page link here eg. '
+                                                                                  'https://www.instagram.com'
+                                                                                  '/me2u_afrika/')
+    telegram = models.CharField(max_length=100, blank=True, null=True, help_text='Do you have a Telegram Channel. Copy '
+                                                                                 'paste your page link here. e.g.. '
+                                                                                 'https://t.me/me2uafrika')
+    business_type = models.CharField(blank=True, null=True, choices=BUSINESS_TYPE_CHOICE, max_length=4)
+    # date_of_registration = models.DateField
+    country = CountryField(multiple=False, blank=True, null=True)
+    subscription_type = models.CharField(max_length=2, blank=True, null=True, choices=SUBSCRIPTION_TYPE_CHOICE,
+                                         help_text='Select a monthly recurring subscription fees')
     active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False, blank=True, null=True)
     image = StdImageField(upload_to='images/brands/brand_background', blank=True, null=True,
@@ -117,12 +155,15 @@ class Brand(CreationModificationDateMixin):
 class Product(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,
+                            default='',
+                            editable=False,
                             max_length=50,
-                            help_text='Unique value for product page URL, created from the product title.')
+                            )
     brand_name = models.ForeignKey('Brand', on_delete=models.SET_NULL, blank=True, null=True,
                                    help_text='Your store name')
     stock = models.IntegerField(default=1)
-    sku = models.CharField(max_length=120)
+    sku = models.CharField(max_length=120, default='',
+                           editable=False, )
     in_stock = models.BooleanField(default=True, blank=True, null=True)
     condition = models.CharField(choices=CONDITION_CHOICES, max_length=2,
                                  help_text='Choose the current condition for the product'
@@ -134,7 +175,8 @@ class Product(models.Model):
                                          help_text="Please note that the default currency is "
                                                    "RWF. Converty your product price to "
                                                    "Rwandan francs before listing")
-    made_in_africa = models.BooleanField(default=False)
+    made_in_afrika = models.BooleanField(default=False, help_text="Is the product you adding produced and "
+                                                                  "manufactured in Afrika? If so, check this box")
 
     is_active = models.BooleanField(default=True)
     is_bestseller = models.BooleanField(default=False)
@@ -156,11 +198,16 @@ class Product(models.Model):
                                         )
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
-    category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
-                                       help_text='Choose the main category for the product'
-                                       )
+    # category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
+    #                                    help_text='Choose the main category for the product'
+    #                                    )
+    category_choice = models.ForeignKey(Department, related_name='category_choice', on_delete=models.SET_NULL,
+                                        blank=True,
+                                        null=True,
+                                        help_text='Choose the main Category for the product.It\'s free'
+                                        )
 
-    product_categories = models.ManyToManyField(Department,
+    product_categories = models.ManyToManyField(Department, blank=True,
 
                                                 help_text='Check the box of the category where your product belongs. '
                                                           'Please note that different categories attract different Ad '
@@ -173,7 +220,7 @@ class Product(models.Model):
     featured = FeaturedProductManager()
     bestseller = BestsellerProductManager()
 
-    # made_in_africa = ActiveAfricaProductManager()
+    # made_in_afrika = ActiveAfricaProductManager()
 
     def __str__(self):
         return str(self.title)
@@ -194,6 +241,40 @@ class Product(models.Model):
         db_table = 'Products'
         ordering = ['-created_at']
         verbose_name_plural = 'Products'
+
+    def _generate_slug(self):
+        max_length = self._meta.get_field('slug').max_length
+        value = self.title
+        slug_candidate = slug_original = slugify(value, allow_unicode=True)
+        for i in itertools.count(1):
+            if not Product.objects.filter(slug=slug_candidate).exists():
+                break
+            slug_candidate = '{}-{}'.format(slug_original, i)
+
+        self.slug = slug_candidate
+
+    def _generate_sku(self):
+        # Brand > Product > Category > Productcondition >
+
+        brand = str(self.brand_name)[:3]
+        title = str(self.title)[:3]
+        category = str(self.category_choice)[:3]
+        condition = str(self.condition)
+
+        sku = '{}-{}-{}-{}'.format(brand, title, category, condition)
+
+        for i in itertools.count(1):
+            if not Product.objects.filter(sku=sku).exists():
+                break
+            sku = '{}-{}-{}-{}-{}'.format(brand, title, category, condition, i)
+        self.sku = sku
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self._generate_slug()
+            self._generate_sku()
+
+        super().save(*args, **kwargs)
 
     def sale_price(self):
         if self.discount_price:
@@ -326,18 +407,18 @@ class ProductImage(CreationModificationDateMixin):
     item = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = StdImageField(upload_to='images/products', variations={
         'thumbnail': (170, 115, True),
-        'medium': (365, 365),
+        'medium': (365, 365, True),
         'deals_size': (365, 365, True),
-        'large': (415, 470,),
+        'large': (415, 470, True),
 
     }, delete_orphans=True)
-    in_display = models.BooleanField(default=False)
+    in_display = models.BooleanField(default=True)
 
     objects = ProductManager()
     displayed = DisplayImageManager()
 
     class Meta:
-        ordering = ('-created',)
+        ordering = ('-in_display',)
 
     def natural_key(self):
         return (self.slug,)
@@ -375,7 +456,7 @@ class ProductDetail(CreationModificationDateMixin):
     specific, extra details.
     """
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
-    attribute = models.ForeignKey('ProductAttribute', on_delete=models.CASCADE)
+    attribute = models.CharField(max_length=50)
     value = models.CharField(max_length=500)
     description = models.TextField(blank=True)
 
@@ -383,6 +464,9 @@ class ProductDetail(CreationModificationDateMixin):
         return u'%s: %s - %s' % (self.product,
                                  self.attribute,
                                  self.value)
+
+    def get_absolute_url(self):
+        return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
 
 
 class ProductAttribute(CreationModificationDateMixin):

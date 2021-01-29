@@ -2,7 +2,7 @@ from django import forms
 from django.forms import inlineformset_factory, formset_factory, modelform_factory
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
-from .models import OrderItem, Order, Address, ProductImage, Product
+from .models import *
 from .models import ProductReview
 from . import widgets
 from utils.fields import MultipleChoiceTreeField
@@ -25,17 +25,24 @@ PAYMENT_CHOICES = {
 
 
 class ProductForm(forms.ModelForm):
-    product_categories = TreeNodeMultipleChoiceField(label=_("Categories"), required=False,
+    product_categories = TreeNodeMultipleChoiceField(label=_("Other Categories"), required=False,
                                                      queryset=Department.objects.all(),
                                                      widget=forms.CheckboxSelectMultiple,
-                                                     level_indicator=u'+--')
+                                                     level_indicator=u'+--', help_text='Check the box of the category '
+                                                                                       'where your product belongs. '
+                                                                                       'Please note that different categories attract different Ad '
+                                                                                       'charges. Be specific to one or two categories where your '
+                                                                                       'product '
+                                                                                       'belongs on the provided tree. Contact us for help')
 
     class Meta:
         model = Product
-        fields = ['title', 'slug', 'price', 'discount_price', 'condition', 'stock', 'made_in_africa', 'description',
-                  'additional_information',
-                  'meta_keywords',
-                  'meta_description', 'product_categories']
+        fields = [
+            'additional_information',
+            'meta_keywords',
+            'meta_description',
+            'product_categories',
+        ]
 
     def __int__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
@@ -52,6 +59,21 @@ class ProductForm(forms.ModelForm):
                 layout.Submit('submit', _('Save'))
             )
         )
+
+
+class ProductAttributeCreate(forms.ModelForm):
+    class Meta:
+        model = ProductDetail
+        fields = '__all__'
+
+    def __init__(self, user, slug, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # item = self.object.product
+        # queryset_item = Product.objects.filter(brand_name__user__user=user)
+        queryset_item = Product.objects.filter(slug=slug)
+
+        self.fields['product'].queryset = queryset_item
 
 
 class CheckoutForm(forms.Form):
@@ -210,9 +232,10 @@ class ProductImageCreate(forms.ModelForm):
         model = ProductImage
         fields = ['item', 'image', 'in_display']
 
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, user, slug, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        queryset_item = Product.objects.filter(brand_name__user__user=user)
+        # queryset_item = Product.objects.filter(brand_name__user__user=user)
+        queryset_item = Product.objects.filter(slug=slug)
 
         self.fields['item'].queryset = queryset_item
 

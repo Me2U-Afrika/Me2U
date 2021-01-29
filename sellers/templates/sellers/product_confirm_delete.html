@@ -25,9 +25,9 @@
 <!--                protect form from attacks-->
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Delete Product</legend>
+                <legend class="border-bottom mb-4">Delete an item</legend>
 <!--                    Call the form from views-->
-                <h2> Are you sure you want to delete this product "{{ object.title }}"</h2>
+                <h2> Are you sure you want to delete this object</h2>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
