@@ -162,12 +162,12 @@ class Product(models.Model):
                                  help_text='Choose the current condition for the product'
                                  )
     price = models.DecimalField(max_digits=9, decimal_places=2, help_text="Please note that the default currency is "
-                                                                          "RWF. Converty your product price to "
-                                                                          "Rwandan francs before listing")
+                                                                          "USD. Converty your product price to "
+                                                                          "US dollar before listing")
     discount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True,
                                          help_text="Please note that the default currency is "
-                                                   "RWF. Converty your product price to "
-                                                   "Rwandan francs before listing")
+                                                   "USD. Converty your product price to "
+                                                   "US Dollar before listing")
     made_in_afrika = models.BooleanField(default=False, help_text="Is the product you adding produced and "
                                                                   "manufactured in Afrika? If so, check this box")
 
