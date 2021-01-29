@@ -617,6 +617,7 @@ class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
         return reverse_lazy('me2ushop:product', kwargs={'slug': product.slug})
 
 
+@login_required
 def show_product_image(request, slug):
     # print('person:', request.user)
     product = get_object_or_404(Product, slug=slug)

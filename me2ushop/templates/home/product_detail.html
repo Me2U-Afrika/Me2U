@@ -102,10 +102,10 @@
 				<!-- Selected Image -->
 
 				<div class="col-lg-5 order-lg-2 order-1">
-				{% for image in object.get_images %}
+				{% for image in object.productimage_set.all %}
 				{% if image.in_display %}
 
-					<div class="image_selected" id="imagebox"><img src="{{ image.image.large.url }}" alt="{{ image.product.title }}"></div>
+					<div class="image_selected" id="imagebox"><img src="{{ image.image.large.url }}" alt="{{ object.title }}"></div>
 
 				{% endif %}
 				{% endfor %}
@@ -213,6 +213,17 @@
 									<a href="{% url 'me2ushop:seller_page' brand_id %}" role="button" class="button cart_button quick-contact"><i class="fas fa-store"> Visit Store</i></a>
 								</div>
 							{% endif %}
+
+						<div class="cart">
+                            <div class="cart_container d-flex flex-row align-items-center justify-content-start">
+                                <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}" target="_blank">
+                                    <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
+                                </div>
+                                <div class="cart_content">
+                                    <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" target="_blank">Post Ad like this...it's Free</a></div>
+                                </div>
+                            </div>
+                        </div>
 						<br>
 						<div>
 	                    In categor{{ object.product_categories.count|pluralize:"y,ies" }}:
@@ -254,13 +265,13 @@
 	                    </div>
 	                    <div class="col-md-4">
 	                        <div class="row contact row-first">
-		                        {% if object.brand_name.user.facebook %}
+		                        {% if object.brand_name.facebook %}
 	                            <div class="col-md-6">
 	                                <a href="{{ object.brand_name.user.facebook }}" class="facebook" target="_blank"><i class="fa fa-facebook"></i>Facebook</a>
 	                            </div>
 		                        {% endif %}
 
-		                        {% if object.brand_name.user.instagram %}
+		                        {% if object.brand_name.instagram %}
 	                            <div class="col-md-6">
 	                                <a href="{{ object.brand_name.user.instagram }}" class="instagram" target="_blank"><i class="fa fa-instagram"></i>instagram</a>
 	                            </div>
@@ -268,13 +279,13 @@
 	                        </div>
 	                        <div class="row contact">
 
-		                        {% if object.brand_name.user.website_link %}
+		                        {% if object.brand_name.website_link %}
 	                            <div class="col-md-6">
 	                                <a href="{{ object.brand_name.user.website_link }}" class="email" target="_blank"><i class="fa fa-globe"></i>Website</a>
 	                            </div>
 		                        {% endif %}
 
-		                        {% if object.brand_name.user.telegram %}
+		                        {% if object.brand_name.telegram %}
 	                            <div class="col-md-6">
 	                                <a href="{{ object.brand_name.user.telegram }}" class="telegram" target="_blank"><i class="far fa-paper-plane"></i>Telegram</a>
 	                            </div>
@@ -479,8 +490,8 @@
 	                            {% csrf_token %}
 	                            {{ review_form|crispy }}
 								<input type="hidden" id="id_slug" value="{{ object.slug }}"/>
-	                            <input type="submit" id="submit_review" value="Submit"/>
-	                            <input type="submit" id="cancel_review" value="Cancel|Close"/>
+	                            <input class="btn btn-outline-green" type="submit" id="submit_review" value="Submit"/>
+	                            <input class="btn btn-outline-red" type="submit" id="cancel_review" value="Cancel|Close"/>
 
 	                    </div>
 

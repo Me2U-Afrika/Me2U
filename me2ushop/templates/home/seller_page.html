@@ -8,6 +8,10 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
 
+<style>
+
+</style>
+
 {% endblock %}
 
 
@@ -29,9 +33,11 @@
             		{% if brand.logo %}
 
             <div class="logo_container">
-                <div class="logo mr-0 "><img src="{{ brand.logo.medium.url }}"></div>
+                <div class="logo mr-0"><img src="{{ brand.logo.medium.url }}"></div>
             </div>
             		{% endif %}
+			<br>
+			<br>
 
 			<h2 class="home_title">{{ brand }}</h2>
 

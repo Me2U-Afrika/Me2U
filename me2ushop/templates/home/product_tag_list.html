@@ -1,6 +1,7 @@
 {% extends 'me2ushop/base_template.html' %}
 {% load catalog_filters %}
 {% load mptt_tags %}
+{% load currency %}
 
 {% block headblock %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
@@ -115,13 +116,13 @@
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+										<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt=""></a>
 									</div>
 
 								{% endif %}
 								{% endfor %}
 								<div class="product_content">
-									<div class="product_price">{{ product.discount_price|currency }}<span>{{ product.price|currency }}</span></div>
+									<div class="product_price">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 									<div class="product_name"><div><a href="#" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
 								<div class="product_fav"><i class="fas fa-heart"></i></div>
@@ -138,13 +139,13 @@
 								{% if image.in_display %}
 
 									<div class="product_image d-flex flex-column align-items-center justify-content-center">
-										<a href="{{ product.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ image.image.thumbnail }}" alt=""></a>
+										<a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt=""></a>
 									</div>
 
 								{% endif %}
 								{% endfor %}
 								<div class="product_content">
-									<div class="product_price">{{ product.price|currency }}</div>
+									<div class="product_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 									<div class="product_name"><div><a href="#" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
 								<div class="product_fav"><i class="fas fa-heart"></i></div>
@@ -211,7 +212,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">${{ product.discount_price }}<span>{{ product.price|currency }}</span></div>
+										<div class="viewed_price">${{ product.discount_price }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
@@ -231,7 +232,7 @@
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ product.price|currency }}</div>
+										<div class="viewed_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 									</div>
 									<ul class="item_marks">
