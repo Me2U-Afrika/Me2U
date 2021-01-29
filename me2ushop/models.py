@@ -418,7 +418,7 @@ class ProductImage(CreationModificationDateMixin):
     displayed = DisplayImageManager()
 
     class Meta:
-        ordering = ('-created',)
+        ordering = ('-in_display',)
 
     def natural_key(self):
         return (self.slug,)
