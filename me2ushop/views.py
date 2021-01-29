@@ -473,10 +473,14 @@ class ProductDetailedView(DetailView):
 
 class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Product
-    fields = ['title', 'price', 'discount_price', 'condition', 'stock', 'made_in_africa', 'description',
+    fields = ['title', 'price', 'discount_price', 'condition', 'stock', 'made_in_afrika', 'description',
               'category_choice']
     # form_class = ProductForm
     template_name = 'sellers/product_form.html'
+
+    def get_success_url(self):
+        # Assuming there is a ForeignKey from Productattribute to Product in your model
+        return reverse_lazy('me2ushop:product_image_create', kwargs={'slug': self.object.slug})
 
     def form_valid(self, form):
         form.instance.seller = self.request.user
@@ -498,7 +502,7 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    fields = ['title', 'price', 'discount_price', 'condition', 'stock', 'made_in_africa', 'description',
+    fields = ['title', 'price', 'discount_price', 'condition', 'stock', 'made_in_afrika', 'description',
               'category_choice']
     template_name = 'sellers/product_form.html'
 
@@ -603,7 +607,7 @@ class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
         return super(ProductAttributeUpdateView, self).form_valid(form)
 
 
-class ProductAttributeDeleteView(LoginRequiredMixin,  DeleteView):
+class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
     model = ProductDetail
     template_name = 'sellers/product_confirm_delete.html'
 
@@ -687,6 +691,12 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
     form_class = ProductImageCreate
 
     # success_url = reverse_lazy("sellers:seller_products")
+
+    def get_success_url(self):
+        # Assuming there is a ForeignKey from Productattribute to Product in your model
+        product = self.object.item
+        return reverse_lazy('me2ushop:product', kwargs={'slug': product.slug})
+
     def get_form_kwargs(self):
         kwargs = super(ProductImageCreateView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
@@ -738,7 +748,7 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
         # print('item:', item)
         user = self.request.user
         default_image = obj.in_display
-        print(default_image)
+        print('set as default', default_image)
 
         current_saved_default = ProductImage.displayed.filter(item__brand_name__user__user=user, item=item,
                                                               in_display=True)
@@ -746,6 +756,7 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
 
         if default_image:
             if current_saved_default.exists():
+                print('we came to change the default image in display')
                 current_saved = current_saved_default[0]
                 current_saved.in_display = False
                 current_saved.save()
@@ -772,6 +783,22 @@ class ProductImageDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # Assuming there is a ForeignKey from Comment to Post in your model
         product = self.object.item
+
+        # check if image delete was in display to set another one on display or create new if none.
+        current_saved_default = ProductImage.displayed.filter(item=product, in_display=True).exclude(id=self.object.id)
+        print('current', current_saved_default)
+
+        if not current_saved_default.exists():
+            print('we came to add picture')
+            image = ProductImage.objects.filter(item=product)
+            if image:
+                image = image[0]
+                image.in_display = True
+                image.save()
+
+            messages.warning(self.request, 'You have 0 Images, please add a new image')
+            return reverse_lazy('me2ushop:product_image_create', kwargs={'slug': product.slug})
+
         return reverse_lazy('me2ushop:product', kwargs={'slug': product.slug})
 
     # def get_queryset(self):

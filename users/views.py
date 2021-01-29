@@ -378,7 +378,7 @@ def personal_info(request, template_name="users/personal-info.html"):
 class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = SellerProfile
     template_name = 'users/service_providers/seller_form.html'
-    fields = ['first_name', 'last_name', 'email', 'phone', 'business_description', 'website_link', 'facebook', 'instagram', 'telegram', 'business_type', 'country']
+    fields = ['first_name', 'middle_name', 'last_name', 'email', 'phone']
     success_url = reverse_lazy("users:brand_create")
 
     def get_queryset(self):
@@ -406,7 +406,7 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 class BrandCreateView(LoginRequiredMixin, CreateView):
     model = Brand
     template_name = 'users/service_providers/brand_create_form.html'
-    fields = ['title', 'image', 'logo']
+    fields = ['title', 'business_type', 'business_description', 'country', 'subscription_type', 'logo']
     success_url = reverse_lazy("users:seller_confirm")
 
     def form_valid(self, form):

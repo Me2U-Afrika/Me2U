@@ -105,7 +105,7 @@
 				{% for image in object.get_images %}
 				{% if image.in_display %}
 
-					<div class="image_selected" id="imagebox"><img src="{{ image.image.medium.url }}" alt="{{ object.title }}"></div>
+					<div class="image_selected" id="imagebox"><img src="{{ image.image.large.url }}" alt="{{ image.product.title }}"></div>
 
 				{% endif %}
 				{% endfor %}
@@ -172,10 +172,19 @@
 
 								{% if object.brand_name.user.user == request.user %}
 	                            <div>
-	                                <a class="btn " href="{% url 'me2ushop:product-update' object.slug %}" target="_blank">UPDATE Product</a>
-		                            <a class="btn " href="{% url 'me2ushop:product-update-additional-info' object.slug %}" target="_blank">ADD Product Additional Information</a>
-	                                <a class="btn " href="{% url 'me2ushop:product_images' object.slug %}" target="_blank">Product Images</a>
-	                                <a class="btn " href="{% url 'me2ushop:product_attributes_create' object.slug %}" target="_blank">ADD Product Attributes</a>
+	                                <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-update' object.slug %}" target="_blank">UPDATE Product</a>
+	                                <a class="btn btn-outline-green " href="{% url 'me2ushop:product-create' %}" target="_blank">New Product</a>
+		                            <a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}" target="_blank">ADD Product Additional Information</a>
+
+		                            {% if object.productimage_set.all %}
+	                                <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_images' object.slug %}" target="_blank">Product Images</a>
+		                            {% else %}
+		                            <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_image_create' object.slug %}" target="_blank">Add Images</a>
+		                            {% endif %}
+
+	                                <a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}" target="_blank">ADD Product Attributes</a>
+
+	                                <a class="btn btn-outline-grey" href="{% url 'sellers:seller_products' %}" target="_blank">My Products</a>
 
 	                                {% if pending_item %}
 		                            <a class="btn text-muted disabled red-text" href="#">Delete Product</a>
@@ -326,8 +335,8 @@
 			            <td><em>{{ pdattribute.description }}</em></td>
 			            {% if object.brand_name.user.user == request.user %}
 	                     <td>
-		                     <em><a class="btn " href="{% url 'me2ushop:product_delete_attributes' pdattribute.id %}" target="_blank">DELETE </a></em>
-		                     <span class="ml-3"><a class="btn " href="{% url 'me2ushop:product_update_attributes' pdattribute.id %}" target="_blank">UPDATE</a></span>
+		                     <em><a class="btn btn-outline-red" href="{% url 'me2ushop:product_delete_attributes' pdattribute.id %}" target="_blank">DELETE </a></em>
+		                     <span class="ml-3"><a class="btn btn-outline-green " href="{% url 'me2ushop:product_update_attributes' pdattribute.id %}" target="_blank">UPDATE</a></span>
 	                     </td>
 		                {% endif %}
 			          </tr>

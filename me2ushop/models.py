@@ -58,12 +58,22 @@ PAYMENT_CHOICES = {
 
 }
 
+SUBSCRIPTION_TYPE_CHOICE = (
+    ('Fr', 'Free'),
+    ('Bs', 'Basic'),
+    ('Pr', 'Premium')
+)
+
+BUSINESS_TYPE_CHOICE = (
+    ('Co', 'Company'),
+    ('Sol', 'Sole Proprietorship/Personal')
+)
+
 CONDITION_CHOICES = {
 
     ('N', "New"),
     ('R', "Refurbished"),
     ('U', "Used"),
-    ('C', "Certified"),
 
 }
 
@@ -89,9 +99,35 @@ class ProductManager(models.Manager):
 
 
 class Brand(CreationModificationDateMixin):
-    user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100, unique=True, help_text='Unique title to identify Your store and your '
-                                                                    'product line')
+    user = models.OneToOneField(SellerProfile, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, unique=True, help_text='Unique business title to identify Your store and '
+                                                                    'your product line')
+
+    business_description = models.TextField(blank=True, null=True, help_text="Tell us what you do and the kind of "
+                                                                             "products you sell")
+
+    website_link = models.CharField(max_length=30, blank=True, null=True, help_text='If you have a website by which '
+                                                                                    'buyers can find out more about '
+                                                                                    'your services.e.g. '
+                                                                                    'https://www.facebook.com')
+    facebook = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a facebook page. '
+                                                                                 'Copy '
+                                                                                 'paste your page link here '
+                                                                                 'e.g.. '
+                                                                                 'https://www.facebook.com'
+                                                                                 '/Me2UAfrika')
+    instagram = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a instagram page. Copy '
+                                                                                  'paste your page link here eg. '
+                                                                                  'https://www.instagram.com'
+                                                                                  '/me2u_afrika/')
+    telegram = models.CharField(max_length=100, blank=True, null=True, help_text='Do you have a Telegram Channel. Copy '
+                                                                                 'paste your page link here. e.g.. '
+                                                                                 'https://t.me/me2uafrika')
+    business_type = models.CharField(blank=True, null=True, choices=BUSINESS_TYPE_CHOICE, max_length=4)
+    # date_of_registration = models.DateField
+    country = CountryField(multiple=False, blank=True, null=True)
+    subscription_type = models.CharField(max_length=2, blank=True, null=True, choices=SUBSCRIPTION_TYPE_CHOICE,
+                                         help_text='Select a monthly recurring subscription fees')
     active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False, blank=True, null=True)
     image = StdImageField(upload_to='images/brands/brand_background', blank=True, null=True,
@@ -139,7 +175,8 @@ class Product(models.Model):
                                          help_text="Please note that the default currency is "
                                                    "RWF. Converty your product price to "
                                                    "Rwandan francs before listing")
-    made_in_africa = models.BooleanField(default=False)
+    made_in_afrika = models.BooleanField(default=False, help_text="Is the product you adding produced and "
+                                                                  "manufactured in Afrika? If so, check this box")
 
     is_active = models.BooleanField(default=True)
     is_bestseller = models.BooleanField(default=False)
@@ -164,10 +201,11 @@ class Product(models.Model):
     # category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
     #                                    help_text='Choose the main category for the product'
     #                                    )
-    category_choice = models.ForeignKey(Department, related_name='category_choice', on_delete=models.SET_NULL, blank=True,
-                                      null=True,
-                                      help_text='Choose the main Category for the product.It\'s free'
-                                      )
+    category_choice = models.ForeignKey(Department, related_name='category_choice', on_delete=models.SET_NULL,
+                                        blank=True,
+                                        null=True,
+                                        help_text='Choose the main Category for the product.It\'s free'
+                                        )
 
     product_categories = models.ManyToManyField(Department, blank=True,
 
@@ -182,7 +220,7 @@ class Product(models.Model):
     featured = FeaturedProductManager()
     bestseller = BestsellerProductManager()
 
-    # made_in_africa = ActiveAfricaProductManager()
+    # made_in_afrika = ActiveAfricaProductManager()
 
     def __str__(self):
         return str(self.title)
@@ -220,7 +258,7 @@ class Product(models.Model):
 
         brand = str(self.brand_name)[:3]
         title = str(self.title)[:3]
-        category = str(self.main_category)[:3]
+        category = str(self.category_choice)[:3]
         condition = str(self.condition)
 
         sku = '{}-{}-{}-{}'.format(brand, title, category, condition)
@@ -369,12 +407,12 @@ class ProductImage(CreationModificationDateMixin):
     item = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = StdImageField(upload_to='images/products', variations={
         'thumbnail': (170, 115, True),
-        'medium': (365, 365),
+        'medium': (365, 365, True),
         'deals_size': (365, 365, True),
-        'large': (415, 470,),
+        'large': (415, 470, True),
 
     }, delete_orphans=True)
-    in_display = models.BooleanField(default=False)
+    in_display = models.BooleanField(default=True)
 
     objects = ProductManager()
     displayed = DisplayImageManager()
@@ -429,7 +467,6 @@ class ProductDetail(CreationModificationDateMixin):
 
     def get_absolute_url(self):
         return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
-
 
 
 class ProductAttribute(CreationModificationDateMixin):

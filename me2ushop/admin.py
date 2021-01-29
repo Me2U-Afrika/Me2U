@@ -92,7 +92,7 @@ class StatusCodeAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     # form = ProductAdminForm()
     list_display = (
-        'title', 'price', 'slug', 'sku', 'brand_name', 'in_stock', 'stock', 'is_active', 'made_in_africa', 'created_at',
+        'title', 'price', 'slug', 'sku', 'brand_name', 'in_stock', 'stock', 'is_active', 'made_in_afrika', 'created_at',
         'updated_at',)
     list_display_links = ('title',)
     list_per_page = 50
@@ -100,7 +100,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ('in_stock',)
     list_filter = ('brand_name',)
 
-    search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'made_in_africa', 'brand_name']
+    search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'made_in_afrika', 'brand_name']
     exclude = ('created_at', 'updated_at',)
 
     # prepopulated_fields = {'slug': ('title',)}
@@ -130,7 +130,7 @@ class DispatchersProductAdmin(ProductAdmin):
                        'is_featured',
                        'additional_information',
                        'discount_price',
-                       "price", 'made_in_africa', 'created_at', 'updated_at', 'meta_keywords',
+                       "price", 'made_in_afrika', 'created_at', 'updated_at', 'meta_keywords',
                        'meta_description',
                        'product_categories')
     list_editable = ('in_stock', 'stock',)
@@ -219,14 +219,13 @@ class ProductImageAdmin(admin.ModelAdmin):
 
         if obj.in_display:
 
-            current_saved_default = ProductImage.displayed.filter(item=obj.item)
+            current_saved_default = ProductImage.displayed.filter(item=obj.item, in_display=True)
             print('current', current_saved_default)
             if current_saved_default.exists():
                 current_saved = current_saved_default[0]
                 current_saved.in_display = False
                 current_saved.save()
-                # print('current', current_saved.default)
-            obj.save()
+        obj.save()
 
 
 class ProductReviewAdmin(admin.ModelAdmin):
