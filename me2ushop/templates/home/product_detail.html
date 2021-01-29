@@ -409,7 +409,7 @@
 			  <div class="col">
 			  <h3 class="viewed_title" style="color:#f5e211">Similar Products</h3>
 
-			  {% for product in object.cross_sells_hybrid %}
+			  {% for product in object.cross_sells_sellers %}
 					{% for image in product.get_images %}
 	                    {% if image.in_display %}
 
@@ -420,11 +420,11 @@
 
 					        <div class="view zoom overlay z-depth-2 rounded">
 					          <img class="img-fluid w-100"
-					            src="{{ image.image.medium.url}}" alt="Sample">
+					            src="{{ image.image.thumbnail.url}}" alt="Sample">
 					          <a href="{{ product.get_absolute_url }}">
 					            <div class="mask">
 					              <img class="img-fluid w-100"
-					                src="{{ image.image.large.url }}">
+					                src="{{ image.image.medium.url }}">
 					              <div class="mask rgba-black-slight"></div>
 					            </div>
 					          </a>

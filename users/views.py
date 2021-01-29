@@ -411,8 +411,6 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         print('registering brand')
-        obj = form.save(commit=False)
-        print('obj:', obj)
 
         from django.contrib.auth.models import Group
 
@@ -431,6 +429,8 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
         if seller_group:
             seller_group.user_set.add(self.request.user)
             user.is_staff = True
+            seller.application_status = 20
+            seller.save()
             user.save()
         # print(user.is_seller)
 

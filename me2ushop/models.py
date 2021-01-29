@@ -103,8 +103,7 @@ class Brand(CreationModificationDateMixin):
     title = models.CharField(max_length=100, unique=True, help_text='Unique business title to identify Your store and '
                                                                     'your product line')
 
-    business_description = models.TextField(blank=True, null=True, help_text="Tell us what you do and the kind of "
-                                                                             "products you sell")
+    business_description = models.TextField(help_text="Tell us what you do and the kind of products you sell")
 
     website_link = models.CharField(max_length=30, blank=True, null=True, help_text='If you have a website by which '
                                                                                     'buyers can find out more about '
@@ -123,28 +122,22 @@ class Brand(CreationModificationDateMixin):
     telegram = models.CharField(max_length=100, blank=True, null=True, help_text='Do you have a Telegram Channel. Copy '
                                                                                  'paste your page link here. e.g.. '
                                                                                  'https://t.me/me2uafrika')
-    business_type = models.CharField(blank=True, null=True, choices=BUSINESS_TYPE_CHOICE, max_length=4)
+    business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
     # date_of_registration = models.DateField
-    country = CountryField(multiple=False, blank=True, null=True)
-    subscription_type = models.CharField(max_length=2, blank=True, null=True, choices=SUBSCRIPTION_TYPE_CHOICE,
+    country = CountryField(multiple=False)
+    subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
                                          help_text='Select a monthly recurring subscription fees')
     active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False, blank=True, null=True)
     image = StdImageField(upload_to='images/brands/brand_background', blank=True, null=True,
                           help_text='wallpaper for your store.Leave blank if you don\'t have one',
                           default='images/brands/brand_background/default.jpg', variations={
-            'medium': (365, 365),
-            'large': (415, 470,),
+            'large': (415, 470,), }, delete_orphans=True)
 
-        }, delete_orphans=True)
-
-    logo = StdImageField(upload_to='images/brands/brand_logo', blank=True, null=True, help_text='logo for your store, '
-                                                                                                'Leave blank if you '
-                                                                                                'don\'t have one',
+    logo = StdImageField(upload_to='images/brands/brand_logo', blank=True, null=True,
+                         help_text='logo for your store, Leave blank if you don\'t have one',
                          variations={
-                             'thumbnail': (100, 100, True),
-                             'medium': (150, 150),
-                             'large': (200, 200,),
+                             'medium': (150, 150, True),
 
                          }, delete_orphans=True)
 
