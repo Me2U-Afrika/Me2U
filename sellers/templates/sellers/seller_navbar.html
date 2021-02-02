@@ -203,14 +203,9 @@
                                     <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
                                 </ul>
                             </li>
-                            <li class="page_menu_item has-children">
-                                <a href="#">Manage Products<i class="fa fa-angle-down"></i></a>
-                                <ul class="page_menu_selection">
-                                    <li><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="{% url 'sellers:seller_products' %}">Manage Existing<i class="fa fa-angle-down"></i></a></li>
-                                </ul>
-                            </li>
 
+                            <li class="page_menu_item"><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{% url 'sellers:seller_products' %}">Manage Existing<i class="fa fa-angle-down"></i></a></li>
                             <li class="page_menu_item"><a href="{% url 'me2ushop:seller_page' brand.id %}">My Store<i class="fa fa-angle-down"></i></a></li>
                             <li class="page_menu_item"><a href="#">Deliver With Me2U<i class="fa fa-angle-down"></i></a></li>
                             <li class="page_menu_item"><a href="#">Blog<i class="fa fa-angle-down"></i></a></li>
