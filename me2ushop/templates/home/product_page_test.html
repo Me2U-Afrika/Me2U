@@ -1,43 +1,363 @@
-{% extends 'me2ushop/base_template.html' %}
-{% load tagging_tags %}
-{% load render_bundle from webpack_loader %}
-{% load crispy_forms_tags %}
+
+{% load search_tags %}
 {% load catalog_filters %}
+{% load cart_template_tag %}
+{% load mptt_tags %}
+{% load bootstrap3 %}
+{% load bootstrap4 %}
+{% load static %}
 {% load currency %}
+{% load crispy_forms_tags %}
+{% load render_bundle from webpack_loader %}
 
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
 {% block headblock %}
-<!--product styles-->
 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Me2U Afrika Market">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{% block title %}{% if page_title %}{{ page_title }} - {% endif %} {{ site_name }}{% endblock %}</title>
+	<meta name="google-site-verification" content="m99rTgHStqJaWoR2y0EqD02MxvoJXP_lLhSQ9VeMjqc"/>
+
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap4/bootstrap.min.css">
+	<link href="{{ STATIC_URL }}css/plugins/fontawesome-free-5.0.1/css/fontawesome-all.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.theme.default.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/animate.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_styles.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_responsive.css">
 
-<style>
-	@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
-
-	.fa{font-size:24px;margin-right:5px}
-	.row-first{margin-bottom:10px;margin-top:8px}
-	.title-contact{margin-top:32px;display:none;}
-	.contact-email { display:none; }
-	a{transition:all .3s ease;-webkit-transition:all .3s ease;-moz-transition:all .3s ease;-o-transition:all .3s ease}
-	.quick-contact{color:#fff;background-color:#000;background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAiCAMAAADiW5DOAAAAaVBMVEUjIyMlJSUhISEaGhoZGRkcHBwREREHBwcMDAwODg4PDw8NDQ0LCwsICAgQEBAYGBgbGxsiIiIkJCQUFBQKCgoVFRUJCQkSEhITExMdHR0XFxcFBQUGBgYfHx8WFhYeHh4gICAEBAQmJiYtaDO6AAAC4UlEQVR42iVTi5arIAykl4cSMNAFeah1t/v/H3knXT3VyoQkMxmUUo8Hfv+0NtYtq6cQvI8bW53y8wsIbmAmy2VyCXElZscUatiNBpRtTlklqw0+EtL45r3rozjmtbK22Rid9TRqpozwiW/L1XMvY++uh3XIPiuZkkpG4lEPyTggS9nHcIFzxkpG9iOrel7Xspyr0eZ1e8TsexmO9m9j73pd57ks6ty2pbWz7drM3LkPhHRXtDV5LEuttZ2qtjVGkI1aJ3tIot7Z6W+T7/WKYFpXFSl48iFUhw5sD647Tzd4T2rN0wpMeSLX2YdaE6o9H0/R9CcbXVao5bhzUEIXilCsA0H5OyfQsVpbXwMxSg9SHiEDbH0teuojHeBrRPu+hi5SlK7wkst5D7WgmDnw0BAYarkBcOzKiWr7IJ+m1iK3aIdHmrdngfqtPrKhofHK4N7O7Trf55om5O88gPWhGFMcnbpshjm2Zavt2gYSvg5gaIcV0+hMvNusU2qtxRWaLsEk1NwJPiCnfpTY7OuF6em+Re+hFdUmiezr+fhV6qmmMSJIBqej1uAgqOPQ1iOLecSBVh1iwTtlaxNfyD1AmMg3B9QksdBEnoQNaMYmt0F6kYSYas9a1oHCq3hrKY6b2JVyQzYXKItQny4OeGy5zuusyaAauYGYUZiOqS3M8T6X81TbVdvW3sttjf52kqigoTExMwePAVxUrTFAkdrEY5k9PFZ8twafcQNRQCquwcNisXbpHFUcdRoZffSt+uA5eBXQqGNC0GHM/Pd4/H6p58/U6Y4tABnEij7zcrRuu3gLXBE6UYoatpcOTIkNZXCh7UeC/TA3vGAijqiwg0FXPIr8Ye+1zYhIH+n+TiTjIB2j/MXAq5TQg0nSuKig0zxIPHZ/YvZdTi9PUTq+r+u9vSN013NQH/dAreBQsXPPsszL1XAt8NjHKzR2VFAlgHt3xWI2d9wgGY5m88eE/QcLefcf4Go/mGyl89EAAAAASUVORK5CYII=');text-align:center}
-	.contact a{-webkit-border-radius:2px;-moz-border-radius:2px;-o-border-radius:2px;border-radius:2px;display:block;background-color:rgba(255,255,255,0.25);font-size:20px;text-align:center;color:#fff;padding:7px}
-	.contact a:hover{background-color:rgba(255,255,255,0.85);text-decoration:none}
-	.contact a.facebook:hover,.fa-facebook{color:#00aff0}
-	.contact a.instagram:hover,.fa-instagram{color:#ED8975}
-	.contact a.email:hover,.fa-globe{color:#0000CC}
-	.contact a.telegram:hover,.fa-paper-plane{color:#1a1aff}
-</style>
-
 {% endblock headblock %}
 
+</head>
 
-{% block site_wrapper %}
 
 <body>
 
 <div class="super_container">
 
 	<!-- Single Product -->
+	<header class="header">
+
+		<!-- Top Bar -->
+
+		<div class="top_bar">
+			<div class="container">
+				<div class="row">
+					<div class="col d-flex flex-row">
+						<div class="top_bar_contact_item"><div class="top_bar_icon"><img src="images/phone.png" alt=""></div>+38 068 005 3570</div>
+						<div class="top_bar_contact_item"><div class="top_bar_icon"><img src="images/mail.png" alt=""></div><a href="mailto:fastsales@gmail.com">fastsales@gmail.com</a></div>
+						<div class="top_bar_content ml-auto">
+							<div class="top_bar_menu">
+								<ul class="standard_dropdown top_bar_dropdown">
+									<li>
+										<a href="#">English<i class="fas fa-chevron-down"></i></a>
+										<ul>
+											<li><a href="#">Italian</a></li>
+											<li><a href="#">Spanish</a></li>
+											<li><a href="#">Japanese</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">$ US dollar<i class="fas fa-chevron-down"></i></a>
+										<ul>
+											<li><a href="#">EUR Euro</a></li>
+											<li><a href="#">GBP British Pound</a></li>
+											<li><a href="#">JPY Japanese Yen</a></li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+							<div class="top_bar_user">
+								<div class="user_icon"><img src="images/user.svg" alt=""></div>
+								<div><a href="#">Register</a></div>
+								<div><a href="#">Sign in</a></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Header Main -->
+
+		<div class="header_main">
+			<div class="container">
+				<div class="row">
+
+					<!-- Logo -->
+					<div class="col-lg-2 col-sm-3 col-3 order-1">
+						<div class="logo_container">
+							<div class="logo"><a href="#">OneTech</a></div>
+						</div>
+					</div>
+
+					<!-- Search -->
+					<div class="col-lg-6 col-12 order-lg-2 order-3 text-lg-left text-right">
+						<div class="header_search">
+							<div class="header_search_content">
+								<div class="header_search_form_container">
+									<form action="#" class="header_search_form clearfix">
+										<input type="search" required="required" class="header_search_input" placeholder="Search for products...">
+										<div class="custom_dropdown">
+											<div class="custom_dropdown_list">
+												<span class="custom_dropdown_placeholder clc">All Categories</span>
+												<i class="fas fa-chevron-down"></i>
+												<ul class="custom_list clc">
+													<li><a class="clc" href="#">All Categories</a></li>
+													<li><a class="clc" href="#">Computers</a></li>
+													<li><a class="clc" href="#">Laptops</a></li>
+													<li><a class="clc" href="#">Cameras</a></li>
+													<li><a class="clc" href="#">Hardware</a></li>
+													<li><a class="clc" href="#">Smartphones</a></li>
+												</ul>
+											</div>
+										</div>
+										<button type="submit" class="header_search_button trans_300" value="Submit"><img src="images/search.png" alt=""></button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Wishlist -->
+					<div class="col-lg-4 col-9 order-lg-3 order-2 text-lg-left text-right">
+						<div class="wishlist_cart d-flex flex-row align-items-center justify-content-end">
+							<div class="wishlist d-flex flex-row align-items-center justify-content-end">
+								<div class="wishlist_icon"><img src="images/heart.png" alt=""></div>
+								<div class="wishlist_content">
+									<div class="wishlist_text"><a href="#">Wishlist</a></div>
+									<div class="wishlist_count">115</div>
+								</div>
+							</div>
+
+							<!-- Cart -->
+							<div class="cart">
+								<div class="cart_container d-flex flex-row align-items-center justify-content-end">
+									<div class="cart_icon">
+										<img src="images/cart.png" alt="">
+										<div class="cart_count"><span>10</span></div>
+									</div>
+									<div class="cart_content">
+										<div class="cart_text"><a href="#">Cart</a></div>
+										<div class="cart_price">$85</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main Navigation -->
+
+		<nav class="main_nav">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+
+						<div class="main_nav_content d-flex flex-row">
+
+							<!-- Categories Menu -->
+
+							<div class="cat_menu_container">
+								<div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
+									<div class="cat_burger"><span></span><span></span><span></span></div>
+									<div class="cat_menu_text">categories</div>
+								</div>
+
+								<ul class="cat_menu">
+									<li><a href="#">Computers & Laptops <i class="fas fa-chevron-right ml-auto"></i></a></li>
+									<li><a href="#">Cameras & Photos<i class="fas fa-chevron-right"></i></a></li>
+									<li class="hassubs">
+										<a href="#">Hardware<i class="fas fa-chevron-right"></i></a>
+										<ul>
+											<li class="hassubs">
+												<a href="#">Menu Item<i class="fas fa-chevron-right"></i></a>
+												<ul>
+													<li><a href="#">Menu Item<i class="fas fa-chevron-right"></i></a></li>
+													<li><a href="#">Menu Item<i class="fas fa-chevron-right"></i></a></li>
+													<li><a href="#">Menu Item<i class="fas fa-chevron-right"></i></a></li>
+													<li><a href="#">Menu Item<i class="fas fa-chevron-right"></i></a></li>
+												</ul>
+											</li>
+											<li><a href="#">Menu Item<i class="fas fa-chevron-right"></i></a></li>
+											<li><a href="#">Menu Item<i class="fas fa-chevron-right"></i></a></li>
+											<li><a href="#">Menu Item<i class="fas fa-chevron-right"></i></a></li>
+										</ul>
+									</li>
+									<li><a href="#">Smartphones & Tablets<i class="fas fa-chevron-right"></i></a></li>
+									<li><a href="#">TV & Audio<i class="fas fa-chevron-right"></i></a></li>
+									<li><a href="#">Gadgets<i class="fas fa-chevron-right"></i></a></li>
+									<li><a href="#">Car Electronics<i class="fas fa-chevron-right"></i></a></li>
+									<li><a href="#">Video Games & Consoles<i class="fas fa-chevron-right"></i></a></li>
+									<li><a href="#">Accessories<i class="fas fa-chevron-right"></i></a></li>
+								</ul>
+							</div>
+
+							<!-- Main Nav Menu -->
+
+							<div class="main_nav_menu ml-auto">
+								<ul class="standard_dropdown main_nav_dropdown">
+									<li><a href="index.html">Home<i class="fas fa-chevron-down"></i></a></li>
+									<li class="hassubs">
+										<a href="#">Super Deals<i class="fas fa-chevron-down"></i></a>
+										<ul>
+											<li>
+												<a href="#">Menu Item<i class="fas fa-chevron-down"></i></a>
+												<ul>
+													<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+													<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+													<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+												</ul>
+											</li>
+											<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+											<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+											<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+										</ul>
+									</li>
+									<li class="hassubs">
+										<a href="#">Featured Brands<i class="fas fa-chevron-down"></i></a>
+										<ul>
+											<li>
+												<a href="#">Menu Item<i class="fas fa-chevron-down"></i></a>
+												<ul>
+													<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+													<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+													<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+												</ul>
+											</li>
+											<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+											<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+											<li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>
+										</ul>
+									</li>
+									<li class="hassubs">
+										<a href="#">Pages<i class="fas fa-chevron-down"></i></a>
+										<ul>
+											<li><a href="shop.html">Shop<i class="fas fa-chevron-down"></i></a></li>
+											<li><a href="product.html">Product<i class="fas fa-chevron-down"></i></a></li>
+											<li><a href="blog.html">Blog<i class="fas fa-chevron-down"></i></a></li>
+											<li><a href="blog_single.html">Blog Post<i class="fas fa-chevron-down"></i></a></li>
+											<li><a href="regular.html">Regular Post<i class="fas fa-chevron-down"></i></a></li>
+											<li><a href="cart.html">Cart<i class="fas fa-chevron-down"></i></a></li>
+											<li><a href="contact.html">Contact<i class="fas fa-chevron-down"></i></a></li>
+										</ul>
+									</li>
+									<li><a href="blog.html">Blog<i class="fas fa-chevron-down"></i></a></li>
+									<li><a href="contact.html">Contact<i class="fas fa-chevron-down"></i></a></li>
+								</ul>
+							</div>
+
+							<!-- Menu Trigger -->
+
+							<div class="menu_trigger_container ml-auto">
+								<div class="menu_trigger d-flex flex-row align-items-center justify-content-end">
+									<div class="menu_burger">
+										<div class="menu_trigger_text">menu</div>
+										<div class="cat_burger menu_burger_inner"><span></span><span></span><span></span></div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Menu -->
+
+		<div class="page_menu">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+
+						<div class="page_menu_content">
+
+							<div class="page_menu_search">
+								<form action="#">
+									<input type="search" required="required" class="page_menu_search_input" placeholder="Search for products...">
+								</form>
+							</div>
+							<ul class="page_menu_nav">
+								<li class="page_menu_item has-children">
+									<a href="#">Language<i class="fa fa-angle-down"></i></a>
+									<ul class="page_menu_selection">
+										<li><a href="#">English<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Italian<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Spanish<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Japanese<i class="fa fa-angle-down"></i></a></li>
+									</ul>
+								</li>
+								<li class="page_menu_item has-children">
+									<a href="#">Currency<i class="fa fa-angle-down"></i></a>
+									<ul class="page_menu_selection">
+										<li><a href="#">US Dollar<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">EUR Euro<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">GBP British Pound<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">JPY Japanese Yen<i class="fa fa-angle-down"></i></a></li>
+									</ul>
+								</li>
+								<li class="page_menu_item">
+									<a href="#">Home<i class="fa fa-angle-down"></i></a>
+								</li>
+								<li class="page_menu_item has-children">
+									<a href="#">Super Deals<i class="fa fa-angle-down"></i></a>
+									<ul class="page_menu_selection">
+										<li><a href="#">Super Deals<i class="fa fa-angle-down"></i></a></li>
+										<li class="page_menu_item has-children">
+											<a href="#">Menu Item<i class="fa fa-angle-down"></i></a>
+											<ul class="page_menu_selection">
+												<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+												<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+												<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+												<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+											</ul>
+										</li>
+										<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+									</ul>
+								</li>
+								<li class="page_menu_item has-children">
+									<a href="#">Featured Brands<i class="fa fa-angle-down"></i></a>
+									<ul class="page_menu_selection">
+										<li><a href="#">Featured Brands<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+									</ul>
+								</li>
+								<li class="page_menu_item has-children">
+									<a href="#">Trending Styles<i class="fa fa-angle-down"></i></a>
+									<ul class="page_menu_selection">
+										<li><a href="#">Trending Styles<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+										<li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+									</ul>
+								</li>
+								<li class="page_menu_item"><a href="blog.html">blog<i class="fa fa-angle-down"></i></a></li>
+								<li class="page_menu_item"><a href="contact.html">contact<i class="fa fa-angle-down"></i></a></li>
+							</ul>
+
+							<div class="menu_contact">
+								<div class="menu_contact_item"><div class="menu_contact_icon"><img src="images/phone_white.png" alt=""></div>+38 068 005 3570</div>
+								<div class="menu_contact_item"><div class="menu_contact_icon"><img src="images/mail_white.png" alt=""></div><a href="mailto:fastsales@gmail.com">fastsales@gmail.com</a></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</header>
 
 	<div class="single_product">
 
@@ -72,11 +392,11 @@
 				                  <h6 class="font-weight-bold blue-text">
 
 				                  {% if product.discount_price %}
-				                      <span style="font-size:9px" class="grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </del></span>
+				                      <span style="font-size:9px" class="grey-text"><del>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</del></span>
 				                     <br>
-				                    <span class="red-text">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} </span>
+				                    <span class="red-text">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span>
 				                  {% else %}
-					                  <span  class="red-text">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</span>
+					                  <span  class="red-text">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span>
 				                  {% endif %}
 
 				              </h6>
@@ -101,7 +421,7 @@
 				{% for image in object.productimage_set.all %}
 				{% if image.in_display %}
 
-					<div class="image_selected" id="imagebox"></div>
+					<div class="image_selected card-height" id="imagebox"><img src="{{ image.image.large.url }}" alt="{{ object.title }}"></div>
 
 				{% endif %}
 				{% endfor %}
@@ -159,17 +479,18 @@
 								</div>
 
 								{% if object.discount_price %}
-								<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
-								<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
+								<span class="product_price grey-text"><del>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</del></span>
+				                     <br>
+								<span class="product_price red-text"><h3>{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</h3></span>
 								{% else %}
-								<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
+								<span  class="product_price red-text"><h3>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</h3></span>
 								{% endif %}
 
 								{% if object.brand_name.user.user == request.user %}
-	                            <div class="card card-body">
+	                            <div>
 	                                <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-update' object.slug %}" target="_blank">UPDATE Product</a>
 	                                <a class="btn btn-outline-green " href="{% url 'me2ushop:product-create' %}" target="_blank">New Product</a>
-		                            <a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}" target="_blank">Additional Information</a>
+		                            <a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}" target="_blank">ADD Product Additional Information</a>
 
 		                            {% if object.productimage_set.all %}
 	                                <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_images' object.slug %}" target="_blank">Product Images</a>
@@ -177,7 +498,7 @@
 		                            <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_image_create' object.slug %}" target="_blank">Add Images</a>
 		                            {% endif %}
 
-	                                <a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}" target="_blank">ADD Attributes</a>
+	                                <a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}" target="_blank">ADD Product Attributes</a>
 
 	                                <a class="btn btn-outline-grey" href="{% url 'sellers:seller_products' %}" target="_blank">My Products</a>
 
@@ -215,7 +536,7 @@
                                     <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
                                 </div>
                                 <div class="cart_content">
-                                    <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" target="_blank">Post Ad like this</a></div>
+                                    <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" target="_blank">Post Ad like this...it's Free</a></div>
                                 </div>
                             </div>
                         </div>
@@ -324,10 +645,10 @@
 		          <tr>
 		            <th scope="row" class="w-150 dark-grey-text h6">Attribute</th>
 		            <td><em>Value</em></td>
+		            <td><em>Description</em></td>
+
 			          {% if object.brand_name.user.user == request.user %}
 		            <td><em>Actions</em></td>
-			          {% else %}
-			          <td><em>Description</em></td>
 			          {% endif %}
 		          </tr>
 		        </thead>
@@ -338,16 +659,12 @@
 			          <tr>
 			            <th scope="row" class="w-150 dark-grey-text h6">{{ pdattribute.attribute }}</th>
 			            <td><em>{{ pdattribute.value }}</em></td>
+			            <td><em>{{ pdattribute.description }}</em></td>
 			            {% if object.brand_name.user.user == request.user %}
 	                     <td>
-
-			                     <em><a class="btn btn-outline-red" href="{% url 'me2ushop:product_delete_attributes' pdattribute.id %}" target="_blank">DELETE </a></em>
-			                     <br>
-			                     <span><a class="btn btn-outline-green " href="{% url 'me2ushop:product_update_attributes' pdattribute.id %}" target="_blank">UPDATE</a></span>
-
+		                     <em><a class="btn btn-outline-red" href="{% url 'me2ushop:product_delete_attributes' pdattribute.id %}" target="_blank">DELETE </a></em>
+		                     <span class="ml-3"><a class="btn btn-outline-green " href="{% url 'me2ushop:product_update_attributes' pdattribute.id %}" target="_blank">UPDATE</a></span>
 	                     </td>
-				          {% else %}
-				          <td><em>{{ pdattribute.description }}</em></td>
 		                {% endif %}
 			          </tr>
 
@@ -445,10 +762,10 @@
 					          <h5>{{ product.title }}</h5>
 
 						        {% if product.discount_price %}
-							        <span class="text-danger mr-1">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</span>
-							        <span class="text-grey"><s>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </s></span>
+							        <span class="text-danger mr-1">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span>
+							        <span class="text-grey"><s>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</s></span>
 						        {% else %}
-					                <h6>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </h6>
+					                <h6>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</h6>
 						        {% endif %}
 					        </div>
 
@@ -573,7 +890,7 @@
 										{% endif %}
 										{% endfor %}
 										<div class="viewed_content text-center">
-											<div class="viewed_price">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</span></div>
+											<div class="viewed_price">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div>
 											<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 										</div>
 										<ul class="item_marks">
@@ -593,7 +910,7 @@
 										{% endif %}
 										{% endfor %}
 										<div class="viewed_content text-center">
-											<div class="viewed_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div>
+											<div class="viewed_price">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
 											<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
 										</div>
 										<ul class="item_marks">
@@ -618,15 +935,23 @@
 </div>
 
 
-{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}js/jquery-3.3.1.min.js"></script>
+<script src="{{ STATIC_URL }}css/bootstrap4/popper.js"></script>
+<script src="{{ STATIC_URL }}css/bootstrap4/bootstrap.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/greensock/TweenMax.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/greensock/TimelineMax.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/scrollmagic/ScrollMagic.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/greensock/animation.gsap.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/greensock/ScrollToPlugin.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/easing/easing.js"></script>
+
+<script src="{{ STATIC_URL }}js/product_custom.js"></script>
 
 <!--images react -->
 <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-
-<script src="{{ STATIC_URL }}js/product_custom.js"></script>
-
-
 
 {% render_bundle 'imageswitcher' 'js' %}
 <script>
@@ -648,30 +973,6 @@
         });
 </script>
 
-{% if formset %}
-    {{ formset.media }}
-{% endif %}
-
-<script>
-	$(document).ready(function () {
-    $(".title-contact, .contact-email").fadeIn("slow");
-});
-</script>
-
-{% endblock %}
-
 </body>
 
-{% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
+</html>

@@ -402,7 +402,7 @@ class ProductImage(CreationModificationDateMixin):
         'thumbnail': (170, 115, True),
         'medium': (365, 365),
         'deals_size': (365, 365, True),
-        'large': (415, 470),
+        'large': (415, 430),
 
     }, delete_orphans=True)
 

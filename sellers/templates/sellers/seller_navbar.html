@@ -5,53 +5,77 @@
 {% load crispy_forms_tags %}
 <header class="header">
 
-    <div class="top_bar">
-        <div class="container">
-            <div class="row">
-                <div class="col d-flex flex-row">
-                    <div class="top_bar_contact_item"><div class="top_bar_icon"></div><a href="{% url 'me2ushop:home' %}">Me2U|Afrika</a></div>
-                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ MEDIA_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
-                    <div class="top_bar_content ml-auto">
-                        <div class="top_bar_menu">
-                            <ul class="standard_dropdown top_bar_dropdown">
-                                <li>
-                                    <a href="#">English<i class="fas fa-chevron-down"></i></a>
-                                    <ul>
-                                        <li><a href="#">Kiswahili</a></li>
-                                        <li><a href="#">Kinyarwanda</a></li>
-                                        <li><a href="#">French</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">$ US dollar<i class="fas fa-chevron-down"></i></a>
-                                    <ul>
-                                        <li><a href="#">KES Ksh</a></li>
-                                        <li><a href="#">RWF Rwandan Francs</a></li>
-                                        <li><a href="#">JPY Japanese Yen</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
+
+    <div class="header_main" id="main_hide">
+            <div class="container">
+                <div class="row">
+
+                    <!-- Logo -->
+                    <div class="col-lg-2 col-sm-3 col-3 order-1">
+                        <div class="logo_container">
+                            <a href="https://fontmeme.com/graffiti-creator/"></a>
+                            <div class="logo mr-0 "><img src="https://fontmeme.com/permalink/201127/1f6927d2724e3d58cbe67a795e17b0c9.png" alt="Me" width="65" height="50" border="0"><img src="https://img.icons8.com/ios/50/000000/africa.png" alt="2"/>
+                                <img src="https://fontmeme.com/permalink/201127/fd8657f0ad98f0197dc56707227d712d.png" alt="U" border="0"></div>
+    <!--                        <div class="logo mr-0 "><a href="{% url 'me2ushop:home' %}"><img src='https://fontmeme.com/permalink/201127/33a5f570529e975d3c2140be0814ba3a.png' alt='Me2U' border='0'></a></div>-->
                         </div>
-                        <div class="top_bar_user">
-                            {% if request.user.is_authenticated %}
-                            <div class="user_icon"><img src="{{ MEDIA_URL }}images/user.svg" alt=""></div>
-                            <div><a href="{% url 'users:profile' %}">Karibu {{ request.user.username }}</a></div>
-                            <div><a href="{% url 'logout' %}">LogOut</a></div>
-                            {% else %}
-                            <div class="user_icon"><img src="{{ MEDIA_URL }}images/user.svg" alt=""></div>
-                            <div><a href="{% url 'users:register' %}">Register</a></div>
-                            <div><a href="{% url 'login' %}">Sign in</a></div>
-                            {% endif %}
+                    </div>
+
+                    <!-- Search -->
+                                {% search_box request %}
+
+
+                    <!-- Wishlist -->
+                    <div class="col-lg-4 col-9 order-lg-3 order-2 text-lg-left text-right">
+
+                        <div class="wishlist_cart d-flex flex-row align-items-center justify-content-end">
+
+                            <div class="wishlist d-flex flex-row align-items-center justify-content-end">
+                                <div class="wishlist_icon"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank"><img src="{{ STATIC_URL }}images/heart.png" alt=""></a></div>
+                                <div class="wishlist_content">
+                                    <div class="wishlist_text"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank">Wishlist</a></div>
+                                    {% if not wish_list == None %}
+                                    <div class="wishlist_count">{{ request|wish_list_count }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+    <!--                        &lt;!&ndash; Cart &ndash;&gt;-->
+    <!--                        <div class="cart">-->
+    <!--                            <div class="cart_container d-flex flex-row align-items-center justify-content-end">-->
+    <!--                                <div class="cart_icon">-->
+    <!--                                    <img src="media/images/cart.png" alt="">-->
+    <!--                                    <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>-->
+    <!--                                </div>-->
+    <!--                                <div class="cart_content">-->
+    <!--                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}" target="_blank">Cart</a></div>-->
+    <!--                                    <div class="cart_price">{{ request|cart_item_total }} </div>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                        &lt;!&ndash; cart &ndash;&gt;-->
+
+                              <!-- Cart -->
+                            <div class="cart">
+                                <div class="cart_container d-flex flex-row align-items-center justify-content-end">
+                                    <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}" target="_blank">
+                                        <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
+                                    </div>
+                                    <div class="cart_content">
+                                        <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" target="_blank">Post An Ad/Service</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- cart -->
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
     <!-- Main Navigation -->
     <nav class="main_nav">
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col">
                     <div class="main_nav_content d-flex flex-row">
@@ -71,8 +95,10 @@
                         <div class="main_nav_menu ml-auto">
                             <ul class="standard_dropdown main_nav_dropdown">
                                 <li><a href="{% url 'sellers:seller_home' %}">Dashboard<i class="fas fa-chevron-down"></i></a></li>
-                                <li class="hassubs">
-                                    <a href="#">Add Deals<i class="fas fa-chevron-down"></i></a>
+                                <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
+
+                                <li class="hassubs disabled">
+                                    <a href="#">Add Deals</a>
 <!--                                    <ul>-->
 <!--                                        <li>-->
 <!--                                            <a href="#">Menu Item<i class="fas fa-chevron-down"></i></a>-->
@@ -91,20 +117,16 @@
                                     <a href="{% url 'sellers:seller_products' %}">Manage Products<i class="fas fa-chevron-down"></i></a>
                                     <ul>
                                         <li>
-                                            <a href="">Active Products<i class="fas fa-chevron-down"></i></a>
+                                            <a href="#">Active Products<i class="fas fa-chevron-down"></i></a>
                                             <ul>
-                                                {% if brand %}
-                                                <li><a href="{% url 'me2ushop:seller_page' brand.id %}">All<i class="fas fa-chevron-down"></i></a></li>
-                                                {% endif %}
-                                                <li><a href="#">Most Bought<i class="fas fa-chevron-down"></i></a></li>
-                                                <li><a href="#">On offer<i class="fas fa-chevron-down"></i></a></li>
-                                                <li><a href="#">Trending<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="{% url 'sellers:seller_products' %}">Manage Existing<i class="fas fa-chevron-down"></i></a></li>
+
                                             </ul>
                                         </li>
-                                        <li><a href="{% url 'sellers:seller_products' %}">Manage Existing<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Recently Added<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Stock Analysis<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Restock<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="{% url 'me2ushop:seller_page' brand.id %}">My Store<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="#">Blog<i class="fas fa-chevron-down"></i></a></li>
+
                                     </ul>
                                 </li>
                                 <li><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fas fa-chevron-down"></i></a></li>
@@ -142,29 +164,29 @@
                         {% search_menu request %}
 
                         <ul class="page_menu_nav">
-                            <li class="page_menu_item has-children">
-                                <a href="#">Language<i class="fa fa-angle-down"></i></a>
-                                <ul class="page_menu_selection">
-                                    <li><a href="#">English<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">Kiswahili<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">Kinyarwanda<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">French<i class="fa fa-angle-down"></i></a></li>
-                                </ul>
-                            </li>
-                            <li class="page_menu_item has-children">
-                                <a href="#">Currency<i class="fa fa-angle-down"></i></a>
-                                <ul class="page_menu_selection">
-                                    <li><a href="#">US Dollar<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">KES Shilling<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">RWF Francs<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">JPY Francs<i class="fa fa-angle-down"></i></a></li>
-                                </ul>
-                            </li>
+<!--                            <li class="page_menu_item has-children" id="menu_hide">-->
+<!--                                <a href="#">Language<i class="fa fa-angle-down"></i></a>-->
+<!--                                <ul class="page_menu_selection">-->
+<!--                                    <li><a href="#">English<i class="fa fa-angle-down"></i></a></li>-->
+<!--                                    <li><a href="#">Kiswahili<i class="fa fa-angle-down"></i></a></li>-->
+<!--                                    <li><a href="#">Kinyarwanda<i class="fa fa-angle-down"></i></a></li>-->
+<!--                                    <li><a href="#">French<i class="fa fa-angle-down"></i></a></li>-->
+<!--                                </ul>-->
+<!--                            </li>-->
+<!--                            <li class="page_menu_item has-children" id="menu_hide">-->
+<!--                                <a href="#">Currency<i class="fa fa-angle-down"></i></a>-->
+<!--                                <ul class="page_menu_selection">-->
+<!--                                    <li><a href="#">US Dollar<i class="fa fa-angle-down"></i></a></li>-->
+<!--                                    <li><a href="#">KES Shilling<i class="fa fa-angle-down"></i></a></li>-->
+<!--                                    <li><a href="#">RWF Francs<i class="fa fa-angle-down"></i></a></li>-->
+<!--                                    <li><a href="#">JPY Francs<i class="fa fa-angle-down"></i></a></li>-->
+<!--                                </ul>-->
+<!--                            </li>-->
                             <li class="page_menu_item">
                                 <a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a>
                             </li>
-                            <li class="page_menu_item has-children">
-                                <a href="#">Super Deals<i class="fa fa-angle-down"></i></a>
+                            <li class="page_menu_item has-children disabled">
+                                <a href="#">Add deals</a>
                                 <ul class="page_menu_selection">
                                     <li><a href="#">Super Deals<i class="fa fa-angle-down"></i></a></li>
                                     <li class="page_menu_item has-children">
@@ -182,30 +204,22 @@
                                 </ul>
                             </li>
                             <li class="page_menu_item has-children">
-                                <a href="#">Featured Brands<i class="fa fa-angle-down"></i></a>
+                                <a href="#">Manage Products<i class="fa fa-angle-down"></i></a>
                                 <ul class="page_menu_selection">
-                                    <li><a href="#">Featured Brands<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fa fa-angle-down"></i></a></li>
+                                    <li><a href="{% url 'sellers:seller_products' %}">Manage Existing<i class="fa fa-angle-down"></i></a></li>
                                 </ul>
                             </li>
-                            <li class="page_menu_item has-children">
-                                <a href="#">Trending Styles<i class="fa fa-angle-down"></i></a>
-                                <ul class="page_menu_selection">
-                                    <li><a href="#">Trending Styles<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
-                                    <li><a href="#">Menu Item<i class="fa fa-angle-down"></i></a></li>
-                                </ul>
-                            </li>
-                            <li class="page_menu_item"><a href="blog.html">blog<i class="fa fa-angle-down"></i></a></li>
+
+                            <li class="page_menu_item"><a href="{% url 'me2ushop:seller_page' brand.id %}">My Store<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="#">Deliver With Me2U<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="#">Blog<i class="fa fa-angle-down"></i></a></li>
                             <li class="page_menu_item"><a href="contact.html">contact<i class="fa fa-angle-down"></i></a></li>
                         </ul>
 
                         <div class="menu_contact">
-                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{MEDIA_URL }}images/phone_white.png" alt=""></div>+250 785011413</div>
-                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{MEDIA_URL }}images/mail_white.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{ STATIC_URL }}images/phone_white.png" alt=""></div>+250 785011413</div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{ STATIC_URL }}images/mail_white.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
                         </div>
                     </div>
                 </div>

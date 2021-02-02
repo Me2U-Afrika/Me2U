@@ -14,6 +14,7 @@
 8. Init Color
 9. Init Favorites
 10. Init Image
+11. Reviews Slider
 
 
 ******************************/
@@ -41,6 +42,7 @@ $(document).ready(function()
 	initColor();
 	initFavs();
 	initImage();
+	initReviewsSlider();
 
 	$(window).on('resize', function()
 	{
@@ -411,4 +413,36 @@ $(document).ready(function()
 			});
 		});
 	}
+
+	/*
+
+	11. Reviews Slider
+
+	*/
+
+	function initReviewsSlider()
+	{
+		if($('.reviews_slider').length)
+		{
+			var reviewsSlider = $('.reviews_slider');
+
+			reviewsSlider.owlCarousel(
+			{
+				items:3,
+				loop:true,
+				margin:30,
+				autoplay:false,
+				nav:false,
+				dots:true,
+				dotsContainer: '.reviews_dots',
+				responsive:
+				{
+					0:{items:1},
+					768:{items:2},
+					991:{items:3}
+				}
+			});
+		}
+	}
+
 });

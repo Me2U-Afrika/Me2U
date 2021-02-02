@@ -11,11 +11,20 @@
 
 {% endblock %}
 
-  {% block navbar %}
-        {% include 'sellers/seller_navbar.html' %}
-  {% endblock %}
+
 
 <body>
+ {% block header_main %}
+        {% include 'sellers/seller_navbar.html' %}
+ {% endblock %}
+
+ {% block main_nav %}
+ {% endblock %}
+
+
+
+
+
 {% block site_wrapper %}
 
 <div class="super_container">
@@ -105,6 +114,7 @@
 <script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 <script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
 <script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
 
 {% endblock %}
 </body>

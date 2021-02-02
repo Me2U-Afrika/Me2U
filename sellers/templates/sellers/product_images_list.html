@@ -25,25 +25,23 @@
 					<!-- Shop Content -->
 					<div class="shop_content">
 						<div class="shop_bar clearfix">
-							<div class="shop_product_count"><span>{{ product_image.count }}</span> {{ object.title }} Images</div>
-							<div style="margin-right:5px;"><a href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a></div>
-							<div class="shop_sorting">
-								<span>Manage Page:</span>
-								<ul>
-									<li>
-										<span class="sorting_text"><i class="fas fa-chevron-down"></i></span>
-										<ul>
-											<li class="shop_sorting_button"><a href="{% url 'me2ushop:product' object.slug %}">View Product</a></li>
-											<li class="shop_sorting_button" data-isotope-option='{ "sortBy": "name" }'>
-												<a href="{% url 'me2ushop:product-create' %}">Add New Product</a>
-											</li>
-											<li class="shop_sorting_button" data-isotope-option='{ "sortBy": "price" }'>
-												<a href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a>
-											</li>
-										</ul>
-									</li>
-								</ul>
+							<div class="card card-body">
+						       <div class="text-center font-small wow fadeIn">
+						           {% if product_image.count < 12 %}
+						            <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product_image_create' object.slug %}">Add New Image</a>
+						           {% endif %}
+						           <a class="btn btn-outline-secondary" href="{% url 'me2ushop:product' object.slug %}">View Product</a>
+						            <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-create' %}"
+						               role="button">Add A New Product
+						            </a>
+						            </a>
+						           <a class="btn btn-outline-yellow" href="{% url 'sellers:seller_home' %}">Dashboard</a>
+
+						        </div>
 							</div>
+
+							<div class="shop_product_count"><span>{{ product_image.count }}</span> {{ object.title }} Images</div>
+
 						</div>
 
 						<div class="product_grid">
@@ -56,7 +54,7 @@
 
 							<div class="product_item is_new">
 								<div class="product_border"></div>
-								<div class="product_image d-flex flex-column align-items-center justify-content-center"><a href="{{object.get_absolute_url}}"><img src="{{ image.image.medium.url }}" alt=""></a></div>
+								<div class="product_image d-flex flex-column align-items-center justify-content-center"><a href="{{object.get_absolute_url}}"><img src="{{ image.image.thumbnail.url }}" alt=""></a></div>
 								<div class="product_content">
                                     <div class="product_price"><a href="{% url 'me2ushop:product_image_update' image.id%}">update</a></div>
                                     <div class="product_price"><a href="{% url 'me2ushop:product_image_delete' image.id%}">Delete</a></div>

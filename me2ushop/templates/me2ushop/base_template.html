@@ -25,47 +25,47 @@
     <meta name="description" content="Me2U Afrika Shopping Mall">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{% block title %}{% if page_title %}{{ page_title }} - {% endif %} {{ site_name }}{% endblock %}</title>
-
 	<meta name="google-site-verification" content="m99rTgHStqJaWoR2y0EqD02MxvoJXP_lLhSQ9VeMjqc"/>
+
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">-->
+    <!--	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+    <!--	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>-->
+    <!--    <link href="{{ STATIC_URL }}css/plugins/fontawesome-free-5.0.1/css/fontawesome-all.css" rel="stylesheet" type="text/css">-->
+
 
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
-
     <link rel="preload" as="style" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
-
     <link rel="preload" as="style" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
-
     <link rel="preload" href="{{ STATIC_URL }}css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="{{ STATIC_URL }}css/style.css"></noscript>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-
-	<!-- Google Fonts Roboto -->
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 
 	<!-- Material Design Bootstrap -->
     <link rel="stylesheet" href=" {{ STATIC_URL }}css/mdb.min.css">
+    <!-- Material Design Bootstrap -->
 
-<!--	  Your custom styles (optional) -->
+    <!-- Your custom styles (optional) -->
 	<link href="{{ STATIC_URL }}css/style.css" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
 
+    <!-- common styles onetech-->
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap4/bootstrap.min.css">
     <link href="{{ STATIC_URL }}css/plugins/fontawesome-free-5.0.1/css/fontawesome-all.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.theme.default.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/animate.css">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
+    <!-- common styles onetech-->
 
-
-
+    <!-- extra head styles -->
     {% block headblock %}
+
     {% endblock headblock %}
+    <!-- extra head styles -->
 
 	<style>
-	@import url(https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
-	@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
+	@import url(//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
+
 
 	.alert-top-message {
 	    margin-top: 5%;
@@ -81,14 +81,17 @@
 	.modal-dialog {
 	    margin-top: 12%;
 	}
-
-
+	.form-control {
+    color: #000000;
     }
+
      </style>
 
-
-
 </head>
+
+<body>
+
+    {% include "tags/modal.html" %}
 
     {% block sms %}
     <div class="pt-0 ms">
@@ -105,298 +108,289 @@
     </div>
     {% endblock %}
 
-{% block navbar %}
+    {% block navbar %}
+    <!-- Header -->
+    <header class="header">
 
-<!-- Header -->
+        {% block top_bar %}
+        <div class="top_bar">
+            <div class="container">
+                <div class="row">
+                    <div class="col d-flex flex-row">
+                        <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/phone.png" alt=""></div><strong>+250 785 011 413</strong> </div>
+                        <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                        <div class="top_bar_content ml-auto">
+                            <div class="top_bar_menu">
+                                <ul class="standard_dropdown top_bar_dropdown">
+                                    <li class="disabled">
+                                        <a href="#">English<i class="fas fa-chevron-down"></i></a>
+                                        <ul>
+                                            <li><a href="#">Kiswahili</a></li>
+                                            <li><a href="#">Kinyarwanda</a></li>
+                                            <li><a href="#">French</a></li>
+                                        </ul>
+                                    </li>
 
-<header class="header">
+                                        {% with dropdown_extra_class="collapsed-nav red-text" %}
+                                            {% include "currencies/navbar/currency-chooser-bs3fa.html" %}
+                                        {% endwith %}
 
-    {% block top_bar %}
-    <div class="top_bar">
-        <div class="container">
-            <div class="row">
-                <div class="col d-flex flex-row">
-                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/phone.png" alt=""></div><strong>+250 785 011 413</strong> </div>
-                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
-                    <div class="top_bar_content ml-auto">
-                        <div class="top_bar_menu">
-                            <ul class="standard_dropdown top_bar_dropdown">
-                                <li class="disabled">
-                                    <a href="#">English<i class="fas fa-chevron-down"></i></a>
-                                    <ul>
-                                        <li><a href="#">Kiswahili</a></li>
-                                        <li><a href="#">Kinyarwanda</a></li>
-                                        <li><a href="#">French</a></li>
-                                    </ul>
-                                </li>
-
-                                    {% with dropdown_extra_class="collapsed-nav red-text" %}
-                                    {% include "currencies/navbar/currency-chooser-bs3fa.html" %}
-                                    {% endwith %}
-
-                                <li>
-                                    <a href="{%  url 'sellers:seller_home' %}" target="_blank" style="color:MediumSeaGreen;">Advertise<i class="fas fa-chevron-down"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="top_bar_user">
-                            {% if request.user.is_authenticated %}
-                            <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
-                            <div><a href="{% url 'users:profile' %}" target="_blank">Karibu {{ request.user.username }}</a></div>
-                            <div><a href="{% url 'logout' %}">LogOut</a></div>
-                            {% else %}
-                            <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
-                            <div><a href="{% url 'users:register' %}">Register</a></div>
-                            <div><a href="{% url 'login' %}">Sign in</a></div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endblock %}
-
-
-    <!-- Header Main -->
-
-    {% block header_main %}
-    <div class="header_main">
-        <div class="container">
-            <div class="row">
-
-                <!-- Logo -->
-                <div class="col-lg-2 col-sm-3 col-3 order-1">
-                    <div class="logo_container">
-                        <a href="https://fontmeme.com/graffiti-creator/"></a>
-                        <div class="logo mr-0 "><img src="https://fontmeme.com/permalink/201127/1f6927d2724e3d58cbe67a795e17b0c9.png" alt="Me" width="65" height="50" border="0"><img src="https://img.icons8.com/ios/50/000000/africa.png" alt="2"/>
-                            <img src="https://fontmeme.com/permalink/201127/fd8657f0ad98f0197dc56707227d712d.png" alt="U" border="0"></div>
-<!--                        <div class="logo mr-0 "><a href="{% url 'me2ushop:home' %}"><img src='https://fontmeme.com/permalink/201127/33a5f570529e975d3c2140be0814ba3a.png' alt='Me2U' border='0'></a></div>-->
-                    </div>
-                </div>
-
-                <!-- Search -->
-                            {% search_box request %}
-
-
-                <!-- Wishlist -->
-                <div class="col-lg-4 col-9 order-lg-3 order-2 text-lg-left text-right">
-
-                    <div class="wishlist_cart d-flex flex-row align-items-center justify-content-end">
-
-                        <div class="wishlist d-flex flex-row align-items-center justify-content-end">
-                            <div class="wishlist_icon"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank"><img src="{{ STATIC_URL }}images/heart.png" alt=""></a></div>
-                            <div class="wishlist_content">
-                                <div class="wishlist_text"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank">Wishlist</a></div>
-                                {% if not wish_list == None %}
-                                <div class="wishlist_count">{{ request|wish_list_count }}</div>
+                                    <li>
+                                        <a href="{%  url 'sellers:seller_home' %}" target="_blank" style="color:MediumSeaGreen;">Advertise<i class="fas fa-chevron-down"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="top_bar_user">
+                                {% if request.user.is_authenticated %}
+                                <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
+                                <div><a href="{% url 'users:profile' %}" target="_blank">Karibu {{ request.user.username }}</a></div>
+                                <div><a href="{% url 'logout' %}">LogOut</a></div>
+                                {% else %}
+                                <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
+                                <div><a href="{% url 'users:register' %}">Register</a></div>
+                                <div><a href="{% url 'login' %}">Sign in</a></div>
                                 {% endif %}
                             </div>
                         </div>
-
-<!--                        &lt;!&ndash; Cart &ndash;&gt;-->
-<!--                        <div class="cart">-->
-<!--                            <div class="cart_container d-flex flex-row align-items-center justify-content-end">-->
-<!--                                <div class="cart_icon">-->
-<!--                                    <img src="media/images/cart.png" alt="">-->
-<!--                                    <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>-->
-<!--                                </div>-->
-<!--                                <div class="cart_content">-->
-<!--                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}" target="_blank">Cart</a></div>-->
-<!--                                    <div class="cart_price">{{ request|cart_item_total }} </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        &lt;!&ndash; cart &ndash;&gt;-->
-
-                          <!-- Cart -->
-                        <div class="cart">
-                            <div class="cart_container d-flex flex-row align-items-center justify-content-end">
-                                <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}" target="_blank">
-                                    <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
-                                </div>
-                                <div class="cart_content">
-                                    <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" target="_blank">Post Ad Free</a></div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- cart -->
-
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    {% endblock %}
+        {% endblock %}
 
-    <!-- Main Navigation -->
 
-    {% block main_nav %}
-    <nav class="main_nav" id="menu_bar">
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <div class="main_nav_content d-flex flex-row">
+        <!-- Header Main -->
+        {% block header_main %}
+        <div class="header_main">
+            <div class="container">
+                <div class="row">
 
-                        <!-- Categories Menu -->
-
-                        <div class="cat_menu_container">
-                            <div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
-                                <div class="cat_burger"><span></span><span></span><span></span></div>
-                                <div class="cat_menu_text">Departments</div>
-                            </div>
-                            {% include 'tags/department_list.html' %}
-
+                    <!-- Logo -->
+                    <div class="col-lg-2 col-sm-3 col-3 order-1">
+                        <div class="logo_container">
+                            <a href="https://fontmeme.com/graffiti-creator/"></a>
+                            <div class="logo mr-0 "><img src="https://fontmeme.com/permalink/201127/1f6927d2724e3d58cbe67a795e17b0c9.png" alt="Me" width="65" height="50" border="0"><img src="https://img.icons8.com/ios/50/000000/africa.png" alt="2"/>
+                                <img src="https://fontmeme.com/permalink/201127/fd8657f0ad98f0197dc56707227d712d.png" alt="U" border="0"></div>
+    <!--                        <div class="logo mr-0 "><a href="{% url 'me2ushop:home' %}"><img src='https://fontmeme.com/permalink/201127/33a5f570529e975d3c2140be0814ba3a.png' alt='Me2U' border='0'></a></div>-->
                         </div>
+                    </div>
 
-                        <!-- Main Nav Menu -->
+                    <!-- Search -->
+                                {% search_box request %}
 
-                        <div class="main_nav_menu ml-auto">
-                            <ul class="standard_dropdown main_nav_dropdown">
-                                <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
-                                <li class="hassubs">
-                                    <a href="#">Deals<i class="fas fa-chevron-down"></i></a>
-                                    <ul>
-                                        {% for deal in deals %}
-                                        {% if deal.is_featured %}
-                                        <li><a href="{{ deal.product.get_absolute_url }}" target="_blank">{{ deal }}<i class="fas fa-chevron-down"></i></a></li>
-                                        {% endif %}
-                                        {% endfor %}
 
-                                    </ul>
-                                </li>
-                                <li class="hassubs">
-                                    <a href="#">Featured Brands<i class="fas fa-chevron-down"></i></a>
-                                    <ul>
+                    <!-- Wishlist -->
+                    <div class="col-lg-4 col-9 order-lg-3 order-2 text-lg-left text-right">
 
-                                        {% for brand in brands %}
-                                        {% if brand.is_featured %}
-                                        <li><a href="{% url 'me2ushop:seller_page' brand.id %}" target="_blank">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
-                                        {% endif %}
-                                        {% endfor %}
+                        <div class="wishlist_cart d-flex flex-row align-items-center justify-content-end">
 
-                                    </ul>
-                                </li>
-<!--                                <li class="hassubs">-->
-<!--                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>-->
-<!--                                    <ul>-->
-<!--                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                        <li><a href="#">KFC<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                        <li><a href="#">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                    </ul>-->
-<!--                                </li>-->
-                                <li><a href="{%  url 'sellers:seller_home' %}" target="_blank">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
-                                <li class="disabled"><a href="{% url 'users:automobile_create' %}" target="_blank">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Menu Trigger -->
-
-                        <div class="menu_trigger_container ml-auto">
-                            <div class="menu_trigger d-flex flex-row align-items-center justify-content-end">
-                                <div class="menu_burger">
-                                    <div class="menu_trigger_text">menu</div>
-                                    <div class="cat_burger menu_burger_inner"><span></span><span></span><span></span></div>
+                            <div class="wishlist d-flex flex-row align-items-center justify-content-end">
+                                <div class="wishlist_icon"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank"><img src="{{ STATIC_URL }}images/heart.png" alt=""></a></div>
+                                <div class="wishlist_content">
+                                    <div class="wishlist_text"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank">Wishlist</a></div>
+                                    {% if not wish_list == None %}
+                                    <div class="wishlist_count">{{ request|wish_list_count }}</div>
+                                    {% endif %}
                                 </div>
                             </div>
-                        </div>
 
+    <!--                        &lt;!&ndash; Cart &ndash;&gt;-->
+    <!--                        <div class="cart">-->
+    <!--                            <div class="cart_container d-flex flex-row align-items-center justify-content-end">-->
+    <!--                                <div class="cart_icon">-->
+    <!--                                    <img src="media/images/cart.png" alt="">-->
+    <!--                                    <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>-->
+    <!--                                </div>-->
+    <!--                                <div class="cart_content">-->
+    <!--                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}" target="_blank">Cart</a></div>-->
+    <!--                                    <div class="cart_price">{{ request|cart_item_total }} </div>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                        &lt;!&ndash; cart &ndash;&gt;-->
+
+                              <!-- Cart -->
+                            <div class="cart">
+                                <div class="cart_container d-flex flex-row align-items-center justify-content-end">
+                                    <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}" target="_blank">
+                                        <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
+                                    </div>
+                                    <div class="cart_content">
+                                        <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" target="_blank">Post An Ad/Service</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- cart -->
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </nav>
-    {% endblock %}
+        {% endblock %}
 
-    <!-- Menu -->
+        <!-- Main Navigation -->
+        {% block main_nav %}
+        <nav class="main_nav" id="menu_bar">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div class="main_nav_content d-flex flex-row">
 
-    <div class="page_menu">
-        <div class="container">
-            <div class="row">
-                <div class="col">
+                            <!-- Categories Menu -->
 
-                    <div class="page_menu_content">
+                            <div class="cat_menu_container">
+                                <div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
+                                    <div class="cat_burger"><span></span><span></span><span></span></div>
+                                    <div class="cat_menu_text">Departments</div>
+                                </div>
+                                {% include 'tags/department_list.html' %}
 
-                        {% search_menu request %}
+                            </div>
 
-                        <ul class="page_menu_nav">
-                            <li class="page_menu_item">
-                                <a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a>
-                            </li>
-                            <li class="page_menu_item">
-                                <a href="{%  url 'sellers:seller_home' %}" target="_blank">
-                                    Sell On Me2U
-                                    <img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;">
-                                </a>
+                            <!-- Main Nav Menu -->
 
-                            </li>
+                            <div class="main_nav_menu ml-auto">
+                                <ul class="standard_dropdown main_nav_dropdown">
+                                    <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
+                                    <li class="hassubs">
+                                        <a href="#">Deals<i class="fas fa-chevron-down"></i></a>
+                                        <ul>
+                                            {% for deal in deals %}
+                                            {% if deal.is_featured %}
+                                            <li><a href="{{ deal.product.get_absolute_url }}" target="_blank">{{ deal }}<i class="fas fa-chevron-down"></i></a></li>
+                                            {% endif %}
+                                            {% endfor %}
 
-                            <li class="page_menu_item has-children">
-                                <a href="#">Super Deals<i class="fa fa-angle-down"></i></a>
-                                    <ul class="page_menu_selection">
-                                        {% for deal in deals %}
-                                        {% if deal.is_featured %}
-                                        <li><a href="{{ deal.product.get_absolute_url }}" target="_blank">{{ deal }}<i class="fas fa-chevron-down"></i></a></li>
-                                        {% endif %}
-                                        {% endfor %}
+                                        </ul>
+                                    </li>
+                                    <li class="hassubs">
+                                        <a href="#">Featured Brands<i class="fas fa-chevron-down"></i></a>
+                                        <ul>
 
-                                    </ul>
-                            </li>
-                            <li class="page_menu_item has-children">
-                                <a href="#">Featured Brands<i class="fa fa-angle-down"></i></a>
-                                <ul class="page_menu_selection">
+                                            {% for brand in brands %}
+                                            {% if brand.is_featured %}
+                                            <li><a href="{% url 'me2ushop:seller_page' brand.id %}" target="_blank">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
+                                            {% endif %}
+                                            {% endfor %}
 
-                                        {% for brand in brands %}
-                                        {% if brand.is_featured %}
-                                        <li><a href="{% url 'me2ushop:seller_page' brand.id %}" target="_blank">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
-                                        {% endif %}
-                                        {% endfor %}
-
-                                    </ul>
-                            </li>
-                            <li class="page_menu_item has-children">
-                                <a href="#">Trending Styles<i class="fa fa-angle-down"></i></a>
-                                <ul class="page_menu_selection">
-                                        {% if trends  %}
-
-                                        {% for trend in trends %}
-                                        <li><a href="{{ trend.product.get_absolute_url }}" target="_blank">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>
-                                        {% endfor %}
-
-                                        {% endif %}
+                                        </ul>
+                                    </li>
+    <!--                                <li class="hassubs">-->
+    <!--                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>-->
+    <!--                                    <ul>-->
+    <!--                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>-->
+    <!--                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>-->
+    <!--                                        <li><a href="#">KFC<i class="fas fa-chevron-down"></i></a></li>-->
+    <!--                                        <li><a href="#">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>-->
+    <!--                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>-->
+    <!--                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>-->
+    <!--                                    </ul>-->
+    <!--                                </li>-->
+                                    <li><a href="{%  url 'sellers:seller_home' %}" target="_blank">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                                    <li class="disabled"><a href="{% url 'users:automobile_create' %}" target="_blank">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                                    <li class="disabled"><a href="#" target="_blank">Blog<i class="fas fa-chevron-down"></i></a></li>
                                 </ul>
-                            </li>
-<!--                            <li class="page_menu_item disabled"><a href="blog.html">blog<i class="fa fa-angle-down"></i></a></li>-->
-                            <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact<i class="fa fa-angle-down"></i></a></li>
-                        </ul>
+                            </div>
 
-                        <div class="menu_contact">
-                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{STATIC_URL }}images/phone_white.png" alt=""></div>+250 785011413</div>
-                            <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{STATIC_URL }}images/mail_white.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                            <!-- Menu Trigger -->
+
+                            <div class="menu_trigger_container ml-auto">
+                                <div class="menu_trigger d-flex flex-row align-items-center justify-content-end">
+                                    <div class="menu_burger">
+                                        <div class="menu_trigger_text">menu</div>
+                                        <div class="cat_burger menu_burger_inner"><span></span><span></span><span></span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        {% endblock %}
+
+        <!-- Phone Menu -->
+
+        <div class="page_menu">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+
+                        <div class="page_menu_content">
+
+                            {% search_menu request %}
+
+                            <ul class="page_menu_nav">
+                                <li class="page_menu_item">
+                                    <a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a>
+                                </li>
+                                <li class="page_menu_item">
+                                    <a href="{%  url 'sellers:seller_home' %}" target="_blank">
+                                        Sell On Me2U
+                                        <img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;">
+                                    </a>
+
+                                </li>
+
+                                <li class="page_menu_item has-children">
+                                    <a href="#">Super Deals<i class="fa fa-angle-down"></i></a>
+                                        <ul class="page_menu_selection">
+                                            {% for deal in deals %}
+                                            {% if deal.is_featured %}
+                                            <li><a href="{{ deal.product.get_absolute_url }}" target="_blank">{{ deal }}<i class="fas fa-chevron-down"></i></a></li>
+                                            {% endif %}
+                                            {% endfor %}
+
+                                        </ul>
+                                </li>
+                                <li class="page_menu_item has-children">
+                                    <a href="#">Featured Brands<i class="fa fa-angle-down"></i></a>
+                                    <ul class="page_menu_selection">
+
+                                            {% for brand in brands %}
+                                            {% if brand.is_featured %}
+                                            <li><a href="{% url 'me2ushop:seller_page' brand.id %}" target="_blank">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
+                                            {% endif %}
+                                            {% endfor %}
+
+                                        </ul>
+                                </li>
+                                <li class="page_menu_item has-children">
+                                    <a href="#">Trending Styles<i class="fa fa-angle-down"></i></a>
+                                    <ul class="page_menu_selection">
+                                            {% if trends  %}
+
+                                            {% for trend in trends %}
+                                            <li><a href="{{ trend.product.get_absolute_url }}" target="_blank">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>
+                                            {% endfor %}
+
+                                            {% endif %}
+                                    </ul>
+                                </li>
+    <!--                            <li class="page_menu_item disabled"><a href="blog.html">blog<i class="fa fa-angle-down"></i></a></li>-->
+                                <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact<i class="fa fa-angle-down"></i></a></li>
+                            </ul>
+
+                            <div class="menu_contact">
+                                <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{STATIC_URL }}images/phone_white.png" alt=""></div>+250 785011413</div>
+                                <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{STATIC_URL }}images/mail_white.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
+    {% endblock %}
 
-</header>
-{% endblock %}
-
-
-
-
-<body>
-
+    <!-- site wrapper-->
     {% block site_wrapper %}
 
 
     {% endblock %}
-    {% include "tags/modal.html" %}
-
+    <!-- site wrapper-->
 
 
     {% block footer %}
@@ -405,20 +399,10 @@
 
 
 
-    <!-- Optional JavaScript -->
+    <!--common scripts oneteh-->
     <script src="{{ STATIC_URL }}js/jquery-3.3.1.min.js"></script>
-
-        <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
-
-	<!-- MDB core JavaScript -->
-    <script type="text/javascript" src="{{ STATIC_URL }}js/mdb.min.js"></script>
-
-    <link rel="preload" as="script" href="{{ STATIC_URL }}js/mdb.min.js">
-
     <script src="{{ STATIC_URL }}css/bootstrap4/popper.js"></script>
     <script src="{{ STATIC_URL }}css/bootstrap4/bootstrap.min.js"></script>
-
     <script src="{{ STATIC_URL }}css/plugins/greensock/TweenMax.min.js"></script>
     <script src="{{ STATIC_URL }}css/plugins/greensock/TimelineMax.min.js"></script>
     <script src="{{ STATIC_URL }}css/plugins/scrollmagic/ScrollMagic.min.js"></script>
@@ -426,17 +410,31 @@
     <script src="{{ STATIC_URL }}css/plugins/greensock/ScrollToPlugin.min.js"></script>
     <script src="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
     <script src="{{ STATIC_URL }}css/plugins/easing/easing.js"></script>
+    <!--common scripts oneteh-->
 
 
-
+    <!-- extra scritpts-->
     {% block extra_scripts %}
-    {% endblock extra_scripts %}
 
+    {% endblock extra_scripts %}
+    <!-- extra scritpts-->
+
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+
+	<!-- MDB core JavaScript -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/mdb.min.js"></script>
+    <link rel="preload" as="script" href="{{ STATIC_URL }}js/mdb.min.js">
 
 	<!-- Bootstrap tooltips -->
 	<script type="text/javascript" src="{{ STATIC_URL }}js/popper.min.js"></script>
 
+    <!-- my scripts-->
     <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
+
+
 
 	 <script type="text/javascript">
         $('.alert').alert()
@@ -445,6 +443,8 @@
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179027185-1"></script>
+
+    <!-- marketing modal-->
     <script>
             $(document).ready(function(){
             {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path %}
@@ -482,6 +482,11 @@
         });
 
     </script>
+    <!-- marketing modal-->
+    <script>
+        document.getElementById("main_hide").style.display = "none";
+    </script>
+
 
 </body>
 
