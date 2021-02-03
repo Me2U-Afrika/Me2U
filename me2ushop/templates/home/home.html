@@ -184,19 +184,12 @@
 
 </style>
 
-<link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="styles.css"></noscript>
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main_styles.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/responsive.css">
 
 {% endblock headblock %}
 
-
-{% block header %}
-
-
-{% endblock %}
 
 {% block site_wrapper %}
 
@@ -237,9 +230,9 @@
 						{% endif %}
 
 						{% if top_banner.product.discount_price %}
-						<div class="banner_price"><span>{{ top_banner.product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span>{{ top_banner.product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
+						<div class="banner_price"><span>{{ CURRENCY.symbol }}{{ top_banner.product.price|currency:CURRENCY.code }} </span>{{ CURRENCY.symbol }}{{ top_banner.product.discount_price|currency:CURRENCY.code }}</div>
 						{% else %}
-						<div class="banner_price"><span></span>{{ top_banner.product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div>
+						<div class="banner_price"><span></span>{{ CURRENCY.symbol }}{{ top_banner.product.price|currency:CURRENCY.code }} </div>
 
 						{% endif %}
 						<div class="banner_product_name">{{ top_banner.product.title }}</div>
@@ -1295,7 +1288,7 @@
 									{% for image in trend.product.get_images %}
 									{% if image.in_display %}
 
-									<div class="trends_image d-flex flex-column align-items-center justify-content-center"><a href="{{ trend.product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{trend.product.title }}"></a></div>
+									<div class="trends_image d-flex flex-column align-items-center justify-content-center"><a href="{{ trend.product.get_absolute_url }}"><img src="{{ image.image.large.url }}" alt="{{trend.product.title }}"></a></div>
 
 
 									{% endif %}

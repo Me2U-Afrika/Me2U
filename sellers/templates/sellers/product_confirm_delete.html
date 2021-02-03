@@ -2,18 +2,14 @@
 {% load crispy_forms_tags %}
 
 {% block headblock %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
-
-<!--contact styles-->
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
 
 {% endblock %}
 
-{% block navbar %}
-{% endblock navbar %}
+ {% block navbar_inner %}
+        {% include 'sellers/seller_navbar.html' %}
+ {% endblock %}
 
 <body>
 
@@ -42,14 +38,12 @@
 {% endblock %}
 
 
+ {% block footer %}
+ {% endblock %}
+
+
 {% block extra_scripts %}
 
-<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
-<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
-<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
-<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
-
-<!-- contact styles-->
 <script src="{{ STATIC_URL }}js/contact_custom.js"></script>
 
 {% endblock %}

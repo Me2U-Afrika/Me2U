@@ -15,9 +15,7 @@ from me2ushop.models import ProductImage, Product, Order, OrderItem, Address, Br
 
 @login_required()
 def seller_page(request):
-    # print('user:', request.user)
-    # if not request.user.is_authenticated:
-    #     return redirect('login/?next=/sellers/')
+
     if request.user.is_seller:
         from utils import context_processors
         utils = context_processors.me2u(request)
@@ -49,6 +47,7 @@ def seller_page(request):
             page_title = 'Seller-Central'
 
             return render(request, 'sellers/seller_dashboard_template.html', locals())
+            # return render(request, 'sellers/seller_test_page.html', locals())
         else:
             try:
                 seller = SellerProfile.objects.get(user=request.user)

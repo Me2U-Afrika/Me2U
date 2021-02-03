@@ -4,10 +4,8 @@
 
 
 {% block headblock %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/seller_styles.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
 
 {% endblock %}
 
@@ -17,7 +15,9 @@
 <div class="super_container">
     <section class="text-center">
      <h3 class="mt-5"> You have been logged out! <br> Thanks for spending some quality time with Me2U|Afrika today.</h3>
-        <div class="border-top pt-3">
+        <br/>
+        <br/>
+        <div class="border-top mt-5 pt-3">
             <small class="text-muted">
                 We miss you already!<a class="ml-2" href="{% url 'login'%}">Log In</a> <a class="ml-2" href="{% url 'me2ushop:home'%}">Home</a>
             </small>
@@ -28,13 +28,15 @@
 
 {% endblock %}
 
+ {% block footer %}
+ {% endblock %}
+
+
 
 {% block extra_scripts %}
 
-<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
-<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
-<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
-<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+<!-- contact styles-->
+<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
 
 {% endblock %}
 </body>

@@ -177,17 +177,24 @@ class Product(models.Model):
     is_bestrated = models.BooleanField(default=False)
 
     description = models.TextField()
-    additional_information = models.TextField(blank=True, null=True)
+    additional_information = models.TextField(blank=True, null=True, help_text='Provide additional information about '
+                                                                               'your product. Buyers mostly buy from'
+                                                                               ' well detailed products and '
+                                                                               'specifications')
     meta_keywords = models.CharField("Meta Keywords",
                                      max_length=100,
                                      help_text='Comma-delimited set of SEO keywords that summarize the type of '
-                                               'product above max 4 words')
+                                               'product above max 4 words. This keywords will help buyers find your '
+                                               'product easily. Read more https://ads.google.com/home/tools/keyword'
+                                               '-planner/')
     meta_description = models.CharField("Meta Description",
                                         max_length=255,
-                                        help_text='help sellers get your product easily. Give a simple short '
-                                                  'description '
-                                                  'about the page content you have added. This information makes it'
-                                                  'easy for customers to get your product and offers an overview of it'
+                                        help_text='Give a simple short '
+                                                  'description on the information you have provided on the page this '
+                                                  'page. i.e This product is used '
+                                                  'for cleaning, cooking and it was recently released by it\'s '
+                                                  'manufacturer. Google uses this keywords and description to index '
+                                                  'your product for it to be found easily '
                                         )
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -402,7 +409,7 @@ class ProductImage(CreationModificationDateMixin):
         'thumbnail': (170, 115, True),
         'medium': (365, 365),
         'deals_size': (365, 365, True),
-        'large': (415, 470),
+        'large': (415, 430),
 
     }, delete_orphans=True)
 

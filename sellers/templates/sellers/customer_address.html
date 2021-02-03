@@ -12,11 +12,14 @@
 
 {% endblock %}
 
-  {% block navbar %}
-        {% include 'sellers/seller_navbar.html' %}
-  {% endblock %}
+
 
 <body>
+
+ {% block navbar_inner %}
+        {% include 'sellers/seller_navbar.html' %}
+ {% endblock %}
+
 {% block site_wrapper %}
 
 <div class="super_container mt-4">

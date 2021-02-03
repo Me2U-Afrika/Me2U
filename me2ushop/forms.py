@@ -25,15 +25,19 @@ PAYMENT_CHOICES = {
 
 
 class ProductForm(forms.ModelForm):
-    product_categories = TreeNodeMultipleChoiceField(label=_("Other Categories"), required=False,
+    product_categories = TreeNodeMultipleChoiceField(label=_("Other Categories where the product belongs"), required=False,
                                                      queryset=Department.objects.all(),
                                                      widget=forms.CheckboxSelectMultiple,
                                                      level_indicator=u'+--', help_text='Check the box of the category '
                                                                                        'where your product belongs. '
-                                                                                       'Please note that different categories attract different Ad '
-                                                                                       'charges. Be specific to one or two categories where your '
+                                                                                       'Please note that different '
+                                                                                       'categories attract different '
+                                                                                       'Ad '
+                                                                                       'charges. Be specific to one '
+                                                                                       'or two categories where your '
                                                                                        'product '
-                                                                                       'belongs on the provided tree. Contact us for help')
+                                                                                       'belongs on the provided tree. '
+                                                                                       'Contact us for help')
 
     class Meta:
         model = Product
