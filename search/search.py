@@ -56,7 +56,7 @@ def productSearched(search_text, category):
                 Q(description__icontains=word) |
                 Q(brand_name__title__icontains=word) |
                 Q(meta_description__icontains=word) |
-                Q(category_choice__icontains=word) |
+                Q(category_choice__category_name__icontains=word) |
                 Q(meta_keywords__icontains=word)).distinct()
             if products:
                 # print('found:', products)
