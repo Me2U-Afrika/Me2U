@@ -14,15 +14,9 @@
 
 
 <body>
- {% block header_main %}
+ {% block navbar_inner %}
         {% include 'sellers/seller_navbar.html' %}
  {% endblock %}
-
- {% block main_nav %}
- {% endblock %}
-
-
-
 
 
 {% block site_wrapper %}
@@ -36,12 +30,14 @@
 
 		<div class="home_overlay"></div>
 		<div class="home_content d-flex flex-column align-items-center justify-content-center">
-            		{% if brand.logo %}
 
+        {% if brand.logo %}
             <div class="logo_container">
                 <div class="logo mr-0 "><img src="{{ brand.logo.medium.url }}"></div>
             </div>
-            		{% endif %}
+        {% endif %}
+            <br/>
+            <br/>
 
 			<h2 class="home_title">{{ brand }}</h2>
 

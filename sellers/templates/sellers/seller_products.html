@@ -25,11 +25,8 @@
 
 <body>
 
- {% block header_main %}
+ {% block navbar_inner %}
         {% include 'sellers/seller_navbar.html' %}
- {% endblock %}
-
- {% block main_nav %}
  {% endblock %}
 
 
@@ -39,26 +36,23 @@
 <div class="super_container">
     <div class="row">
     <div class="col-md">
+        <div class="container">
             <table class="table">
                 <tr>
                     <th>Product</th>
                     <th>Stock </th>
-                    <th>Category</th>
                     <th>Thumbnail</th>
-                    <th>Price</th>
-                    <th>Actions</th>
                 </tr>
                 {% for item in products %}
                 <tr>
-                   <td> <a href="{{ item.get_absolute_url}}">{{ item }}</a></td>
+                   <td><a href="{{ item.get_absolute_url}}">{{ item }}</a></td>
                    <td> {{ item.stock }}</td>
-                    <td>{{ item.get_category_choice_display }}</td>
 
                     {% if item.get_images %}
                         {% for image in item.get_images %}
                             {% if image.in_display %}
                             <td class="caption" style="height:70px">
-                                <img src="{{ image.image.thumbnail.url }}"/>
+                                <a href="{{ item.get_absolute_url}}"><img src="{{ image.image.thumbnail.url }}"/></a>
                             </td>
                             {% endif %}
                         {% endfor %}
@@ -66,25 +60,10 @@
                         <td><a class="btn btn-outline-info btn-sm" href="{% url 'me2ushop:product_image_create' item.slug %}">Add Image</a></td>
                     {% endif %}
 
-                    {% if item.discount_price %}
-                        <td>{{ item.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</td>
-                    {% else %}
-                        <td>{{ item.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</td>
-                    {% endif %}
-                    <td>
-                        <nav>
-                            <ul class="navbar-nav mr-auto">
-
-                            <li class="nav-item">
-                                <a class="btn btn-outline-orange btn-sm " href="{% url 'me2ushop:product' item.slug %}">View</a>
-                                <a class="btn btn-outline-blue btn-sm" href="{% url 'me2ushop:product_image_create' item.slug %}">Add Image</a>
-                          </li>
-                                </ul>
-                        </nav>
-                    </td>
                 </tr>
                 {% endfor %}
             </table>
+        </div>
     </div>
 </div>
 

@@ -3,6 +3,8 @@
 {% load cart_template_tag %}
 {% load mptt_tags %}
 {% load crispy_forms_tags %}
+
+
 <header class="header">
 
 
@@ -215,6 +217,13 @@
                         <div class="menu_contact">
                             <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{ STATIC_URL }}images/phone_white.png" alt=""></div>+250 785011413</div>
                             <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{ STATIC_URL }}images/mail_white.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+                              {% if request.user.is_authenticated %}
+                            <div class="menu_contact_item"><div class="menu_contact_icon"><a href="{% url 'users:profile' %}" target="_blank"><i class="far fa-user-circle"></i> Karibu {{ request.user.username }} </a></div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> LogOut</a></div>
+                            {% else %}
+                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url 'users:register' %}"><i class="far fa-registered"></i> Register</a></div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> LogIn</a></div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
