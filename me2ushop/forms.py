@@ -25,7 +25,8 @@ PAYMENT_CHOICES = {
 
 
 class ProductForm(forms.ModelForm):
-    product_categories = TreeNodeMultipleChoiceField(label=_("Other Categories where the product belongs"), required=False,
+    product_categories = TreeNodeMultipleChoiceField(label=_("Categories where the product belongs. Follow the tree "
+                                                             "to list your product well"), required=False,
                                                      queryset=Department.objects.all(),
                                                      widget=forms.CheckboxSelectMultiple,
                                                      level_indicator=u'+--', help_text='Check the box of the category '
@@ -37,16 +38,14 @@ class ProductForm(forms.ModelForm):
                                                                                        'or two categories where your '
                                                                                        'product '
                                                                                        'belongs on the provided tree. '
-                                                                                       'Contact us for help')
+                                                                                       'Contact us for help. Made in '
+                                                                                       'Afrika tree categories is '
+                                                                                       'free.')
 
     class Meta:
         model = Product
-        fields = [
-            'additional_information',
-            'meta_keywords',
-            'meta_description',
-            'product_categories',
-        ]
+        fields = ['title', 'price', 'discount_price', 'condition', 'stock', 'description',
+                  'product_categories']
 
     def __int__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)

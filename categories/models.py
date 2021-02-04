@@ -10,65 +10,6 @@ from utils.models import CreationModificationDateMixin
 from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey, TreeManyToManyField
 
-
-class ActiveDepartmentManager(models.Manager):
-    def get_query_set(self):
-        return super(ActiveDepartmentManager, self).get_query_set().filter(is_active=True)
-
-
-class DepartmentManager(models.Manager):
-    def get_by_natural_key(self, slug):
-        return self.get(slug=slug)
-
-
-class Department(MPTTModel, CreationModificationDateMixin):
-    parent = TreeForeignKey("self", blank=True, null=True, on_delete=models.CASCADE, related_name='children')
-    category_name = models.CharField(_("Title"), max_length=200)
-    icon_url = models.CharField(max_length=200, blank=True, null=True)
-    slug = models.SlugField(unique=True,
-                            max_length=50,
-                            help_text='Unique value for product page URL, created from name.')
-    description = models.TextField()
-    is_active = models.BooleanField(default=True)
-    is_bestselling = models.BooleanField(default=False)
-    image = StdImageField(upload_to='images/category', blank=True, null=True, variations={
-        'medium': (340, 300),
-
-    }, delete_orphans=True)
-    meta_keywords = models.CharField("Meta Keywords",
-                                     max_length=255,
-                                     help_text='Comma-delimited set of SEO keywords for meta tag')
-    meta_description = models.CharField("Meta Description",
-
-                                        max_length=255,
-                                        help_text='Content for description meta tag')
-
-    # objects = models.Manager()
-    objects = DepartmentManager()
-    active = ActiveDepartmentManager()
-
-    class Meta:
-        ordering = ['tree_id', 'lft']
-        verbose_name = _("Department")
-        verbose_name_plural = _("Departments")
-
-    def __str__(self):
-        return str(self.category_name)
-
-    # The natural_key method should return a tuple, not a string.
-    def natural_key(self):
-        return (self.slug,)
-
-    def get_absolute_url(self):
-        return reverse('categories:categoryView', kwargs={'slug': self.slug})
-
-    def get_absolute_africa_made_url(self):
-        return reverse('categories:categoryView_africa_made', kwargs={'slug': self.slug})
-
-    def get_products(self):
-        return self.product_set.all()
-
-
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
     ('Bk', 'Books'),
@@ -140,3 +81,64 @@ class Category(models.Model):
 
     def get_absolute_africa_made_url(self):
         return reverse('categories:categoryView_africa_made', kwargs={'slug': self.slug})
+
+
+class ActiveDepartmentManager(models.Manager):
+    def get_query_set(self):
+        return super(ActiveDepartmentManager, self).get_query_set().filter(is_active=True)
+
+
+class DepartmentManager(models.Manager):
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
+
+class Department(MPTTModel, CreationModificationDateMixin):
+    parent = TreeForeignKey("self", blank=True, null=True, on_delete=models.CASCADE, related_name='children')
+    category_name = models.CharField(_("Title"), max_length=200)
+    # sub_category_name = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
+    icon_url = models.CharField(max_length=200, blank=True, null=True)
+    slug = models.SlugField(unique=True,
+                            max_length=50,
+                            help_text='Unique value for product page URL, created from name.')
+    description = models.TextField()
+    is_active = models.BooleanField(default=True)
+    is_bestselling = models.BooleanField(default=False)
+    image = StdImageField(upload_to='images/category', blank=True, null=True, variations={
+        'medium': (340, 300),
+
+    }, delete_orphans=True)
+
+    icon_image = StdImageField(upload_to='images/category/icons', blank=True, null=True)
+    meta_keywords = models.CharField("Meta Keywords",
+                                     max_length=255,
+                                     help_text='Comma-delimited set of SEO keywords for meta tag')
+    meta_description = models.CharField("Meta Description",
+
+                                        max_length=255,
+                                        help_text='Content for description meta tag')
+
+    # objects = models.Manager()
+    objects = DepartmentManager()
+    active = ActiveDepartmentManager()
+
+    class Meta:
+        ordering = ['tree_id', 'lft']
+        verbose_name = _("Department")
+        verbose_name_plural = _("Departments")
+
+    def __str__(self):
+        return str(self.category_name)
+
+    # The natural_key method should return a tuple, not a string.
+    def natural_key(self):
+        return (self.slug,)
+
+    def get_absolute_url(self):
+        return reverse('categories:categoryView', kwargs={'slug': self.slug})
+
+    def get_absolute_africa_made_url(self):
+        return reverse('categories:categoryView_africa_made', kwargs={'slug': self.slug})
+
+    def get_products(self):
+        return self.product_set.all()
