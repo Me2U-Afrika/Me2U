@@ -88,6 +88,7 @@ def automobile_page(request):
 def seller_products(request):
     user = request.user
     products = Product.objects.filter(brand_name__user__user=user)
+    page_title = 'Seller Products'
 
     for obj in products:
         image = ProductImage.objects.filter(item=obj, in_display=True)
@@ -96,7 +97,9 @@ def seller_products(request):
                 '<img src="%s"/>' % image[0].image.thumbnail.url
             )
             # print('product_image:', format_image)
-            context = {'format_image': format_image}
+            context = {
+                'format_image': format_image,
+            }
 
     return render(request, 'sellers/seller_products.html', locals())
 
@@ -148,6 +151,7 @@ def customer_address(request, id, template_name="sellers/customer_address.html")
     from utils import context_processors
     context = context_processors.me2u(request)
     brand_names = context['brand']
+    page_title = 'Customer Address'
 
     if brand_names:
         brand_name = brand_names

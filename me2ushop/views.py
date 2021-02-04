@@ -103,7 +103,6 @@ class OrderView(UserPassesTestMixin, FilterView):
 
 class SellerView(ListView):
     model = Product
-    site_name = 'Me2U|Seller'
     # template_name = 'seller-page.html'
     template_name = 'home/seller_page.html'
     paginate_by = 20
@@ -122,11 +121,14 @@ class SellerView(ListView):
         store = get_object_or_404(Brand, id=self.kwargs.get('id'))
         brand = Brand.objects.get(title=store)
         if brand:
+            # other brands
             brands = Brand.objects.filter(active=True).exclude(title=store)
 
             # products = Product.active.filter(seller=user).order_by('-created_at')
             products = Product.active.filter(brand_name=store).order_by('-created_at')
             context = {
+                'page_title': str(brand),
+                'site_name': 'Me2U|Seller',
                 'products': products,
                 'brand': brand,
                 'brands': brands,
@@ -402,6 +404,8 @@ class ProductListView(ListView):
         if active_products:
             context.update({'active_products': active_products})
 
+        return context
+
 
 # PRODUCT DETAILED CREATE, UPDATE, DELETE VIEWS
 
@@ -481,6 +485,15 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         # Assuming there is a ForeignKey from Productattribute to Product in your model
         return reverse_lazy('me2ushop:product_image_create', kwargs={'slug': self.object.slug})
 
+    def get_context_data(self, **kwargs):
+        context = super(ProductCreateView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Add New Product',
+        })
+        return context
+
     def form_valid(self, form):
         form.instance.seller = self.request.user
         obj = form.save(commit=False)
@@ -503,6 +516,15 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'sellers/product_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductUpdateView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Update Product',
+        })
+        return context
 
     def form_valid(self, form):
         form.instance.seller = self.request.user
@@ -532,11 +554,20 @@ class ProductUpdateAdditionalInforView(LoginRequiredMixin, UserPassesTestMixin, 
     model = Product
 
     fields = [
-            'additional_information',
-            'meta_keywords',
-            'meta_description',
-        ]
+        'additional_information',
+        'meta_keywords',
+        'meta_description',
+    ]
     template_name = 'sellers/product_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductUpdateAdditionalInforView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Additional Info',
+        })
+        return context
 
     def form_valid(self, form):
         form.instance.seller = self.request.user
@@ -557,6 +588,15 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = 'sellers/product_confirm_delete.html'
     success_url = reverse_lazy('sellers:seller_products')
 
+    def get_context_data(self, **kwargs):
+        context = super(ProductDeleteView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Delete Product',
+        })
+        return context
+
     def test_func(self):
         product_posted = self.get_object()
         if self.request.user == product_posted.brand_name.user.user:
@@ -570,6 +610,15 @@ class ProductAttributesCreateView(LoginRequiredMixin, CreateView):
     model = ProductDetail
     form_class = ProductAttributeCreate
     template_name = 'sellers/product_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductAttributesCreateView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Product attributes',
+        })
+        return context
 
     def form_valid(self, form):
         form.instance.seller = self.request.user
@@ -602,6 +651,15 @@ class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
     fields = '__all__'
     template_name = 'sellers/product_form.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(ProductAttributeUpdateView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Attribute Update',
+        })
+        return context
+
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.save()
@@ -612,6 +670,15 @@ class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
 class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
     model = ProductDetail
     template_name = 'sellers/product_confirm_delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductAttributeDeleteView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Delete Attribute',
+        })
+        return context
 
     def get_success_url(self):
         # Assuming there is a ForeignKey from Productattribute to Product in your model
@@ -631,7 +698,8 @@ def show_product_image(request, slug):
 
     context = {
         'object': product,
-        'product_image': product_image
+        'product_image': product_image,
+        'page_title': 'ImageList-' + str(product)
     }
 
     return render(request, 'sellers/product_images_list.html', context)
@@ -700,6 +768,15 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
         product = self.object.item
         return reverse_lazy('me2ushop:product', kwargs={'slug': product.slug})
 
+    def get_context_data(self, **kwargs):
+        context = super(ProductImageCreateView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Image Create',
+        })
+        return context
+
     def get_form_kwargs(self):
         kwargs = super(ProductImageCreateView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
@@ -743,6 +820,15 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
     template_name = 'sellers/product_image_update_form.html'
     fields = ["image", "in_display"]
 
+    def get_context_data(self, **kwargs):
+        context = super(ProductImageUpdateView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Update Image-' + str(self.get_object()) ,
+        })
+        return context
+
     def form_valid(self, form):
         obj = form.save(commit=False)
         # print('obj', obj)
@@ -782,6 +868,15 @@ class ProductImageDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'sellers/product_image_delete.html'
 
     # success_url = reverse_lazy("sellers:seller_products")
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductImageDeleteView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Delete Product',
+        })
+        return context
 
     def get_success_url(self):
         # Assuming there is a ForeignKey from Comment to Post in your model
@@ -847,6 +942,8 @@ def tag_cloud(request, template_name='home/product_tags_cloud.html'):
 
 def tag(request, tag, template_name='home/product_tag_list.html'):
     products = TaggedItem.objects.get_by_model(Product.active, tag)
+
+    page_title = 'tag'
 
     return render(request, template_name, locals())
 
@@ -1394,10 +1491,10 @@ class WishListView(LoginRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         super(WishListView, self).get_context_data(**kwargs)
 
-        # wishlist = WishList.objects.filter(user=self.request.user)
-        #
-        # if wishlist.exists():
-        #     print('wishlist:', wishlist)
+        wishlist = WishList.objects.filter(user=self.request.user)
+
+        if wishlist.exists():
+            print('wishlist:', wishlist)
         page_title = 'MyWishList'
 
         context = {
@@ -1688,6 +1785,7 @@ class WishList_Summary(LoginRequiredMixin, View):
         if self.request.user.is_authenticated:
             try:
                 wish_list = WishList.objects.filter(user=self.request.user)
+                page_title = str(str(self.request.user.username) + '\'s WishList')
                 return render(self.request, 'home/wish_list.html', locals())
 
             except ObjectDoesNotExist:
