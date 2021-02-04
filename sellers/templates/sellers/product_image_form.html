@@ -28,13 +28,12 @@
 							{% csrf_token %}
 	                        {{ form|crispy }}
 							<input type="hidden" id="id_slug" value="{{ object.slug }}"/>
-							<div class="contact_form_button">
+							<div class="contact_form_button form-group">
 								<button type="submit" class="button contact_submit_button">Submit</button>
+								<button class="button contact_submit_button"><a href="{% url 'sellers:seller_products' %}">Cancel</a></button>
+
 							</div>
 
-							<div class="contact_form_button mt-1">
-									<button class="button contact_submit_button"><a href="{% url 'sellers:seller_products' %}">Cancel</a></button>
-							</div>
 						</form>
 
 					</div>

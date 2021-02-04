@@ -168,8 +168,8 @@ class Product(models.Model):
                                          help_text="Please note that the default currency is "
                                                    "USD. Converty your product price to "
                                                    "US Dollar before listing")
-    made_in_afrika = models.BooleanField(default=False, help_text="Is the product you adding produced and "
-                                                                  "manufactured in Afrika? If so, check this box")
+    # made_in_afrika = models.BooleanField(default=False, help_text="Is the product you adding produced and "
+    #                                                               "manufactured in Afrika? If so, check this box")
 
     is_active = models.BooleanField(default=True)
     is_bestseller = models.BooleanField(default=False)
@@ -201,13 +201,8 @@ class Product(models.Model):
     # category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
     #                                    help_text='Choose the main category for the product'
     #                                    )
-    category_choice = models.ForeignKey(Department, related_name='category_choice', on_delete=models.SET_NULL,
-                                        blank=True,
-                                        null=True,
-                                        help_text='Choose the main Category for the product.It\'s free'
-                                        )
 
-    product_categories = models.ManyToManyField(Department, blank=True,
+    product_categories = models.ManyToManyField(Department,
 
                                                 help_text='Check the box of the category where your product belongs. '
                                                           'Please note that different categories attract different Ad '
@@ -242,6 +237,9 @@ class Product(models.Model):
         ordering = ['-created_at']
         verbose_name_plural = 'Products'
 
+    def get_category(self):
+        pass
+
     def _generate_slug(self):
         max_length = self._meta.get_field('slug').max_length
         value = self.title
@@ -258,15 +256,15 @@ class Product(models.Model):
 
         brand = str(self.brand_name)[:3]
         title = str(self.title)[:3]
-        category = str(self.category_choice)[:3]
+        # category = str(self.product_categories.all()[0])[:3]
         condition = str(self.condition)
 
-        sku = '{}-{}-{}-{}'.format(brand, title, category, condition)
+        sku = '{}-{}-{}'.format(brand, title, condition)
 
         for i in itertools.count(1):
             if not Product.objects.filter(sku=sku).exists():
                 break
-            sku = '{}-{}-{}-{}-{}'.format(brand, title, category, condition, i)
+            sku = '{}-{}-{}-{}'.format(brand, title, condition, i)
         self.sku = sku
 
     def save(self, *args, **kwargs):
@@ -336,9 +334,9 @@ class Product(models.Model):
         from users.models import User
         from django.db.models import Q
 
-        category = self.category_choice
+        category = self.product_categories
         name = self.title
-        # print('category:', category)
+        print('category:', category)
         print('name:', name)
         # print('other sellers:', users)
         # print('self', self.slug)
@@ -353,7 +351,7 @@ class Product(models.Model):
                 Q(title__startswith=word) |
                 Q(title__endswith=self) |
                 Q(title__endswith=word)
-            ).filter(category_choice=self.category_choice).exclude(slug=self.slug)
+            ).exclude(slug=self.slug)
             # print('from sellers', products)
             return products
 

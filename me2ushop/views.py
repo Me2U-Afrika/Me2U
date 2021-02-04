@@ -474,9 +474,7 @@ class ProductDetailedView(DetailView):
 
 class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Product
-    fields = ['title', 'price', 'discount_price', 'condition', 'stock', 'made_in_afrika', 'description',
-              'category_choice']
-    # form_class = ProductForm
+    form_class = ProductForm
     template_name = 'sellers/product_form.html'
 
     def get_success_url(self):
@@ -503,8 +501,7 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    fields = ['title', 'price', 'discount_price', 'condition', 'stock', 'made_in_afrika', 'description',
-              'category_choice']
+    form_class = ProductForm
     template_name = 'sellers/product_form.html'
 
     def form_valid(self, form):
@@ -534,7 +531,11 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class ProductUpdateAdditionalInforView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
 
-    form_class = ProductForm
+    fields = [
+            'additional_information',
+            'meta_keywords',
+            'meta_description',
+        ]
     template_name = 'sellers/product_form.html'
 
     def form_valid(self, form):

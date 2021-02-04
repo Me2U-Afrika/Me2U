@@ -600,7 +600,7 @@
 							<div class="popular_categories_prev popular_categories_nav"><i class="fas fa-angle-left ml-auto"></i></div>
 							<div class="popular_categories_next popular_categories_nav"><i class="fas fa-angle-right ml-auto"></i></div>
 						</div>
-						<div class="popular_categories_link"><a href="{% url 'me2ushop:full_catalog' %}">full catalog</a></div>
+						<div class="popular_categories_link disabled"><a href="{% url 'me2ushop:full_catalog' %}">full catalog</a></div>
 					</div>
 				</div>
 
@@ -615,7 +615,9 @@
 
 							<div class="owl-item">
 								<div class="popular_category d-flex flex-column align-items-center justify-content-center">
-									<div class="popular_category_image"><img src="{{ node.icon_url.url }}" alt=""></div>
+									{% if node.icon_image %}
+									<div class="popular_category_image"><img src="{{ node.icon_image.url }}" alt=""></div>
+									{% endif %}
 									<div class="popular_category_text"><a href="{{ node.get_absolute_url }}">{{ node.category_name }}</a></div>
 								</div>
 							</div>

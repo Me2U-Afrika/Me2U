@@ -92,15 +92,15 @@ class StatusCodeAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     # form = ProductAdminForm()
     list_display = (
-        'title', 'price', 'slug', 'sku', 'brand_name', 'in_stock', 'stock', 'is_active', 'made_in_afrika', 'created_at',
+        'title', 'price', 'slug', 'sku', 'brand_name', 'in_stock', 'stock', 'is_active', 'created_at',
         'updated_at',)
     list_display_links = ('title',)
     list_per_page = 50
     ordering = ['-created_at']
     list_editable = ('in_stock',)
-    list_filter = ('brand_name',)
+    list_filter = ('brand_name','product_categories')
 
-    search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'made_in_afrika', 'brand_name']
+    search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'product_categories', 'brand_name']
     exclude = ('created_at', 'updated_at',)
 
     # prepopulated_fields = {'slug': ('title',)}
@@ -130,7 +130,7 @@ class DispatchersProductAdmin(ProductAdmin):
                        'is_featured',
                        'additional_information',
                        'discount_price',
-                       "price", 'made_in_afrika', 'created_at', 'updated_at', 'meta_keywords',
+                       "price", 'created_at', 'updated_at', 'meta_keywords',
                        'meta_description',
                        'product_categories')
     list_editable = ('in_stock', 'stock',)

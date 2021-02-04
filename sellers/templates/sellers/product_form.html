@@ -30,13 +30,13 @@
 						<form action="#" method="POST" id="contact_form" enctype="multipart/form-data">
 							{% csrf_token %}
 	                        {{ form|crispy }}
-								<div class="contact_form_button">
+								<div class="contact_form_button form-group">
 									<button type="submit" class="button contact_submit_button">Submit</button>
+									<button class="button contact_submit_button"><a href="{% url 'sellers:seller_home' %}">Cancel</a></button>
+
 								</div>
 
-								<div class="contact_form_button mt-1">
-									<button class="button contact_submit_button"><a href="{% url 'sellers:seller_home' %}">Cancel</a></button>
-								</div>
+
 						</form>
 
 					</div>
