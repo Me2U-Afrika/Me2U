@@ -34,6 +34,10 @@ class CategoryDetailedView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(CategoryDetailedView, self).get_context_data(**kwargs)
 
+        context.update({
+            'page_title': str(self.get_object()),
+        })
+
         return context
 
 
