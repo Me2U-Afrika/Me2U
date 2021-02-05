@@ -105,7 +105,7 @@ class Brand(CreationModificationDateMixin):
 
     business_description = models.TextField(help_text="Tell us what you do and the kind of products you sell")
 
-    website_link = models.CharField(max_length=30, blank=True, null=True, help_text='If you have a website by which '
+    website_link = models.CharField(max_length=255, blank=True, null=True, help_text='If you have a website by which '
                                                                                     'buyers can find out more about '
                                                                                     'your services.e.g. '
                                                                                     'https://www.facebook.com')
@@ -119,7 +119,7 @@ class Brand(CreationModificationDateMixin):
                                                                                   'paste your page link here eg. '
                                                                                   'https://www.instagram.com'
                                                                                   '/me2u_afrika/')
-    telegram = models.CharField(max_length=100, blank=True, null=True, help_text='Do you have a Telegram Channel. Copy '
+    twitter = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a Telegram Channel. Copy '
                                                                                  'paste your page link here. e.g.. '
                                                                                  'https://t.me/me2uafrika')
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
