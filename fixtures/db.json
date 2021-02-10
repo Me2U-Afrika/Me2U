@@ -1,9 +1,0 @@
-/app/.heroku/python/lib/python3.6/site-packages/environ/environ.py:630: UserWarning: /app/Me2U/.env doesn't exist - if you're not configuring your environment separately, create one.
-  "environment separately, create one." % env_file)
-usage: manage.py loaddata [-h] [--database DATABASE] [--app APP_LABEL]
-                          [--ignorenonexistent] [-e EXCLUDE] [--format FORMAT]
-                          [--version] [-v {0,1,2,3}] [--settings SETTINGS]
-                          [--pythonpath PYTHONPATH] [--traceback] [--no-color]
-                          [--force-color] [--skip-checks]
-                          fixture [fixture ...]
-manage.py loaddata: error: No database fixture specified. Please provide the path of at least one fixture in the command line.
