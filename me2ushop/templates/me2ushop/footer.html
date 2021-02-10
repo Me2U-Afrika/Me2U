@@ -34,33 +34,42 @@
     </div>
 </div>
 
-<!-- Newsletter -->
+<!--&lt;!&ndash; Newsletter &ndash;&gt;-->
 
-<div class="newsletter">
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <div class="newsletter_container d-flex flex-lg-row flex-column align-items-lg-center align-items-center justify-content-lg-start justify-content-center">
-                    <div class="newsletter_title_container">
-                        <div class="newsletter_icon"><img src="{{ STATIC_URL }}images/send.png" alt=""></div>
-                        <div class="newsletter_title">Sign up for Newsletter</div>
-                        <div class="newsletter_text"><p>...and receive %20 coupon for first shopping.</p></div>
-                    </div>
-                    <div class="newsletter_content clearfix">
-                        <form method="POST" action="{% url 'marketing:ajax_email_signup' %}" id="sendForm">
-                            {% csrf_token %}
-                            <input class="newsletter_input" required="required" placeholder="Enter your email address" id="id_email" maxlength="200" name="email">
-                            <button type="submit" class="newsletter_button" id="sendMarketingForm">Subscribe</button>
-                            <p id="modalMessage"></p>
+<!--<div class="newsletter" id="newsletterSign">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col">-->
+<!--                <div class="newsletter_container d-flex flex-lg-row flex-column align-items-lg-center align-items-center justify-content-lg-start justify-content-center">-->
+<!--                    <div class="newsletter_title_container">-->
+<!--                        <div class="newsletter_icon"><img src="{{ STATIC_URL }}images/send.png" alt=""></div>-->
+<!--                        <div class="newsletter_title">Sign up for Newsletter</div>-->
+<!--                        <div class="newsletter_text"><p>...and receive 20% coupon for first shopping.</p></div>-->
+<!--                    </div>-->
+<!--                    <div class="newsletter_content clearfix">-->
+<!--                        <form method="POST" action="{% url 'marketing:ajax_email_signup' %}" id="sendFormNews">-->
+<!--                            {% csrf_token %}-->
 
-                        </form>
-<!--							<div class="newsletter_unsubscribe_link"><a href="#">unsubscribe</a></div>-->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<!--                            <input class="newsletter_input" required="required" placeholder="Enter your email address" id="id_email" maxlength="200" name="email">-->
+
+<!--                            <button type="submit" class="newsletter_button" id="sendFormNewsSubmit">Subscribe</button>-->
+
+<!--                        </form>-->
+
+<!--&lt;!&ndash;							<div class="newsletter_unsubscribe_link"><a href="#">unsubscribe</a></div>&ndash;&gt;-->
+<!--                    </div>-->
+<!--                    <div id="newsletterMessage"></div>-->
+
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Newsletter &ndash;&gt;-->
+
+
+
 
 <footer class="footer">
     <div class="container">

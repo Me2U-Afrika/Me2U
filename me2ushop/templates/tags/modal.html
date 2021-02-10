@@ -1,10 +1,11 @@
-<div class="modal fade modal-dialog id='marketingModal">
+<div class="modal fade " id="marketingModal">
     <form method="POST" action="{% url 'marketing:ajax_email_signup' %}" id="sendForm">
         {% csrf_token %}
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Me2U|Afrika Newsletter</h4>
+                <div class="modal-title"><h3>Sign up for Newsletter</h3></div>
+
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Close</span>
@@ -12,7 +13,7 @@
             </div>
             <div class="modal-body">
                 <p>Get latest deals and updates first!</p>
-                <p id="modalMessage"></p>
+                <div id="modalMessage"></div>
                 <input type="email" class="newsletter_input" required="required" placeholder="Enter your email address" id="id_email" maxlength="200" name="email" />
             </div>
             <div class="modal-footer">
