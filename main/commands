@@ -46,3 +46,9 @@ CURRENCIES
 update exchange rates
 -manage.py updatecurrencies oxr --base=USD
 
+SQL MIGRATE COMMANDS
+
+- you have to know the model and the migration number you want to view the sql migration for
+
+- manage.py sqlmigrate model migration_number i.e manage.py sqlmigrate blog 0001
+

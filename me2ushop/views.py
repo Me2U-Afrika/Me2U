@@ -922,8 +922,7 @@ def add_tag(request):
 
             print([tags])
             if len(tags) > 2:
-                print(tags)
-                Tag.objects.add_tag(product, tags)
+                Tag.objects.add_tag(product, tags.lower())
 
         for tags in product.tags:
             html += render_to_string(template, {'tag': tags})
@@ -943,7 +942,7 @@ def tag_cloud(request, template_name='home/product_tags_cloud.html'):
 def tag(request, tag, template_name='home/product_tag_list.html'):
     products = TaggedItem.objects.get_by_model(Product.active, tag)
 
-    page_title = 'tag'
+    page_title = str(tag)
 
     return render(request, template_name, locals())
 

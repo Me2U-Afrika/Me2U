@@ -1,3 +1,5 @@
+from tagging.models import TaggedItem
+
 from .models import SearchTerm
 from me2ushop.models import Product, Brand
 from django.db.models import Q
@@ -35,6 +37,12 @@ def productSearched(search_text, category):
         print('searching all categories')
 
         for word in words:
+
+            products_tags = TaggedItem.objects.get_by_model(Product.active, word.lower())
+            print('product_tags:', products_tags)
+            if products_tags:
+                results['products'].append(products_tags)
+
             products = products.filter(Q(title__icontains=word) |
                                        Q(description__icontains=word) |
                                        Q(brand_name__title__icontains=word) |
@@ -44,11 +52,17 @@ def productSearched(search_text, category):
             if products:
                 # print('found:', products)
                 results['products'].append(products)
+
+
         # print(results)
 
     else:
         print('we came here to exact category choice')
         for word in words:
+            products_tags = TaggedItem.objects.get_by_model(Product.active, word.lower())
+            print('product_tags:', products_tags)
+            if products_tags:
+                results['products'].append(products_tags)
             products = products.filter(
                 Q(product_categories__category_name__iexact=category) &
                 Q(title__icontains=word) |
@@ -59,6 +73,12 @@ def productSearched(search_text, category):
             if products:
                 # print('found:', products)
                 results['products'].append(products)
+                try:
+                    products_tags = TaggedItem.objects.get_by_model(Product.active, word)
+                    if products_tags:
+                        results['products'].append(products_tags)
+                except Exception:
+                    return 0
         # print(results)
 
     return results

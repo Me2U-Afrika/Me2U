@@ -1,0 +1,79 @@
+{% extends 'me2ushop/base_template.html' %}
+
+ 	{% block headblock %}
+
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/blog_styles.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/blog_responsive.css">
+
+
+	{% endblock %}
+
+
+
+	{% block site_wrapper %}
+
+	<div class="super_container">
+
+		<!-- Home -->
+
+		<div class="home">
+			<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ STATIC_URL }}images/shop_background.jpg"></div>
+			<div class="home_overlay"></div>
+			<div class="home_content d-flex flex-column align-items-center justify-content-center">
+				<h2 class="home_title">Me2U Afrika Blog</h2>
+			</div>
+		</div>
+
+		<!-- Blog -->
+
+		<div class="blog">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<div class="blog_posts d-flex flex-row align-items-start justify-content-between">
+
+							{% for blog in object_list %}
+							<!-- Blog post -->
+							<div class="blog_post">
+								{% if blog.image %}
+								<a href="{% url 'blog:postView' blog.slug %}">
+									<div class="blog_image" style="background-image:url({{ blog.image.url }})"></div>
+								</a>
+								{% else %}
+									{% if blog.product.get_images %}
+										{% for image in blog.product.get_images %}
+										{% if image.in_display %}
+											<a href="{% url 'blog:postView' blog.slug %}">
+												<div class="blog_image" style="background-image:url({{ image.image.url }})"></div>
+											</a>
+
+										{% endif %}
+										{% endfor %}
+									{% endif %}
+								{% endif %}
+
+								<div class="blog_text">{{ blog.title }}</div>
+								<div class="blog_button"><a href="{{ blog.get_absolute_url }}">Continue Reading</a></div>
+							</div>
+							{% endfor %}
+
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	{% endblock %}
+
+	{% block extra_scripts %}
+
+	<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+
+	<script src="{{ STATIC_URL }}js/blog_custom.js"></script>
+
+	{% endblock %}
+

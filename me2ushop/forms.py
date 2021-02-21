@@ -2,6 +2,8 @@ from django import forms
 from django.forms import inlineformset_factory, formset_factory, modelform_factory
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
+
+from blog.models import Post
 from .models import *
 from .models import ProductReview
 from . import widgets
@@ -62,6 +64,35 @@ class ProductForm(forms.ModelForm):
                 layout.Submit('submit', _('Save'))
             )
         )
+
+
+class PostUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['product', 'title', 'content', 'snippet', 'image']
+
+        widgets = {
+            'snippet': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['product', 'title', 'content', 'snippet', 'image']
+
+        widgets = {
+            'snippet': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, brand_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # item = self.object.product
+        # queryset_item = Product.objects.filter(brand_name__user__user=user)
+        queryset_item = Product.objects.filter(brand_name__id=brand_id)
+
+        self.fields['product'].queryset = queryset_item
 
 
 class ProductAttributeCreate(forms.ModelForm):
