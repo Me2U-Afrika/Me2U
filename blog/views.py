@@ -1,11 +1,13 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 
 from me2ushop.forms import ProductForm, PostForm, PostUpdateForm
+from me2ushop.models import Brand
 from users.models import SellerProfile
 from .models import *
 from django.views.generic import ListView, DetailView, View, CreateView, UpdateView, DeleteView, FormView
@@ -13,10 +15,19 @@ from django.views.generic import ListView, DetailView, View, CreateView, UpdateV
 
 # Create your views here.
 
-# def home(request):
-#     blogs = Post.objects.all()
-#
-#     return render(request, 'blog/blog.html', locals())
+@login_required()
+def blogList(request):
+    try:
+        blogs = Post.objects.filter(author=request.user)
+
+        brand_name = Brand.objects.get(user__user=request.user)
+
+        return render(request, 'blog/blog_list.html', locals())
+
+    except Exception:
+        messages.warning(request, 'You not allowed to view this page')
+        return redirect('me2ushop:home')
+
 
 @login_required
 def likeView(request, slug):
@@ -103,7 +114,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     # fields = ['product', 'title', 'content', 'snippet', 'image']
-    form_class =PostUpdateForm
+    form_class = PostUpdateForm
 
     template_name = 'sellers/product_form.html'
 
