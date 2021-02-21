@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     # 'django_memcached',
     'memcache_status',
     # 'redis_cache',
+    'blog',
     'main',
     'bootstrap3',
     'bootstrap4',
@@ -104,6 +105,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'webpack_loader',
+    'ckeditor',
 
 ]
 DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap.html'

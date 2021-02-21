@@ -62,7 +62,6 @@ class Slider(CreationModificationDateMixin):
     image = StdImageField(upload_to='images/marketing/slider', blank=True, null=True, variations={
         'slider_size': (520, 460),
 
-
     }, delete_orphans=True)
     image_url = models.CharField(max_length=250, null=True, blank=True)
     background_image_url = models.CharField(max_length=250, null=True, blank=True)
@@ -89,7 +88,6 @@ class Slider(CreationModificationDateMixin):
 
 
 class Banner(CreationModificationDateMixin):
-
     banner_text = models.CharField(max_length=200, null=True, blank=True)
     banner_header = models.CharField(max_length=120, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -170,7 +168,6 @@ class Trend(CreationModificationDateMixin):
         return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
 
 
-
 # class Deals(CreationModificationDateMixin):
 #     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 #     deal_discount_price = models.DecimalField(max_digits=9, decimal_places=2)
@@ -199,4 +196,4 @@ class MarketingEmails(CreationModificationDateMixin):
     subscribed = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(self.subscribed)
+        return str(self.email)

@@ -1,0 +1,675 @@
+{% extends 'me2ushop/base_template.html' %}
+
+ 	{% block headblock %}
+
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/blog_single_styles.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/blog_single_responsive.css">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+	<style>
+body{
+    background:#eee;
+}
+.team-card-style-1, .team-card-style-3, .team-card-style-5 {
+  position: relative;
+  max-width: 360px;
+  text-align: center;
+  background:#fff;
+ box-shadow: 0 22px 36px -12px rgba(64, 64, 64, .13);
+}
+.team-contact-link {
+  display: block;
+  margin-top: 4px;
+  transition: all 0.25s;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.team-contact-link > i {
+  display: inline-block;
+  font-size: 1.1em;
+  vertical-align: middle;
+}
+.team-card-style-1 .team-position, .team-card-style-3 .team-position, .team-card-style-4 .team-position {
+  display: block;
+  margin-bottom: 8px;
+  color: #8c8c8c;
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.6;
+}
+.team-card-style-3 .team-name, .team-card-style-4 .team-name, .team-card-style-5 .team-name {
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.team-thumb > img {
+  display: block;
+  width: 100%;
+}
+.team-card-style-1 {
+  padding-bottom: 36px;
+}
+.team-card-style-1 > * {
+  position: relative;
+  z-index: 5;
+}
+.team-card-style-1::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  transition: all 0.3s 0.12s;
+  content: '';
+  opacity: 0;
+}
+.team-card-style-1 .team-card-inner {
+  margin-bottom: 16px;
+  padding-top: 48px;
+  padding-right: 16px;
+  padding-bottom: 20px;
+  padding-left: 16px;
+  background-color: #fff;
+  box-shadow: 0 22px 36px -12px rgba(64, 64, 64, .13);
+}
+.team-card-style-1 .team-thumb {
+  width: 108px;
+  height: 108px;
+  margin: auto;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.team-card-style-1 .team-social-bar {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  transform: scale(0.8);
+}
+.team-card-style-1 .team-contact-link {
+  transition-delay: 0.12s;
+  color: #8c8c8c;
+  opacity: 0.6;
+}
+.team-card-style-1 .team-contact-link:hover {
+  color: #8c8c8c;
+  opacity: 1;
+}
+.team-card-style-1 .team-card-inner, .team-card-style-1 .team-thumb, .team-card-style-1 .team-social-bar {
+  transition: all 0.3s 0.12s;
+}
+.team-card-style-1 .team-position, .team-card-style-1 .team-name {
+  transition: color 0.3s 0.12s;
+}
+.team-card-style-1 .team-name {
+  margin-bottom: 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+.no-touchevents .team-card-style-1:hover::before {
+  height: 100%;
+  box-shadow: 0 22px 36px -12px rgba(64, 64, 64, .13);
+  opacity: 1;
+}
+.no-touchevents .team-card-style-1:hover .team-card-inner {
+  background-color: transparent;
+  box-shadow: none;
+}
+.no-touchevents .team-card-style-1:hover .team-thumb {
+  transform: scale(1.1);
+}
+.no-touchevents .team-card-style-1:hover .team-social-bar {
+  transform: scale(1);
+}
+.no-touchevents .team-card-style-1:hover .team-contact-link, .no-touchevents .team-card-style-1:hover .team-position, .no-touchevents .team-card-style-1:hover .team-name {
+  color: #fff;
+}
+.no-touchevents .team-card-style-1:hover .team-contact-link {
+  opacity: 1;
+}
+.team-card-style-2 {
+  position: relative;
+}
+.team-card-style-2 > img {
+  display: block;
+  width: 100%;
+}
+.team-card-style-2::before, .team-card-style-2::after {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.35s 0.12s;
+  content: '';
+  z-index: 1;
+}
+.team-card-style-2::before {
+  background-color: rgba(0, 0, 0, .25);
+}
+.team-card-style-2::after {
+  opacity: 0;
+}
+.team-card-style-2 .team-card-inner {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  padding: 20px;
+  transform: translateY(-45%);
+  transition: all 0.35s 0.12s;
+  text-align: center;
+  opacity: 0;
+  z-index: 5;
+}
+.team-card-style-2 .team-name, .team-card-style-2 .team-position, .team-card-style-2 .team-contact-link {
+  color: #fff;
+}
+.team-card-style-2 .team-name {
+  margin-bottom: 5px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.team-card-style-2 .team-position {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.team-card-style-2 .team-social-bar {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+.team-card-style-2 .team-contact-link {
+  opacity: 1;
+}
+.team-card-style-2:hover::before {
+  opacity: 0;
+}
+.team-card-style-2:hover::after {
+  opacity: 0.7;
+}
+.team-card-style-2:hover .team-card-inner {
+  transform: translateY(-50%);
+  opacity: 1;
+}
+.team-card-style-3, .team-card-style-4 {
+  position: relative;
+  padding-top: 30px;
+  padding-right: 20px;
+  padding-bottom: 38px;
+  padding-left: 20px;
+  transition: all 0.35s;
+  border: 1px solid #e7e7e7;
+}
+.team-card-style-3 .team-thumb, .team-card-style-4 .team-thumb {
+  width: 90px;
+  margin: auto;
+  margin-bottom: 17px;
+}
+.team-card-style-3 .team-position, .team-card-style-4 .team-position {
+  margin-bottom: 0;
+}
+.team-card-style-3 .team-contact-link, .team-card-style-4 .team-contact-link {
+  color: #404040;
+  font-weight: 600;
+}
+.team-card-style-3 .team-contact-link > i, .team-card-style-4 .team-contact-link > i {
+  color: #8c8c8c !important;
+}
+.team-card-style-3 .team-contact-link:hover, .team-card-style-4 .team-contact-link:hover {
+  color: rgba(64, 64, 64, .6);
+}
+.team-card-style-3 .team-social-bar-wrap, .team-card-style-4 .team-social-bar-wrap {
+  position: absolute;
+  bottom: -18px;
+  left: 0;
+  width: 100%;
+}
+.team-card-style-3 .team-social-bar-wrap > .team-social-bar, .team-card-style-4 .team-social-bar-wrap > .team-social-bar {
+  display: table;
+  margin: auto;
+  background-color: #fff;
+  box-shadow: 0 12px 20px 1px rgba(64, 64, 64, .11);
+}
+.team-card-style-3:hover, .team-card-style-4:hover {
+  border-color: transparent;
+  box-shadow: 0 12px 20px 1px rgba(64, 64, 64, .09);
+}
+.team-card-style-4 {
+  padding-top: 24px;
+  padding-bottom: 31px;
+  padding-left: 24px;
+}
+.team-card-style-4 .team-name {
+  margin-bottom: 5px;
+}
+.team-card-style-4 .team-social-bar-wrap {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  margin-top: 20px;
+}
+.team-card-style-4 .team-social-bar-wrap > .team-social-bar {
+  margin: 0;
+}
+.team-card-style-5 {
+  padding-bottom: 24px;
+  transition: box-shadow 0.35s 0.12s;
+}
+.team-card-style-5 .team-thumb {
+  position: relative;
+  margin-bottom: 24px;
+}
+.team-card-style-5 .team-thumb::after {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.35s 0.12s;
+  background-color: #ac32e4;
+  content: '';
+  opacity: 0;
+  z-index: 1;
+}
+.team-card-style-5 .team-card-inner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px;
+  padding-bottom: 26px;
+  transform: translateY(10px);
+  transition: all 0.35s 0.12s;
+  text-align: center;
+  opacity: 0;
+  z-index: 5;
+}
+.team-card-style-5 .team-contact-link, .team-card-style-5 .team-contact-link:hover {
+  color: #fff;
+}
+.team-card-style-5 .sb-style-6.sb-light-skin, .team-card-style-5 .sb-style-7.sb-light-skin {
+  border-color: rgba(255, 255, 255, .35);
+}
+.team-card-style-5 .team-name {
+  margin-bottom: 6px;
+  padding: 0 16px;
+}
+.team-card-style-5 .team-position {
+  display: block;
+  padding: 0 16px;
+  transition: color 0.35s 0.12s;
+}
+.team-card-style-5:hover {
+  box-shadow: 0 12px 20px 1px rgba(64, 64, 64, .09);
+}
+.team-card-style-5:hover .team-thumb::after {
+  opacity: 0.7;
+}
+.team-card-style-5:hover .team-card-inner {
+  transform: translateY(0);
+  opacity: 1;
+}
+.team-card-style-5:hover .team-position {
+  color: #ac32e4;
+}
+.team-card-style-3 .team-social-bar-wrap>.team-social-bar, .team-card-style-4 .team-social-bar-wrap>.team-social-bar {
+    display: table;
+    margin: auto;
+    background-color: #fff;
+    -webkit-box-shadow: 0 12px 20px 1px rgba(64,64,64,0.11);
+    box-shadow: 0 12px 20px 1px rgba(64,64,64,0.11);
+}
+.social-btn {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+    font-size: 18px;
+    line-height: 36px;
+    vertical-align: middle;
+    text-align: center !important;
+    text-decoration: none;
+}
+.sb-twitter {
+    color: #55acee !important;
+}
+.sb-github {
+    color: #4183c4 !important;
+}
+.sb-linkedin {
+    color: #0976b4 !important;
+}
+.sb-skype {
+    color: #00aff0 !important;
+}
+.sb-style-2, .sb-style-3, .sb-style-4, .sb-style-5 {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+}
+.sb-style-2.sb-light-skin, .sb-style-3.sb-light-skin, .sb-style-4.sb-light-skin, .sb-style-5.sb-light-skin {
+  background-color: rgba(255, 255, 255, .1);
+}
+.sb-style-2:hover, .sb-style-3:hover, .sb-style-4:hover, .sb-style-5:hover, .sb-style-2.hover, .sb-style-3.hover, .sb-style-4.hover, .sb-style-5.hover {
+  background-color: #fff;
+  box-shadow: 0 12px 20px 1px rgba(64, 64, 64, .11);
+}
+	</style>
+
+
+	{% endblock %}
+
+
+	{% block site_wrapper %}
+
+	<div class="super_container">
+
+		<!-- Home -->
+		<div class="home">
+			{% if object.image %}
+			<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ object.image.url }}" data-speed="0.8"></div>
+			{% else %}
+				{% if object.product %}
+					{% for image in object.product.get_images %}
+					{% if image.in_display %}
+						<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ image.image.url }}" data-speed="0.8"></div>
+					{% endif %}
+					{% endfor %}
+				{% else %}
+					<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ STATIC_URL }}images/shop_background.jpg"></div>
+					<div class="home_overlay"></div>
+
+				{% endif %}
+
+
+			{% endif %}
+		</div>
+
+		<!-- Single Blog Post -->
+
+		<div class="single_post">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2">
+
+						<div class="single_post_title text-center">{{ object.title }}</div>
+						<div class="single_post_text">
+
+							{% if request.user.is_authenticated %}
+
+								<p>{{ object.content|safe }}</p>
+							{% else %}
+								<p>{{ object.snippet }}....</p>
+								<div class="col text-center">
+									<a href="{% url 'login' %}?next={% url 'blog:postView' object.slug %}"
+					                   class="btn btn-primary"><small>Login to Read Full Post</small></a>
+								</div>
+
+							{% endif %}
+
+							<hr>
+							<br>
+
+							<form action="{% url 'blog:like_post' object.slug %}" method="post">
+								{% csrf_token %}
+
+								{% if request.user.is_authenticated %}
+
+									{% if liked %}
+
+									<button type="submit" name="post_id" value="{{ object.id }}" class="btn btn-danger btn-sm">
+										Unlike
+									</button> - {{ object.get_total_likes }} like{{ object.likes.count|pluralize:" ,s" }}
+
+									{% else %}
+
+									<button type="submit" name="post_id" value="{{ object.id }}" class="btn btn-primary btn-sm">
+										Like
+									</button> - {{ object.get_total_likes }} like{{ object.likes.count|pluralize:" ,s" }}
+
+
+									{% endif %}
+
+								{% else %}
+
+					                <a href="{% url 'login' %}?next={% url 'blog:postView' object.slug %}"
+					                   class="btn btn-primary"><small>Like</small></a>
+
+								 - {{ object.get_total_likes }} like{{ object.likes.count|pluralize:" ,s" }}
+
+								{% endif %}
+
+							</form>
+							{% if request.user == object.author %}
+								<a href="{% url 'blog:post_update' object.slug %}"
+					                   class="btn btn-secondary"><small>Edit</small></a>
+							<a href="{% url 'blog:post_delete' object.slug %}"
+					                   class="btn btn-danger"><small>Delete</small></a>
+
+							{% endif %}
+
+
+<!--							<div class="single_post_quote text-center">-->
+<!--								<div class="quote_image"><img src="images/quote.png" alt=""></div>-->
+<!--								<div class="quote_text">Quisque sagittis non ex eget vestibulum. Sed nec ultrices dui. Cras et sagittis erat. Maecenas pulvinar, turpis in dictum tincidunt, dolor nibh lacinia lacus.</div>-->
+<!--								<div class="quote_name">Liam Neeson</div>-->
+<!--							</div>-->
+
+<!--							<p>Praesent ac magna sed massa euismod congue vitae vitae risus. Nulla lorem augue, mollis non est et, eleifend elementum ante. Nunc id pharetra magna.  Praesent vel orci ornare, blandit mi sed, aliquet nisi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>-->
+<!--						-->
+
+							<h2 class="h4 block-title text-center mt-2">Meet the Author</h2>
+							<div class="row pt-3">
+								<!-- Author-->
+								<div class="col mb-30 pb-2">
+									<div class="team-card-style-3 mx-auto">
+										<div class="team-thumb"><img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Author Picture">
+										</div>
+										<h4 class="team-name">{{ object.author.username }}</h4>
+
+											{% if object.author.is_seller %}
+
+											<a class="team-contact-link" href="{% url 'me2ushop:seller_page'  object.author.sellerprofile.brand.id %}">
+												<i class="fe-icon-phone"></i>&nbsp;{{  object.author.sellerprofile.brand }}</a>
+
+											{% endif %}
+
+										{% if request.user.is_authenticated %}
+
+											<a class="team-contact-link" href="mailto:{{ object.author.email }}">
+												<i class="fe-icon-mail"></i>&nbsp;{{ object.author.email }}</a>
+											<div class="team-social-bar-wrap">
+												<div class="team-social-bar">
+													<a class="social-btn sb-style-1 sb-twitter" href="#">
+														<i class="fa fa-twitter"></i>
+													</a>
+													<a class="social-btn sb-style-1 sb-github" href="#">
+														<i class="fa fa-github"></i>
+													</a>
+													<a class="social-btn sb-style-1 sb-stackoverflow" href="#">
+														<i class="fa fa-linkedin"></i>
+													</a>
+													<a class="social-btn sb-style-1 sb-skype" href="#">
+														<i class="fa fa-skype"></i>
+													</a>
+												</div>
+											</div>
+
+										{% endif %}
+
+									</div>
+								</div>
+							</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{% if object.cross_reads %}
+
+		<!-- Blog Posts -->
+
+		<div class="blog">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+
+						<div class="blog_posts d-flex flex-row align-items-start justify-content-between">
+
+							<!-- Blog post -->
+							{% for blog in object.cross_reads %}
+							<!-- Blog post -->
+							<div class="blog_post">
+								{% if blog.image %}
+								<a href="{{ blog.get_absolute_url }}"><div class="blog_image" style="background-image:url({{ blog.image.url }})"></div>
+								</a>
+								{% else %}
+									{% if blog.product.get_images %}
+										{% for image in blog.product.get_images %}
+										{% if image.in_display %}
+											<a href="{{ blog.get_absolute_url }}"> <div class="blog_image" style="background-image:url({{ image.image.url }})"></div>
+											</a>
+										{% endif %}
+										{% endfor %}
+									{% endif %}
+								{% endif %}
+
+								<div class="blog_text">{{ blog.title }}</div>
+								<div class="blog_button"><a href="{{ blog.get_absolute_url }}">Continue Reading</a></div>
+							</div>
+							{% endfor %}
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{% endif %}
+
+
+		<section class="container py-5">
+<!--			<h2 class="h4 block-title text-center mt-2">This month top authors</h2>-->
+<!--			<div class="row pt-3">-->
+<!--				&lt;!&ndash; Author&ndash;&gt;-->
+<!--				<div class="col-lg-3 col-sm-6 mb-30 pb-2">-->
+<!--					<div class="team-card-style-3 mx-auto">-->
+<!--						<div class="team-thumb"><img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Author Picture">-->
+<!--						</div>-->
+<!--						<h4 class="team-name">Emanuel Ortega</h4><a class="team-contact-link" href="tel:+19871625346"><i class="fe-icon-phone"></i>&nbsp;+1 (987) 162 53 46</a><a class="team-contact-link" href="mailto:info@example.com"><i class="fe-icon-mail"></i>&nbsp;info@example.com</a>-->
+<!--						<div class="team-social-bar-wrap">-->
+<!--							<div class="team-social-bar">-->
+<!--								<a class="social-btn sb-style-1 sb-twitter" href="#">-->
+<!--									<i class="fa fa-twitter"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-github" href="#">-->
+<!--									<i class="fa fa-github"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-stackoverflow" href="#">-->
+<!--									<i class="fa fa-linkedin"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-skype" href="#">-->
+<!--									<i class="fa fa-skype"></i>-->
+<!--								</a>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--				&lt;!&ndash; Author&ndash;&gt;-->
+<!--				<div class="col-lg-3 col-sm-6 mb-30 pb-2">-->
+<!--					<div class="team-card-style-3 mx-auto">-->
+<!--						<div class="team-thumb"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Author Picture">-->
+<!--						</div>-->
+<!--						<h4 class="team-name">Samantha Palson</h4><a class="team-contact-link" href="tel:+57872336590"><i class="fe-icon-phone"></i>&nbsp; +5 (787) 233 65 90</a><a class="team-contact-link" href="mailto:info@example.com"><i class="fe-icon-mail"></i>&nbsp;info@example.com</a>-->
+<!--						<div class="team-social-bar-wrap">-->
+<!--							<div class="team-social-bar">-->
+<!--								<a class="social-btn sb-style-1 sb-twitter" href="#">-->
+<!--									<i class="fa fa-twitter"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-github" href="#">-->
+<!--									<i class="fa fa-github"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-linkedin" href="#">-->
+<!--									<i class="fa fa-linkedin"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-skype" href="#">-->
+<!--									<i class="fa fa-skype"></i>-->
+<!--								</a>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--				&lt;!&ndash; Author&ndash;&gt;-->
+<!--				<div class="col-lg-3 col-sm-6 mb-30 pb-2">-->
+<!--					<div class="team-card-style-3 mx-auto">-->
+<!--						<div class="team-thumb"><img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="Author Picture">-->
+<!--						</div>-->
+<!--						<h4 class="team-name">Emma Johnson</h4><a class="team-contact-link" href="tel:+13907765843"><i class="fe-icon-phone"></i>&nbsp;+1 (390) 776 58 43</a><a class="team-contact-link" href="mailto:info@example.com"><i class="fe-icon-mail"></i>&nbsp;info@example.com</a>-->
+<!--						<div class="team-social-bar-wrap">-->
+<!--							<div class="team-social-bar">-->
+<!--								<a class="social-btn sb-style-1 sb-twitter" href="#">-->
+<!--									<i class="fa fa-twitter"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-github" href="#">-->
+<!--									<i class="fa fa-github"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-linkedin" href="#">-->
+<!--									<i class="fa fa-linkedin"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-skype" href="#">-->
+<!--									<i class="fa fa-skype"></i>-->
+<!--								</a>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--				&lt;!&ndash; Author&ndash;&gt;-->
+<!--				<div class="col-lg-3 col-sm-6 mb-30 pb-2">-->
+<!--					<div class="team-card-style-3 mx-auto">-->
+<!--						<div class="team-thumb"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="Author Picture">-->
+<!--						</div>-->
+<!--						<h4 class="team-name">William Smith</h4><a class="team-contact-link" href="tel:+72056557984"><i class="fe-icon-phone"></i>&nbsp;+7 (205) 655 79 84</a><a class="team-contact-link" href="mailto:info@example.com"><i class="fe-icon-mail"></i>&nbsp;info@example.com</a>-->
+<!--						<div class="team-social-bar-wrap">-->
+<!--							<div class="team-social-bar">-->
+<!--								<a class="social-btn sb-style-1 sb-twitter" href="#">-->
+<!--									<i class="fa fa-twitter"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-github" href="#">-->
+<!--									<i class="fa fa-github"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-linkedin" href="#">-->
+<!--									<i class="fa fa-linkedin"></i>-->
+<!--								</a>-->
+<!--								<a class="social-btn sb-style-1 sb-skype" href="#">-->
+<!--									<i class="fa fa-skype"></i>-->
+<!--								</a>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+		</section>
+
+
+	</div>
+
+	{% endblock %}
+
+	{% block extra_scripts %}
+
+	<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+
+	<script src="{{ STATIC_URL }}js/blog_single_custom.js"></script>
+
+
+	{% endblock %}
+

@@ -99,24 +99,22 @@
                                 <li><a href="{% url 'sellers:seller_home' %}">Dashboard<i class="fas fa-chevron-down"></i></a></li>
                                 <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
 
-                                <li class="hassubs disabled">
-                                    <a href="#">Add Deals</a>
-<!--                                    <ul>-->
-<!--                                        <li>-->
-<!--                                            <a href="#">Menu Item<i class="fas fa-chevron-down"></i></a>-->
+                                <li class="hassubs">
+                                    <a href="#">Add Blog</a>
+                                    <ul>
+                                        <li>
+                                            <a href="{% url 'blog:blog_list' %}">My Blogs<i class="fas fa-chevron-down"></i></a>
 <!--                                            <ul>-->
 <!--                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>-->
 <!--                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>-->
 <!--                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>-->
 <!--                                            </ul>-->
-<!--                                        </li>-->
-<!--                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                        <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                    </ul>-->
+                                        </li>
+                                        <li><a href="{% url 'blog:post_create' brand.id %}">Create New Blog<i class="fas fa-chevron-down"></i></a></li>
+                                    </ul>
                                 </li>
                                 <li class="hassubs">
-                                    <a href="{% url 'sellers:seller_products' %}">Manage Products<i class="fas fa-chevron-down"></i></a>
+                                    <a href="{% url 'sellers:seller_products' %}">Manage Products</a>
                                     <ul>
                                         <li>
                                             <a href="#">Active Products<i class="fas fa-chevron-down"></i></a>
@@ -127,7 +125,6 @@
                                         </li>
                                         <li><a href="{% url 'me2ushop:seller_page' brand.id %}">My Store<i class="fas fa-chevron-down"></i></a></li>
                                         <li><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="#">Blog<i class="fas fa-chevron-down"></i></a></li>
 
                                     </ul>
                                 </li>

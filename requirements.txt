@@ -33,6 +33,7 @@ Django==3.1.1
 django-bmemcached==0.3.0
 django-bootstrap3==12.1.0
 django-bootstrap4==2.0.1
+django-ckeditor==6.0.0
 django-countries==6.1.2
 django-crispy-forms==1.9.1
 django-currencies==0.10.1
@@ -91,6 +92,7 @@ prompt-toolkit==3.0.7
 psycopg2==2.8.5
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
+pycairo==1.20.0
 pycparser==2.20
 pydot==1.4.1
 pydotplus==2.0.2
