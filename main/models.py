@@ -10,7 +10,7 @@ from me2ushop.models import Product
 class ContactUs(models.Model):
     name = models.CharField(max_length=50)
     phone = models.CharField(max_length=30)
-    email = models.EmailField
+    email = models.EmailField(max_length=254)
     message = models.TextField(max_length=600, help_text='Max length is 600 characters. Make your inquiry brief and '
                                                          'to the point')
 

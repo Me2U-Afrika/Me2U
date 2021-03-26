@@ -21,7 +21,7 @@ class ContactForm(forms.ModelForm):
         send_mail(
             "Site Message",
             message,
-            "me2uafrica.herokuapp.com",
+            self.cleaned_data['email'],
             ["danielmakori0@gmail.com"],
             fail_silently=False,
         )

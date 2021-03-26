@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -417,7 +418,7 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
         try:
             seller_group = Group.objects.get(name='Sellers')
 
-        except DoesNotExist:
+        except ObjectDoesNotExist:
             seller_group = Group.objects.create(name='Sellers')
 
         obj = form.save(commit=False)

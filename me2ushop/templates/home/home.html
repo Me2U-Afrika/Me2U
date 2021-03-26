@@ -9,6 +9,9 @@
 
 
 {% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/responsive.css">
 
 <style type="text/css">
 	a,a:hover {
@@ -66,7 +69,8 @@
 	    line-height: 1.5;
 	    color: #212529;
 	    text-align: left;
-	    background-color: #fff
+	    background-color: #fff;
+
 	}
 
 	h1,h2,h3,h4,h5,h6 {
@@ -183,10 +187,6 @@
 
 
 </style>
-
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main_styles.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/responsive.css">
 
 {% endblock headblock %}
 
