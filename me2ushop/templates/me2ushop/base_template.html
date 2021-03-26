@@ -159,6 +159,7 @@
 <!--                                <div><a href="{% url 'users:register' %}">Register</a></div>-->
                                 <div><a href="{% url 'account_signup' %}">Register</a></div>
                                 <div><a href="{% url LOGIN_URL  %}">Sign In | </a></div>
+                                {% load socialaccount %}
                                 <div><a href="{% provider_login_url 'google' %}">LogIn with Google</a></div>
 
 
