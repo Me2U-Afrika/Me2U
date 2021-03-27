@@ -152,7 +152,7 @@
                             <div class="top_bar_user">
                                 {% if request.user.is_authenticated %}
                                 <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
-                                <div><a href="{% url 'users:profile' %}" target="_blank">Karibu {{ request.user.username }}</a></div>
+                                <div><a href="{% url 'users:profile' %}" target="_blank">Karibu {{ request.user.username|title }}</a></div>
                                 <div><a href="{% url 'account_logout' %}">LogOut</a></div>
                                 {% else %}
                                 <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
@@ -482,9 +482,9 @@
             {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path and not "blog" in request.get_full_path %}
 
                 function showModal(){
-                    $("#marketingModal").modal("show").setTimeout(showModal, 10000);
+                    $("#marketingModal").modal("show").setTimeout(showModal, 1000);
                 }
-                setTimeout(showModal, 25000);
+                setTimeout(showModal, 15000);
 
                 $("#sendMarketingForm").click(function(e){
                     e.preventDefault()
