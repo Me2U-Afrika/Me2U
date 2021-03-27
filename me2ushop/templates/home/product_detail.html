@@ -371,7 +371,7 @@
 
 			      </div>
 	        {% else %}
-	            <div><a href="{% url 'login' %}?next={{ request.path }}">
+	            <div><a href="{% url LOGIN_URL %}?next={{ request.path }}">
 	                Log in to tag this product.
 	            </a></div>
 	        {% endif %}
@@ -587,7 +587,7 @@
 
 	                    {% else %}
 
-	                    <div class="reviews_all ml-auto"><a href="{% url 'login' %}?next={{ request.path }}">
+	                    <div class="reviews_all ml-auto"><a href="{% url LOGIN_URL %}?next={{ request.path }}">
 	                    LogIn to <span>review</span></a></div>
 
 	                    {% endif %}

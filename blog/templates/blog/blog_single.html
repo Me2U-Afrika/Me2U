@@ -485,12 +485,12 @@
 		<!-- Home -->
 		<div class="home">
 			{% if object.image %}
-			<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ object.image.url }}" data-speed="0.8"></div>
+			<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ object.image.medium.url }}" data-speed="0.8"></div>
 			{% else %}
 				{% if object.product %}
 					{% for image in object.product.get_images %}
 					{% if image.in_display %}
-						<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ image.image.url }}" data-speed="0.8"></div>
+						<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ image.image.large.url }}" data-speed="0.8"></div>
 					{% endif %}
 					{% endfor %}
 				{% else %}
@@ -519,7 +519,7 @@
 							{% else %}
 								<p>{{ object.snippet }}....</p>
 								<div class="col text-center">
-									<a href="{% url 'login' %}?next={% url 'blog:postView' object.slug %}"
+									<a href="{% url LOGIN_URL %}?next={% url 'blog:postView' object.slug %}"
 									   class="btn btn-primary"><small>Continue Reading...</small></a>
 								</div>
 
@@ -550,7 +550,7 @@
 
 								{% else %}
 
-									<a href="{% url 'login' %}?next={% url 'blog:postView' object.slug %}"
+									<a href="{% url LOGIN_URL %}?next={% url 'blog:postView' object.slug %}"
 									   class="btn btn-primary"><small>Like</small></a>
 
 								 - {{ object.get_total_likes }} like{{ object.likes.count|pluralize:" ,s" }}
@@ -632,7 +632,7 @@
 							<li><a href="#add-comment" role="tab" data-toggle="tab"><h4 class="reviews text-capitalize">Add comment</h4></a></li>
 						{% else %}
 							<li>
-								<a href="{% url 'login' %}?next={% url 'blog:postView' object.slug %}"><h4 class="reviews text-capitalize">Add comment</h4></a></li>
+								<a href="{% url LOGIN_URL %}?next={% url 'blog:postView' object.slug %}"><h4 class="reviews text-capitalize">Add comment</h4></a></li>
 						{% endif %}
 					</ul>
 					<div class="tab-content">
