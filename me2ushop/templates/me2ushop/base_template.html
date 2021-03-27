@@ -479,7 +479,7 @@
     <!-- marketing modal-->
     <script>
             $(document).ready(function(){
-            {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path and not "blog" in request.get_full_path %}
+            {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path and not "blog" in request.get_full_path and not "accounts" in request.get_full_path %}
 
                 function showModal(){
                     $("#marketingModal").modal("show").setTimeout(showModal, 1000);
