@@ -16,6 +16,8 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import TemplateView
+
 from me2ushop import admin as main_admin
 
 from django.contrib.auth import views as auth_views
@@ -30,6 +32,8 @@ urlpatterns = [
     url(r'^dispatch-admin/', main_admin.dispatchers_admin.urls),
 
     path('api-auth', include('rest_framework.urls'), ),
+    path('accounts/', include('allauth.urls')),
+
 
     url('main/', include('main.urls')),
     url('blog/', include('blog.urls')),

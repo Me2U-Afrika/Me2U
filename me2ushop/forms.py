@@ -3,7 +3,7 @@ from django.forms import inlineformset_factory, formset_factory, modelform_facto
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
-from blog.models import Post
+from blog.models import Post, Comment
 from .models import *
 from .models import ProductReview
 from . import widgets
@@ -206,13 +206,14 @@ CartAddFormSet = modelform_factory(
 #             raise forms.ValidationError("Cookies Must be Enabled")
 #     return self.cleaned_data
 
+class PostCommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = "__all__"
+        exclude = ('user',)
+
 
 class ProductReviewForm(forms.ModelForm):
-    # reviewer_country = CountryField(blank_label='(select country)').formfield(
-    #     required=False,
-    #     widget=CountrySelectWidget(attrs={
-    #         'class': 'custom-select d-block w-100'
-    #     }))
 
     class Meta:
         model = ProductReview

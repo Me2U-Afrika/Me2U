@@ -74,6 +74,12 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.redirects',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
     'django_extensions',
     'django_filters',
     'debug_toolbar',
@@ -125,6 +131,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', 'PAGE_SIZE': 100
 
 }
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 MIDDLEWARE = [
     # "sslify.middleware.SSLifyMiddleware",
@@ -295,7 +309,16 @@ STATICFILES_DIRS = [
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'me2ushop:home'
-LOGIN_URL = 'login'
+LOGIN_URL = 'account_login'
+
+# LOGIN_URL = 'login'
+
+ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = None
+
+SOCIALACCOUNT_ADAPTER = 'users.adapter.MySocialAccountAdapter'
 # STATIC_ROOT = os.path.join(BASE_DIR, "/Me2U/staticfiles")
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

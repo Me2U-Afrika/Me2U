@@ -1,12 +1,14 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.urls import reverse_lazy, reverse
 
-from me2ushop.forms import ProductForm, PostForm, PostUpdateForm
+from me2ushop.forms import ProductForm, PostForm, PostUpdateForm, PostCommentForm
 from me2ushop.models import Brand
 from users.models import SellerProfile
 from .models import *
@@ -51,6 +53,7 @@ class HomeView(ListView):
 class PostDetailedView(DetailView):
     model = Post
     template_name = 'blog/blog_single.html'
+    # template_name = 'blog/blog_single_test.html'
     query_pk_and_slug = False
 
     def get_context_data(self, **kwargs):
@@ -75,6 +78,25 @@ class PostDetailedView(DetailView):
         #         count += 1
 
         return context
+
+
+class CommentCreateView(CreateView):
+    model = Comment
+    template_name = 'blog/snippets/comment_form.html'
+    fields = ['content']
+
+    def get_success_url(self):
+        return reverse_lazy('blog:postView', kwargs={'slug': self.object.post.slug})
+
+    def form_valid(self, form):
+        # form.instance.seller = self.request.user
+        obj = form.save(commit=False)
+
+        obj.user = self.request.user
+        obj.post_id = self.kwargs['pk']
+
+        obj.save()
+        return super(CommentCreateView, self).form_valid(form)
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):

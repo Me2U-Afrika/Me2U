@@ -11,3 +11,5 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['product', 'title', 'content', 'image']
 
+
+

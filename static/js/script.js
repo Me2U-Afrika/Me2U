@@ -18,6 +18,27 @@ function preparedDocument(){
         }
     });
 
+//
+//    jQuery("sumbitComment").click(addComment);
+//
+//
+//    function addComment(){
+//
+//        var comment = {
+//
+//            comment: jQuery("#addComment").val()
+//            id: jQuery("id_post").val()
+//
+//        };
+//
+//        jQuery.post("add/comment",comment,
+//            function(response){
+//
+//            }
+//        )
+//
+//    }
+
 
     jQuery("#submit_review").click(addProductReview);
     jQuery("#first_time").hide();
@@ -35,14 +56,13 @@ function preparedDocument(){
 
     };
 
-      // toggles visibility of "write review" link
+    // toggles visibility of "write review" link
     // and the review form.
-
-
-
 
     function addProductReview(){
            console.log('we came here')
+
+
     // build an object of review data to submit
 
         var review = {
@@ -79,8 +99,8 @@ function preparedDocument(){
                   jQuery("#review_form").slideToggle();
             }
             else{
-//                  console.log('we might as well end here')
-                  // add the error text to the review_errors div
+                //console.log('we might as well end here')
+                // add the error text to the review_errors div
                   jQuery("#review_errors").append(response.html);
                 }
           }, "json");

@@ -1,0 +1,51 @@
+{% extends 'me2ushop/base_template.html' %}
+
+{% block headblock %}
+	<meta name="google-signin-client_id" content="657734673983-37i8ekv3pn127mecn0fr3isjg110kijo.apps.googleusercontent.com">
+
+<style type="text/css">
+
+
+</style>
+{% endblock %}
+
+<body>
+{% block navbar %}
+{% endblock %}
+
+{% block site_wrapper %}
+<div id="my-signin2"></div>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block extra_scripts %}
+	 <script>
+	function onSuccess(googleUser) {
+	  console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+	}
+	function onFailure(error) {
+	  console.log(error);
+	}
+	function renderButton() {
+	  gapi.signin2.render('my-signin2', {
+		'scope': 'profile email',
+		'width': 240,
+		'height': 50,
+		'longtitle': true,
+		'theme': 'dark',
+		'onsuccess': onSuccess,
+		'onfailure': onFailure
+	  });
+	}
+  </script>
+
+<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+
+{% endblock %}
+</body>
+
+
+

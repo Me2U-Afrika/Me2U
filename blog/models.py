@@ -32,7 +32,7 @@ class Post(CreationModificationDateMixin):
 
                           }, delete_orphans=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='post_likes')
-    snippet = models.CharField(max_length=255, default='Click Below To Read Blog Post...',
+    snippet = models.CharField(max_length=350, default='Click Below To Read Blog Post...',
                                help_text='This is what USERS/READERS who have NOT SIGNED in will see. Make them login '
                                          'to read your article by capturing their attention. What is your post about')
 
@@ -68,3 +68,16 @@ class Post(CreationModificationDateMixin):
             self._generate_slug()
 
         super().save(*args, **kwargs)
+
+
+class Comment(CreationModificationDateMixin):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    content = models.TextField()
+
+    class Meta:
+        ordering = ['-created']
+        verbose_name_plural = 'Comments'
+
+    def __str__(self):
+        return '%s - %s' % (self.post.title, self.user)

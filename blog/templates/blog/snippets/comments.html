@@ -1,8 +1,5 @@
 {% extends 'me2ushop/base_template.html' %}
 
-{% load crispy_forms_tags %}
-{% load catalog_filters %}
-
  	{% block headblock %}
 
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/blog_single_styles.css">
@@ -16,8 +13,112 @@
 <!--	comment tags-->
 
 
-	<style>
+<!--	comment styles-->
 
+<style>
+		/*
+    Image credits:
+    uifaces.com (http://uifaces.com/authorized)
+	*/
+
+
+	#login { display: none; }
+	.login,
+	.logout {
+		position: absolute;
+		top: -3px;
+		right: 0;
+	}
+	.page-header { position: relative; }
+	.reviews {
+		color: #555;
+		font-weight: bold;
+		margin: 10px auto 20px;
+	}
+	.notes {
+		color: #999;
+		font-size: 12px;
+	}
+	.media .media-object { max-width: 120px; }
+	.media-body { position: relative; }
+	.media-date {
+		position: absolute;
+		right: 25px;
+		top: 25px;
+	}
+	.media-date li { padding: 0; }
+	.media-date li:first-child:before { content: ''; }
+	.media-date li:before {
+		content: '.';
+		margin-left: -2px;
+		margin-right: 2px;
+	}
+	.media-comment { margin-bottom: 0; }
+	.media-replied { margin: 0 0 20px 50px; }
+	.media-replied .media-heading { padding-left: 6px; }
+
+	.btn-circle {
+		font-weight: bold;
+		font-size: 12px;
+		padding: 6px 15px;
+		border-radius: 20px;
+	}
+	.btn-circle span { padding-right: 6px; }
+	.embed-responsive { margin-bottom: 20px; }
+	.tab-content {
+		padding: 50px 15px;
+		border: 1px solid #ddd;
+		border-top: 0;
+		border-bottom-right-radius: 4px;
+		border-bottom-left-radius: 4px;
+	}
+	.custom-input-file {
+		overflow: hidden;
+		position: relative;
+		width: 120px;
+		height: 120px;
+		background: #eee url('https://s3.amazonaws.com/uifaces/faces/twitter/walterstephanie/128.jpg');
+		background-size: 120px;
+		border-radius: 120px;
+	}
+	input[type="file"]{
+		z-index: 999;
+		line-height: 0;
+		font-size: 0;
+		position: absolute;
+		opacity: 0;
+		filter: alpha(opacity = 0);-ms-filter: "alpha(opacity=0)";
+		margin: 0;
+		padding:0;
+		left:0;
+	}
+	.uploadPhoto {
+		position: absolute;
+		top: 25%;
+		left: 25%;
+		display: none;
+		width: 50%;
+		height: 50%;
+		color: #fff;
+		text-align: center;
+		line-height: 60px;
+		text-transform: uppercase;
+		background-color: rgba(0,0,0,.3);
+		border-radius: 50px;
+		cursor: pointer;
+	}
+	.custom-input-file:hover .uploadPhoto { display: block; }
+</style>
+
+
+
+<!--	comment styles-->
+
+
+	<style>
+	body{
+		background:#eee;
+	}
 	.team-card-style-1, .team-card-style-3, .team-card-style-5 {
 	  position: relative;
 	  max-width: 360px;
@@ -371,109 +472,6 @@
 	}
 	</style>
 
-	<!--	comment styles-->
-
-	<style>
-			/*
-		Image credits:
-		uifaces.com (http://uifaces.com/authorized)
-		*/
-
-
-		#login { display: none; }
-		.login,
-		.logout {
-			position: absolute;
-			top: -3px;
-			right: 0;
-		}
-		.page-header { position: relative; }
-		.reviews {
-			color: #555;
-			font-weight: bold;
-			margin: 10px auto 20px;
-		}
-		.notes {
-			color: #999;
-			font-size: 12px;
-		}
-		.media .media-object { max-width: 120px; }
-		.media-body { position: relative; }
-		.media-date {
-			position: absolute;
-			right: 25px;
-			top: 25px;
-		}
-		.media-date li { padding: 0; }
-		.media-date li:first-child:before { content: ''; }
-		.media-date li:before {
-			content: '.';
-			margin-left: -2px;
-			margin-right: 2px;
-		}
-		.media-comment { margin-bottom: 0; }
-		.media-replied { margin: 0 0 20px 50px; }
-		.media-replied .media-heading { padding-left: 6px; }
-
-		.btn-circle {
-			font-weight: bold;
-			font-size: 12px;
-			padding: 6px 15px;
-			border-radius: 20px;
-		}
-		.btn-circle span { padding-right: 6px; }
-		.embed-responsive { margin-bottom: 20px; }
-		.tab-content {
-			padding: 50px 15px;
-			border: 1px solid #ddd;
-			border-top: 0;
-			border-bottom-right-radius: 4px;
-			border-bottom-left-radius: 4px;
-		}
-		.custom-input-file {
-			overflow: hidden;
-			position: relative;
-			width: 120px;
-			height: 120px;
-			background: #eee url('https://s3.amazonaws.com/uifaces/faces/twitter/walterstephanie/128.jpg');
-			background-size: 120px;
-			border-radius: 120px;
-		}
-		input[type="file"]{
-			z-index: 999;
-			line-height: 0;
-			font-size: 0;
-			position: absolute;
-			opacity: 0;
-			filter: alpha(opacity = 0);-ms-filter: "alpha(opacity=0)";
-			margin: 0;
-			padding:0;
-			left:0;
-		}
-		.uploadPhoto {
-			position: absolute;
-			top: 25%;
-			left: 25%;
-			display: none;
-			width: 50%;
-			height: 50%;
-			color: #fff;
-			text-align: center;
-			line-height: 60px;
-			text-transform: uppercase;
-			background-color: rgba(0,0,0,.3);
-			border-radius: 50px;
-			cursor: pointer;
-		}
-		.custom-input-file:hover .uploadPhoto { display: block; }
-	</style>
-
-
-
-	<!--	comment styles-->
-
-
-
 
 	{% endblock %}
 
@@ -520,7 +518,7 @@
 								<p>{{ object.snippet }}....</p>
 								<div class="col text-center">
 									<a href="{% url 'login' %}?next={% url 'blog:postView' object.slug %}"
-									   class="btn btn-primary"><small>Continue Reading...</small></a>
+					                   class="btn btn-primary"><small>Login to Read Full Post</small></a>
 								</div>
 
 							{% endif %}
@@ -550,8 +548,8 @@
 
 								{% else %}
 
-									<a href="{% url 'login' %}?next={% url 'blog:postView' object.slug %}"
-									   class="btn btn-primary"><small>Like</small></a>
+					                <a href="{% url 'login' %}?next={% url 'blog:postView' object.slug %}"
+					                   class="btn btn-primary"><small>Like</small></a>
 
 								 - {{ object.get_total_likes }} like{{ object.likes.count|pluralize:" ,s" }}
 
@@ -560,13 +558,23 @@
 							</form>
 							{% if request.user == object.author %}
 								<a href="{% url 'blog:post_update' object.slug %}"
-									   class="btn btn-secondary"><small>Edit</small></a>
+					                   class="btn btn-secondary"><small>Edit</small></a>
 							<a href="{% url 'blog:post_delete' object.slug %}"
-									   class="btn btn-danger"><small>Delete</small></a>
+					                   class="btn btn-danger"><small>Delete</small></a>
 
 							{% endif %}
 
-							<h2 class="h4 block-title text-center team-name mt-2">Meet the Author</h2>
+
+<!--							<div class="single_post_quote text-center">-->
+<!--								<div class="quote_image"><img src="images/quote.png" alt=""></div>-->
+<!--								<div class="quote_text">Quisque sagittis non ex eget vestibulum. Sed nec ultrices dui. Cras et sagittis erat. Maecenas pulvinar, turpis in dictum tincidunt, dolor nibh lacinia lacus.</div>-->
+<!--								<div class="quote_name">Liam Neeson</div>-->
+<!--							</div>-->
+
+<!--							<p>Praesent ac magna sed massa euismod congue vitae vitae risus. Nulla lorem augue, mollis non est et, eleifend elementum ante. Nunc id pharetra magna.  Praesent vel orci ornare, blandit mi sed, aliquet nisi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>-->
+<!--						-->
+
+							<h2 class="h4 block-title text-center mt-2">Meet the Author</h2>
 							<div class="row pt-3">
 								<!-- Author-->
 								<div class="col mb-30 pb-2">
@@ -609,76 +617,215 @@
 								</div>
 							</div>
 
-						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<!--Comments-->
-		<div class="container">
-		  <div class="row">
-			<div class="col-sm-10 col-sm-offset-1" id="logout">
-				<div class="page-header">
-
-					<h3 class="reviews">Leave your comment</h3>
-
+	<!--Comments-->
+	<div class="container">
+	  <div class="row">
+		<div class="col-sm-10 col-sm-offset-1" id="logout">
+			<div class="page-header">
+				<h3 class="reviews">Leave your comment</h3>
+				<div class="logout">
+<!--					<button class="btn btn-default btn-circle text-uppercase" type="button" onclick="$('#logout').hide(); $('#login').show()">-->
+<!--						<span class="glyphicon glyphicon-off"></span> Logout-->
+<!--					</button>-->
 				</div>
-				<div class="comment-tabs">
-					<ul class="nav nav-tabs" role="tablist">
-						<li class="active"><a href="#comments-logout" role="tab" data-toggle="tab"><h4 class="reviews text-capitalize">Comments</h4></a></li>
+			</div>
+			<div class="comment-tabs">
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="active"><a href="#comments-logout" role="tab" data-toggle="tab"><h4 class="reviews text-capitalize">Comments</h4></a></li>
+					<li><a href="#add-comment" role="tab" data-toggle="tab"><h4 class="reviews text-capitalize">Add comment</h4></a></li>
+					<li class="hidden"><a href="#account-settings" role="tab" data-toggle="tab"><h4 class="reviews text-capitalize">Account settings</h4></a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="comments-logout">
+						<ul class="media-list">
+						  <li class="media">
+							<a class="pull-left" href="#">
+							  <img class="media-object img-circle" src="https://s3.amazonaws.com/uifaces/faces/twitter/dancounsell/128.jpg" alt="profile">
+							</a>
+							<div class="media-body">
+							  <div class="well well-lg">
+								  <h4 class="media-heading text-uppercase reviews">Marco </h4>
+								  <ul class="media-date text-uppercase reviews list-inline">
+									<li class="dd">22</li>
+									<li class="mm">09</li>
+									<li class="aaaa">2014</li>
+								  </ul>
+								  <p class="media-comment">
+									Great snippet! Thanks for sharing.
+								  </p>
+								  <a class="btn btn-info btn-circle text-uppercase hidden" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> Reply</a>
+								  <a class="btn btn-warning btn-circle text-uppercase hidden" data-toggle="collapse" href="#replyOne"><span class="glyphicon glyphicon-comment"></span> 2 comments</a>
+							  </div>
+							</div>
 
-						{% if request.user.is_authenticated %}
-							<li><a href="#add-comment" role="tab" data-toggle="tab"><h4 class="reviews text-capitalize">Add comment</h4></a></li>
-						{% else %}
-							<li>
-								<a href="{% url 'login' %}?next={% url 'blog:postView' object.slug %}"><h4 class="reviews text-capitalize">Add comment</h4></a></li>
-						{% endif %}
-					</ul>
-					<div class="tab-content">
-						<div class="tab-pane active" id="comments-logout">
-							<ul class="media-list">
-
-								{% if object.comments.all %}
-									{% for comment in object.comments.all %}
-										<li class="media">
-
-										{% if comment.user.profile.image %}
-										  <img class="media-object img-circle" src="{{ comment.user.profile.image.url }}" alt="profile">
-										{% endif %}
-
+							<!-- Reply and comment hidden for future use-->
+							<div class="collapse" id="replyOne">
+								<ul class="media-list">
+									<li class="media media-replied">
+										<a class="pull-left" href="#">
+										  <img class="media-object img-circle" src="https://s3.amazonaws.com/uifaces/faces/twitter/ManikRathee/128.jpg" alt="profile">
+										</a>
 										<div class="media-body">
-											  <div class="well well-lg">
-												  <h4 class="media-heading text-uppercase reviews">{{ comment.user.username }} </h4>
-												  <ul class="media-date text-uppercase reviews list-inline">
-													<li class="dd">{{ comment.created }}</li>
-
-												  </ul>
-												  <p class="media-comment">
-													  {{ comment.content }}
-												  </p>
-												  <a class="btn btn-info btn-circle text-uppercase hidden" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> Reply</a>
-												  <a class="btn btn-warning btn-circle text-uppercase hidden" data-toggle="collapse" href="#replyOne"><span class="glyphicon glyphicon-comment"></span> 2 comments</a>
-											  </div>
+										  <div class="well well-lg">
+											  <h4 class="media-heading text-uppercase reviews"><span class="glyphicon glyphicon-share-alt"></span> The Hipster</h4>
+											  <ul class="media-date text-uppercase reviews list-inline">
+												<li class="dd">22</li>
+												<li class="mm">09</li>
+												<li class="aaaa">2014</li>
+											  </ul>
+											  <p class="media-comment">
+												Nice job Maria.
+											  </p>
+											  <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> Reply</a>
+										  </div>
 										</div>
+									</li>
+									<li class="media media-replied" id="replied">
+										<a class="pull-left" href="#">
+										  <img class="media-object img-circle" src="https://pbs.twimg.com/profile_images/442656111636668417/Q_9oP8iZ.jpeg" alt="profile">
+										</a>
+										<div class="media-body">
+										  <div class="well well-lg">
+											  <h4 class="media-heading text-uppercase reviews"><span class="glyphicon glyphicon-share-alt"></span> Mary</h4></h4>
+											  <ul class="media-date text-uppercase reviews list-inline">
+												<li class="dd">22</li>
+												<li class="mm">09</li>
+												<li class="aaaa">2014</li>
+											  </ul>
+											  <p class="media-comment">
+												Thank you Guys!
+											  </p>
+											  <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> Reply</a>
+										  </div>
+										</div>
+									</li>
+								</ul>
+							</div>
+						  <!-- Reply and comment hidden for future use-->
 
-									  </li>
-									{% endfor %}
-								{% else %}
-									<li class="media"><p>Zero Comments! Be the first to leave a comment!</p></li>
-								{% endif %}
 
-							</ul>
-						</div>
-						<div class="tab-pane" id="add-comment">
-							{% include 'blog/snippets/comment_form.html' %}
-						</div>
+						  </li>
+
+						<!-- comment with media with file upload for future reference-->
+						  <li class="media hidden">
+							<a class="pull-left" href="#">
+							  <img class="media-object img-circle" src="https://s3.amazonaws.com/uifaces/faces/twitter/kurafire/128.jpg" alt="profile">
+							</a>
+							<div class="media-body">
+							  <div class="well well-lg">
+								  <h4 class="media-heading text-uppercase reviews">Nico</h4>
+								  <ul class="media-date text-uppercase reviews list-inline">
+									<li class="dd">22</li>
+									<li class="mm">09</li>
+									<li class="aaaa">2014</li>
+								  </ul>
+								  <p class="media-comment">
+									I'm looking for that. Thanks!
+								  </p>
+								  <div class="embed-responsive embed-responsive-16by9">
+									  <iframe class="embed-responsive-item" src="//www.youtube.com/embed/80lNjkcp6gI" allowfullscreen></iframe>
+								  </div>
+								  <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> Reply</a>
+							  </div>
+							</div>
+						  </li>
+						<!--media with file upload-->
+
+						</ul>
+					</div>
+					<div class="tab-pane" id="add-comment">
+						<form action="#" method="post" class="form-horizontal" id="commentForm" role="form">
+							<div class="form-group">
+								<label for="email" class="col-sm-2 control-label">Comment</label>
+								<div class="col-sm-10">
+								  <textarea class="form-control" name="addComment" id="addComment" rows="5"></textarea>
+								</div>
+							</div>
+							<!--Media upload code-->
+							<div class="form-group hidden">
+								<label for="uploadMedia" class="col-sm-2 control-label">Upload media</label>
+								<div class="col-sm-10">
+									<div class="input-group">
+									  <div class="input-group-addon">http://</div>
+									  <input type="text" class="form-control" name="uploadMedia" id="uploadMedia">
+									</div>
+								</div>
+							</div>
+							<!--Media upload code-->
+
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button class="btn btn-success btn-circle text-uppercase" type="submit" id="submitComment"><span class="glyphicon glyphicon-send"></span> Summit comment</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="tab-pane hidden" id="account-settings">
+						<form action="#" method="post" class="form-horizontal" id="accountSetForm" role="form">
+							<div class="form-group">
+								<label for="avatar" class="col-sm-2 control-label">Avatar</label>
+								<div class="col-sm-10">
+									<div class="custom-input-file">
+										<label class="uploadPhoto">
+											Edit
+											<input type="file" class="change-avatar" name="avatar" id="avatar">
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-sm-2 control-label">Name</label>
+								<div class="col-sm-10">
+								  <input type="text" class="form-control" name="name" id="name" placeholder="Vilma palma">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="nickName" class="col-sm-2 control-label">Nick name</label>
+								<div class="col-sm-10">
+								  <input type="text" class="form-control" name="nickName" id="nickName" placeholder="Vilma">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="email" class="col-sm-2 control-label">Email</label>
+								<div class="col-sm-10">
+								  <input type="email" class="form-control" name="email" id="email" placeholder="vilma@mail.com">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="newPassword" class="col-sm-2 control-label">New password</label>
+								<div class="col-sm-10">
+								  <input type="password" class="form-control" name="newPassword" id="newPassword">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="confirmPassword" class="col-sm-2 control-label">Confirm password</label>
+								<div class="col-sm-10">
+								  <input type="password" class="form-control" name="confirmPassword" id="confirmPassword">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button class="btn btn-primary btn-circle text-uppercase" type="submit" id="submit">Save changes</button>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
-		  </div>
 		</div>
-		<!--Comments-->
+	  </div>
+	</div>
+	<!--Comments-->
+
+
+
+
+
 
 
 		{% if object.cross_reads %}
@@ -689,9 +836,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col">
-						<h1 class="h4 block-title text-center mt-2">Similar Reads</h1>
-						<br>
-						<br>
+
 						<div class="blog_posts d-flex flex-row align-items-start justify-content-between">
 
 							<!-- Blog post -->
@@ -839,7 +984,6 @@
 	<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
 
 	<script src="{{ STATIC_URL }}js/blog_single_custom.js"></script>
-
 
 
 	{% endblock %}

@@ -20,6 +20,7 @@ def me2u(request):
         'trends': Banner.objects.filter(active=True, is_trending=True),
         'deals': Banner.objects.filter(active=True, is_deal=True),
         'site_name': settings.SITE_NAME,
+        'LOGIN_URL': settings.LOGIN_URL,
         'meta_keywords': settings.META_KEYWORDS,
         'meta_description': settings.META_DESCRIPTION,
         'request': request
