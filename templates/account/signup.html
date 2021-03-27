@@ -90,7 +90,7 @@
 			<h3 class="omb_authTitle">Sign Up or <a href="{% url 'account_login' %}">Login</a></h3>
 			<div class="row omb_row-sm-offset-3 omb_socialButtons">
 
-				<div class="col-xs-6 col-sm-4">
+				<div class="disabled col-xs-6 col-sm-4">
 					{% load socialaccount %}
 					<a href="{% provider_login_url 'google' %}" class="btn btn-lg btn-block omb_btn-google">
 						<span class="hidden-xs">Sign Up With Google</span>
