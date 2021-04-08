@@ -4,16 +4,21 @@
 {% load catalog_filters %}
 
  	{% block headblock %}
-
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/blog_single_styles.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/blog_single_responsive.css">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
 <!--	comment tags-->
 	<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<!--	comment tags-->
+<!--	comment scripts-->
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!--	comment tags-->
+<!--	comment scripts-->
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/blog_single_styles.css">
+
+
+
+
 
 
 	<style>
@@ -378,8 +383,6 @@
 		Image credits:
 		uifaces.com (http://uifaces.com/authorized)
 		*/
-
-
 
 
 		#login { display: none; }
@@ -843,9 +846,14 @@
 
 	{% block extra_scripts %}
 
+
+
+
 	<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
 
 	<script src="{{ STATIC_URL }}js/blog_single_custom.js"></script>
+
+
 
 
 
