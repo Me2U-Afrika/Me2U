@@ -495,7 +495,7 @@
 				{% if object.product %}
 					{% for image in object.product.get_images %}
 					{% if image.in_display %}
-						<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ image.image.large.url }}" data-speed="0.8"></div>
+						<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ image.image.url }}" data-speed="0.8"></div>
 					{% endif %}
 					{% endfor %}
 				{% else %}
