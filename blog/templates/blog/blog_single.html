@@ -380,6 +380,8 @@
 		*/
 
 
+
+
 		#login { display: none; }
 		.login,
 		.logout {
@@ -404,6 +406,7 @@
 			right: 25px;
 			top: 25px;
 		}
+
 		.media-date li { padding: 0; }
 		.media-date li:first-child:before { content: ''; }
 		.media-date li:before {
@@ -466,6 +469,8 @@
 			cursor: pointer;
 		}
 		.custom-input-file:hover .uploadPhoto { display: block; }
+
+
 	</style>
 
 
@@ -485,7 +490,7 @@
 		<!-- Home -->
 		<div class="home">
 			{% if object.image %}
-			<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ object.image.medium.url }}" data-speed="0.8"></div>
+			<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ object.image.large.url }}" data-speed="0.8"></div>
 			{% else %}
 				{% if object.product %}
 					{% for image in object.product.get_images %}
@@ -644,14 +649,16 @@
 										<li class="media">
 
 										{% if comment.user.profile.image %}
-										  <img class="media-object img-circle" src="{{ comment.user.profile.image.url }}" alt="profile">
+										  <img class="media-object img-circle hidden-xs" src="{{ comment.user.profile.image.url }}" alt="profile">
 										{% endif %}
 
 										<div class="media-body">
 											  <div class="well well-lg">
-												  <h4 class="media-heading text-uppercase reviews">{{ comment.user.username }} </h4>
+												<h4 class="media-heading text-uppercase reviews media-username">{{ comment.user.username }} </h4>
 												  <ul class="media-date text-uppercase reviews list-inline">
-													<li class="dd">{{ comment.created }}</li>
+													<li class="dd">{{ comment.created.day }}</li>
+													<li class="mm">{{ comment.created.month }}</li>
+													<li class="aaaa">{{ comment.created.year }}</li>
 
 												  </ul>
 												  <p class="media-comment">
