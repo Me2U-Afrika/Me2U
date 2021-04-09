@@ -295,7 +295,7 @@
                                                 <ul>
 
                                                     {% for trend in trends %}
-                                                        <li><a href="{{ trend.product.get_absolute_url }}" target="_blank">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>
+                                                        <li><a href="{{ trend.product.get_absolute_url }}">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>
                                                     {% endfor %}
 
                                                 </ul>
@@ -355,39 +355,39 @@
                                             </a>
 
                                         </li>
-                                        <li class="page_menu_item has-children">
-                                            <a href="#">Deals<i class="fa fa-angle-down"></i></a>
-                                                <ul class="page_menu_selection">
-                                                    {% for deal in deals %}
-                                                    {% if deal.is_featured %}
-                                                    <li><a href="{{ deal.product.get_absolute_url }}" target="_blank">{{ deal }}<i class="fas fa-chevron-down"></i></a></li>
-                                                    {% endif %}
-                                                    {% endfor %}
+<!--                                        <li class="page_menu_item has-children">-->
+<!--                                            <a href="#">Deals<i class="fa fa-angle-down"></i></a>-->
+<!--                                                <ul class="page_menu_selection">-->
+<!--                                                    {% for deal in deals %}-->
+<!--                                                    {% if deal.is_featured %}-->
+<!--                                                    <li><a href="{{ deal.product.get_absolute_url }}" target="_blank">{{ deal }}<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                                    {% endif %}-->
+<!--                                                    {% endfor %}-->
 
-                                                </ul>
-                                        </li>
-                                        <li class="page_menu_item has-children">
-                                            <a href="#">Featured Brands<i class="fa fa-angle-down"></i></a>
-                                            <ul class="page_menu_selection">
+<!--                                                </ul>-->
+<!--                                        </li>-->
+<!--                                        <li class="page_menu_item has-children">-->
+<!--                                            <a href="#">Featured Brands<i class="fa fa-angle-down"></i></a>-->
+<!--                                            <ul class="page_menu_selection">-->
 
-                                                    {% for brand in brands %}
-                                                    {% if brand.is_featured %}
-                                                    <li><a href="{% url 'me2ushop:seller_page' brand.id %}" target="_blank">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
-                                                    {% endif %}
-                                                    {% endfor %}
+<!--                                                    {% for brand in brands %}-->
+<!--                                                    {% if brand.is_featured %}-->
+<!--                                                    <li><a href="{% url 'me2ushop:seller_page' brand.id %}" target="_blank">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                                    {% endif %}-->
+<!--                                                    {% endfor %}-->
 
-                                                </ul>
-                                        </li>
-                                        <li class="page_menu_item has-children">
-                                            <a href="#">Trending Products<i class="fa fa-angle-down"></i></a>
-                                            <ul class="page_menu_selection">
+<!--                                                </ul>-->
+<!--                                        </li>-->
+<!--                                        <li class="page_menu_item has-children">-->
+<!--                                            <a href="#">Trending Products<i class="fa fa-angle-down"></i></a>-->
+<!--                                            <ul class="page_menu_selection">-->
 
-                                                    {% for trend in trends %}
-                                                    <li><a href="{{ trend.product.get_absolute_url }}" target="_blank">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>
-                                                    {% endfor %}
+<!--                                                    {% for trend in trends %}-->
+<!--                                                    <li><a href="{{ trend.product.get_absolute_url }}">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                                    {% endfor %}-->
 
-                                            </ul>
-                                        </li>
+<!--                                            </ul>-->
+<!--                                        </li>-->
 
                                         <li class="page_menu_item"><a href="{% url 'blog:blog_home' %}">blog<i class="fa fa-angle-down"></i></a></li>
                                         <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact<i class="fa fa-angle-down"></i></a></li>
