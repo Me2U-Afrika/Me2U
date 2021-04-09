@@ -1,0 +1,1 @@
+certbot certonly -d www.me2uafrika.com -a certbot-django:auth --certbot-django:auth-username=DOgechi --certbot-django:auth-public-ip-logging-ok
