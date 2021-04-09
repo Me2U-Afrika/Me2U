@@ -23,9 +23,10 @@ from me2ushop import admin as main_admin
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+import certbot_django.server.urls
+
 
 urlpatterns = [
-    url('currencies/', include('currencies.urls')),
     url(r'^main-admin/', admin.site.urls),
     url(r'^office-admin/', main_admin.central_office_admin.urls),
     url(r'^seller-admin/', main_admin.sellers_admin.urls),
@@ -33,8 +34,9 @@ urlpatterns = [
 
     path('api-auth', include('rest_framework.urls'), ),
     path('accounts/', include('allauth.urls')),
+    url(r'^http://127.0.0.1:8000/.well-known/', include(certbot_django.server.urls)),
 
-
+    url('currencies/', include('currencies.urls')),
     url('main/', include('main.urls')),
     url('blog/', include('blog.urls')),
     url('users/', include('users.urls')),

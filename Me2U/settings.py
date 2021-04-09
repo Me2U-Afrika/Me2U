@@ -80,6 +80,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 
+    'asymmetric_jwt_auth',
+    'certbot_django.server',
+
     'django_extensions',
     'django_filters',
     'debug_toolbar',
@@ -156,7 +159,8 @@ MIDDLEWARE = [
     # 'Me2U.SSLMiddleware.SSLRedirect',
     'main.middleware.cart_middleware',
     # 'marketing.urlcanon.URLCanonicalizationMiddleware',
-    'django.contrib.redirects.middleware.RedirectFallbackMiddleware'
+    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
+    'asymmetric_jwt_auth.middleware.JWTAuthMiddleware',
 
 ]
 INTERNAL_IPS = ['127.0.0.1']
