@@ -99,7 +99,7 @@ oauthlib==3.1.0
 parsedatetime==2.6
 parso==0.7.1
 pickleshare==0.7.5
-Pillow==7.1.2
+Pillow==8.1.1
 progressbar2==3.51.4
 prompt-toolkit==3.0.7
 psycopg2==2.8.5
