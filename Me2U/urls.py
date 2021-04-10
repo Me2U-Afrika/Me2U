@@ -34,7 +34,7 @@ urlpatterns = [
 
     path('api-auth', include('rest_framework.urls'), ),
     path('accounts/', include('allauth.urls')),
-    url(r'^http://127.0.0.1:8000/.well-known/', include(certbot_django.server.urls)),
+    url(r'^http://me2uafrika.com/.well-known/', include(certbot_django.server.urls)),
 
     url('currencies/', include('currencies.urls')),
     url('main/', include('main.urls')),

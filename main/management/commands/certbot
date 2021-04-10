@@ -1,1 +1,5 @@
-certbot certonly -d www.me2uafrika.com -a certbot-django:auth --certbot-django:auth-username=DOgechi --certbot-django:auth-public-ip-logging-ok
+
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu3phi5scxyj+AHDyxcA1YNSSo5I3yRFM3W3Jmbq1B7RycNww9vIZAb82/s5kACxc4VUcTxaoKft1rVG4rx3T3tpWaqall+KtxKxutwYGsVU/ojtcivl1Wk0jKmNaeXLX7DXOzU7ToDPxxVoEdK37mEs/YDzUZoy8isZL12H6QPUMS9sKS0YhxElIRKTkP8ZMmR3y5nvXeaQbOFpFuwgFpGK0XMe5e0EV7WNcP49xfDFscn0+SddnUOVyBgz91LuUbupbIvLPvRNWIwHqZaF4IpqLjHYKR2idZPVC4cLLzf/P6dCmgX7ezZ62ogOqT1EC7OQCeqdsggy7QVsGXH7F5wIDAQAB
+
+
+certbot certonly -d www.me2uafrika.com -a certbot-django:auth --certbot-django:auth-username=me2uafrika@gmail.com --certbot-django:auth-public-ip-logging-ok
