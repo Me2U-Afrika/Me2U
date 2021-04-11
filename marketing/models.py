@@ -81,7 +81,7 @@ class Slider(CreationModificationDateMixin):
     text = models.CharField(max_length=120, null=True, blank=True)
     active = models.BooleanField(default=True)
     featured = models.BooleanField(default=False)
-    # start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+    start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
 
     background_image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
@@ -107,7 +107,7 @@ class Banner(CreationModificationDateMixin):
     bestselling = models.BooleanField(default=False)
     is_trending = models.BooleanField(default=False)
     top_display = models.BooleanField(default=False)
-    # start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+    start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
         'top_size': (520, 460),
@@ -199,7 +199,7 @@ class TrendInfo(CreationModificationDateMixin):
 class Trend(CreationModificationDateMixin):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
-    # start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+    start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     active = models.BooleanField(default=True)
     image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
