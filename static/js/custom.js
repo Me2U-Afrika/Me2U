@@ -972,10 +972,16 @@ $(document).ready(function()
 
     			// Add a date to data-target-time of the .deals_timer_box
     			// Format: "Feb 17, 2018"
+    			// Format: "Apr 11 2021 14:19:23"
     			if(timer.data('target-time') !== "")
     			{
     				targetTime = timer.data('target-time');
 					target_date = new Date(targetTime).getTime();
+//					console.log(targetTime)
+					console.log(target_date)
+					var date = new Date();
+					console.log(date)
+
     			}
     			else
     			{
@@ -996,7 +1002,7 @@ $(document).ready(function()
 				    // find the amount of "seconds" between now and target
 				    var current_date = new Date().getTime();
 				    var seconds_left = (target_date - current_date) / 1000;
-				    console.log(seconds_left);
+//				    console.log(seconds_left);
 				 
 				    // do some time calculations
 				    days = parseInt(seconds_left / 86400);

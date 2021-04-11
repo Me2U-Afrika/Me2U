@@ -4,11 +4,11 @@ from .models import MarketingMessage, Slider, MarketingEmails, Banner, Trend, Tr
 
 # Register your models here.
 class MarketingMessageAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'start_date', 'end_date', 'active']
+    list_display = ['__str__', 'end_date', 'active']
 
 
 class SliderAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'start_date', 'end_date', 'active']
+    list_display = ['__str__', 'end_date', 'active']
 
 
 class MarketingEmailsAdmin(admin.ModelAdmin):
@@ -16,7 +16,7 @@ class MarketingEmailsAdmin(admin.ModelAdmin):
 
 
 class BannerAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'created', 'modified']
+    list_display = ['__str__', 'end_date', 'is_deal', 'active', 'created', 'modified']
 
 
 class TrendAdmin(admin.ModelAdmin):

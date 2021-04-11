@@ -18,7 +18,7 @@ def me2u(request):
         'recently_viewed': stats.get_recently_viewed(request),
         'brands': Brand.objects.filter(active=True),
         'trends': Banner.objects.filter(active=True, is_trending=True),
-        'deals': Banner.objects.filter(active=True, is_deal=True),
+        'deals': Banner.objects.deals(),
         'site_name': settings.SITE_NAME,
         'LOGIN_URL': settings.LOGIN_URL,
         'meta_keywords': settings.META_KEYWORDS,
