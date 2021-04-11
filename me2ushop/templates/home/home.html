@@ -287,13 +287,11 @@
 		<div class="container">
 			<div class="row">
 				<div class="col d-flex flex-lg-row flex-column align-items-center justify-content-start">
-
 					<!-- Deals -->
-
 					<div class="deals">
 						<div class="deals_title">Deals of the Week</div>
 						<div class="deals_slider_container">
-
+							{% if deals %}
 							<!-- Deals Slider -->
 							<div class="owl-carousel owl-theme deals_slider">
 
@@ -342,7 +340,7 @@
 												<div class="deals_timer_subtitle">Offer ends in:</div>
 											</div>
 											<div class="deals_timer_content ml-auto">
-												<div class="deals_timer_box clearfix" data-target-time="">
+												<div class="deals_timer_box clearfix" data-target-time="{{ deal.get_target_time }}">
 													<div class="deals_timer_unit">
 														<div id="deals_timer1_hr" class="deals_timer_hr"></div>
 														<span>hours</span>
@@ -364,10 +362,12 @@
 
 
 							</div>
+							{% endif %}
+
 
 						</div>
 
-						<div class="deals_slider_nav_container">
+						<div class="deals_slider_nav_container ">
 							<div class="deals_slider_prev deals_slider_nav"><i class="fas fa-chevron-left ml-auto"></i></div>
 							<div class="deals_slider_next deals_slider_nav"><i class="fas fa-chevron-right ml-auto"></i></div>
 						</div>
@@ -421,7 +421,7 @@
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
-												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+												<div class="product_fav" id="{{ product.slug }}"><i class="fas fa-heart"></i></div>
 
 												{% for wish in wish_list %}
 												{% if wish.product == product %}
@@ -559,7 +559,6 @@
 								</div>
 								<div class="featured_slider_dots_cover"></div>
 							</div>
-
 
 						</div>
 					</div>

@@ -52,3 +52,16 @@ SQL MIGRATE COMMANDS
 
 - manage.py sqlmigrate model migration_number i.e manage.py sqlmigrate blog 0001
 
+ACTIVATE VIRTUAL ENV
+
+pip install virtualenv
+
+2. For Create a venv run this virtualenv -p python3 venv
+3. Activate virtualenv venv\Scripts\activate
+4. It will look like this (venv) C:\Users\user\Desktop\UserDjangoProject>
+5. Then run pip install -r requirements.txt
+6. Run the django project run this./manage.py runserver
+
+PIP INSTALL
+
+$ python -m pip install --force-reinstall --ignore-installed --upgrade --no-index --no-deps
