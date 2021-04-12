@@ -412,8 +412,8 @@ class ProductListView(ListView):
 class ProductDetailedView(DetailView):
     model = Product
     # template_name = 'home/products_detailed_page.html'
-    # template_name = 'home/product_detail.html'
-    template_name = 'home/product_page_test.html'
+    template_name = 'home/product_detail.html'
+    # template_name = 'home/product_page_test.html'
     query_pk_and_slug = False
 
     def get_context_data(self, **kwargs):

@@ -242,100 +242,107 @@
                 </div>
             </div>
             {% endblock %}
+            <!-- Header Main -->
+
 
             <!-- Main Navigation -->
             {% block main_nav %}
-                <nav class="main_nav" id="menu_bar">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <div class="main_nav_content d-flex flex-row">
+            <nav class="main_nav" id="menu_bar">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="main_nav_content d-flex flex-row">
 
-                                    <!-- Categories Menu -->
+                                <!-- Categories Menu -->
+                                {% block categories %}
 
-                                    <div class="cat_menu_container">
-                                        <div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
-                                            <div class="cat_burger"><span></span><span></span><span></span></div>
-                                            <div class="cat_menu_text">Made In Afrika</div>
-                                        </div>
-                                        {% include 'tags/department_list.html' %}
-
+                                <div class="cat_menu_container">
+                                    <div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
+                                        <div class="cat_burger"><span></span><span></span><span></span></div>
+                                        <div class="cat_menu_text">Made In Afrika</div>
                                     </div>
-
-                                    <!-- Main Nav Menu -->
-
-                                    <div class="main_nav_menu ml-auto">
-                                        <ul class="standard_dropdown main_nav_dropdown">
-                                            <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
-                                            <li class="hassubs">
-                                                <a href="#">Deals</a>
-                                                <ul>
-                                                    {% for deal in deals %}
-                                                    {% if deal.is_featured %}
-                                                    <li><a href="{{ deal.product.get_absolute_url }}">{{ deal }}</a></li>
-                                                    {% endif %}
-                                                    {% endfor %}
-
-                                                </ul>
-                                            </li>
-                                            <li class="hassubs">
-                                                <a href="#">Brands</a>
-                                                <ul>
-
-                                                    {% for brand in brands %}
-                                                    {% if brand.is_featured %}
-                                                    <li><a href="{% url 'me2ushop:seller_page' brand.id %}">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
-                                                    {% endif %}
-                                                    {% endfor %}
-
-                                                </ul>
-                                            </li>
-                                            <li class="hassubs">
-                                                <a href="#">Trending</a>
-                                                <ul>
-
-                                                    {% for trend in trends %}
-                                                        <li><a href="{{ trend.product.get_absolute_url }}">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>
-                                                    {% endfor %}
-
-                                                </ul>
-                                            </li>
-            <!--                                <li class="hassubs">-->
-            <!--                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>-->
-            <!--                                    <ul>-->
-            <!--                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                        <li><a href="#">KFC<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                        <li><a href="#">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                    </ul>-->
-            <!--                                </li>-->
-                                            <li><a href="{%  url 'sellers:seller_home' %}">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
-                                            <li><a href="{% url 'blog:blog_home' %}">Blog<i class="fas fa-chevron-down"></i></a></li>
-                                            <li class="disabled"><a href="{% url 'users:automobile_create' %}">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
-                                        </ul>
-                                    </div>
-
-                                    <!-- Menu Trigger -->
-
-                                    <div class="menu_trigger_container ml-auto">
-                                        <div class="menu_trigger d-flex flex-row align-items-center justify-content-end">
-                                            <div class="menu_burger">
-                                                <div class="menu_trigger_text">menu</div>
-                                                <div class="cat_burger menu_burger_inner"><span></span><span></span><span></span></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% include 'tags/department_list.html' %}
 
                                 </div>
+                                {% endblock %}
+
+                                {% block main_nav_menu %}
+                                <!-- Main Nav Menu -->
+
+                                <div class="main_nav_menu ml-auto">
+                                    <ul class="standard_dropdown main_nav_dropdown">
+                                        <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
+                                        <li class="hassubs">
+                                            <a href="#">Deals</a>
+                                            <ul>
+                                                {% for deal in deals %}
+                                                {% if deal.is_featured %}
+                                                <li><a href="{{ deal.product.get_absolute_url }}">{{ deal }}</a></li>
+                                                {% endif %}
+                                                {% endfor %}
+
+                                            </ul>
+                                        </li>
+                                        <li class="hassubs">
+                                            <a href="#">Brands</a>
+                                            <ul>
+
+                                                {% for brand in brands %}
+                                                {% if brand.is_featured %}
+                                                <li><a href="{% url 'me2ushop:seller_page' brand.id %}">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
+                                                {% endif %}
+                                                {% endfor %}
+
+                                            </ul>
+                                        </li>
+                                        <li class="hassubs">
+                                            <a href="#">Trending</a>
+                                            <ul>
+
+                                                {% for trend in trends %}
+                                                    <li><a href="{{ trend.product.get_absolute_url }}">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>
+                                                {% endfor %}
+
+                                            </ul>
+                                        </li>
+        <!--                                <li class="hassubs">-->
+        <!--                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>-->
+        <!--                                    <ul>-->
+        <!--                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                        <li><a href="#">KFC<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                        <li><a href="#">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                    </ul>-->
+        <!--                                </li>-->
+                                        <li><a href="{%  url 'sellers:seller_home' %}">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="{% url 'blog:blog_home' %}">Blog<i class="fas fa-chevron-down"></i></a></li>
+                                        <li class="disabled"><a href="{% url 'users:automobile_create' %}">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                                    </ul>
+                                </div>
+
+                                {% endblock %}
+
+                                <!-- Menu Trigger -->
+
+                                <div class="menu_trigger_container ml-auto">
+                                    <div class="menu_trigger d-flex flex-row align-items-center justify-content-end">
+                                        <div class="menu_burger">
+                                            <div class="menu_trigger_text">menu</div>
+                                            <div class="cat_burger menu_burger_inner"><span></span><span></span><span></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                </nav>
+                </div>
+            </nav>
 
-                <!-- Phone Menu -->
-                <div class="page_menu">
+            <!-- Phone Menu -->
+            <div class="page_menu">
                     <div class="container">
                         <div class="row">
                             <div class="col">
