@@ -694,6 +694,18 @@
 	{
 		margin-top: 30px;
 	}
+		.reviews
+	{
+		padding-bottom: 80px;
+	}
+	.reviews_all a span
+	{
+		display: none;
+	}
+	.reviews_dots
+	{
+		display: none;
+	}
 }
 
 /************

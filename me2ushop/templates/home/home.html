@@ -417,10 +417,10 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">View</button></form>
+													<form action="{{ product.get_add_cart_url }}" ><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
-											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 												<div class="product_fav" id="{{ product.slug }}"><i class="fas fa-heart"></i></div>
 
 												{% for wish in wish_list %}
@@ -475,10 +475,10 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">View</button></form>
+													<form action="{{ product.get_add_cart_url }}" ><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
-											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 												{% for wish in wish_list %}
@@ -533,10 +533,10 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}" target="_blank"><button class="arrivals_single_button">View</button></form>
+													<form action="{{ product.get_add_cart_url }}" ><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
-											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 												{% for wish in wish_list %}
@@ -720,7 +720,7 @@
 													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
-											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 												{% for wish in wish_list %}
@@ -773,7 +773,7 @@
 													<form action="{{ product.product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
-											<a href="{% url 'me2ushop:add_wishlist' product.product.slug %}" target="_blank">
+											<a href="{% url 'me2ushop:add_wishlist' product.product.slug %}" >
 												<div class="product_fav" id="{{ product.product.slug}}"><i class="fas fa-heart"></i></div>
 
 												{% for wish in wish_list %}
@@ -825,7 +825,7 @@
 													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
-											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 												<div class="product_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 												{% for wish in wish_list %}
@@ -875,7 +875,7 @@
 											<div class="rating_r rating_r_4 arrivals_single_rating"><i></i><i></i><i></i><i></i><i></i></div>
 											<form action="{{ best_seller_banner.product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
 										</div>
-											<a href="{% url 'me2ushop:add_wishlist' best_seller_banner.product.slug %}" target="_blank">
+											<a href="{% url 'me2ushop:add_wishlist' best_seller_banner.product.slug %}" >
 											<div class="arrivals_single_fav product_fav" id="{{ best_seller_banner.product.slug}}"><i class="fas fa-heart"></i></div>
 
 											{% for wish in wish_list %}
@@ -948,7 +948,7 @@
 											<div class="bestsellers_price discount">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }}</span></div>
 										</div>
 									</div>
-									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 										<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 										{% for wish in wish_list %}
@@ -985,7 +985,7 @@
 										</div>
 									</div>
 
-										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 											<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 											{% for wish in wish_list %}
@@ -1032,7 +1032,7 @@
 											<div class="bestsellers_price discount">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }}<span>{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }} </span></div>
 										</div>
 									</div>
-									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 										<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 										{% for wish in wish_list %}
@@ -1069,7 +1069,7 @@
 										</div>
 									</div>
 
-										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 											<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 											{% for wish in wish_list %}
@@ -1116,7 +1116,7 @@
 											<div class="bestsellers_price discount">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }} </span></div>
 										</div>
 									</div>
-									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+									<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 										<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 										{% for wish in wish_list %}
@@ -1153,7 +1153,7 @@
 										</div>
 									</div>
 
-										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" >
 											<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 											{% for wish in wish_list %}
@@ -1279,9 +1279,9 @@
 									{% endif %}
 									{% endfor %}
 									<div class="trends_content">
-										<div class="trends_category"><a href="{{ trend.product.get_absolute_url }}" target="_blank">{{trend.product.get_category_choice_display}}</a></div>
+										<div class="trends_category"><a href="{{ trend.product.get_absolute_url }}" >{{trend.product.get_category_choice_display}}</a></div>
 										<div class="trends_info clearfix">
-											<div class="trends_name"><a href="{{ trend.product.get_absolute_url }}" target="_blank">{{ trend.product.title|truncatechars:18 }}</a></div>
+											<div class="trends_name"><a href="{{ trend.product.get_absolute_url }}" >{{ trend.product.title|truncatechars:18 }}</a></div>
 											<div class="trends_price">{{ CURRENCY.symbol }}{{ trend.product.price|currency:CURRENCY.code }} </div>
 										</div>
 									</div>
@@ -1291,7 +1291,7 @@
 										{% endif %}
 										<li class="trends_mark trends_new">new</li>
 									</ul>
-									<a href="{% url 'me2ushop:add_wishlist' trend.product.slug %}" target="_blank">
+									<a href="{% url 'me2ushop:add_wishlist' trend.product.slug %}" >
 										<div class="trends_fav" id="{{ trend.product.slug}}"><i class="fas fa-heart"></i></div>
 
 										{% for wish in wish_list %}
