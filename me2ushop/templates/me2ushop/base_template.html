@@ -145,14 +145,14 @@
                                         {% endwith %}
 
                                     <li>
-                                        <a href="{%  url 'sellers:seller_home' %}" target="_blank" style="color:MediumSeaGreen;">Advertise<i class="fas fa-chevron-down"></i></a>
+                                        <a href="{%  url 'sellers:seller_home' %}" style="color:MediumSeaGreen;">Advertise<i class="fas fa-chevron-down"></i></a>
                                     </li>
                                 </ul>
                             </div>
                             <div class="top_bar_user">
                                 {% if request.user.is_authenticated %}
                                 <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
-                                <div><a href="{% url 'users:profile' %}" target="_blank">Karibu {{ request.user.username|title }}</a></div>
+                                <div><a href="{% url 'users:profile' %}">Karibu {{ request.user.username|title }}</a></div>
                                 <div><a href="{% url 'account_logout' %}">LogOut</a></div>
                                 {% else %}
                                 <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
@@ -199,9 +199,9 @@
                             <div class="wishlist_cart d-flex flex-row align-items-center justify-content-end">
 
                                 <div class="wishlist d-flex flex-row align-items-center justify-content-end">
-                                    <div class="wishlist_icon"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank"><img src="{{ STATIC_URL }}images/heart.png" alt=""></a></div>
+                                    <div class="wishlist_icon"><a href="{% url 'me2ushop:wishlist_summary' %}"><img src="{{ STATIC_URL }}images/heart.png" alt=""></a></div>
                                     <div class="wishlist_content">
-                                        <div class="wishlist_text"><a href="{% url 'me2ushop:wishlist_summary' %}" target="_blank">Wishlist</a></div>
+                                        <div class="wishlist_text"><a href="{% url 'me2ushop:wishlist_summary' %}">Wishlist</a></div>
                                         {% if not wish_list == None %}
                                         <div class="wishlist_count">{{ request|wish_list_count }}</div>
                                         {% endif %}
@@ -216,7 +216,7 @@
         <!--                                    <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>-->
         <!--                                </div>-->
         <!--                                <div class="cart_content">-->
-        <!--                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}" target="_blank">Cart</a></div>-->
+        <!--                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}">Cart</a></div>-->
         <!--                                    <div class="cart_price">{{ request|cart_item_total }} </div>-->
         <!--                                </div>-->
         <!--                            </div>-->
@@ -226,11 +226,11 @@
                                   <!-- Cart -->
                                 <div class="cart">
                                     <div class="cart_container d-flex flex-row align-items-center justify-content-end">
-                                        <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}" target="_blank">
+                                        <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}">
                                             <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
                                         </div>
                                         <div class="cart_content">
-                                            <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" target="_blank">Made In Afrika</a></div>
+                                            <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}">Made In Afrika</a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -242,100 +242,107 @@
                 </div>
             </div>
             {% endblock %}
+            <!-- Header Main -->
+
 
             <!-- Main Navigation -->
             {% block main_nav %}
-                <nav class="main_nav" id="menu_bar">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <div class="main_nav_content d-flex flex-row">
+            <nav class="main_nav" id="menu_bar">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="main_nav_content d-flex flex-row">
 
-                                    <!-- Categories Menu -->
+                                <!-- Categories Menu -->
+                                {% block categories %}
 
-                                    <div class="cat_menu_container">
-                                        <div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
-                                            <div class="cat_burger"><span></span><span></span><span></span></div>
-                                            <div class="cat_menu_text">Made In Afrika</div>
-                                        </div>
-                                        {% include 'tags/department_list.html' %}
-
+                                <div class="cat_menu_container">
+                                    <div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
+                                        <div class="cat_burger"><span></span><span></span><span></span></div>
+                                        <div class="cat_menu_text">Made In Afrika</div>
                                     </div>
-
-                                    <!-- Main Nav Menu -->
-
-                                    <div class="main_nav_menu ml-auto">
-                                        <ul class="standard_dropdown main_nav_dropdown">
-                                            <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
-                                            <li class="hassubs">
-                                                <a href="#">Deals</a>
-                                                <ul>
-                                                    {% for deal in deals %}
-                                                    {% if deal.is_featured %}
-                                                    <li><a href="{{ deal.product.get_absolute_url }}" target="_blank">{{ deal }}</a></li>
-                                                    {% endif %}
-                                                    {% endfor %}
-
-                                                </ul>
-                                            </li>
-                                            <li class="hassubs">
-                                                <a href="#">Brands</a>
-                                                <ul>
-
-                                                    {% for brand in brands %}
-                                                    {% if brand.is_featured %}
-                                                    <li><a href="{% url 'me2ushop:seller_page' brand.id %}" target="_blank">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
-                                                    {% endif %}
-                                                    {% endfor %}
-
-                                                </ul>
-                                            </li>
-                                            <li class="hassubs">
-                                                <a href="#">Trending</a>
-                                                <ul>
-
-                                                    {% for trend in trends %}
-                                                        <li><a href="{{ trend.product.get_absolute_url }}">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>
-                                                    {% endfor %}
-
-                                                </ul>
-                                            </li>
-            <!--                                <li class="hassubs">-->
-            <!--                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>-->
-            <!--                                    <ul>-->
-            <!--                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                        <li><a href="#">KFC<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                        <li><a href="#">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>-->
-            <!--                                    </ul>-->
-            <!--                                </li>-->
-                                            <li><a href="{%  url 'sellers:seller_home' %}" target="_blank">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
-                                            <li><a href="{% url 'blog:blog_home' %}" target="_blank">Blog<i class="fas fa-chevron-down"></i></a></li>
-                                            <li class="disabled"><a href="{% url 'users:automobile_create' %}" target="_blank">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
-                                        </ul>
-                                    </div>
-
-                                    <!-- Menu Trigger -->
-
-                                    <div class="menu_trigger_container ml-auto">
-                                        <div class="menu_trigger d-flex flex-row align-items-center justify-content-end">
-                                            <div class="menu_burger">
-                                                <div class="menu_trigger_text">menu</div>
-                                                <div class="cat_burger menu_burger_inner"><span></span><span></span><span></span></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% include 'tags/department_list.html' %}
 
                                 </div>
+                                {% endblock %}
+
+                                {% block main_nav_menu %}
+                                <!-- Main Nav Menu -->
+
+                                <div class="main_nav_menu ml-auto">
+                                    <ul class="standard_dropdown main_nav_dropdown">
+                                        <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
+                                        <li class="hassubs">
+                                            <a href="#">Deals</a>
+                                            <ul>
+                                                {% for deal in deals %}
+                                                {% if deal.is_featured %}
+                                                <li><a href="{{ deal.product.get_absolute_url }}">{{ deal }}</a></li>
+                                                {% endif %}
+                                                {% endfor %}
+
+                                            </ul>
+                                        </li>
+                                        <li class="hassubs">
+                                            <a href="#">Brands</a>
+                                            <ul>
+
+                                                {% for brand in brands %}
+                                                {% if brand.is_featured %}
+                                                <li><a href="{% url 'me2ushop:seller_page' brand.id %}">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
+                                                {% endif %}
+                                                {% endfor %}
+
+                                            </ul>
+                                        </li>
+                                        <li class="hassubs">
+                                            <a href="#">Trending</a>
+                                            <ul>
+
+                                                {% for trend in trends %}
+                                                    <li><a href="{{ trend.product.get_absolute_url }}">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>
+                                                {% endfor %}
+
+                                            </ul>
+                                        </li>
+        <!--                                <li class="hassubs">-->
+        <!--                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>-->
+        <!--                                    <ul>-->
+        <!--                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                        <li><a href="#">KFC<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                        <li><a href="#">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>-->
+        <!--                                    </ul>-->
+        <!--                                </li>-->
+                                        <li><a href="{%  url 'sellers:seller_home' %}">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="{% url 'blog:blog_home' %}">Blog<i class="fas fa-chevron-down"></i></a></li>
+                                        <li class="disabled"><a href="{% url 'users:automobile_create' %}">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                                    </ul>
+                                </div>
+
+                                {% endblock %}
+
+                                <!-- Menu Trigger -->
+
+                                <div class="menu_trigger_container ml-auto">
+                                    <div class="menu_trigger d-flex flex-row align-items-center justify-content-end">
+                                        <div class="menu_burger">
+                                            <div class="menu_trigger_text">menu</div>
+                                            <div class="cat_burger menu_burger_inner"><span></span><span></span><span></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                </nav>
+                </div>
+            </nav>
 
-                <!-- Phone Menu -->
-                <div class="page_menu">
+            <!-- Phone Menu -->
+            <div class="page_menu">
                     <div class="container">
                         <div class="row">
                             <div class="col">
@@ -349,7 +356,7 @@
                                             <a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a>
                                         </li>
                                         <li class="page_menu_item">
-                                            <a href="{%  url 'sellers:seller_home' %}" target="_blank">
+                                            <a href="{%  url 'sellers:seller_home' %}">
                                                 Sell On Me2U
                                                 <img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;">
                                             </a>
@@ -360,7 +367,7 @@
 <!--                                                <ul class="page_menu_selection">-->
 <!--                                                    {% for deal in deals %}-->
 <!--                                                    {% if deal.is_featured %}-->
-<!--                                                    <li><a href="{{ deal.product.get_absolute_url }}" target="_blank">{{ deal }}<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                                    <li><a href="{{ deal.product.get_absolute_url }}">{{ deal }}<i class="fas fa-chevron-down"></i></a></li>-->
 <!--                                                    {% endif %}-->
 <!--                                                    {% endfor %}-->
 
@@ -372,7 +379,7 @@
 
 <!--                                                    {% for brand in brands %}-->
 <!--                                                    {% if brand.is_featured %}-->
-<!--                                                    <li><a href="{% url 'me2ushop:seller_page' brand.id %}" target="_blank">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>-->
+<!--                                                    <li><a href="{% url 'me2ushop:seller_page' brand.id %}">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>-->
 <!--                                                    {% endif %}-->
 <!--                                                    {% endfor %}-->
 
@@ -401,7 +408,7 @@
 
                                         {% if request.user.is_authenticated %}
                                             <div class="menu_contact_item">
-                                                <div class="menu_contact_icon"></div><a href="{% url 'users:profile' %}" target="_blank"><i class="far fa-user-circle"></i> Karibu {{ request.user.username }}</a></div>
+                                                <div class="menu_contact_icon"></div><a href="{% url 'users:profile' %}"><i class="far fa-user-circle"></i> Karibu {{ request.user.username }}</a></div>
 
                                             <div class="menu_contact_item">
                                                 <div class="menu_contact_icon"></div><a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i> LogOut</a></div>

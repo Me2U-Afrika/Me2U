@@ -32,6 +32,12 @@
     max-width: 100%;
     height: auto;
     width: auto\9; /* ie8 */
+
+}
+    .reviews_all {
+    position: relative;
+    right: 0;
+    bottom: 14px;
 }
 </style>
 
@@ -190,24 +196,24 @@
 
 								{% if object.brand_name.user.user == request.user %}
 	                            <div class="card card-body">
-	                                <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-update' object.slug %}" target="_blank">UPDATE Product</a>
-	                                <a class="btn btn-outline-green " href="{% url 'me2ushop:product-create' %}" target="_blank">New Product</a>
-		                            <a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}" target="_blank">Additional Information</a>
+	                                <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-update' object.slug %}">UPDATE Product</a>
+	                                <a class="btn btn-outline-green " href="{% url 'me2ushop:product-create' %}">New Product</a>
+		                            <a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}">Additional Information</a>
 
 		                            {% if object.productimage_set.all %}
-	                                <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_images' object.slug %}" target="_blank">Product Images</a>
+	                                <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_images' object.slug %}">Product Images</a>
 		                            {% else %}
-		                            <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_image_create' object.slug %}" target="_blank">Add Images</a>
+		                            <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_image_create' object.slug %}">Add Images</a>
 		                            {% endif %}
 
-	                                <a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}" target="_blank">ADD Attributes</a>
+	                                <a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}">ADD Attributes</a>
 
-	                                <a class="btn btn-outline-grey" href="{% url 'sellers:seller_products' %}" target="_blank">My Products</a>
+	                                <a class="btn btn-outline-grey" href="{% url 'sellers:seller_products' %}">My Products</a>
 
 	                                {% if pending_item %}
 		                            <a class="btn text-muted disabled red-text" href="#">Delete Product</a>
 		                            {% else %}
-		                            <a class="btn" href="{% url 'me2ushop:product-delete' object.slug %}" target="_blank">Delete</a>
+		                            <a class="btn" href="{% url 'me2ushop:product-delete' object.slug %}">Delete</a>
 		                            {% endif %}
 	                            </div>
 								{% endif %}
@@ -234,12 +240,12 @@
 
 						<div class="cart">
                             <div class="cart_container d-flex flex-row align-items-center justify-content-start">
-                                <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}" target="_blank">
+                                <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}">
                                     <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
                                 </div>
-                                <div class="cart_content">
-                                    <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" target="_blank">Post Ad like this</a></div>
-                                </div>
+								<div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" style="color:MediumSeaGreen;">'Am A Seller...</a></div>
+
+
                             </div>
                         </div>
 						<br>
@@ -276,7 +282,7 @@
 
 	                    <div class="col-md-4 contact-email">
 	                        <h2>
-		                       <a href="mailto:{{ object.brand_name.user.email }}" target="_blank"><i class="fas fa-envelope-square" style="color:#20639B;"> Email</i></a>
+		                       <a href="mailto:{{ object.brand_name.user.email }}"><i class="fas fa-envelope-square" style="color:#20639B;"> Email</i></a>
 	                            </h2>
 	                        <h3>
 	                            {{ object.brand_name.user.phone }}</h3>
@@ -285,13 +291,13 @@
 	                        <div class="row contact row-first">
 		                        {% if object.brand_name.facebook %}
 	                            <div class="col-md-6">
-	                                <a href="{{ object.brand_name.facebook }}" class="facebook" target="_blank"><i class="fa fa-facebook"></i>Facebook</a>
+	                                <a href="{{ object.brand_name.facebook }}" class="facebook"><i class="fa fa-facebook"></i>Facebook</a>
 	                            </div>
 		                        {% endif %}
 
 		                        {% if object.brand_name.instagram %}
 	                            <div class="col-md-6">
-	                                <a href="{{ object.brand_name.instagram }}" class="instagram" target="_blank"><i class="fa fa-instagram"></i>instagram</a>
+	                                <a href="{{ object.brand_name.instagram }}" class="instagram"><i class="fa fa-instagram"></i>instagram</a>
 	                            </div>
 		                        {% endif %}
 	                        </div>
@@ -299,13 +305,13 @@
 
 		                        {% if object.brand_name.website_link %}
 	                            <div class="col-md-6">
-	                                <a href="{{ object.brand_name.website_link }}" class="email" target="_blank"><i class="fa fa-globe"></i>Website</a>
+	                                <a href="{{ object.brand_name.website_link }}" class="email"><i class="fa fa-globe"></i>Website</a>
 	                            </div>
 		                        {% endif %}
 
 		                        {% if object.brand_name.twitter %}
 	                            <div class="col-md-6">
-	                                <a href="{{ object.brand_name.twitter }}" class="telegram" target="_blank"><i class="far fa-paper-plane"></i>Twitter</a>
+	                                <a href="{{ object.brand_name.twitter }}" class="telegram"><i class="far fa-paper-plane"></i>Twitter</a>
 	                            </div>
 		                        {% endif %}
 	                        </div>
@@ -331,7 +337,7 @@
 	            <a class="nav-link" id="detailed_description-tab" data-toggle="tab" href="#detailed_description" role="tab" aria-controls="detailed_description" aria-selected="false">Detailed Description</a>
 	        </li>
 			<li class="nav-item">
-	            <a class="nav-link  " id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Information</a>
+	            <a class="nav-link  " id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Product Attributes</a>
 	        </li>
 	    </ul>
 
@@ -340,9 +346,9 @@
 
 
 		    <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
-	        <h3>
-	            <a href="{% url 'me2ushop:tag_cloud' %}" style="text-color: orange;">View TagCloud</a>
-	        </h3>
+	        <h4>
+	            <a href="{% url 'me2ushop:tag_cloud' %}">View TagCloud</a>
+	        </h4>
 	         <div class="media mt-3 mb-4">
 	               <div id="tags" >
 	                    {% for tag in product.tags %}
@@ -412,9 +418,9 @@
 			            {% if object.brand_name.user.user == request.user %}
 	                     <td>
 
-			                     <em><a class="btn btn-outline-red" href="{% url 'me2ushop:product_delete_attributes' pdattribute.id %}" target="_blank">DELETE </a></em>
+			                     <em><a class="btn btn-outline-red" href="{% url 'me2ushop:product_delete_attributes' pdattribute.id %}">DELETE </a></em>
 			                     <br>
-			                     <span><a class="btn btn-outline-green " href="{% url 'me2ushop:product_update_attributes' pdattribute.id %}" target="_blank">UPDATE</a></span>
+			                     <span><a class="btn btn-outline-green " href="{% url 'me2ushop:product_update_attributes' pdattribute.id %}">UPDATE</a></span>
 
 	                     </td>
 				          {% else %}
@@ -474,7 +480,7 @@
 												<div class="bestsellers_price discount">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }}</span></div>
 											</div>
 										</div>
-										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+										<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
 											<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 											{% for wish in wish_list %}
@@ -511,7 +517,7 @@
 											</div>
 										</div>
 
-											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
 												<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 												{% for wish in wish_list %}
@@ -558,7 +564,7 @@
 												<div class="bestsellers_price discount">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }}<span>{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }} </span></div>
 											</div>
 										</div>
-										<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+										<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
 											<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 											{% for wish in wish_list %}
@@ -595,7 +601,7 @@
 											</div>
 										</div>
 
-											<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
+											<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
 												<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
 												{% for wish in wish_list %}
@@ -634,7 +640,7 @@
 						{% if request.user.is_authenticated %}
 						{% if request.user != object.brand_name.user.user %}
 
-							<div class="reviews_all ml-auto"><a id="add_review" style=" color:blueviolet;">Add a <span>review</span></a></div>
+							<div class="reviews_all ml-auto"><a id="add_review" style=" color:blueviolet;">Add Review</a></div>
 
 						{% endif %}
 
@@ -644,15 +650,16 @@
 	                            {% csrf_token %}
 	                            {{ review_form|crispy }}
 								<input type="hidden" id="id_slug" value="{{ object.slug }}"/>
-	                            <input class="btn btn-outline-green" type="submit" id="submit_review" value="Submit"/>
-	                            <input class="btn btn-outline-red" type="submit" id="cancel_review" value="Cancel|Close"/>
+	                            <input class="btn btn-outline-red" type="submit" id="cancel_review" value="Close"/>
+								<input class="btn btn-outline-green" type="submit" id="submit_review" value="Submit"/>
+
 
 	                    </div>
 
 	                    {% else %}
 
 	                    <div class="reviews_all ml-auto"><a href="{% url LOGIN_URL %}?next={{ request.path }}">
-	                    LogIn to <span>review</span></a></div>
+	                    Add Review</a></div>
 
 	                    {% endif %}
 

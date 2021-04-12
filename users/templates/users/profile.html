@@ -12,9 +12,10 @@
 
 {% endblock %}
 
-{% block navbar %}
-        {% include 'users/profile_navbar.html' %}
-  {% endblock %}
+{% block categories %}
+    {% include 'users/profile_navbar.html' %}
+{% endblock %}
+
 
 
 <body>
@@ -30,7 +31,7 @@
 		<div class="home_content d-flex flex-column align-items-center justify-content-center">
 
             <div class="logo_container">
-                <div class="logo mr-0 "><img src="{{ user.profile.image.thumbnail.url }}" class="card-img-top rounded-circle account-img" style="height:130px; width:150px; background-size: contain;"></div>
+                <div class="logo mr-0"><img src="{{ user.profile.image.thumbnail.url }}"></div>
             </div>
 
 			<h2 class="home_title">Welcome {{ name|capfirst }}!</h2>
@@ -44,48 +45,58 @@
 
     {% include 'sellers/status.html' %}
 
-    <div class="col-md-6 mb-4">
-       <form class="navbar-form" role="search" action="">
+    <br>
+    <br>
+    <hr>
 
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search Order" name="article">
-            <div class="input-group-btn">
-              <button class="btn btn-default" type="submit"> Search<i class="glyphicon glyphicon-search"></i></button>
-            </div>
-          </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-4" style="margin:auto; width:50%;">
+           <form class="navbar-form" role="search" action="">
 
-        </form>
-    </div>
-    <div class="row">
-        <div class="col-md-5">
-            <h5>Stores</h5>
-            <hr>
-            <div class="card card-body">
-                <a class="btn btn-primary btn-sm btn-block" href=""></a>
-                <table class="table table-sm">
-                    <tr>
-                        <th>#</th>
-                        <th>Store #ID</th>
-                        <th>Last Order Date</th>
-                        <th>status</th>
-                    </tr>
-                        {% for order in orders %}
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search Order" name="article">
+                <div class="input-group-btn">
+                  <button class="btn btn-default" type="submit"> Search<i class="glyphicon glyphicon-search"></i></button>
+                </div>
+              </div>
 
-                    <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>order #{{ order.id }}</td>
-                        <td>{{ order.order_date|date }}</td>
-                        <td><a href="{{ order.get_absolute_url }}" target="_blank">View Order</a></td>
-                    </tr>
-                    {% empty %}
-                        You have no past orders.
-                    {% endfor %}
-                </table>
-            </div>
+           </form>
+        </div>
         </div>
 
+        <br>
 
-        <div class="col-md-7">
+        <div class="row">
+            <div class="col-md-5">
+                <h5>Stores</h5>
+                <hr>
+                <div class="card card-body">
+                    <a class="btn btn-primary btn-sm btn-block" href=""></a>
+                    <table class="table table-sm">
+                        <tr>
+                            <th>#</th>
+                            <th>Store #ID</th>
+                            <th>Last Order Date</th>
+                            <th>status</th>
+                        </tr>
+                            {% for order in orders %}
+
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>order #{{ order.id }}</td>
+                            <td>{{ order.order_date|date }}</td>
+                            <td><a href="{{ order.get_absolute_url }}" target="_blank">View Order</a></td>
+                        </tr>
+                        {% empty %}
+                            You have no past orders.
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="col-md-7">
         <h5>My recent Orders</h5>
         <hr>
         <div class="card card-body">
@@ -110,6 +121,7 @@
             </table>
         </div>
     </div>
+        </div>
     </div>
 
 </div>

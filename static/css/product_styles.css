@@ -18,7 +18,7 @@
 7. Brands
 8. Newsletter
 9. Footer
-10. Latest Revies
+10. Latest Reviews
 
 
 ******************************/
@@ -2259,7 +2259,6 @@ select option
 }
 .reviews_all
 {
-	position: absolute;
 	right: 0;
 	bottom: 14px;
 }

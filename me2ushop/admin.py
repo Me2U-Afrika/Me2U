@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 from .models import *
 
-
 # This mixin will be used for the invoice functionality, which is
 # only available to owners and employees, but not dispatchers
 
