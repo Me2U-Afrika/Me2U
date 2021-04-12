@@ -4,6 +4,9 @@
 
 [Table of Contents]
 
+01. Init Tab Lines
+02. Init Tabs
+
 1. Vars and Inits
 2. Set Header
 3. Init Custom Dropdown
@@ -14,7 +17,8 @@
 8. Init Color
 9. Init Favorites
 10. Init Image
-11. Reviews Slider
+11. Init Best Sellers Slider
+12. Reviews Slider
 
 
 ******************************/
@@ -43,11 +47,108 @@ $(document).ready(function()
 	initFavs();
 	initImage();
 	initReviewsSlider();
+	initTabLines();
+	bestsellersSlider();
+	initTabs();
+
+
+
 
 	$(window).on('resize', function()
 	{
 		setHeader();
 	});
+
+		/*
+
+	01. Init Tab Lines
+
+	*/
+
+	function initTabLines()
+	{
+		if($('.tabs').length)
+		{
+			var tabs = $('.tabs');
+
+			tabs.each(function()
+			{
+				var tabsItem = $(this);
+				var tabsLine = tabsItem.find('.tabs_line span');
+				var tabGroup = tabsItem.find('ul li');
+
+				var posX = $(tabGroup[0]).position().left;
+				tabsLine.css({'left': posX, 'width': $(tabGroup[0]).width()});
+				tabGroup.each(function()
+				{
+					var tab = $(this);
+					tab.on('click', function()
+					{
+						if(!tab.hasClass('active'))
+						{
+							tabGroup.removeClass('active');
+							tab.toggleClass('active');
+							var tabXPos = tab.position().left;
+							var tabWidth = tab.width();
+							tabsLine.css({'left': tabXPos, 'width': tabWidth});
+						}
+					});
+				});
+			});
+		}
+	}
+
+	/*
+
+	02. Init Tabs
+
+	*/
+
+	function initTabs()
+	{
+		if($('.tabbed_container').length)
+		{
+			//Handle tabs switching
+
+			var tabsContainers = $('.tabbed_container');
+			tabsContainers.each(function()
+			{
+				var tabContainer = $(this);
+				var tabs = tabContainer.find('.tabs ul li');
+				var panels = tabContainer.find('.panel');
+				var sliders = panels.find('.slider');
+
+				tabs.each(function()
+				{
+					var tab = $(this);
+					tab.on('click', function()
+					{
+						panels.removeClass('active');
+						var tabIndex = tabs.index(this);
+						$($(panels[tabIndex]).addClass('active'));
+						sliders.slick("unslick");
+						sliders.each(function()
+						{
+							var slider = $(this);
+							// slider.slick("unslick");
+							if(slider.hasClass('bestsellers_slider'))
+							{
+								initBSSlider(slider);
+							}
+							if(slider.hasClass('featured_slider'))
+							{
+								initFSlider(slider);
+							}
+							if(slider.hasClass('arrivals_slider'))
+							{
+								initASlider(slider);
+							}
+						});
+					});
+				});
+			});
+		}
+	}
 
 	/* 
 
@@ -414,11 +515,80 @@ $(document).ready(function()
 		});
 	}
 
-	/*
+			/*
 
-	11. Reviews Slider
+	11. Init Best Sellers Slider
 
 	*/
+
+	function bestsellersSlider()
+	{
+		if($('.bestsellers_slider').length)
+		{
+			var bestsellersSliders = $('.bestsellers_slider');
+			bestsellersSliders.each(function()
+			{
+				var bestsellersSlider = $(this);
+
+				initBSSlider(bestsellersSlider);
+			})
+		}
+	}
+
+	function initBSSlider(bss)
+	{
+		var bestsellersSlider = bss;
+
+		bestsellersSlider.slick(
+		{
+			rows:2,
+			infinite:true,
+			slidesToShow:3,
+			slidesToScroll:3,
+			arrows:false,
+			dots:true,
+			autoplay: true,
+  			autoplaySpeed: 6000,
+			responsive:
+			[
+				{
+					breakpoint:1199, settings:
+					{
+						rows:2,
+						slidesToShow:2,
+						slidesToScroll:2,
+						dots:true
+					}
+				},
+				{
+					breakpoint:991, settings:
+					{
+						rows:2,
+						slidesToShow:1,
+						slidesToScroll:1,
+						dots:true
+					}
+				},
+				{
+					breakpoint:575, settings:
+					{
+						rows:1,
+						slidesToShow:1,
+						slidesToScroll:1,
+						dots:false
+					}
+				}
+			]
+		});
+	}
+
+
+	/*
+
+	12. Reviews Slider
+
+	*/
+
 
 	function initReviewsSlider()
 	{
@@ -446,3 +616,5 @@ $(document).ready(function()
 	}
 
 });
+
+
