@@ -490,12 +490,12 @@
 		<!-- Home -->
 		<div class="home">
 			{% if object.image %}
-			<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ object.image.url }}" data-speed="0.8"></div>
+			<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ object.image.large.url }}" data-speed="0.8"></div>
 			{% else %}
 				{% if object.product %}
 					{% for image in object.product.get_images %}
 					{% if image.in_display %}
-						<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ image.image.url }}" data-speed="0.8"></div>
+						<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{{ image.image.large.url }}" data-speed="0.8"></div>
 					{% endif %}
 					{% endfor %}
 				{% else %}

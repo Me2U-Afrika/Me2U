@@ -135,10 +135,10 @@ class Banner(CreationModificationDateMixin):
         # Format: "Apr 11 2021 14:19:23"
         if self.end_date:
             now = datetime.datetime.now().replace(tzinfo=utc)
-            print("now", now)
-            print("end", self.end_date)
+            # print("now", now)
+            # print("end", self.end_date)
             timediff = self.end_date - now
-            print("time diff", timediff.total_seconds())
+            # print("time diff", timediff.total_seconds())
             if 0 > timediff.total_seconds():
                 self.active = False
                 self.save()
@@ -156,10 +156,7 @@ class Banner(CreationModificationDateMixin):
         # Format: "Apr 11 2021 14:19:23"
         if self.end_date:
             now = datetime.datetime.now().replace(tzinfo=utc)
-            print("now", now)
-            print("end", self.end_date)
             timediff = self.end_date - now
-            print("time diff", timediff.total_seconds())
             if 0 > timediff.total_seconds():
                 self.active = False
 

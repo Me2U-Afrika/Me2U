@@ -1,0 +1,5 @@
+Statement and inspection
+
+type(obj)
+dir(obj) - learn what the attributes an object has and it's capabilities.
+help(str/ type(obj) - get help on a class or an object

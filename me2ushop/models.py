@@ -82,17 +82,17 @@ CONDITION_CHOICES = {
 
 class ActiveProductManager(models.Manager):
     def all(self):
-        return super(ActiveProductManager, self).all().filter(is_active=True)
+        return super(ActiveProductManager, self).all().filter(is_active=True).prefetch_related('productimage_set')
 
 
 class FeaturedProductManager(ActiveProductManager):
     def all(self):
-        return super(FeaturedProductManager, self).all().filter(is_featured=True)
+        return super(FeaturedProductManager, self).all().filter(is_featured=True).prefetch_related('productimage_set')
 
 
 class BestsellerProductManager(ActiveProductManager):
     def all(self):
-        return super(BestsellerProductManager, self).all().filter(is_bestseller=True)
+        return super(BestsellerProductManager, self).all().filter(is_bestseller=True).prefetch_related('productimage_set')
 
 
 class ProductManager(models.Manager):

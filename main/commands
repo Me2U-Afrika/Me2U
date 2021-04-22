@@ -65,3 +65,6 @@ pip install virtualenv
 PIP INSTALL
 
 $ python -m pip install --force-reinstall --ignore-installed --upgrade --no-index --no-deps
+
+VIRTUAL ENV
+venv\Scripts\activate

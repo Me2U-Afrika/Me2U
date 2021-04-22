@@ -29,6 +29,7 @@ Me2UApp/
 products.json/
 yarn-error.log/
 settings_local.py/
+keys.py/
 
 build/
 develop-eggs/
