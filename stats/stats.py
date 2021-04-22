@@ -120,16 +120,16 @@ def recommended_from_views(request):
 
         # if there are other tracking ides, get other products.
         if track_ids:
-            all_viewed = Product.active.filter(productview__tracking_id__in=track_ids)
+            all_viewed = Product.active.filter(productview__tracking_id__in=track_ids).distinct()
             # print('all_viewed:', all_viewed)
             #     if there are other products, get them, excluding the
             #      producus that the customer has already viewed.
             if all_viewed:
-                other_viewed = ProductView.objects.filter(product__in=all_viewed).exclude(product__in=viewed)
-                # print('others_viewed_track_ids:', other_viewed)
+                others_viewed = ProductView.objects.filter(product__in=all_viewed).exclude(product__in=viewed)
+                # print('others_viewed_track_ids:', others_viewed)
 
-                if other_viewed:
-                    products = Product.active.filter(productview__in=other_viewed).distinct()
+                if others_viewed:
+                    products = Product.active.filter(productview__in=others_viewed).distinct().prefetch_related('productimage_set')
                     # print('products others viewed i havent:', products)
                     return products
 
@@ -138,10 +138,11 @@ def get_recently_viewed(request):
     track_id = tracking_id(request)
     # print("looked up id:", track_id)
     views = ProductView.objects.filter(tracking_id=track_id).values('product_id').order_by('-date')
+    # print('views:', views)
 
     product_ids = [view['product_id'] for view in views]
     # print('product_ids', product_ids)
-    products = Product.active.filter(id__in=product_ids)
+    products = Product.active.filter(id__in=product_ids).prefetch_related('productimage_set')
     # print('products:', products)
     return products
 

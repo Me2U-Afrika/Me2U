@@ -39,7 +39,7 @@ def productSearched(search_text, category):
         for word in words:
 
             products_tags = TaggedItem.objects.get_by_model(Product.active, word.lower())
-            print('product_tags:', products_tags)
+            # print('product_tags:', products_tags)
             if products_tags:
                 results['products'].append(products_tags)
 

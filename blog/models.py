@@ -27,8 +27,8 @@ class Post(CreationModificationDateMixin):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = StdImageField(blank=True, null=True, upload_to='images/products', help_text="upload blog cover Image",
                           variations={
-                              'medium': (365, 365),
-                              'large': (415, 430),
+                              'medium': (500, 460),
+                              'large': (800, 460),
 
                           }, delete_orphans=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='post_likes')
