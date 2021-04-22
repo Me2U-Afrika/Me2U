@@ -129,7 +129,8 @@ REST_FRAMEWORK = {
         ('rest_framework.authentication.SessionAuthentication',
          'rest_framework.authentication.TokenAuthentication',
          'rest_framework.authentication.BasicAuthentication',),
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.DjangoModelPermissions',),
+
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', 'PAGE_SIZE': 100
 
@@ -323,15 +324,11 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = None
 
 SOCIALACCOUNT_ADAPTER = 'users.adapter.MySocialAccountAdapter'
-# STATIC_ROOT = os.path.join(BASE_DIR, "/Me2U/staticfiles")
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #
 
 STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-# WHITENOISE_MANIFEST_STRICT = False
-
 
 # stripe settings
 
@@ -349,17 +346,22 @@ else:
 
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = "afrikame2u"
-    AWS_S3_REGION_NAME = 'us-east-2'
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
 
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-    # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    # SECURE_SSL_REDIRECT = True
-    # SESSION_COOKIE_SECURE = True
-    # CSRF_COOKIE_SECURE = True
+    CORS_REPLACE_HTTPS_REFERER = True
+    HOST_SCHEME = 'https://'
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_SECONDS = 1000000
+    SECURE_FRAME_DENY = True
 
     # turn to true during production
     # ENABLE_SSL = False
