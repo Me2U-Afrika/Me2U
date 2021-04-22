@@ -6,6 +6,7 @@ from requests.auth import HTTPBasicAuth
 
 import keys
 
+
 # format generated 2021-04-21 23:39:58.350427
 
 current_time = datetime.now()
@@ -53,7 +54,7 @@ def lipa_na_mpesa():
         "PartyA": keys.phone_number,
         "PartyB": business_short_code,
         "PhoneNumber": keys.phone_number,
-        "CallBackURL": "https://me2uafrica.herokuapp.com/api/payments/lnm",
+        "CallBackURL": "https://me2uafrica-cli.herokuapp.com/api/payments/lnm",
         "AccountReference": "12345678",
         "TransactionDesc": "Me2U Online Payment"
     }
@@ -61,6 +62,5 @@ def lipa_na_mpesa():
     response = requests.post(api_url, json=request, headers=headers)
 
     print(response.text)
-
 
 lipa_na_mpesa()

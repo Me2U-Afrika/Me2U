@@ -228,6 +228,7 @@ CHANNEL_LAYERS = {
 }
 SITE_ID = 1
 GA_TRACKER_ID = '123'
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
