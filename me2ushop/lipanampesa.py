@@ -53,7 +53,7 @@ def lipa_na_mpesa():
         "PartyA": keys.phone_number,
         "PartyB": business_short_code,
         "PhoneNumber": keys.phone_number,
-        "CallBackURL": "http://me2uafrika.com/callback",
+        "CallBackURL": "https://me2uafrica.herokuapp.com/api/payments/lmn",
         "AccountReference": "12345678",
         "TransactionDesc": "Me2U Online Payment"
     }

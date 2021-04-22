@@ -115,6 +115,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'webpack_loader',
     'ckeditor',
+    'payments',
 
 ]
 DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap.html'
