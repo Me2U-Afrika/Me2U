@@ -33,7 +33,7 @@ urlpatterns = [
     url(r'^dispatch-admin/', main_admin.dispatchers_admin.urls),
 
     path('api-auth', include('rest_framework.urls')),
-    path('api/payments/', include('payments.mpesaApi.urls')),
+    path('api/payments/lnm/', include('payments.mpesaApi.urls')),
     path('accounts/', include('allauth.urls')),
 
     # cerbot
