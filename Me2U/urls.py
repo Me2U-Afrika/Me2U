@@ -32,8 +32,11 @@ urlpatterns = [
     url(r'^seller-admin/', main_admin.sellers_admin.urls),
     url(r'^dispatch-admin/', main_admin.dispatchers_admin.urls),
 
-    path('api-auth', include('rest_framework.urls'), ),
+    path('api-auth', include('rest_framework.urls')),
+    path('api/payments/', include('payments.mpesaApi.urls')),
     path('accounts/', include('allauth.urls')),
+
+    # cerbot
     url(r'^\.well-known/', include(certbot_django.server.urls)),
 
     url('currencies/', include('currencies.urls')),
