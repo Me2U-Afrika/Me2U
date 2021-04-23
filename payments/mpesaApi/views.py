@@ -18,7 +18,7 @@ class LNMCallbackAPIView(CreateAPIView):
 
         # Requested data
 
-        merchant_request_id = request.data["Body"]["stkCallback"]["MerchantID"]
+        merchant_request_id = request.data["Body"]["stkCallback"]["MerchantRequestID"]
         print("merchant_id:", merchant_request_id)
         checkout_request_id = request.data["Body"]["stkCallback"]["CheckoutRequestID"]
         result_code = request.data["Body"]["stkCallback"]["ResultCode"]
