@@ -6,7 +6,6 @@ from requests.auth import HTTPBasicAuth
 
 import keys
 
-
 # format generated 2021-04-21 23:39:58.350427
 
 current_time = datetime.now()
@@ -63,4 +62,6 @@ def lipa_na_mpesa():
 
     print(response.text)
 
+
 lipa_na_mpesa()
+
