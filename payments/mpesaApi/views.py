@@ -17,17 +17,33 @@ class LNMCallbackAPIView(CreateAPIView):
         print(request.data, "request data")
 
         # Requested data
+        {'Body': {
+            'stkCallback': {
+                'MerchantRequestID': '4815-7950460-1',
+                'CheckoutRequestID': 'ws_CO_230420211641334548',
+                'ResultCode': 0,
+                'ResultDesc': 'The service request is processed successfully.',
+                'CallbackMetadata': {'Item':
+                                         [{'Name': 'Amount', 'Value': 1.0},
+                                          {'Name': 'MpesaReceiptNumber', 'Value': 'PDN25VFARY'},
+                                          {'Name': 'Balance'},
+                                          {'Name': 'TransactionDate', 'Value': 20210423164140},
+                                          {'Name': 'PhoneNumber', 'Value': 254792585134}]
+                                     }
+            }
+        }
+        }
 
         merchant_request_id = request.data["Body"]["stkCallback"]["MerchantRequestID"]
         print("merchant_id:", merchant_request_id)
         checkout_request_id = request.data["Body"]["stkCallback"]["CheckoutRequestID"]
         result_code = request.data["Body"]["stkCallback"]["ResultCode"]
         result_description = request.data["Body"]["stkCallback"]["ResultDesc"]
-        amount = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][0]["value"]
+        amount = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][0]["Value"]
         print("amount:", amount)
-        mpesa_receipt_number = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][1]["value"]
-        transaction_date = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][3]["value"]
-        phone_number = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][4]["value"]
+        mpesa_receipt_number = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][1]["Value"]
+        transaction_date = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][3]["Value"]
+        phone_number = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][4]["Value"]
         print(phone_number)
 
         from datetime import datetime
