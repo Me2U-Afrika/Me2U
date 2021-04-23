@@ -30,14 +30,18 @@ class LNMCallbackAPIView(CreateAPIView):
         phone_number = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][4]["value"]
         print(phone_number)
 
-        transaction_date = request.data["Body"]
         from datetime import datetime
+        import pytz
+
         str_transaction_date = str(transaction_date)
 
         print(str_transaction_date)
 
         transaction_datetime = datetime.strptime(str_transaction_date, "%Y%m%d%H%M%S")
         print(transaction_datetime)
+
+        aware_transaction_datetime = pytz.utc.localize(transaction_datetime)
+        print("aware time:", aware_transaction_datetime)
 
         our_model = LNMOnline.objects.create(
             CheckoutRequestID=checkout_request_id,
@@ -46,7 +50,7 @@ class LNMCallbackAPIView(CreateAPIView):
             ResultDesc=result_description,
             Amount=amount,
             MpesaReceiptNumber=mpesa_receipt_number,
-            TransactionDate=transaction_datetime,
+            TransactionDate=aware_transaction_datetime,
             PhoneNumber=phone_number
         )
         our_model.save()
