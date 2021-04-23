@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework.response import Response
+
 from payments.mpesaApi.serializers import LNMOnlineSerializer
 from rest_framework.generics import CreateAPIView
 
@@ -48,3 +50,5 @@ class LNMCallbackAPIView(CreateAPIView):
             PhoneNumber=phone_number
         )
         our_model.save()
+
+        return Response({"OurResultDesc": "Congratulations!! It Worked!"})
