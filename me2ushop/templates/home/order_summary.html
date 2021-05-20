@@ -1,4 +1,5 @@
 {% extends 'me2ushop/base_template.html' %}
+{% load currency %}
 
 {% block headblock %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
@@ -59,11 +60,11 @@
 										</div>
 										<div class="cart_item_price cart_info_col">
 											<div class="cart_item_title">Price</div>
-											<div class="cart_item_text">${{ order_item.item.price}}</div>
+											<div class="cart_item_text">{{ CURRENCY.symbol }}{{ order_item.item.price|currency:CURRENCY.code }}</div>
 										</div>
 										<div class="cart_item_total cart_info_col">
 											<div class="cart_item_title">Total</div>
-											<div class="cart_item_text">${{order_item.get_total_price}}</div>
+											<div class="cart_item_text">{{ CURRENCY.symbol }}{{order_item.get_total_price|currency:CURRENCY.code }}</div>
 										</div>
 
 										<div class="cart_item_total cart_info_col">
@@ -87,7 +88,7 @@
 						<div class="order_total">
 							<div class="order_total_content text-md-right">
 								<div class="order_total_title">Order Total:</div>
-								<div class="order_total_amount">${{ object.get_total }}</div>
+								<div class="order_total_amount">{{ CURRENCY.symbol }}{{ object.get_total|currency:CURRENCY.code  }}</div>
 							</div>
 						</div>
 

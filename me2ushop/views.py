@@ -26,7 +26,7 @@ from .models import *
 
 from django.views.generic import ListView, DetailView, View, CreateView, UpdateView, DeleteView, FormView
 from django.utils import timezone
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 
 # from django.contrib.auth.models import User
 from django.template import RequestContext
@@ -825,7 +825,7 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
 
         context.update({
 
-            'page_title': 'Update Image-' + str(self.get_object()) ,
+            'page_title': 'Update Image-' + str(self.get_object()),
         })
         return context
 
@@ -1011,12 +1011,11 @@ def cart_basket(request):
 
 def add_cart(request, slug):
     print('in add_cart')
-    # print(request.cart)
-    # print(request.cart.id)
+
     item = get_object_or_404(Product, slug=slug)
-    stats.log_product_view(request, item)
 
     cart = request.cart
+    print('cart1:', cart)
     if not request.cart:
         if request.user.is_authenticated:
             user = request.user
@@ -1032,10 +1031,13 @@ def add_cart(request, slug):
             cart = Order.objects.create(user=user, order_date=order_date)
 
         request.session['cart_id'] = cart.id
+        print('cart2:', cart)
+
     if request.method == "POST":
         print('we came to post')
         form = CartAddFormSet(request.POST or None)
         if form.is_valid():
+            print("is valid:", form.is_valid())
             try:
                 # Get quantity from useronline
                 quantity = form.cleaned_data.get('quantity')
@@ -1048,101 +1050,73 @@ def add_cart(request, slug):
                     item=item,
                     ordered=False
                 )
-                # print("order_item:", order_item)
-                # print("created:", created)
-                # print("order id:", order_item.customer_order)
-                status = StatusCode.objects.get(short_name=10)
-                # print('status:', status)
-                order_item.status_code = status
-                order_item.save()
-                # print(order_item.status_code)
+                print("order_item:", order_item)
+                print("created:", created)
 
-                order_query_set = Order.objects.filter(id=cart.id, ordered=False)
-                print("cart_id found:", order_query_set)
-
-                if order_query_set.exists():
-                    order = order_query_set[0]
-                    # print('order user:', order)
-
-                    # check if the order item is in the order
-                    if order.items.filter(item__slug=item.slug).exists():
-                        if quantity > 1:
-                            order_item.quantity = quantity
-                        else:
-                            order_item.quantity = 1
-                        # print('updated item:', order_item)
-                        # print('cartid:', cart_id)
-                        if request.user.is_authenticated:
-                            order_item.user = request.user
-
-                        order_item.save()
-
-                        messages.info(request, 'This item quantity was updated.')
-                        return redirect("me2ushop:order_summary")
+                # check if the order item is in the order
+                if cart.items.filter(item__slug=item.slug).exists():
+                    if quantity > 1:
+                        order_item.quantity = quantity
                     else:
-                        messages.info(request, 'This item has been added to your cart.')
-                        order.items.add(order_item)
-                        if quantity > 1:
-                            order_item.quantity = quantity
-                        else:
-                            order_item.quantity = 1
+                        order_item.quantity = 1
+                    # print('updated item:', order_item)
+                    # print('cartid:', cart_id)
+                    if request.user.is_authenticated:
+                        order_item.user = request.user
 
-                        if request.user.is_authenticated:
-                            order_item.user = request.user
+                    order_item.save()
 
-                        order_item.save()
-                        print(order_item.quantity)
-                        return redirect("me2ushop:order_summary")
+                    messages.info(request, 'This item quantity was updated.')
+                else:
+                    messages.info(request, 'This item has been added to your cart.')
+                    cart.items.add(order_item)
+                    if quantity > 1:
+                        order_item.quantity = quantity
+                    else:
+                        order_item.quantity = 1
+
+                    if request.user.is_authenticated:
+                        order_item.user = request.user
+
+                order_item.save()
+                print(order_item.quantity)
+                return redirect("me2ushop:order_summary")
             except Exception:
                 messages.info(request, 'ERROR.')
                 return redirect("me2ushop:product", slug=slug)
     else:
         print("user adding qty without form")
+        stats.log_product_view(request, item)
+
         # user is logged in but not using form to add quantity
         try:
-            item = get_object_or_404(Product, slug=slug)
 
             order_item, created = OrderItem.objects.get_or_create(
                 customer_order=cart,
                 item=item,
                 ordered=False
             )
-            # print("order_item:", order_item)
-            # print("created:", created)
-            status = StatusCode.objects.get(short_name=10)
-            # print('status:', status)
-            order_item.status_code = status
-            order_item.save()
-            # print(order_item.status_code)
 
-            order_query_set = Order.objects.filter(id=cart.id, ordered=False)
-            # print("cart_id found:", order_query_set)
+            # check if the order item is in the order
+            if cart.items.filter(item__slug=item.slug).exists():
+                order_item.quantity += 1
+                # print('updated item:', order_item)
+                # print('cartid:', cart_id)
+                if request.user.is_authenticated:
+                    order_item.user = request.user
+                order_item.save()
+                messages.info(request, 'This item quantity was updated.')
+            else:
+                messages.info(request, 'This item has been added to your cart.')
+                cart.items.add(order_item)
+                order_item.quantity = 1
 
-            if order_query_set.exists():
-                order = order_query_set[0]
-                # print('order user:', order)
+                if request.user.is_authenticated:
+                    order_item.user = request.user
 
-                # check if the order item is in the order
-                if order.items.filter(item__slug=item.slug).exists():
-                    order_item.quantity += 1
-                    # print('updated item:', order_item)
-                    # print('cartid:', cart_id)
-                    if request.user.is_authenticated:
-                        order_item.user = request.user
-                    order_item.save()
-                    messages.info(request, 'This item quantity was updated.')
-                    return redirect("me2ushop:order_summary")
-                else:
-                    messages.info(request, 'This item has been added to your cart.')
-                    order.items.add(order_item)
-                    order_item.quantity = 1
-
-                    if request.user.is_authenticated:
-                        order_item.user = request.user
-
-                    order_item.save()
-                    # print(order_item.quantity)
-                    return redirect("me2ushop:order_summary")
+                order_item.save()
+                # print(order_item.quantity)
+            return redirect("me2ushop:order_summary")
         except Exception:
             messages.info(request, 'ERROR.')
             return redirect("me2ushop:product", slug=slug)
@@ -1461,48 +1435,6 @@ def add_cart(request, slug):
     #     return redirect("me2ushop:product", slug=slug)
 
 
-@login_required()
-def add_wishlist(request, slug):
-    print('in add_wishlist')
-
-    item = get_object_or_404(Product, slug=slug)
-    print('item to add to wishlist:', item)
-
-    wish_item, created = WishList.objects.get_or_create(
-        product=item,
-        user=request.user,
-    )
-    print('wish_item:', wish_item)
-    if created:
-        print('we came to create wish')
-        wish_item.save()
-    else:
-        wish_item.delete()
-
-    return redirect("me2ushop:wish_list")
-
-
-class WishListView(LoginRequiredMixin, ListView):
-    model = WishList
-    template_name = 'home/wish_list.html'
-    paginate_by = 20
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        super(WishListView, self).get_context_data(**kwargs)
-
-        wishlist = WishList.objects.filter(user=self.request.user)
-
-        if wishlist.exists():
-            print('wishlist:', wishlist)
-        page_title = 'MyWishList'
-
-        context = {
-            'page_title': page_title,
-        }
-
-        return context
-
-
 @receiver(user_logged_in)
 def merge_cart(sender, user, request, **kwargs):
     cart = getattr(request, 'cart', None)
@@ -1748,6 +1680,48 @@ def remove_single_item_cart(request, slug):
             return redirect("me2ushop:product", slug=slug)
 
 
+@login_required()
+def add_wishlist(request, slug):
+    print('in add_wishlist')
+
+    item = get_object_or_404(Product, slug=slug)
+    print('item to add to wishlist:', item)
+
+    wish_item, created = WishList.objects.get_or_create(
+        product=item,
+        user=request.user,
+    )
+    print('wish_item:', wish_item)
+    if created:
+        print('we came to create wish')
+        wish_item.save()
+    else:
+        wish_item.delete()
+
+    return redirect("me2ushop:wish_list")
+
+
+class WishListView(LoginRequiredMixin, ListView):
+    model = WishList
+    template_name = 'home/wish_list.html'
+    paginate_by = 20
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        super(WishListView, self).get_context_data(**kwargs)
+
+        wishlist = WishList.objects.filter(user=self.request.user)
+
+        if wishlist.exists():
+            print('wishlist:', wishlist)
+        page_title = 'MyWishList'
+
+        context = {
+            'page_title': page_title,
+        }
+
+        return context
+
+
 class Order_summary_view(View):
     def get(self, *args, **kwargs):
         try:
@@ -1762,7 +1736,7 @@ class Order_summary_view(View):
                 return render(self.request, 'home/order_summary.html', context)
 
             else:
-                print('anonymous checkout')
+                print('anonymous cart_summary')
                 if self.request.cart:
                     cart_id = self.request.cart.id
 
@@ -1869,73 +1843,69 @@ class Checkout_page(View):
                 print('order:', order)
                 # print('order.biling:', order.billing_address1)
 
-                order_query_set = Order.objects.filter(user=self.request.user, ordered=False)
-                # print('order_qs:', order_query_set)
-
                 order_items = order.total_items()
 
-                if order_query_set.exists():
+                if order_items > 0:
+
+                    context = {
+                        'form': form,
+                        'order': order,
+                        'couponform': CouponForm,
+                        'DISPLAY_COUPON_FORM': True,
+                    }
+
+                    shipping_address_qs = Address.objects.filter(
+                        user=self.request.user,
+                        address_type='S',
+                        default=True
+                    )
+
+                    if shipping_address_qs.exists():
+                        context.update({'default_shipping_address': shipping_address_qs[0]})
+
+                    billing_address_qs = Address.objects.filter(
+                        user=self.request.user,
+                        address_type='B',
+                        default=True
+                    )
+
+                    if billing_address_qs.exists():
+                        context.update({'default_billing_address': billing_address_qs[0]})
+
+                    return render(self.request, 'home/checkout_page.html', context)
+
+                else:
+                    messages.info(self.request, "Your Cart is Empty, Continue shopping before checkout ")
+                    return redirect("me2ushop:order_summary")
+
+            else:
+                print('Trying to checkout someone not signed in.')
+                print("cart_to_checkout:", self.request.cart)
+
+                if self.request.cart:
+                    print("cart_to_checkout_id:", self.request.cart.id)
+                    print("cart_items:", self.request.cart.items.all())
+
+                    cart = self.request.cart
+
+                    order_items = cart.total_items()
+
                     if order_items > 0:
+                        print("total Ordered:", order_items)
 
                         context = {
+                            'order': cart,
                             'form': form,
-                            'order': order,
                             'couponform': CouponForm,
-                            'DISPLAY_COUPON_FORM': True,
+                            'DISPLAY_COUPON_FORM': False,
                         }
-
-                        shipping_address_qs = Address.objects.filter(
-                            user=self.request.user,
-                            address_type='S',
-                            default=True
-                        )
-
-                        if shipping_address_qs.exists():
-                            context.update({'default_shipping_address': shipping_address_qs[0]})
-
-                        billing_address_qs = Address.objects.filter(
-                            user=self.request.user,
-                            address_type='B',
-                            default=True
-                        )
-
-                        if billing_address_qs.exists():
-                            context.update({'default_billing_address': billing_address_qs[0]})
-
                         return render(self.request, 'home/checkout_page.html', context)
 
                     else:
                         messages.info(self.request, "Your Cart is Empty, Continue shopping before checkout ")
                         return redirect("me2ushop:order_summary")
-                else:
-                    messages.info(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
-                    return redirect("me2ushop:home")
-            else:
-                print('User is anonymous')
-                if self.request.cart:
-                    cart_id = self.request.cart.id
 
-                    order = Order.objects.get(id=cart_id, ordered=False)
-                    print('order:', order)
-
-                    order_query_set = Order.objects.filter(id=cart_id, ordered=False)
-
-                    order_items = order.total_items()
-
-                    if order_query_set.exists():
-                        if order_items > 0:
-                            context = {
-                                'order': order,
-                                'form': form,
-                                'couponform': CouponForm,
-                                'DISPLAY_COUPON_FORM': False,
-                            }
-                            return render(self.request, 'home/checkout_page.html', context)
-
-                        else:
-                            messages.info(self.request, "Your Cart is Empty, Continue shopping before checkout ")
-                            return redirect("me2ushop:order_summary")
-
+                messages.info(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER")
                 return redirect("me2ushop:home")
 
         except Exception:
@@ -2161,11 +2131,11 @@ class Checkout_page(View):
                         shipping_country = form.cleaned_data.get('shipping_country')
                         shipping_zip = form.cleaned_data.get('shipping_zip')
                         payment_option = form.cleaned_data.get('payment_option')
+                        print('po:', payment_option)
 
                         if is_valid_form([shipping_address1, shipping_country, city, shipping_zip, name, phone, email]):
                             print('valid details')
                             shipping_address = Address(
-                                # cart_id=self.request.cart_id,
                                 name=name,
                                 email=email,
                                 phone=phone,
@@ -2178,8 +2148,7 @@ class Checkout_page(View):
                                 payment_option=payment_option
                             )
 
-                            shipping_address.save()
-                            # order.shipping_address = shipping_address
+                            # print("saved Sa:", shipping_address)
                             order.name = shipping_address.name
                             order.phone = shipping_address.phone
                             order.email = shipping_address.email
@@ -2198,6 +2167,7 @@ class Checkout_page(View):
                         same_billing_address = form.cleaned_data.get('same_billing_address')
 
                         if same_billing_address:
+                            print("user checked same address")
                             billing_address = shipping_address
                             billing_address.pk = None
                             billing_address.address_type = 'B'
@@ -2247,6 +2217,7 @@ class Checkout_page(View):
                                 return redirect("me2ushop:checkout")
 
                         # TODO: add a redirect to the selected payment option
+                        print("payment option:", payment_option)
                         if payment_option == 'S':
                             return redirect("me2ushop:payment", payment_option='stripe')
                         elif payment_option == 'P':
@@ -2341,38 +2312,35 @@ class PaymentView(View):
         try:
             order = None
             if self.request.user.is_authenticated:
+                print('authenticated user:', self.request.cart)
                 order = Order.objects.get(user=self.request.user, ordered=False)
             elif self.request.cart:
-                order = Order.objects.get(id=self.request.cart.id, ordered=False)
+                order = self.request.cart
 
-            # print('order:', order)
+            print('order to paid for:', order)
             if order is not None:
                 if order.billing_country:
                     context = {
                         'order': order,
-                        'DISPLAY_COUPON_FORM': False
+                        'DISPLAY_COUPON_FORM': False,
+                        'payment': order.payment
 
                     }
-                    if order.payment == 'S':
-                        return render(self.request, 'home/payment.html', context)
-                    elif order.payment == 'P':
-                        return render(self.request, 'home/paypal_payment.html', context)
-                    elif order.payment == 'FW':
-                        return render(self.request, 'home/flutterwave_payment.html', context)
-                    elif order.payment == 'M':
-                        return render(self.request, 'home/mpesa_payment.html', context)
-                    elif order.payment == 'MO':
-                        return render(self.request, 'home/momo_payment.html', context)
-                    else:
-                        return render(self.request, 'home/payment.html', context)
 
-            else:
-                messages.warning(self.request, "Please fill in your valid delivery address prior to payment")
-                return redirect("me2ushop:checkout")
+                    return render(self.request, 'home/payment.html', context)
+
+                else:
+                    messages.warning(self.request, "Please fill in your valid delivery address prior to payment")
+                    return redirect("me2ushop:checkout")
+
+            messages.warning(self.request, "You have no active orders")
+            return redirect("me2ushop:home")
+
         except Exception:
             return redirect("me2ushop:home")
 
     def post(self, *args, **kwargs):
+        print('We came to post payment')
         # `source` is obtained with Stripe.js; see
         # https://stripe.com/docs/payments/accept-a-payment-charges#web-create-token
 
@@ -2393,6 +2361,7 @@ class PaymentView(View):
                 print('valid payment form')
                 print('order:', order)
                 token = self.request.POST['stripeToken']
+                print('token', token)
 
                 amount = int(order.get_total() * 100)  # get in ksh
 
@@ -2417,12 +2386,10 @@ class PaymentView(View):
                 payment.save()
 
                 order.ordered = True
-                print(order.ordered)
-                status = StatusCode.objects.get(short_name=20)
-                order.status_code = status
-                print(order.status_code)
+
                 # Assigning the order a ref code during checkout payment
                 order.ref_code = create_ref_code()
+                order.status = 20
 
                 # Changing order_items in cart to ordered
                 order_items = order.items.all()
@@ -2431,7 +2398,6 @@ class PaymentView(View):
                     item.save()
 
                 order.save()
-                del self.request.session['cart_id']
                 messages.success(self.request, " CONGRATULATIONS YOUR ORDER WAS SUCCESSFUL")
                 print(order.id)
                 return redirect("me2ushop:checkout-done")
@@ -2484,23 +2450,78 @@ class PaymentView(View):
             return redirect("me2ushop:home")
 
 
-@login_required()
+def paypal_payment_complete(request):
+    body = json.loads(request.body)
+    print("body:", body)
+
+    cart = None
+    if not cart:
+        user = None
+        order_date = timezone.now()
+        cart = Order.objects.create(user=user, order_date=order_date, ordered=True, status=20)
+
+        request.session['cart_id'] = cart.id
+        print('cart2:', cart)
+
+    item = Product.objects.get(id=body['productId'])
+    print(item)
+    order_item, created = OrderItem.objects.get_or_create(
+        customer_order=cart,
+        item=item,
+        ordered=True,
+        quantity=1,
+    )
+    print("order_item:", order_item)
+    print("created:", created)
+
+    if request.user.is_authenticated:
+        order_item.user = request.user
+        cart.user = request.user
+        order_item.save()
+
+    cart.items.add(order_item)
+    cart.save()
+
+    return JsonResponse("payment successful", safe=False)
+
+
+def paypal_payment_complete_cart(request):
+    body = json.loads(request.body)
+    print("body:", body)
+
+    order = Order.objects.get(id=body['orderId'])
+    print(order)
+    order.ordered = True
+    order.status = 20
+    order_items = order.items.all()
+    order_items.update(ordered=True)
+    for item in order_items:
+        item.save()
+    order.save()
+
+    return JsonResponse("payment successful", safe=False)
+
+
 def checkout_done(request):
-    # order = Order.objects.get(pk=order_id)
-    orders = Order.objects.filter(user=request.user, ordered=True)
-    if orders.exists():
-        order = orders[0]
+    print('In checkoutdone')
+    print('request cart Start:', request.cart)
+    try:
+        order_id = request.cart.id
+        print(order_id)
+
+        order = Order.objects.get(id=order_id)
 
         context = {
             'order': order,
 
         }
-        if order.user == request.user:
-            return render(request, 'home/checkout_done.html', context)
-        else:
-            messages.warning(request, "Not Authorized to view this order")
-            return redirect('me2ushop:home')
-    else:
+        print('request.session:', request.session['cart_id'])
+
+        del request.session['cart_id']
+
+        return render(request, 'home/checkout_done.html', context)
+
+    except Exception:
         messages.warning(request, "No active orders")
         return redirect('me2ushop:home')
 
@@ -2509,7 +2530,7 @@ def invoice_for_order(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
     # print('order', order)
     if request.GET.get("format") == "pdf":
-        html_string = render_to_string("invoice.html", {"order": order})
+        html_string = render_to_string("home/invoice.html", {"order": order})
         html = HTML(string=html_string, base_url=request.build_absolute_uri(), )
         result = html.write_pdf()
 
@@ -2524,7 +2545,7 @@ def invoice_for_order(request, order_id):
             binary_pdf = output.read()
             response.write(binary_pdf)
         return response
-    return render(request, "invoice.html", {"order": order})
+    return render(request, "home/invoice.html", {"order": order})
 
 
 class RefundView(View):

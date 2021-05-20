@@ -55,8 +55,7 @@ PAYMENT_CHOICES = {
     ('M', "M-Pesa"),
     ('P', "Paypal"),
     ('S', "Stripe"),
-    ('D', "Debit Card"),
-    ('C', "Cash On Delivery"),
+
 
 }
 
@@ -129,6 +128,7 @@ class Brand(CreationModificationDateMixin):
     country = CountryField(multiple=False)
     subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
                                          help_text='Select a monthly recurring subscription fees')
+    valid_payment_method = models.BooleanField(default=False, null=True, blank=True)
     active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False, blank=True, null=True)
     image = StdImageField(upload_to='images/brands/brand_background', blank=True, null=True,
@@ -159,7 +159,7 @@ class Product(CreationModificationDateMixin):
     stock = models.IntegerField(default=1)
     sku = models.CharField(max_length=120, default='',
                            editable=False, )
-    in_stock = models.BooleanField(default=True, blank=True, null=True)
+    in_stock = models.BooleanField(default=True, editable=False)
     # condition = models.CharField(choices=CONDITION_CHOICES, max_length=2,
     #                              help_text='Choose the current condition for the product'
     #                              )
@@ -173,7 +173,7 @@ class Product(CreationModificationDateMixin):
     # made_in_afrika = models.BooleanField(default=False, help_text="Is the product you adding produced and "
     #                                                               "manufactured in Afrika? If so, check this box")
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, editable=False)
     is_bestseller = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
     is_bestrated = models.BooleanField(default=False)
@@ -242,40 +242,6 @@ class Product(CreationModificationDateMixin):
     def get_category(self):
         pass
 
-    def _generate_slug(self):
-        max_length = self._meta.get_field('slug').max_length
-        value = self.title
-        slug_candidate = slug_original = slugify(value, allow_unicode=True)
-        for i in itertools.count(1):
-            if not Product.objects.filter(slug=slug_candidate).exists():
-                break
-            slug_candidate = '{}-{}'.format(slug_original, i)
-
-        self.slug = slug_candidate
-
-    def _generate_sku(self):
-        # Brand > Product > Category > Productcondition >
-
-        brand = str(self.brand_name)[:3]
-        title = str(self.title)[:3]
-        # category = str(self.product_categories.all()[0])[:3]
-        condition = str(self.created)
-
-        sku = '{}-{}-{}'.format(brand, title, condition)
-
-        for i in itertools.count(1):
-            if not Product.objects.filter(sku=sku).exists():
-                break
-            sku = '{}-{}-{}-{}'.format(brand, title, condition, i)
-        self.sku = sku
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self._generate_slug()
-            self._generate_sku()
-
-        super().save(*args, **kwargs)
-
     def sale_price(self):
         if self.discount_price:
             return self.discount_price
@@ -301,7 +267,7 @@ class Product(CreationModificationDateMixin):
         return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
     def get_add_cart_url(self):
-        return reverse('me2ushop:product', kwargs={'slug': self.slug})
+        return reverse('me2ushop:add_cart', kwargs={'slug': self.slug})
 
     def get_images(self):
         return self.productimage_set.all()
@@ -386,11 +352,50 @@ class Product(CreationModificationDateMixin):
 
         return most_products
 
-    # def save_model(self):
-    #     if self.stock < 1:
-    #         self.is_active = False
-    #     else:
-    #         self.is_active = True
+    def _generate_slug(self):
+        max_length = self._meta.get_field('slug').max_length
+        value = self.title
+        slug_candidate = slug_original = slugify(value, allow_unicode=True)
+        for i in itertools.count(1):
+            if not Product.objects.filter(slug=slug_candidate).exists():
+                break
+            slug_candidate = '{}-{}'.format(slug_original, i)
+
+        return slug_candidate
+
+    def _generate_sku(self):
+        # Brand > Product > Category > Productcondition >
+
+        brand = str(self.brand_name)[:3]
+        title = str(self.title)[:3]
+        # category = str(self.product_categories.all()[0])[:3]
+        condition = str(self.created)
+
+        sku = '{}-{}-{}'.format(brand, title, condition)
+
+        for i in itertools.count(1):
+            if not Product.objects.filter(sku=sku).exists():
+                break
+            sku = '{}-{}-{}-{}'.format(brand, title, condition, i)
+        return sku
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.slug = self._generate_slug()
+            self.sku = self._generate_sku()
+
+        if self.stock < 1:
+            print('we came to check stock')
+            self.in_stock = False
+
+        image = self.productimage_set.filter(in_display=True)
+        # print('image', image.exists())
+        if image.exists() and self.in_stock:
+            self.is_active = True
+        else:
+            self.is_active = False
+
+        super().save(*args, **kwargs)
 
 
 # Product model class definition here

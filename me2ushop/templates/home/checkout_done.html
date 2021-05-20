@@ -15,9 +15,7 @@
 {% block site_wrapper %}
 
 <div class="super_container">
-
 	<!-- Cart -->
-
 	<div class="cart_section text-center">
 		<div class="container">
 			<div class="row">
@@ -25,11 +23,9 @@
 	                {% if order.ordered %}
                     <h2 class="my-5 h2 text-center" style="color:green">Congratulations! Your Order Was Successful!</h2>
 	                    <h4><a role="button" href="{% url 'me2ushop:invoice_cs' order.id %}" target="_blank">PRINT RECEIPT</a></h4>
-	                {% else %}
-                    <h2 class="my-5 h2 text-center" style="color:red">Pending Order! <a href="{% url 'me2ushop:checkout'%}"> PayNow!</a></h2>
 	                {% endif %}
                     <div class="col-md-12 mb-4">
-	                    {% include 'order_snippet.html' %}
+	                    {% include 'snippets/order_snippet.html' %}
                     </div>
 	                 <button type="button" class="button cart_button_checkout">
 		                 <a href="{% url 'me2ushop:home' %}">Continue Shopping<i class="fas fa-hand-holding-usd"></i></a>
@@ -40,7 +36,9 @@
 			</div>
 		</div>
 	</div>
-
+	<!-- Cart -->
+	<br>
+	<br>
 </div>
 
 

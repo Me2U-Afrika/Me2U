@@ -40,8 +40,8 @@ Now you can use loaddata command with a fresh database
 
 
 CURRENCIES
-
 -manage.py currencies --import=USD --import=EUR
+
 
 update exchange rates
 -manage.py updatecurrencies oxr --base=USD
