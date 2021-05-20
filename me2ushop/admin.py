@@ -96,7 +96,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display_links = ('title',)
     list_per_page = 50
     ordering = ['-created']
-    list_editable = ('in_stock',)
+    list_editable = ('stock',)
     list_filter = ('brand_name','product_categories')
 
     search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'product_categories', 'brand_name']
@@ -132,7 +132,7 @@ class DispatchersProductAdmin(ProductAdmin):
                        "price", 'created', 'modified', 'meta_keywords',
                        'meta_description',
                        'product_categories')
-    list_editable = ('in_stock', 'stock',)
+    list_editable = ('stock',)
     prepopulated_fields = {}
     autocomplete_fields = ()
 
@@ -170,7 +170,7 @@ class SellersProductAdmin(ProductAdmin):
                     'meta_description',
                     ]
     list_editable = ('stock',)
-    readonly_fields = ("brand_name", "is_bestseller", "is_featured", "is_active", "is_bestrated", 'in_stock')
+    readonly_fields = ("brand_name", "is_bestseller", "is_featured","is_bestrated")
     autocomplete_fields = ()
 
     def get_queryset(self, request):
@@ -184,11 +184,6 @@ class SellersProductAdmin(ProductAdmin):
         if brand:
             if not obj.brand_name:
                 obj.brand_name = brand
-            if obj.stock < 1:
-                obj.in_stock = False
-                obj.is_active = False
-            else:
-                obj.in_stock = True
             obj.save()
 
 

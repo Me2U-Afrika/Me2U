@@ -1,8 +1,11 @@
+import itertools
+
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils import timezone
 from django.shortcuts import reverse
+from django.utils.text import slugify
 from django_countries.fields import CountryField
 from stdimage import StdImageField
 from django.utils.translation import ugettext_lazy as _
@@ -83,6 +86,7 @@ class Category(models.Model):
         return reverse('categories:categoryView_africa_made', kwargs={'slug': self.slug})
 
 
+
 class ActiveDepartmentManager(models.Manager):
     def get_query_set(self):
         return super(ActiveDepartmentManager, self).get_query_set().filter(is_active=True)
@@ -102,7 +106,7 @@ class Department(MPTTModel, CreationModificationDateMixin):
                             max_length=50,
                             help_text='Unique value for product page URL, created from name.')
     description = models.TextField()
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, editable=False)
     is_bestselling = models.BooleanField(default=False)
     image = StdImageField(upload_to='images/category', blank=True, null=True, variations={
         'medium': (340, 300),
@@ -141,4 +145,32 @@ class Department(MPTTModel, CreationModificationDateMixin):
         return reverse('categories:categoryView_africa_made', kwargs={'slug': self.slug})
 
     def get_products(self):
-        return self.product_set.all()
+        if self.pk:
+            return self.product_set.filter(is_active=True)
+        else:
+            return None
+
+    def _generate_slug(self):
+        # max_length = self._meta.get_field('slug').max_length
+        value = self.category_name
+        slug_candidate = slug_original = slugify(value, allow_unicode=True)
+        for i in itertools.count(1):
+            if not Department.objects.filter(slug=slug_candidate).exists():
+                break
+            slug_candidate = '{}-{}'.format(slug_original, i)
+
+        self.slug = slug_candidate
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self._generate_slug()
+
+        if self.pk:
+            products = self.product_set.filter(is_active=True).first()
+            # print('products category:', products)
+            if products:
+                self.is_active = True
+            else:
+                self.is_active = False
+
+        super().save(*args, **kwargs)
