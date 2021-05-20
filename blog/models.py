@@ -61,11 +61,11 @@ class Post(CreationModificationDateMixin):
                 break
             slug_candidate = '{}-{}'.format(slug_original, i)
 
-        self.slug = slug_candidate
+        return slug_candidate
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self._generate_slug()
+            self.slug = self._generate_slug()
 
         super().save(*args, **kwargs)
 

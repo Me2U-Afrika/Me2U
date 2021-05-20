@@ -15,19 +15,28 @@
 
 <div class="super_container">
 
-	<div class="container mt-5">
-            <h2 class="mt-5">Request Refund</h2>
-        <div class="col-md-12 mb-4">
-            <form method="POST">
-            {% csrf_token %}
+	<!-- Cart -->
+	<div class="cart_section text-center">
+		<div class="container">
+			<div class="row">
+                <div class="col text-center">
+                    {% if status == unkown %}
+                        <p>Still under Review</p>
+                    {% endif %}
 
-            {{ RefundForm }}
+                    {% if status == True %}
+                        <p class="text-green">Refund request approved. Our support team will be in touch with you</p>
+                    {% endif %}
 
-            {{ form|crispy }}
-            <button type="submit" class="btn btn-primary"> Submit </button>
-        </form>
-            </div>
-  	</div>
+                    {% if status == False %}
+                        <p class="text-red">Your Request has been denied. </p>
+                    {% endif %}
+                </div>
+
+			</div>
+		</div>
+	</div>
+	<!-- Cart -->
 
 	<!-- Recently Viewed -->
 	{% if recently_viewed %}

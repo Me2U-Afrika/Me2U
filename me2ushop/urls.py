@@ -65,6 +65,8 @@ urlpatterns = [
     url(r'^checkout/', views.Checkout_page.as_view(), {'SSL': True}, name='checkout'),
     url(r'^add_coupon/', views.add_coupon, name='add_coupon'),
     url(r'^checkout-done/', views.checkout_done, name='checkout-done'),
+    # url(r'^refund-status/(?P<order_id>[\w-]+)', views.refund_status, name='refund_status'),
+    # url('order-details/(?P<order_id>[-\w]+)/$', views.refund_status, name='order-details'),
 
     url(r'payment/(?P<payment_option>[\w-]+)/$', views.PaymentView.as_view(), {'SSL': True}, name='payment'),
     url(r'complete/', views.paypal_payment_complete, name='complete'),
