@@ -249,19 +249,21 @@ GA_TRACKER_ID = '123'
 #     DATABASES['default'].update(db_from_env)
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'me2u',
-        'USER': os.environ.get('USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': 'localhost',
-    }
-}
-import dj_database_url
+if not DEBUG:
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'me2u',
+            'USER': os.environ.get('USER'),
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+            'HOST': 'localhost',
+        }
+    }
+    import dj_database_url
+
+    db_from_env = dj_database_url.config(conn_max_age=600)
+    DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
