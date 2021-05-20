@@ -91,16 +91,16 @@ class StatusCodeAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     # form = ProductAdminForm()
     list_display = (
-        'title', 'price', 'slug', 'sku', 'brand_name', 'in_stock', 'stock', 'is_active', 'created_at',
-        'updated_at',)
+        'title', 'price', 'slug', 'sku', 'brand_name', 'in_stock', 'stock', 'is_active', 'created',
+        'modified',)
     list_display_links = ('title',)
     list_per_page = 50
-    ordering = ['-created_at']
+    ordering = ['-created']
     list_editable = ('in_stock',)
     list_filter = ('brand_name','product_categories')
 
     search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'product_categories', 'brand_name']
-    exclude = ('created_at', 'updated_at',)
+    exclude = ('created', 'modified',)
 
     # prepopulated_fields = {'slug': ('title',)}
     # autocomplete_fields = ('product_categories',)
@@ -129,7 +129,7 @@ class DispatchersProductAdmin(ProductAdmin):
                        'is_featured',
                        'additional_information',
                        'discount_price',
-                       "price", 'created_at', 'updated_at', 'meta_keywords',
+                       "price", 'created', 'modified', 'meta_keywords',
                        'meta_description',
                        'product_categories')
     list_editable = ('in_stock', 'stock',)
@@ -166,7 +166,7 @@ class SellersProductAdmin(ProductAdmin):
                     'is_bestseller',
                     'is_featured',
                     'discount_price',
-                    "price", 'created_at', 'updated_at', 'meta_keywords',
+                    "price", 'created', 'modified', 'meta_keywords',
                     'meta_description',
                     ]
     list_editable = ('stock',)

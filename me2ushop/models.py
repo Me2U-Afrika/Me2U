@@ -147,7 +147,7 @@ class Brand(CreationModificationDateMixin):
         return str(self.title)
 
 
-class Product(models.Model):
+class Product(CreationModificationDateMixin):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,
                             default='',
@@ -160,9 +160,9 @@ class Product(models.Model):
     sku = models.CharField(max_length=120, default='',
                            editable=False, )
     in_stock = models.BooleanField(default=True, blank=True, null=True)
-    condition = models.CharField(choices=CONDITION_CHOICES, max_length=2,
-                                 help_text='Choose the current condition for the product'
-                                 )
+    # condition = models.CharField(choices=CONDITION_CHOICES, max_length=2,
+    #                              help_text='Choose the current condition for the product'
+    #                              )
     price = models.DecimalField(max_digits=9, decimal_places=2, help_text="Please note that the default currency is "
                                                                           "USD. Converty your product price to "
                                                                           "US dollar before listing")
@@ -198,8 +198,8 @@ class Product(models.Model):
                                                   'manufacturer. Google uses this keywords and description to index '
                                                   'your product for it to be found easily '
                                         )
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    # created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    # updated_at = models.DateTimeField(auto_now=True)
     # category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
     #                                    help_text='Choose the main category for the product'
     #                                    )
@@ -236,7 +236,7 @@ class Product(models.Model):
 
     class Meta:
         db_table = 'Products'
-        ordering = ['-created_at']
+        ordering = ['-created']
         verbose_name_plural = 'Products'
 
     def get_category(self):
@@ -259,7 +259,7 @@ class Product(models.Model):
         brand = str(self.brand_name)[:3]
         title = str(self.title)[:3]
         # category = str(self.product_categories.all()[0])[:3]
-        condition = str(self.condition)
+        condition = str(self.created)
 
         sku = '{}-{}-{}'.format(brand, title, condition)
 

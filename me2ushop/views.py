@@ -112,7 +112,7 @@ class SellerView(ListView):
         brand = get_object_or_404(Brand, id=self.kwargs.get('id'))
         # print('user:', self.kwargs)
         if brand:
-            return Product.active.filter(brand_name=brand).order_by('-created_at')
+            return Product.active.filter(brand_name=brand).order_by('-created')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         super(SellerView, self).get_context_data(**kwargs)
@@ -124,8 +124,8 @@ class SellerView(ListView):
             # other brands
             brands = Brand.objects.filter(active=True).exclude(title=store)
 
-            # products = Product.active.filter(seller=user).order_by('-created_at')
-            products = Product.active.filter(brand_name=store).order_by('-created_at')
+            # products = Product.active.filter(seller=user).order_by('-created')
+            products = Product.active.filter(brand_name=store).order_by('-created')
             context = {
                 'page_title': str(brand),
                 'site_name': 'Me2U|Seller',
@@ -185,7 +185,7 @@ class HomeView(ListView):
             # print('markting mss:', marketing_messages)
             context.update({'marketing_messages': marketing_messages})
 
-        recent_products = active_products.order_by('-created_at')
+        recent_products = active_products.order_by('-created')
         if recent_products:
             print('recent_products:', recent_products)
             context.update({'recent_products': recent_products[:20]})
