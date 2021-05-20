@@ -9,6 +9,7 @@ class CreationModificationDateMixin(models.Model):
     """  Abstract base class with a creation and modification  date and time  """
     created = models.DateTimeField(
         _("creation date and time"),
+        null=True,
         editable=False
     )
     modified = models.DateTimeField(
