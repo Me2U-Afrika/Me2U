@@ -17,7 +17,7 @@ from django.db import models
 from stdimage import StdImageField, JPEGField
 import collections
 from tagging.registry import register
-from  tagging.models import Tag
+from tagging.models import Tag
 import itertools
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
@@ -56,7 +56,6 @@ PAYMENT_CHOICES = {
     ('P', "Paypal"),
     ('S', "Stripe"),
 
-
 }
 
 SUBSCRIPTION_TYPE_CHOICE = (
@@ -77,26 +76,6 @@ CONDITION_CHOICES = {
     ('U', "Used"),
 
 }
-
-
-class ActiveProductManager(models.Manager):
-    def all(self):
-        return super(ActiveProductManager, self).all().filter(is_active=True).prefetch_related('productimage_set')
-
-
-class FeaturedProductManager(ActiveProductManager):
-    def all(self):
-        return super(FeaturedProductManager, self).all().filter(is_featured=True).prefetch_related('productimage_set')
-
-
-class BestsellerProductManager(ActiveProductManager):
-    def all(self):
-        return super(BestsellerProductManager, self).all().filter(is_bestseller=True).prefetch_related('productimage_set')
-
-
-class ProductManager(models.Manager):
-    def get_by_natural_key(self, slug):
-        return self.get(slug=slug)
 
 
 class Brand(CreationModificationDateMixin):
@@ -145,6 +124,16 @@ class Brand(CreationModificationDateMixin):
 
     def __str__(self):
         return str(self.title)
+
+
+class ActiveProductManager(models.Manager):
+    def all(self):
+        return super(ActiveProductManager, self).all().filter(is_active=True).prefetch_related('productimage_set')
+
+
+class ProductManager(models.Manager):
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
 
 
 class Product(CreationModificationDateMixin):
@@ -198,11 +187,6 @@ class Product(CreationModificationDateMixin):
                                                   'manufacturer. Google uses this keywords and description to index '
                                                   'your product for it to be found easily '
                                         )
-    # created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    # updated_at = models.DateTimeField(auto_now=True)
-    # category_choice = models.CharField(choices=CATEGORY_CHOICES, max_length=2,
-    #                                    help_text='Choose the main category for the product'
-    #                                    )
 
     product_categories = models.ManyToManyField(Department,
 
@@ -214,8 +198,6 @@ class Product(CreationModificationDateMixin):
 
     objects = ProductManager()
     active = ActiveProductManager()
-    featured = FeaturedProductManager()
-    bestseller = BestsellerProductManager()
 
     # made_in_afrika = ActiveAfricaProductManager()
 
@@ -304,12 +286,12 @@ class Product(CreationModificationDateMixin):
 
         category = self.product_categories
         name = self.title
-        print('category:', category)
-        print('name:', name)
+        # print('category:', category)
+        # print('name:', name)
         # print('other sellers:', users)
         # print('self', self.slug)
         words = _prepare_words(self.title)
-        print('words:', words)
+        # print('words:', words)
 
         for word in words:
             products = Product.active.filter(
@@ -639,8 +621,8 @@ class Order(CreationModificationDateMixin):
     coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
     being_delivered = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
-    refund_requested = models.BooleanField(default=False)
-    refund_granted = models.BooleanField(default=False)
+    refund_requested = models.BooleanField(blank=True, null=True)
+    refund_granted = models.BooleanField(blank=True, null=True)
     email = models.EmailField(max_length=50, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
 
@@ -798,8 +780,8 @@ class Coupon(models.Model):
 class RequestRefund(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     reason = models.TextField()
-    accepted = models.BooleanField(default=False)
-    email = models.EmailField()
+    accepted = models.BooleanField(blank=True, null=True)
+    # email = models.EmailField()
     ref_code = models.CharField(max_length=20)
 
     def __str__(self):

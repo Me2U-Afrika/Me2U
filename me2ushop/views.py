@@ -152,80 +152,111 @@ class HomeView(ListView):
         context = {}
 
         active_products = Product.active.all()
-        bestselling = active_products.filter(is_bestseller=True)
-        bestrated = active_products.filter(is_bestrated=True)
-        categories = context_processors.me2u(self.request)['active_departments']
-        if categories:
+
+        try:
+            # TOP BANNER
+            top_banner = Banner.objects.filter(top_display=True)
+            context.update({'top_banner': top_banner[0]})
+
+        except:
+            pass
+
+        try:
+            # FEATURING PRODUCTS
+            featuring = active_products.filter(is_featured=True)
+            context.update({'featuring': featuring})
+
+        except:
+            pass
+
+        try:
+            # BESTSELLING BANNER
+            bestselling_banner = Banner.objects.bestselling()
+            context.update({'best_seller_banner': bestselling_banner[0]})
+
+        except:
+            pass
+
+        try:
+            # BESTRATED
+            bestrated = active_products.filter(is_bestrated=True)
+            context.update({'bestrated': bestrated})
+
+        except:
+            pass
+
+        try:
+            # MARKETING MESSAGES
+            marketing_messages = MarketingMessage.objects.get_featured_item()
+            context.update({'marketing_messages': marketing_messages})
+
+        except:
+            pass
+
+        try:
+            # RECENT PRODUCTS
+            recent_products = active_products.order_by('-created').exclude(is_featured=True, is_bestseller=True,
+                                                                           is_bestrated=True)
+            context.update({'recent_products': recent_products[:20]})
+
+        except:
+            pass
+
+        try:
+            # BESTSELLING PRODUCTS
+            bestselling = active_products.filter(is_bestseller=True)
+            context.update({'bestselling': bestselling})
+
+        except:
+            pass
+
+        try:
+            # CATEGORIES RANDOM
+            categories = Department.objects.filter(is_active=True)
+            # categories = context_processors.me2u(self.request)['active_departments'].prefetch_related("product_set")
+
             rand_department = random.choices(categories, k=3)
             context.update({
                 'rand_department_1': rand_department[0],
                 'rand_department_2': rand_department[1],
                 'rand_department_3': rand_department[2]
             })
+        except:
+            pass
 
-        if bestselling:
-            context.update({'bestselling': bestselling})
-
-        if bestrated:
-            context.update({'bestrated': bestrated})
-
-        bestselling_banner = Banner.objects.bestselling()
-        # print('banner:', bestselling_banner)
-
-        if bestselling_banner:
-            context.update({'best_seller_banner': bestselling_banner[0]})
-
-        featuring = active_products.filter(is_featured=True)
-        if featuring:
-            # print('featuring:', featuring)
-            context.update({'featuring': featuring})
-
-        marketing_messages = MarketingMessage.objects.get_featured_item()
-        if marketing_messages:
-            # print('markting mss:', marketing_messages)
-            context.update({'marketing_messages': marketing_messages})
-
-        recent_products = active_products.order_by('-created')
-        if recent_products:
-            print('recent_products:', recent_products)
-            context.update({'recent_products': recent_products[:20]})
-
-        # recently_viewed = stats.get_recently_viewed(self.request)
-        # if recently_viewed:
-        #     context.update({'recently_viewed': recently_viewed})
-
-        search_recored = stats.recommended_from_search(self.request)
-        # print('search:', search_recored)
-
-        if search_recored:
-            context.update({'search_recomms': search_recored})
-
-        sliders = Slider.objects.featured()
-        if sliders:
+        try:
+            # SLIDERS
+            sliders = Slider.objects.featured()
             context.update({'sliders': sliders, })
 
-        # trends = Trend.objects.all()
-        trend_info = TrendInfo.objects.all()
-        # print('trend_info:', trend_info)
-        if trend_info:
+        except:
+            pass
+
+        try:
+            # TRENDS INFORMATION
+            trend_info = TrendInfo.objects.all()
             context.update({'trend_info': trend_info})
 
-        # if trends:
-        #     # print('trending:', trending_banner)
-        #     context.update({'trends': trends})
+        except:
+            pass
 
-        top_banner = Banner.objects.filter(top_display=True)
-
-        if top_banner:
-            # print('top banner:', top_banner)
-            context.update({'top_banner': top_banner[0]})
-
-        view_recommendation = stats.recommended_from_views(self.request)
-        if view_recommendation:
+        try:
+            # RECOMMENDATION FROM VIEWS
+            view_recommendation = stats.recommended_from_views(self.request)
             context.update({'view_recomms': view_recommendation})
 
-        return context
+        except:
+            pass
 
+        try:
+            # SEARCH RECOMMENDATIONS
+            search_recored = stats.recommended_from_search(self.request)
+            context.update({'search_recomms': search_recored})
+
+        except:
+            pass
+
+        return context
 
 # class HomeView(ListView):
 #     model = Product
@@ -2359,9 +2390,9 @@ class PaymentView(View):
 
             if form.is_valid():
                 print('valid payment form')
-                print('order:', order)
+                print('order:', self.request.POST['stripeToken'])
                 token = self.request.POST['stripeToken']
-                print('token', token)
+                # print('token', token)
 
                 amount = int(order.get_total() * 100)  # get in ksh
 
@@ -2452,27 +2483,29 @@ class PaymentView(View):
 
 def paypal_payment_complete(request):
     body = json.loads(request.body)
-    print("body:", body)
+    # print("body:", body)
 
     cart = None
     if not cart:
         user = None
         order_date = timezone.now()
         cart = Order.objects.create(user=user, order_date=order_date, ordered=True, status=20)
+        cart.ref_code = create_ref_code()
+        cart.save()
 
         request.session['cart_id'] = cart.id
-        print('cart2:', cart)
+        # print('cart2:', cart)
 
     item = Product.objects.get(id=body['productId'])
-    print(item)
+    # print(item)
     order_item, created = OrderItem.objects.get_or_create(
         customer_order=cart,
         item=item,
         ordered=True,
         quantity=1,
     )
-    print("order_item:", order_item)
-    print("created:", created)
+    # print("order_item:", order_item)
+    # print("created:", created)
 
     if request.user.is_authenticated:
         order_item.user = request.user
@@ -2487,11 +2520,12 @@ def paypal_payment_complete(request):
 
 def paypal_payment_complete_cart(request):
     body = json.loads(request.body)
-    print("body:", body)
+    # print("body:", body)
 
     order = Order.objects.get(id=body['orderId'])
-    print(order)
+    # print(order)
     order.ordered = True
+    order.ref_code = create_ref_code()
     order.status = 20
     order_items = order.items.all()
     order_items.update(ordered=True)
@@ -2548,34 +2582,36 @@ def invoice_for_order(request, order_id):
     return render(request, "home/invoice.html", {"order": order})
 
 
-class RefundView(View):
+class RefundView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         form = RefundForm()
 
         context = {
             'RefundForm': form
         }
-        return render(self.request, "Me2U_home.html", context)
+        return render(self.request, "home/returns.html", context)
 
     def post(self, *args, **kwargs):
         form = RefundForm(self.request.POST)
         if form.is_valid():
             ref_code = form.cleaned_data.get('ref_code')
             message = form.cleaned_data.get('message')
-            email = form.cleaned_data.get('email')
+            # email = self.request.user.email
 
             # assign refund request to order
             try:
                 order = Order.objects.get(ref_code=ref_code)
                 order.refund_requested = True
+                if not order.user:
+                    order.user = self.request.user
                 order.save()
 
-                #         record the refund
+                # record the refund
 
                 refund = RequestRefund()
                 refund.order = order
                 refund.reason = message
-                refund.email = email
+                # refund.email = email
                 refund.ref_code = ref_code
                 refund.save()
 
@@ -2591,6 +2627,25 @@ class RefundView(View):
                               "wahuduma wetu kupata usaidizi.")
 
                 return redirect("me2ushop:request_refund")
+
+
+@login_required()
+def refund_status(request, order_id):
+    print('In refund status')
+    print('ref:', order_id)
+    try:
+        request = RequestRefund.objects.get(order__id=order_id)
+        print("request found", request.accepted)
+
+        context = {
+            'status': request.accepted,
+
+        }
+        return render(request, 'home/refund_status.html', context)
+
+    except Exception:
+        messages.warning(request, "No active requests found")
+        return redirect('me2ushop:home')
 
 # def get_cartID(request):
 #     # we take the online provided code and run it through our available coupons in order to determine it's value

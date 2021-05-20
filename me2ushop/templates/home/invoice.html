@@ -22,6 +22,8 @@
                 Date: {{ order.order_date|date }}
                 <br/>
                 Order Status: {{ order.get_status_display }}
+                <br/>
+                Order Reference code: {{ order.ref_code }}
 
             </div>
             {% if order.billing_address1 %}

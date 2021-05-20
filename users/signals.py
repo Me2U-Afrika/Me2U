@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
-from me2ushop.models import Product, ProductImage
+from me2ushop.models import Product, ProductImage, RequestRefund
 from .models import Profile, User, EmailConfirmed
 import random
 import hashlib
@@ -46,3 +46,11 @@ def save_image(sender, instance, **kwargs):
             # print('we came to set it active')
             instance.item.is_active = True
     instance.item.save()
+
+
+@receiver(post_save, sender=RequestRefund)
+def save_refund(sender, instance, **kwargs):
+    if instance.accepted:
+        instance.order.refund_granted = True
+    elif not instance.accepted:
+        instance.order.refund_granted = False

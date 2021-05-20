@@ -86,7 +86,6 @@ class Category(models.Model):
         return reverse('categories:categoryView_africa_made', kwargs={'slug': self.slug})
 
 
-
 class ActiveDepartmentManager(models.Manager):
     def get_query_set(self):
         return super(ActiveDepartmentManager, self).get_query_set().filter(is_active=True)
@@ -103,6 +102,7 @@ class Department(MPTTModel, CreationModificationDateMixin):
     # sub_category_name = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
     icon_url = models.CharField(max_length=200, blank=True, null=True)
     slug = models.SlugField(unique=True,
+                            editable=False,
                             max_length=50,
                             help_text='Unique value for product page URL, created from name.')
     description = models.TextField()
@@ -159,11 +159,11 @@ class Department(MPTTModel, CreationModificationDateMixin):
                 break
             slug_candidate = '{}-{}'.format(slug_original, i)
 
-        self.slug = slug_candidate
+        return slug_candidate
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self._generate_slug()
+            self.slug = self._generate_slug()
 
         if self.pk:
             products = self.product_set.filter(is_active=True).first()

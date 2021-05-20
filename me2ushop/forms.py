@@ -19,9 +19,8 @@ PAYMENT_CHOICES = {
     ('M', "M-Pesa"),
     ('P', "Paypal"),
     ('S', "Stripe"),
-    ('DC', "Debit Card/Credit Card"),
-    ('FW', "FlutterWave"),
-    ('MO', "MobileMoney"),
+    ('P', "Debit Card/Credit Card"),
+
 
 }
 
@@ -227,9 +226,9 @@ class RefundForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea(attrs={
         'class': 'form-control col-md-12 mb-4"'
     }))
-    email = forms.EmailField(widget=forms.TextInput(attrs={
-        'class': 'form-control col-md-12 mb-4"'
-    }))
+    # email = forms.EmailField(widget=forms.TextInput(attrs={
+    #     'class': 'form-control col-md-12 mb-4"'
+    # }))
 
 
 class PaymentForm(forms.Form):
