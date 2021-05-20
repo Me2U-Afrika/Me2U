@@ -55,8 +55,7 @@ PAYMENT_CHOICES = {
     ('M', "M-Pesa"),
     ('P', "Paypal"),
     ('S', "Stripe"),
-    ('D', "Debit Card"),
-    ('C', "Cash On Delivery"),
+
 
 }
 
@@ -129,6 +128,7 @@ class Brand(CreationModificationDateMixin):
     country = CountryField(multiple=False)
     subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
                                          help_text='Select a monthly recurring subscription fees')
+    valid_payment_method = models.BooleanField(default=False, null=True, blank=True)
     active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False, blank=True, null=True)
     image = StdImageField(upload_to='images/brands/brand_background', blank=True, null=True,
@@ -267,7 +267,7 @@ class Product(CreationModificationDateMixin):
         return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
     def get_add_cart_url(self):
-        return reverse('me2ushop:product', kwargs={'slug': self.slug})
+        return reverse('me2ushop:add_cart', kwargs={'slug': self.slug})
 
     def get_images(self):
         return self.productimage_set.all()

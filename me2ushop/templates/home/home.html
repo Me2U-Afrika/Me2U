@@ -417,7 +417,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
+													<form action="{{ product.get_absolute_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
@@ -475,7 +475,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
+													<form action="{{ product.get_absolute_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
@@ -533,7 +533,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
+													<form action="{{ product.get_absolute_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
@@ -717,7 +717,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
+													<form action="{{ product.get_absolute_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
@@ -770,7 +770,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
+													<form action="{{ product.product.get_absolute_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.product.slug %}">
@@ -822,7 +822,7 @@
 														<input type="radio" name="product_color" style="background:#000000">
 														<input type="radio" name="product_color" style="background:#999999">
 													</div>
-													<form action="{{ product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
+													<form action="{{ product.get_absolute_url }}"><button class="arrivals_single_button">View</button></form>
 												</div>
 											</div>
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
@@ -873,7 +873,7 @@
 												<div class="arrivals_single_price text-right">{{ CURRENCY.symbol }}{{ best_seller_banner.product.price|currency:CURRENCY.code }}</div>
 											</div>
 											<div class="rating_r rating_r_4 arrivals_single_rating"><i></i><i></i><i></i><i></i><i></i></div>
-											<form action="{{ best_seller_banner.product.get_add_cart_url }}"><button class="arrivals_single_button">View</button></form>
+											<form action="{{ best_seller_banner.product.get_absolute_url }}"><button class="arrivals_single_button">View</button></form>
 										</div>
 											<a href="{% url 'me2ushop:add_wishlist' best_seller_banner.product.slug %}">
 											<div class="arrivals_single_fav product_fav" id="{{ best_seller_banner.product.slug}}"><i class="fas fa-heart"></i></div>
@@ -934,7 +934,7 @@
 								<div class="bestsellers_item discount">
 									<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
 
-										{% for image in product.get_images %}
+										{% for image in product.productimage_set.all %}
 										{% if image.in_display %}
 
 										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
@@ -1012,13 +1012,13 @@
 
 							<div class="bestsellers_slider slider">
 
-								{% for product in rand_department_1.product_set.all %}
+								{% for product in rand_department_1.get_products %}
 								{% if product.discount_price %}
 								<!-- Best Sellers Item -->
 								<div class="bestsellers_item discount">
 									<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
 
-										{% for image in product.get_images %}
+										{% for image in product.productimage_set.all %}
 										{% if image.in_display %}
 
 										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>

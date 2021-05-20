@@ -1,0 +1,75 @@
+{% load static %}
+{% load currency %}
+<!Doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <title>Invoice</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Me2U|Afrika invoice</h1>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <div class="row">
+            <div class="col-8">
+                Invoice number BT{{ order.id }}
+                <br/>
+                Date: {{ order.order_date|date }}
+                <br/>
+                Order Status: {{ order.get_status_display }}
+
+            </div>
+            {% if order.billing_address1 %}
+            <div class="col-4">
+                {{ order.name }}
+                <br/>
+                {{ order.billing_address1  }}
+                <br/>
+                {{ order.billing_address2  }}
+                <br/>
+                {{ order.billing_zip_code }}
+                <br/>
+                {{ order.billing_country }}
+                <br/>
+                {{ order.billing_city }}
+                <br/>
+            </div>
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table" style="width: 95%; margin: 50px 0px 50px 0px">
+                    <tr>
+                        <th>Product name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                    {% for line in order.items.all %}
+                    <tr>
+                        <td>{{ line.item.title }}</td>
+                        <td>{{ line.quantity }}</td>
+                        <td>${{ line.get_final_price|currency:"USD" }}</td>
+
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                         <td colspan="2"><b>Total (USD)</b></td>
+                         <td><b>${{ order.get_total|currency:"USD" }}</b></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p>Thank you for shopping with Me2U|Africa</p>
+                <p>Me2U|Market inc.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

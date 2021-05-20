@@ -1,0 +1,76 @@
+{% load currency %}
+<!--Grid column-->
+      <!-- Heading -->
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Your cart</span>
+        <span class="badge badge-secondary badge-pill">{{ order.total_items }}</span>
+      </h4>
+
+      {% for order_item in order.items.all %}
+      <!-- Cart -->
+      <ul class="list-group mb-3 z-depth-1">
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              {% if order.billing_country %}
+            <h6 class="my-0"><a href="{{ order_item.item.get_absolute_url }}">{{ order_item.item.title }} * {{ order_item.quantity }}</a></h6>
+            {% else %}
+              <h6 class="my-0"><a href="{{ order_item.item.get_absolute_url }}">{{ order_item.item.title|truncatechars:13 }} * {{ order_item.quantity }}</a></h6>
+          {% endif %}
+          </div>
+            {% if order_item.item.discount_price %}
+              <span class="text-muted">${{ order_item.get_total_discount_price|currency:"USD" }}</span>
+              <span class="text-muted"><a class="btn btn-green btn-sm my-0 p">
+                 - ${{ order_item.get_total_saved|currency:"USD" }}
+                </a></span>
+
+            {% else %}
+              <span class="text-muted">${{ order_item.get_total_price|currency:"USD" }}</span>
+            {% endif %}
+            {% if not order.ordered %}
+            <a style="color:orange" href="{% url 'me2ushop:remove_cart' order_item.item.slug %}">
+                Delete
+                <i class="fas fa-toilet-paper ml-3"></i>
+            </a>
+            {% endif %}
+        </li>
+        {% endfor %}
+
+          {% if order.coupon %}
+        <li class="list-group-item d-flex justify-content-between bg-light">
+          <div class="text-success">
+            <h6 class="my-0">Promo code</h6>
+            <small>{{ order.coupon.code}}</small>
+          </div>
+          <span class="text-muted">-${{ order.coupon.amount|currency:"USD" }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Total (USD)</span>
+          <strong>${{ order.get_coupon_total|currency:"USD" }}</strong>
+        </li>
+          {% else %}
+          <li class="list-group-item d-flex justify-content-between">
+          <span>Total (USD)</span>
+          <strong>${{ order.get_total|currency:"USD"}}</strong>
+        </li>
+          {% endif %}
+      </ul>
+      <!-- Cart -->
+
+        {% if DISPLAY_COUPON_FORM %}
+            {% if request.user.is_authenticated %}
+      <!-- Promo code -->
+      <form class="card p-2" action="{% url 'me2ushop:add_coupon'%}" method="POST">
+        {% csrf_token %}
+        <div class="input-group">
+<!--          <input type="text" class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">-->
+          {{ couponform.code}}
+          <div class="input-group-append">
+             <button class="btn btn-secondary btn-md waves-effect float:left m-0" type="submit">Redeem</button>
+          </div>
+        </div>
+      </form>
+      <!-- Promo code -->
+        {% endif %}
+        {% endif %}
+
+        <!--Grid column-->

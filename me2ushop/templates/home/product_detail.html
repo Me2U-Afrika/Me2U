@@ -58,74 +58,6 @@
 
 			<div class="row">
 
-					<!-- Images -->
-<!--			<div class="col-lg-2 order-lg-1 order-2">-->
-
-<!--				{% if object.cross_sells_hybrid %}-->
-
-<!--				<ul class="image_list">-->
-<!--					{% for product in object.cross_sells_hybrid %}-->
-<!--					{% for image in product.get_images %}-->
-<!--	                    {% if image.in_display %}-->
-<!--	                    <li class="view overlay zoom">-->
-<!--				            <img src="{{ image.image.thumbnail.url }}">-->
-<!--		                    <a href="{{ product.get_absolute_url }}">-->
-<!--				                <div class="mask rgba-black-slight">-->
-
-<!--					                <div class="card-body text-center">-->
-
-<!--                                        <a href="{{ product.get_absolute_url }}">-->
-
-
-<!--						                    <h6> {{ product.title }}</h6>-->
-
-<!--                                            <h6 class="font-weight-bold blue-text">-->
-
-<!--                                              {% if product.discount_price %}-->
-<!--                                                  <span style="font-size:9px" class="grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </del></span>-->
-<!--                                                 <br>-->
-<!--                                                <span class="red-text">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} </span>-->
-<!--                                              {% else %}-->
-<!--                                                  <span  class="red-text">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</span>-->
-<!--                                              {% endif %}-->
-
-<!--                                            </h6>-->
-<!--                                      </a>-->
-<!--					                </div>-->
-<!--				                </div>-->
-<!--		                    </a>-->
-
-<!--&lt;!&ndash;	                        <div class="card-body text-center">&ndash;&gt;-->
-<!--&lt;!&ndash;				              <a href="{{ product.get_absolute_url }}">&ndash;&gt;-->
-
-<!--&lt;!&ndash;				                  <h6 class="font-weight-bold blue-text">&ndash;&gt;-->
-
-<!--&lt;!&ndash;				                  {% if product.discount_price %}&ndash;&gt;-->
-<!--&lt;!&ndash;				                      <span style="font-size:9px" class="grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </del></span>&ndash;&gt;-->
-<!--&lt;!&ndash;				                     <br>&ndash;&gt;-->
-<!--&lt;!&ndash;				                    <span class="red-text">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} </span>&ndash;&gt;-->
-<!--&lt;!&ndash;				                  {% else %}&ndash;&gt;-->
-<!--&lt;!&ndash;					                  <span  class="red-text">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</span>&ndash;&gt;-->
-<!--&lt;!&ndash;				                  {% endif %}&ndash;&gt;-->
-
-<!--&lt;!&ndash;				              </h6>&ndash;&gt;-->
-<!--&lt;!&ndash;			                  </a>&ndash;&gt;-->
-<!--&lt;!&ndash;			                </div>&ndash;&gt;-->
-
-<!--	                   </li>-->
-<!--	                    {% endif %}-->
-<!--	                    {% endfor %}-->
-<!--					{% endfor %}-->
-
-
-<!--				</ul>-->
-
-<!--				{% endif %}-->
-
-<!--			</div>-->
-
-				<!-- Selected Image -->
-
 				<div class="col-lg-6 order-lg-2 order-1">
 				{% for image in object.productimage_set.all %}
 				{% if image.in_display %}
@@ -160,17 +92,17 @@
 		                            <p>Stock:Product Not in Stock</p>
 		                            {% endif %}
 
-<!--									&lt;!&ndash; Product Quantity &ndash;&gt;-->
-<!--									<div class="product_quantity clearfix">-->
-<!--										<span>Quantity: </span>-->
-<!--										<input id="quantity_input" name="quantity" type="number" pattern="[0-9]*" value="1">-->
-<!--										<div class="quantity_buttons">-->
-<!--											<div id="quantity_inc_button" class="quantity_inc quantity_control"><i class="fas fa-chevron-up"></i></div>-->
-<!--											<div id="quantity_dec_button" class="quantity_dec quantity_control"><i class="fas fa-chevron-down"></i></div>-->
-<!--										</div>-->
-<!--									</div>-->
+									<!-- Product Quantity -->
+									<div class="product_quantity clearfix">
+										<span>Quantity: </span>
+										<input id="quantity_input" name="quantity" type="number" pattern="[0-9]*" value="1">
+										<div class="quantity_buttons">
+											<div id="quantity_inc_button" class="quantity_inc quantity_control"><i class="fas fa-chevron-up"></i></div>
+											<div id="quantity_dec_button" class="quantity_dec quantity_control"><i class="fas fa-chevron-down"></i></div>
+										</div>
+									</div>
 
-<!--									&lt;!&ndash; Product Color &ndash;&gt;-->
+									<!-- Product Color -->
 <!--									<ul class="product_color">-->
 <!--										<li>-->
 <!--											<span>Color: </span>-->
@@ -184,15 +116,96 @@
 <!--											</ul>-->
 <!--										</li>-->
 <!--									</ul>-->
-
 								</div>
-
 								{% if object.discount_price %}
-								<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
-								<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
-								{% else %}
-								<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
+									<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
+									<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
+									{% else %}
+									<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
 								{% endif %}
+
+								{% if object.brand_name.valid_payment_method %}
+									<!--Payment methods-->
+									<div class="button_container">
+										<button type="submit" class="button cart_button" >Add to Cart</button>
+										<a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>
+									</div>
+
+									<div class="clearfix mt-2" style="z-index: 1000;">
+									<div id="paypal-button-container"></div>
+
+									<!-- Include the PayPal JavaScript SDK -->
+									<script src="https://www.paypal.com/sdk/js?client-id=AWO1FayVTNuxrcjUZSL57i0QYdqQKpCZ3CcG9Ttvxi_qChYoKbqySBy_zhf2yR4AOyWD-cuqUc5Tm9_g&currency=USD"></script>
+
+									<script>
+										function getCookie(name) {
+											let cookieValue = null;
+											if (document.cookie && document.cookie !== '') {
+												const cookies = document.cookie.split(';');
+												for (let i = 0; i < cookies.length; i++) {
+													const cookie = cookies[i].trim();
+													// Does this cookie string begin with the name we want?
+													if (cookie.substring(0, name.length + 1) === (name + '=')) {
+														cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+														break;
+													}
+												}
+											}
+											return cookieValue;
+										}
+										const csrftoken = getCookie('csrftoken');
+
+
+										var total = '{{ object.sale_price|currency:"USD" }}'
+										var productId = '{{ object.id }}'
+
+										function completeOrder(){
+											var url = "{% url 'me2ushop:complete' %}"
+											fetch(url,{
+
+												method:'POST',
+												headers: {
+													'Content-type':'application/json',
+													'X-CSRFToken': csrftoken
+												},
+												body: JSON.stringify({'productId': productId})
+
+
+											});
+
+										}
+
+
+										// Render the PayPal button into #paypal-button-container
+										paypal.Buttons({
+
+											// Set up the transaction
+											createOrder: function(data, actions) {
+												return actions.order.create({
+													purchase_units: [{
+														amount: {
+															value: total
+														}
+													}]
+												});
+											},
+
+											// Finalize the transaction
+											onApprove: function(data, actions) {
+												return actions.order.capture().then(function(details) {
+													// Show a success message to the buyer
+													completeOrder()
+													alert('Transaction completed by ' + details.payer.name.given_name + '!');
+													window.location.href = '{% url 'me2ushop:checkout-done' %}'
+												});
+											}
+
+
+										}).render('#paypal-button-container');
+									</script>
+								{% endif %}
+
+							</div>
 
 								{% if object.brand_name.user.user == request.user %}
 	                            <div class="card card-body">
@@ -218,21 +231,13 @@
 	                            </div>
 								{% endif %}
 
-	<!--								<div class="button_container">-->
-	<!--									<button type="submit" class="button cart_button" >Add to Cart</button>-->
-	<!--									<div class="product_fav"><i class="fas fa-heart"></i></div>-->
-	<!--									<a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>-->
-	<!--								</div>-->
-	<!--							<div class="button_container">-->
-	<!--								<button type="submit" class="button cart_button" >Contact Seller</button>-->
-	<!--							</div>-->
 							</form>
 						</div>
 						<br>
 
 						{% if object.brand_name %}
 								<div class="mt-2">
-									<button class="button cart_button quick-contact" id="contact_seller"><i class="fas fa-phone-square"> Show Contact</i></button>
+									<button class="button cart_button quick-contact" id="contact_seller"><i class="fas fa-phone-square">Contact Seller</i></button>
 
 									<a href="{% url 'me2ushop:seller_page' brand_id %}" role="button" class="button cart_button quick-contact"><i class="fas fa-store"> Visit Store</i></a>
 								</div>

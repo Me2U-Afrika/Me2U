@@ -208,20 +208,22 @@
                                     </div>
                                 </div>
 
-        <!--                        &lt;!&ndash; Cart &ndash;&gt;-->
-        <!--                        <div class="cart">-->
-        <!--                            <div class="cart_container d-flex flex-row align-items-center justify-content-end">-->
-        <!--                                <div class="cart_icon">-->
-        <!--                                    <img src="media/images/cart.png" alt="">-->
-        <!--                                    <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>-->
-        <!--                                </div>-->
-        <!--                                <div class="cart_content">-->
-        <!--                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}">Cart</a></div>-->
-        <!--                                    <div class="cart_price">{{ request|cart_item_total }} </div>-->
-        <!--                                </div>-->
-        <!--                            </div>-->
-        <!--                        </div>-->
-        <!--                        &lt;!&ndash; cart &ndash;&gt;-->
+                                {% if request|cart_item_count > 0 %}
+                                <!-- Cart -->
+                                <div class="cart">
+                                    <div class="cart_container d-flex flex-row align-items-center justify-content-end">
+                                        <div class="cart_icon">
+                                            <a href="{% url 'me2ushop:order_summary' %}"><img src="media/images/cart.png" alt=""></a>
+                                            <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>
+                                        </div>
+                                        <div class="cart_content">
+                                            <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}">Cart</a></div>
+                                            <div class="cart_price">{{ request|cart_item_total }} </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- cart -->
+                                {% else %}
 
                                   <!-- Cart -->
                                 <div class="cart">
@@ -235,6 +237,8 @@
                                     </div>
                                 </div>
                                 <!-- cart -->
+
+                                {% endif %}
 
                             </div>
                         </div>
@@ -489,8 +493,8 @@
 
     <!-- marketing modal-->
     <script>
-            $(document).ready(function(){
-            {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path and not "blog" in request.get_full_path and not "accounts" in request.get_full_path %}
+        $(document).ready(function(){
+            {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path and not "blog" in request.get_full_path and not "accounts" in request.get_full_path and not "checkout" in request.get_full_path and not "payment" in request.get_full_path %}
 
                 function showModal(){
                     $("#marketingModal").modal("show").setTimeout(showModal, 1000);
