@@ -421,6 +421,7 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
         except ObjectDoesNotExist:
             seller_group = Group.objects.create(name='Sellers')
 
+
         obj = form.save(commit=False)
         seller = SellerProfile.objects.get(user=self.request.user)
         user = seller

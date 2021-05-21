@@ -69,7 +69,6 @@
 				{% endfor %}
 					</div>
 
-
 				<!-- Description -->
 				<div class="col-lg-6 order-3">
 					<div class="product_description">
@@ -80,14 +79,13 @@
 	                        <div>
 	                            Brand: <a href="{% url 'me2ushop:seller_page' brand_id %}"> {{ object.brand_name }}</a>
 	                        </div>
-	                        {% endif %}
+						{% endif %}
 						<div class="product_text"><p>{{ object.description|linebreaks }}</p></div>
 						<div class="order_info d-flex flex-row">
 							<form action="{{ object.get_add_cart_url }}" method="POST">
 								{% csrf_token %}
 								<div class="clearfix" style="z-index: 1000;">
-
-									 {% if object.stock > 0 %}
+									{% if object.stock > 0 %}
 		                            <p>Stock: {{ object.stock }}</p>
 		                            {% else %}
 		                            <p>Stock:Product Not in Stock</p>
@@ -121,7 +119,7 @@
 								{% if object.discount_price %}
 									<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
 									<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
-									{% else %}
+								{% else %}
 									<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
 								{% endif %}
 
@@ -234,7 +232,6 @@
 
 							</form>
 						</div>
-						<br>
 
 						{% if object.brand_name %}
 								<div class="mt-2">
@@ -244,18 +241,15 @@
 								</div>
 							{% endif %}
 
-						<div class="cart">
+						<div class="cart mt-2">
                             <div class="cart_container d-flex flex-row align-items-center justify-content-start">
                                 <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}">
-                                    <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
+                                    <img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height: 35px; width: 35px;"></a>
                                 </div>
-								<div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" style="color:MediumSeaGreen;">'Am A Seller...</a></div>
-
-
+								<div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" style="color:MediumSeaGreen;">Sell</a></div>
                             </div>
                         </div>
-						<br>
-						<div>
+						<div class="mt-2">
 	                    In categor{{ object.product_categories.count|pluralize:"y,ies" }}:
 	                            {% for c in object.product_categories.all %}
 	                                <a href="{{ c.get_absolute_url }}"><span property="v:product_categories">{{ c.category_name }}</span></a>
@@ -264,7 +258,9 @@
 						</div>
 						<br>
 						<div class="row">
-							<div class="ml-3">Share:</div>
+							<div class="ml-3">
+								{% post_to_linkedin object.get_absolute_url %}
+							</div>
 							<div class="ml-3">
 								{% post_to_facebook object.get_absolute_url %}
 							</div>
@@ -285,16 +281,10 @@
 							<div class="ml-3">
 								{% send_email object.title "New Product: {{object.title}}. Check it out!" object.get_absolute_url %}
 							</div>
-
-							<div class="ml-3">
-								{% post_to_linkedin object.get_absolute_url %}
-							</div>
 							<div class="ml-3">
 								{% save_to_pinterest object.get_absolute_url %}
 								{% add_pinterest_script %}
 							</div>
-
-
 
 						</div>
 
