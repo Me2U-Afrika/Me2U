@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django_social_share',
 
     'asymmetric_jwt_auth',
     'certbot_django.server',
