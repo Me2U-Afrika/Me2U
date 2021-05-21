@@ -1,5 +1,5 @@
 from me2ushop import models
-from categories.models import Category
+from categories.models import Category, Department
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.sitemaps import Sitemap
 
@@ -11,7 +11,7 @@ class ProductSitemap(Sitemap):
 
 class CategorySitemap(Sitemap):
     def items(self):
-        return Category.active.all()
+        return Department.active.all()
 
 
 class FlatPageSitemap(Sitemap):

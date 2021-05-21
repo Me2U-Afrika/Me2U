@@ -278,13 +278,23 @@
 							<div class="ml-3">
 								{% post_to_telegram "New Product: {{object.title}}" object.get_absolute_url %}
 							</div>
-
-							<div class="ml-3">
-								{% post_to_gplus object.get_absolute_url %}
-							</div>
 							<div class="ml-3">
 								{% post_to_whatsapp object.get_absolute_url %}
 							</div>
+
+							<div class="ml-3">
+								{% send_email object.title "New Product: {{object.title}}. Check it out!" object.get_absolute_url %}
+							</div>
+
+							<div class="ml-3">
+								{% post_to_linkedin object.get_absolute_url %}
+							</div>
+							<div class="ml-3">
+								{% save_to_pinterest object.get_absolute_url %}
+								{% add_pinterest_script %}
+							</div>
+
+
 
 						</div>
 
