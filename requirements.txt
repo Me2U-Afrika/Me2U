@@ -37,7 +37,7 @@ dig==0.1.10
 distlib==0.3.1
 distro==1.5.0
 dj-database-url==0.5.0
-Django==3.1.1
+Django==3.1.8
 django-allauth==0.44.0
 django-bmemcached==0.3.0
 django-bootstrap3==12.1.0
