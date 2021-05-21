@@ -52,5 +52,7 @@ def save_image(sender, instance, **kwargs):
 def save_refund(sender, instance, **kwargs):
     if instance.accepted:
         instance.order.refund_granted = True
+        instance.order.save()
     elif not instance.accepted:
         instance.order.refund_granted = False
+        instance.order.save()

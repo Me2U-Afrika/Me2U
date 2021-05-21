@@ -4,6 +4,7 @@
 {% load crispy_forms_tags %}
 {% load catalog_filters %}
 {% load currency %}
+{% load social_share %}
 
 {% block headblock %}
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
@@ -262,6 +263,32 @@
 	                            {% endfor %}
 						</div>
 						<br>
+						<div class="row">
+							<div class="ml-3">Share:</div>
+							<div class="ml-3">
+								{% post_to_facebook object.get_absolute_url %}
+							</div>
+							<div class="ml-3">
+								{% post_to_reddit "New Product: {{object.title}}" object.get_absolute_url %}
+							</div>
+							<div class="ml-3">
+								{% post_to_twitter "New Product: {{object.title}}. Check it out!" object.get_absolute_url %}
+							</div>
+
+							<div class="ml-3">
+								{% post_to_telegram "New Product: {{object.title}}" object.get_absolute_url %}
+							</div>
+
+							<div class="ml-3">
+								{% post_to_gplus object.get_absolute_url %}
+							</div>
+							<div class="ml-3">
+								{% post_to_whatsapp object.get_absolute_url %}
+							</div>
+
+						</div>
+
+
 					</div>
 				</div>
 			</div>
