@@ -51,7 +51,7 @@ class DepartmentDetailedView(DetailView):
         context = super(DepartmentDetailedView, self).get_context_data(**kwargs)
 
         title = self.get_object()
-        print('obj:', title)
+        # print('obj:', title)
         page_title = str(title)
         context.update({
             'page_title': page_title

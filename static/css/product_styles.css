@@ -1319,6 +1319,7 @@ select option
 .image_selected img
 {
 	max-width: 100%;
+	object-fit: contain;
 }
 .product_description
 {

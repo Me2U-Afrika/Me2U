@@ -3,6 +3,7 @@
 {% load mptt_tags %}
 {% load currency %}
 
+
 {% block headblock %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
@@ -11,8 +12,30 @@
 
 {% endblock %}
 
-<body>
+{% block categories %}
+	{% if object.get_descendants %}
+	  <div class="cat_menu_container">
+		<div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
+			<div class="cat_burger"><span></span><span></span><span></span></div>
+			<div class="cat_menu_text">{{object.category_name}}</div>
+		</div>
+		{% include 'snippets/category_navbar.html' %}
 
+	</div>
+	{% else %}
+	  <div class="cat_menu_container">
+		<div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
+			<div class="cat_burger"><span></span><span></span><span></span></div>
+			<div class="cat_menu_text">Departments</div>
+		</div>
+		{% include 'tags/department_list.html' %}
+	</div>
+	{% endif %}
+{% endblock %}
+
+
+
+<body>
 {% block site_wrapper %}
 
 <div class="super_container">
@@ -38,18 +61,18 @@
 
 					<!-- Shop Sidebar -->
 					<div class="shop_sidebar">
-						{% if object.get_descendants %}
-						<div class="sidebar_section">
-							<div class="sidebar_title">{{ object.category_name}} Subcategories</div>
-							<ul class="sidebar_categories">
-								{% for category in object.get_descendants %}
-						        <li>
-						            <a href="{{ category.get_absolute_url }}">{{ category.category_name }}</a>
-						        </li>
-						        {% endfor %}
-							</ul>
-						</div>
-						{% endif %}
+<!--						{% if object.get_descendants %}-->
+<!--							<div class="sidebar_section">-->
+<!--								<div class="sidebar_title">{{ object.category_name}} Subcategories</div>-->
+<!--								<ul class="sidebar_categories">-->
+<!--									{% for category in object.get_descendants %}-->
+<!--									<li>-->
+<!--										<a href="{{ category.get_absolute_url }}">{{ category.category_name }}</a>-->
+<!--									</li>-->
+<!--									{% endfor %}-->
+<!--								</ul>-->
+<!--							</div>-->
+<!--						{% endif %}-->
 						<div class="sidebar_section filter_by_section">
 							<div class="sidebar_title">Filter By</div>
 							<div class="sidebar_subtitle">Price</div>
@@ -90,7 +113,7 @@
 
 					<div class="shop_content">
 						<div class="shop_bar clearfix">
-							<div class="shop_product_count"><span>{{ object.product_set.all.count}}</span> products found</div>
+							<div class="shop_product_count"><span>{{ object.get_products.count}}</span> products found</div>
 							<div class="shop_sorting">
 								<span>Sort by:</span>
 								<ul>
@@ -110,7 +133,7 @@
 							<div class="product_grid_border"></div>
 
 							<!-- Product Item -->
-							{% for product in object.product_set.all %}
+							{% for product in object.get_products %}
 							{% if product.discount_price %}
 							<!-- Product Item -->
 							<div class="product_item discount">
@@ -178,7 +201,6 @@
 							{% endfor %}
 
 						</div>
-
 
 						<!-- Shop Page Navigation -->
 
