@@ -93,7 +93,7 @@
 
 	img {
     vertical-align: middle;
-    border-style: none
+    border-style: none;
 	}
 
 	svg:not(:root) {
@@ -1400,7 +1400,7 @@
 								<div class="viewed_item discount d-flex flex-column align-items-center justify-content-center text-center">
 									{% for image in product.get_images %}
 									{% if image.in_display %}
-									<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
+									<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">
@@ -1420,7 +1420,7 @@
 								<div class="viewed_item d-flex flex-column align-items-center justify-content-center text-center">
 									{% for image in product.get_images %}
 									{% if image.in_display %}
-									<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
+									<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
 									{% endif %}
 									{% endfor %}
 									<div class="viewed_content text-center">

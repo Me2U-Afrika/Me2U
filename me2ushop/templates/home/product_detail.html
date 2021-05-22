@@ -29,12 +29,12 @@
 	.contact a.instagram:hover,.fa-instagram{color:#ED8975}
 	.contact a.email:hover,.fa-globe{color:#0000CC}
 	.contact a.telegram:hover,.fa-paper-plane{color:#1a1aff}
-	img {
-    max-width: 100%;
-    height: auto;
-    width: auto\9; /* ie8 */
+	/*img {*/
+    /*    max-width: 100%;*/
+    /*    height: auto;*/
+    /*    width: auto\9; !* ie8 *!*/
 
-}
+    /*}*/
     .reviews_all {
     position: relative;
     right: 0;
@@ -249,6 +249,7 @@
 								<div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" style="color:MediumSeaGreen;">Sell</a></div>
                             </div>
                         </div>
+
 						<div class="mt-2">
 	                    In categor{{ object.product_categories.count|pluralize:"y,ies" }}:
 	                            {% for c in object.product_categories.all %}
@@ -256,6 +257,7 @@
 	                            {% if not forloop.last %} , {% endif %}
 	                            {% endfor %}
 						</div>
+
 						<br>
 						<div class="row">
 							<div class="ml-3">
