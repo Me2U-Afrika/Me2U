@@ -106,7 +106,7 @@ class Department(MPTTModel, CreationModificationDateMixin):
                             max_length=50,
                             help_text='Unique value for product page URL, created from name.')
     description = models.TextField()
-    is_active = models.BooleanField(default=True, editable=False)
+    is_active = models.BooleanField(default=False, editable=False)
     is_bestselling = models.BooleanField(default=False)
     image = StdImageField(upload_to='images/category', blank=True, null=True, variations={
         'medium': (340, 300),

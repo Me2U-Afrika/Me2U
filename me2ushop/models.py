@@ -393,7 +393,7 @@ class DisplayImageManager(models.Manager):
 class ProductImage(CreationModificationDateMixin):
     item = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = StdImageField(upload_to='images/products', variations={
-        'thumbnail': (170, 115, True),
+        'thumbnail': (180, 150),
         'medium': (365, 365),
         'deals_size': (365, 365, True),
         'large': (415, 430),
