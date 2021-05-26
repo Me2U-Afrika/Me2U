@@ -309,28 +309,28 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.email
 
-# class SellerProfile(CreationModificationDateMixin):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     first_name = models.CharField(max_length=15, help_text="Provide official First name on passport or ID")
-#     # middle_name = models.CharField(max_length=15, blank=True, null=True, help_text="Provide official Middle name on "
-#     #                                                                                "passport or ID")
-#     last_name = models.CharField(max_length=15, help_text="Provide official Last name on passport or ID")
-#     email = models.EmailField(max_length=254, unique=True, help_text='Provide Business email '
-#                                                                      'where customers can send'
-#                                                                      'inquries')
-#     country = CountryField(multiple=False, blank=True, null=True)
-#     phone = models.CharField(max_length=20, unique=True, help_text='This number will be visible to buyers. Start with '
-#                                                                    'country code . i.e +250 785011413')
-#
-#     verification_id = StdImageField(upload_to='images/sellerID', blank=True, null=True, help_text='Upload your '
-#                                                                                                   'ID/Passport')
-#
-#     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
-#     active = models.BooleanField(default=True)
-#
-#     def __str__(self):
-#         return str(self.user.username)
 
+class SellerProfile(CreationModificationDateMixin):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=15, help_text="Provide official First name on passport or ID")
+    middle_name = models.CharField(max_length=15, blank=True, null=True, help_text="Provide official Middle name on "
+                                                                                   "passport or ID")
+    last_name = models.CharField(max_length=15, help_text="Provide official Last name on passport or ID")
+    email = models.EmailField(max_length=254, unique=True, help_text='Provide Business email '
+                                                                     'where customers can send'
+                                                                     'inquries')
+    country = CountryField(multiple=False, blank=True, null=True)
+    phone = models.CharField(max_length=20, unique=True, help_text='This number will be visible to buyers. Start with '
+                                                                   'country code . i.e +250 785011413')
+
+    verification_id = StdImageField(upload_to='images/sellerID', blank=True, null=True, help_text='Upload your '
+                                                                                                  'ID/Passport')
+
+    application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return str(self.user.username)
 
 # AUTOMOBILE_TYPE_CHOICE = (
 #     ('Cr', 'Car'),
