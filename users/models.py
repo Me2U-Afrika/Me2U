@@ -332,41 +332,42 @@ class SellerProfile(CreationModificationDateMixin):
     def __str__(self):
         return str(self.user.username)
 
-# AUTOMOBILE_TYPE_CHOICE = (
-#     ('Cr', 'Car'),
-#     ('Pk', 'Pick Up'),
-#     ('Va', 'Van'),
-#     ('Bs', 'Bus'),
-#     ('Tr', 'Truck'),
-#     ('Mt', 'Motor'),
-#     ('Bc', 'Bicycle'),
-# )
-# COUNTRIES_CHOICE = (
-#     ('KE', 'Kenya'),
-#     ('UG', 'Uganda'),
-#     ('TZ', 'Tanzania'),
-#     ('RW', 'Rwanda'),
-# )
-#
-# VALID_CITIES_CHOICE = (
-#     ('Kg', 'Kigali'),
-#     ('Kp', 'Kampala'),
-#     ('Nb', 'Nairobi'),
-#     ('Dd', 'Dodoma'),
-# )
-#
-#
-# class AutomobileProfile(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     first_name = models.CharField(max_length=10)
-#     last_name = models.CharField(max_length=10)
-#     passport_no = models.CharField(max_length=20)
-#     automobile_type = models.CharField(choices=AUTOMOBILE_TYPE_CHOICE, max_length=4)
-#     date_of_registration = models.DateTimeField(auto_now_add=True)
-#     country = models.CharField(max_length=2, choices=COUNTRIES_CHOICE)
-#     city_of_operation = models.CharField(max_length=2, choices=VALID_CITIES_CHOICE)
-#     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
-#
+
+AUTOMOBILE_TYPE_CHOICE = (
+    ('Cr', 'Car'),
+    ('Pk', 'Pick Up'),
+    ('Va', 'Van'),
+    ('Bs', 'Bus'),
+    ('Tr', 'Truck'),
+    ('Mt', 'Motor'),
+    ('Bc', 'Bicycle'),
+)
+COUNTRIES_CHOICE = (
+    ('KE', 'Kenya'),
+    ('UG', 'Uganda'),
+    ('TZ', 'Tanzania'),
+    ('RW', 'Rwanda'),
+)
+
+VALID_CITIES_CHOICE = (
+    ('Kg', 'Kigali'),
+    ('Kp', 'Kampala'),
+    ('Nb', 'Nairobi'),
+    ('Dd', 'Dodoma'),
+)
+
+
+class AutomobileProfile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=10)
+    last_name = models.CharField(max_length=10)
+    passport_no = models.CharField(max_length=20)
+    automobile_type = models.CharField(choices=AUTOMOBILE_TYPE_CHOICE, max_length=4)
+    date_of_registration = models.DateTimeField(auto_now_add=True)
+    country = models.CharField(max_length=2, choices=COUNTRIES_CHOICE)
+    city_of_operation = models.CharField(max_length=2, choices=VALID_CITIES_CHOICE)
+    application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
+
 #
 # class Admin(object):
 #     pass
