@@ -368,6 +368,10 @@ class AutomobileProfile(models.Model):
     city_of_operation = models.CharField(max_length=2, choices=VALID_CITIES_CHOICE)
     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
 
+
+class BusinessInformation(models.Model):
+    pass
+
 #
 # class Admin(object):
 #     pass
