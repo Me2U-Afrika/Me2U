@@ -15,9 +15,9 @@ from django.views.generic.edit import (CreateView, UpdateView, DeleteView, )
 from me2ushop import models
 from me2ushop.models import Order, OrderItem, Product, Brand
 
-from .forms import PersonalInfoForm, ProfilePicForm
+from .forms import PersonalInfoForm, ProfilePicForm, BrandForm
 from .forms import UserRegisterForm
-from .models import Profile, User, SellerProfile, AutomobileProfile, EmailConfirmed
+from .models import Profile, User, EmailConfirmed
 from .profile import retrieve_profile, set_pic
 
 logger = logging.getLogger(__name__)
@@ -376,42 +376,68 @@ def personal_info(request, template_name="users/personal-info.html"):
         return render(request, template_name, context)
 
 
-class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
-    model = SellerProfile
-    template_name = 'users/service_providers/seller_form.html'
-    fields = ['first_name', 'middle_name', 'last_name', 'email', 'phone']
-    success_url = reverse_lazy("users:brand_create")
+# class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+#     model = SellerProfile
+#     template_name = 'users/service_providers/seller_form.html'
+#     form_class = SellerForm
+#     # fields = ['first_name', 'last_name', 'email', 'country', 'phone']
+#     success_url = reverse_lazy("users:seller_confirm")
+#
+#     def get_queryset(self):
+#         print('we got here')
+#         current_app = SellerProfile.objects.filter(user=self.request.user, application_status__lt=20)
+#         if current_app:
+#             print('current_app available:', current_app[0].application_status)
+#
+#     def form_valid(self, form):
+#         print('registering seller profile')
+#         obj = form.save(commit=False)
+#         # (print)
+#         user = self.request.user
+#
+#         obj.user = user
+#         # obj.save()
+#
+#         from django.contrib.auth.models import Group
+#
+#         try:
+#             seller_group = Group.objects.get(name='Sellers')
+#
+#         except ObjectDoesNotExist:
+#             seller_group = Group.objects.create(name='Sellers')
+#
+#         # seller = SellerProfile.objects.get(user=self.request.user)
+#         # user = seller
+#         # user_instance = User.objects.get(email=user)
+#         # print(seller_group)
+#         # print(user_instance)
+#         if seller_group:
+#             seller_group.user_set.add(self.request.user)
+#             user.is_staff = True
+#             obj.application_status = 20
+#             # seller.save()
+#             user.save()
+#         # print(user.is_seller)
+#
+#         obj.save()
+#         return super().form_valid(form)
+#
+#     def test_func(self):
+#         current_app = SellerProfile.objects.filter(user=self.request.user, application_status__gt=20)
+#         if not current_app:
+#             return True
 
-    def get_queryset(self):
-        print('we got here')
-        current_app = SellerProfile.objects.filter(user=self.request.user, application_status__lt=20)
-        if current_app:
-            print('current_app available:', current_app[0].application_status)
 
-    def form_valid(self, form):
-        print('registering business')
-        obj = form.save(commit=False)
-        # (print)
-        user = self.request.user
-
-        obj.user = user
-        obj.save()
-        return super().form_valid(form)
-
-    def test_func(self):
-        current_app = SellerProfile.objects.filter(user=self.request.user, application_status__gt=20)
-        if not current_app:
-            return True
-
-
-class BrandCreateView(LoginRequiredMixin, CreateView):
+class BrandCreateView(LoginRequiredMixin, CreateView, UserPassesTestMixin):
     model = Brand
     template_name = 'users/service_providers/brand_create_form.html'
-    fields = ['title', 'business_type', 'business_description', 'country', 'subscription_type', 'logo']
+    form_class = BrandForm
+    # fields = ['title', 'business_type', 'business_description', 'country', 'subscription_type', 'logo']
     success_url = reverse_lazy("users:seller_confirm")
 
     def form_valid(self, form):
         print('registering brand')
+        obj = form.save(commit=False)
 
         from django.contrib.auth.models import Group
 
@@ -421,50 +447,47 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
         except ObjectDoesNotExist:
             seller_group = Group.objects.create(name='Sellers')
 
-
-        obj = form.save(commit=False)
-        seller = SellerProfile.objects.get(user=self.request.user)
-        user = seller
-        # user_instance = User.objects.get(email=user)
-        # print(seller_group)
-        # print(user_instance)
         if seller_group:
             seller_group.user_set.add(self.request.user)
-            user.is_staff = True
-            seller.application_status = 20
-            seller.save()
-            user.save()
+            self.request.user.is_staff = True
+            obj.application_status = 20
+            self.request.user.save()
         # print(user.is_seller)
 
-        obj.user = user
-        obj.save()
-        # form.save()
-        return super().form_valid(form)
-
-
-class AutomobileCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
-    model = AutomobileProfile
-    template_name = 'users/service_providers/automobile_profile_form.html'
-    fields = ['first_name', 'last_name', 'passport_no', 'automobile_type', 'country', 'city_of_operation']
-    success_url = reverse_lazy("users:automobile_confirm")
-
-    def form_valid(self, form):
-        # form.save()
-        obj = form.save(commit=False)
-        user = self.request.user
-        # user.is_dispatcher = True
-        obj.user = user
+        obj.user = self.request.user
         obj.save()
         return super().form_valid(form)
 
     def test_func(self):
-        if not self.request.user.is_dispatcher:
-            try:
-                print('we got here')
-                current_app = AutomobileProfile.objects.filter(user=self.request.user, application_status__lt=20)
-                if current_app:
-                    print('current_app available:', current_app[0].application_status)
-                    return False
-            except Exception:
-                return True
+        active_profile = Profile.objects.get(user=self.request.user, active=True)
+        if active_profile:
             return True
+        return False
+
+
+# class AutomobileCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+#     model = AutomobileProfile
+#     template_name = 'users/service_providers/automobile_profile_form.html'
+#     fields = ['first_name', 'last_name', 'passport_no', 'automobile_type', 'country', 'city_of_operation']
+#     success_url = reverse_lazy("users:automobile_confirm")
+#
+#     def form_valid(self, form):
+#         # form.save()
+#         obj = form.save(commit=False)
+#         user = self.request.user
+#         # user.is_dispatcher = True
+#         obj.user = user
+#         obj.save()
+#         return super().form_valid(form)
+#
+#     def test_func(self):
+#         if not self.request.user.is_dispatcher:
+#             try:
+#                 print('we got here')
+#                 current_app = AutomobileProfile.objects.filter(user=self.request.user, application_status__lt=20)
+#                 if current_app:
+#                     print('current_app available:', current_app[0].application_status)
+#                     return False
+#             except Exception:
+#                 return True
+#             return True

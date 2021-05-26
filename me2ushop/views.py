@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import user_logged_in
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.dispatch import receiver
@@ -226,7 +225,7 @@ class HomeView(ListView):
 
         try:
             # SLIDERS
-            sliders = Slider.objects.featured()
+            sliders = Slider.objects.featured().select_related('product')
             context.update({'sliders': sliders, })
 
         except:
@@ -257,6 +256,7 @@ class HomeView(ListView):
             pass
 
         return context
+
 
 # class HomeView(ListView):
 #     model = Product
@@ -452,23 +452,8 @@ class ProductDetailedView(DetailView):
         # cart_product_form = CartAddProductForm()
         formset = CartAddFormSet()
 
-        product = Product.objects.filter(title=kwargs['object'])[0]
+        product = Product.objects.filter(title=kwargs['object']).select_related('brand_name')[0]
         pending_item = product.orderitem_set.filter(status=10)
-
-        if product.brand_name:
-            brand_id = product.brand_name.id
-            # print('brand_id:', brand_id)
-            context.update({'brand_id': brand_id})
-
-        product_image = ProductImage.displayed.filter(item=product)
-
-        # print('product_image:', product.productimage_set.all())
-        # print('product_image:', product_image)
-        from stats import stats
-
-        # recently_viewed = stats.get_recently_viewed(self.request)
-        # if recently_viewed:
-        #     context.update({'recently_viewed': recently_viewed})
 
         product_reviews = ProductReview.approved.filter(product=product).order_by('-date')
         # print('productreviews:', product_reviews)
@@ -484,13 +469,12 @@ class ProductDetailedView(DetailView):
                 return 0
         # tags_product =
         context.update({
-            'object': product,
+            'product': product,
             'pending_item': pending_item,
             'review_form': review_form,
             'product_reviews': product_reviews,
             'page_title': str(self.get_object()),
             'formset': formset,
-            'product_image': product_image
         })
         from stats import stats
 
@@ -518,18 +502,24 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProductCreateView, self).get_context_data(**kwargs)
+        print("pk:", self.kwargs.get('pk'))
+        store = get_object_or_404(Brand, id=self.kwargs.get('pk'))
 
         context.update({
 
             'page_title': 'Add New Product',
+            'brand_id': store.id
+
         })
         return context
 
     def form_valid(self, form):
         form.instance.seller = self.request.user
         obj = form.save(commit=False)
+        brand_id = self.request.POST.get('brand_id', None)
+        print('id:', brand_id)
         stock = obj.stock
-        brand = Brand.objects.get(user__user=self.request.user)
+        brand = Brand.objects.get(id=brand_id)
         if brand:
             obj.brand_name = brand
         if stock > 0:
@@ -551,9 +541,11 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ProductUpdateView, self).get_context_data(**kwargs)
 
+        product = get_object_or_404(Product, slug=self.kwargs.get('slug'))
         context.update({
 
             'page_title': 'Update Product',
+            'brand_id': product.brand_name.id
         })
         return context
 
@@ -594,9 +586,12 @@ class ProductUpdateAdditionalInforView(LoginRequiredMixin, UserPassesTestMixin, 
     def get_context_data(self, **kwargs):
         context = super(ProductUpdateAdditionalInforView, self).get_context_data(**kwargs)
 
+        product = get_object_or_404(Product, slug=self.kwargs.get('slug'))
+
         context.update({
 
             'page_title': 'Additional Info',
+            'brand_id': product.brand_name.id
         })
         return context
 
@@ -645,9 +640,12 @@ class ProductAttributesCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ProductAttributesCreateView, self).get_context_data(**kwargs)
 
+        product = get_object_or_404(Product, slug=self.kwargs.get('slug'))
+
         context.update({
 
             'page_title': 'Product attributes',
+            'brand_id': product.brand_name.id
         })
         return context
 
@@ -685,9 +683,13 @@ class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeUpdateView, self).get_context_data(**kwargs)
 
+        product_detail = ProductDetail.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
+        print('productdetail:', product_detail)
+
         context.update({
 
             'page_title': 'Attribute Update',
+            'brand_id': product_detail.product.brand_name.id
         })
         return context
 
@@ -705,9 +707,12 @@ class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeDeleteView, self).get_context_data(**kwargs)
 
+        product_detail = ProductDetail.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
+
         context.update({
 
             'page_title': 'Delete Attribute',
+            'brand_id': product_detail.product.brand_name.id
         })
         return context
 
@@ -725,10 +730,12 @@ def show_product_image(request, slug):
     # product_reviews = ProductReview.approved.filter(product=product).order_by('-date')[0:PRODUCTS_PER_ROW]
     # print('productreviews:', product_reviews)
     # review_form = ProductReviewForm()
-    product_image = ProductImage.objects.filter(item__brand_name__user__user=request.user, item=product)
-
+    profile = Profile.objects.get(user=request.user)
+    product_image = ProductImage.objects.filter(item__brand_name__user__user=profile.user, item=product)
+    print('brand_id:', product.brand_name.id)
     context = {
         'object': product,
+        'brand_id': product.brand_name.id,
         'product_image': product_image,
         'page_title': 'ImageList-' + str(product)
     }
@@ -742,7 +749,7 @@ def product_image_create(request, slug):
     product = get_object_or_404(Product, slug=slug)
     # print('slug:', slug)
 
-    product_image = ProductImage.objects.filter(item__brand_name__user__user=request.user, item=product)
+    product_image = ProductImage.objects.filter(item__brand_name__user=request.user, item=product)
     if request.method == 'POST':
         # print('we came to post')
         form = ProductImageCreate(request.POST, request.FILES, instance=request.user)
@@ -759,7 +766,7 @@ def product_image_create(request, slug):
 
             if product.brand_name.user.user == request.user:
 
-                current_saved_default = ProductImage.displayed.filter(item__brand_name__user__user=request.user,
+                current_saved_default = ProductImage.displayed.filter(item__brand_name__user=request.user,
                                                                       item=product)
                 # print('current', current_saved_default)
                 if current_saved_default.exists():
@@ -802,9 +809,14 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ProductImageCreateView, self).get_context_data(**kwargs)
 
+        product = Product.objects.filter(slug=self.kwargs.get('slug')).select_related('brand_name')[0]
+
         context.update({
 
             'page_title': 'Image Create',
+            'brand_id': product.brand_name.id,
+            'product': product
+
         })
         return context
 
@@ -853,10 +865,14 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
 
     def get_context_data(self, **kwargs):
         context = super(ProductImageUpdateView, self).get_context_data(**kwargs)
+        image_posted = self.get_object()
+        # print('image posted:', image_posted)
 
         context.update({
 
             'page_title': 'Update Image-' + str(self.get_object()),
+            'brand_id': image_posted.item.brand_name.id,
+            'object': image_posted
         })
         return context
 
@@ -870,7 +886,7 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
         default_image = obj.in_display
         print('set as default', default_image)
 
-        current_saved_default = ProductImage.displayed.filter(item__brand_name__user__user=user, item=item,
+        current_saved_default = ProductImage.displayed.filter(item=item,
                                                               in_display=True)
         print('current', current_saved_default)
 
@@ -888,7 +904,7 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
 
     def test_func(self):
         image_posted = self.get_object()
-        print(image_posted)
+        # print(image_posted)
         if self.request.user == image_posted.item.brand_name.user.user:
             return True
         return False
@@ -903,35 +919,53 @@ class ProductImageDeleteView(LoginRequiredMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super(ProductImageDeleteView, self).get_context_data(**kwargs)
 
+        # image = ProductImage.objects.filter(id=self.kwargs.get('pk')).select_related('item__brand_name')[0]
+        image_posted = self.get_object()
+
         context.update({
 
             'page_title': 'Delete Product',
+            'brand_id': image_posted.item.brand_name.id
         })
         return context
 
     def get_success_url(self):
-        # Assuming there is a ForeignKey from Comment to Post in your model
+        # Assuming there is a ForeignKey from prooduct to Product in your model
         product = self.object.item
-
-        # check if image delete was in display to set another one on display or create new if none.
-        current_saved_default = ProductImage.displayed.filter(item=product, in_display=True).exclude(id=self.object.id)
-        print('current', current_saved_default)
-
-        if not current_saved_default.exists():
-            print('we came to add picture')
-            image = ProductImage.objects.filter(item=product)
-            if image:
-                image = image[0]
-                image.in_display = True
-                image.save()
-
-            messages.warning(self.request, 'You have 0 Images, please add a new image')
-            return reverse_lazy('me2ushop:product_image_create', kwargs={'slug': product.slug})
 
         return reverse_lazy('me2ushop:product', kwargs={'slug': product.slug})
 
-    # def get_queryset(self):
-    #     return self.model.objects.filter(item__seller=self.request.user)
+
+def delete_image(request, pk):
+    image = ProductImage.objects.filter(id=pk)
+    print('image:', image)
+    slug = image[0].item.slug
+    print('slug:', slug)
+
+    if not image[0].in_display:
+        image.delete()
+        image.save()
+    else:
+        image.delete()
+
+        product = Product.objects.get(slug=slug)
+        print('product:', product)
+        current = product.productimage_set.all()
+
+        print('images:', current)
+        if current.exists():
+            print('we setting the new image on display')
+            new_image = current[0]
+            new_image.in_display = True
+            # delete old image
+            new_image.save()
+            return redirect('me2ushop:product', slug=slug)
+        else:
+            product = Product.objects.get(slug=slug)
+            image.delete()
+            product.save()
+            # image.save()
+            return redirect('me2ushop:product_image_create', slug=slug)
 
 
 # PRODUCT ADD TO CART

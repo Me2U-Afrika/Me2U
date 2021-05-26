@@ -29,12 +29,12 @@ def me2u(request):
 
     if request.user.is_authenticated and request.user.is_seller:
         try:
-            brand = Brand.objects.get(user__user=request.user)
-            if brand:
-                context.update({'brand': brand})
+            user_brands = Brand.objects.filter(user__user=request.user)
+            if user_brands:
+                context.update({'user_brands': user_brands})
         except Exception:
-            brand = None
-            context.update({'brand': brand})
+            user_brands = None
+            context.update({'user_brands': user_brands})
 
     if request.user.is_authenticated:
         wish_list = WishList.objects.filter(user=request.user)

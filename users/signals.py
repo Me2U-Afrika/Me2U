@@ -41,6 +41,8 @@ def save_product(sender, instance, **kwargs):
 #
 @receiver(post_save, sender=ProductImage)
 def save_image(sender, instance, **kwargs):
+    print('we came to productimage signals')
+    print('we came to signals', instance.item)
     if instance.in_display:
         if not instance.item.is_active:
             # print('we came to set it active')

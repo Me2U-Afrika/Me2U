@@ -30,7 +30,8 @@
 							<input type="hidden" id="id_slug" value="{{ object.slug }}"/>
 							<div class="contact_form_button form-group">
 								<button type="submit" class="button contact_submit_button">Submit</button>
-								<button class="button contact_submit_button"><a href="{% url 'sellers:seller_products' %}">Cancel</a></button>
+								<button class="button danger-color ml-2"><a href="{% url 'me2ushop:product_images' product.slug %}">Cancel</a></button>
+
 
 							</div>
 

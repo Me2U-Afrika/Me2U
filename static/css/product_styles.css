@@ -1256,7 +1256,7 @@ select option
 
 .single_product
 {
-	padding-top: 110px;
+	padding-top: 50px;
 	padding-bottom: 140px;
 }
 .image_list li
@@ -1350,7 +1350,7 @@ select option
 }
 .product_text
 {
-	margin-top: 27px;
+	margin-top: 20px;
 }
 .product_text p:last-child
 {
@@ -1358,7 +1358,7 @@ select option
 }
 .order_info
 {
-	margin-top: 53px;
+	margin-top: 20px;
 }
 .product_quantity
 {
@@ -1551,7 +1551,7 @@ select option
 	display: inline-block;
 	font-size: 24px;
 	font-weight: 500;
-	margin-top: 75px;
+	margin-top: 20px;
 	clear: left;
 }
 .button_container

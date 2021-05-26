@@ -3,7 +3,8 @@ from django.contrib.auth.forms import UserCreationForm, UsernameField
 from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 
-from .models import Profile, User, AutomobileProfile, SellerProfile
+from me2ushop.models import Brand
+from .models import Profile, User
 from django_countries.fields import CountryField
 import logging
 
@@ -43,17 +44,11 @@ class UserRegisterForm(UserCreationForm):
         )
 
 
-class AutomobileRegisterForm(forms.ModelForm):
-    class Meta:
-        model = AutomobileProfile
-        fields = '__all__'
-        exclude = ['date_of_registration']
-
-
-class SellerRegisterForm(forms.ModelForm):
-    class Meta:
-        model = SellerProfile
-        fields = "__all__"
+# class AutomobileRegisterForm(forms.ModelForm):
+#     class Meta:
+#         model = AutomobileProfile
+#         fields = '__all__'
+#         exclude = ['date_of_registration']
 
 
 class AddressForm(forms.ModelForm):
@@ -73,3 +68,27 @@ class ProfilePicForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['phone', 'image']
+
+
+class BrandForm(forms.ModelForm):
+    class Meta:
+        model = Brand
+        fields = ['title', 'business_type', 'business_description', 'country', 'shipping_status', 'subscription_type', 'logo']
+
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Business Name', 'class': 'form-control'}),
+            'business_description': forms.Textarea(attrs={'placeholder': 'About your business and '
+                                                                         'products/services you offer',
+                                                          'class': 'form-control'}),
+        }
+
+#
+# class SellerForm(forms.ModelForm):
+#     class Meta:
+#         model = SellerProfile
+#         fields = ['first_name', 'last_name', 'email', 'country', 'phone']
+#
+#         widgets = {
+#             'email': forms.TextInput(attrs={'placeholder': 'Company Email', 'class': 'form-control'}),
+#             'phone': forms.TextInput(attrs={'placeholder': '+2507....', 'class': 'form-control'}),
+#         }

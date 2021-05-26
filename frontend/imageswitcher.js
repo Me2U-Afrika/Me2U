@@ -25,16 +25,17 @@ const ReactDOM = require("react-dom")
             const images = this.props.images.map((i)=>
                 e('div', {style: imageStyle, className: "image view overlay zoom", key: i.id},
                 e('img', {onClick: this.click.bind(this, i),
+                        className:"xzoom-gallery",
                         width: "100",
-                        height:"65",
+                        height:"80",
                         src: i.thumbnail }),
                 ),
 
                 );
 
             return e('div', {className: "gallery"},
-                    e('div', {className: "current-image"},
-                    e('img', {src: this.state.currentImage.image})
+                    e('div', {className: "current-image xzoom-container"},
+                    e('img', {src: this.state.currentImage.image, className:"xzoom"})
                     ), images)
 
         }

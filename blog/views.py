@@ -10,7 +10,6 @@ from django.urls import reverse_lazy, reverse
 
 from me2ushop.forms import ProductForm, PostForm, PostUpdateForm, PostCommentForm
 from me2ushop.models import Brand
-from users.models import SellerProfile
 from .models import *
 from django.views.generic import ListView, DetailView, View, CreateView, UpdateView, DeleteView, FormView
 
@@ -22,7 +21,7 @@ def blogList(request):
     try:
         blogs = Post.objects.filter(author=request.user)
 
-        brand_name = Brand.objects.get(user__user=request.user)
+        brand_name = Brand.objects.get(user=request.user)
 
         return render(request, 'blog/blog_list.html', locals())
 

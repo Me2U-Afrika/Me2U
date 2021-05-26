@@ -2,64 +2,54 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404, redirect
-
 # Create your views here.
-from django.urls import reverse
 from django.utils.html import format_html
-from users.models import User, SellerProfile
-
-from me2ushop.models import Product
 
 from me2ushop.models import ProductImage, Product, Order, OrderItem, Address, Brand
 
 
 @login_required()
-def seller_page(request):
+def seller_page(request, brand_id):
+    print('We are in the seller View')
 
-    if request.user.is_seller:
-        from utils import context_processors
-        utils = context_processors.me2u(request)
-        brand = utils['brand']
-        print('brand', brand)
-        if brand:
-            brand_name = brand
+    # from utils import context_processors
+    # utils = context_processors.me2u(request)
+    # brand = utils['brand']
+    brand = Brand.objects.get(id=brand_id, active=True)
+    brand_id = brand.id
+    if brand:
+        print('user is an active seller')
+        brand_name = brand
 
-            # print(brand_name.id)
+        # print(brand_name.id)
 
-            products = brand_name.product_set.all()
-            orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
-            items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
-            # print('items:', items_delivered)
+        products = brand_name.product_set.all()
+        orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
+        items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
+        # print('items:', items_delivered)
 
-            # orders = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(status=20).distinct()
-            orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
-                status=30).distinct()
+        # orders = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(status=20).distinct()
+        orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
+            status=30).distinct()
 
-            order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
-                status__gt=20).distinct()
+        order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
+            status__gt=20).distinct()
 
-            total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
+        total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
 
-            cancelled = total_orders.filter(status=40)
-            delivered = OrderItem.objects.filter(status=50, item__in=products)
-            pending = total_orders.filter(status=10)
-            in_transit = total_orders.filter(status=45)
-            page_title = 'Seller-Central'
+        cancelled = total_orders.filter(status=40)
+        delivered = OrderItem.objects.filter(status=50, item__in=products)
+        pending = total_orders.filter(status=10)
+        in_transit = total_orders.filter(status=45)
+        page_title = 'Seller-Central'
 
-            return render(request, 'sellers/seller_dashboard_template.html', locals())
-            # return render(request, 'sellers/seller_test_page.html', locals())
-        else:
-            try:
-                seller = SellerProfile.objects.get(user=request.user)
-                if seller:
-                    messages.warning(request, "You Do not have a registered brand.")
-                    return redirect('users:brand_create')
-            except ObjectDoesNotExist:
-                return redirect('users:seller_create')
-
+        return render(request, 'sellers/seller_dashboard_template.html', locals())
+        # return render(request, 'sellers/seller_test_page.html', locals())
     else:
-        messages.warning(request, "You are not a registered Me2U seller Sign Up")
-        return redirect('users:seller_create')
+        messages.warning(request, "You Do not have a registered brand.")
+        return redirect('users:brand_create')
+        # except ObjectDoesNotExist:
+        #     return redirect('users:seller_create')
 
 
 def automobile_page(request):
@@ -85,9 +75,10 @@ def automobile_page(request):
 
 
 @login_required()
-def seller_products(request):
+def seller_products(request, brand_id):
     user = request.user
-    products = Product.objects.filter(brand_name__user__user=user)
+    brand_id = brand_id
+    products = Product.objects.filter(brand_name__id=brand_id)
     page_title = 'Seller Products'
 
     for obj in products:

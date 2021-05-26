@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
 from categories.models import Category, Department
-from users.models import Profile, SellerProfile
+from users.models import Profile
 from utils.models import CreationModificationDateMixin
 from sellers.models import Sellers
 from PIL import Image
@@ -64,6 +64,12 @@ SUBSCRIPTION_TYPE_CHOICE = (
     ('Pr', 'Premium')
 )
 
+SHIPPING_CAPABILITY = (
+    ('Cd', 'Can Ship Abroad and Deliver Locally'),
+    ('Cl', 'Can Deliver Locally'),
+    ('CO', 'Not Able to Deliver')
+)
+
 BUSINESS_TYPE_CHOICE = (
     ('Co', 'Company'),
     ('Sol', 'Sole Proprietorship/Personal')
@@ -77,38 +83,69 @@ CONDITION_CHOICES = {
 
 }
 
+UNDER_REVIEW = 10
+ACTIVE = 20
+VERIFIED = 30
+DENIED = 40
+BLOCKED = 50
+STATUSES = ((UNDER_REVIEW, "Under Review"),
+            (ACTIVE, "Active"),
+            (VERIFIED, "Verified"),
+            (DENIED, "Denied"),
+            (BLOCKED, "Blocked"),
+            )
+
+from django_countries import Countries
+
+
+class AfrikanCountries(Countries):
+    only = [
+        'DZ', 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD',
+        'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ', 'ER', 'ET', 'GA',
+        'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML',
+        'MW', 'MR', 'MU', 'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE',
+        'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD', 'SZ',
+        'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW'
+    ]
+
 
 class Brand(CreationModificationDateMixin):
-    user = models.OneToOneField(SellerProfile, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100, unique=True, help_text='Unique business title to identify Your store and '
-                                                                    'your product line')
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, unique=True)
 
-    business_description = models.TextField(help_text="Tell us what you do and the kind of products you sell")
+    business_description = models.TextField()
 
-    website_link = models.CharField(max_length=255, blank=True, null=True, help_text='If you have a website by which '
-                                                                                     'buyers can find out more about '
-                                                                                     'your services.e.g. '
-                                                                                     'https://www.facebook.com')
-    facebook = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a facebook page. '
-                                                                                 'Copy '
-                                                                                 'paste your page link here '
-                                                                                 'e.g.. '
-                                                                                 'https://www.facebook.com'
-                                                                                 '/Me2UAfrika')
-    instagram = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a instagram page. Copy '
-                                                                                  'paste your page link here eg. '
-                                                                                  'https://www.instagram.com'
-                                                                                  '/me2u_afrika/')
-    twitter = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a Telegram Channel. Copy '
-                                                                                'paste your page link here. e.g.. '
-                                                                                'https://t.me/me2uafrika')
+    business_phone = models.CharField(max_length=20, blank=True, null=True,
+                                      help_text='Business Phone Number . i.e +250785....')
+    business_email = models.EmailField(blank=True, null=True, max_length=254,
+                                       help_text='Business Phone Number . i.e +250785....')
+
+    website_link = models.CharField(max_length=255, blank=True, null=True,
+                                    help_text='If you have a website by which buyers can find out more about your '
+                                              'services.e.g. https://www.facebook.com')
+    facebook = models.CharField(max_length=255, blank=True, null=True,
+                                help_text='Do you have a facebook page. Copy paste your page link here '
+                                          'e.g..https://www.facebook.com/Me2UAfrika')
+    instagram = models.CharField(max_length=255, blank=True, null=True,
+                                 help_text='Do you have a instagram page. Copy paste your page link here '
+                                           'eg..https://www.instagram.com/me2u_afrika/')
+    twitter = models.CharField(max_length=255, blank=True, null=True,
+                               help_text='Do you have a Telegram Channel. Copy paste your page link here. '
+                                         'e.g..https://t.me/me2uafrika')
+
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
-    # date_of_registration = models.DateField
-    country = CountryField(multiple=False)
+    country = CountryField(multiple=False, countries=AfrikanCountries)
+    shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
+                                       help_text='Is Your company able to ship or deliver your products once they '
+                                                 'buyers order online?')
     subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
-                                         help_text='Select a monthly recurring subscription fees')
+                                         help_text='Select a monthly recurring subscription fees. It\'s free for all '
+                                                   'Sellers for the first 3 Months!')
     valid_payment_method = models.BooleanField(default=False, null=True, blank=True)
-    active = models.BooleanField(default=True)
+    business_registration_cert = StdImageField(upload_to='images/sellers/businessIDs', blank=True, null=True,
+                                               help_text='Upload your business registration files to get a verified '
+                                                         'badge')
+
     is_featured = models.BooleanField(default=False, blank=True, null=True)
     image = StdImageField(upload_to='images/brands/brand_background', blank=True, null=True,
                           help_text='wallpaper for your store.Leave blank if you don\'t have one',
@@ -121,6 +158,8 @@ class Brand(CreationModificationDateMixin):
                              'medium': (150, 150, True),
 
                          }, delete_orphans=True)
+    active = models.BooleanField(default=True)
+    application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW, blank=True, null=True)
 
     def __str__(self):
         return str(self.title)
@@ -167,11 +206,10 @@ class Product(CreationModificationDateMixin):
     is_featured = models.BooleanField(default=False)
     is_bestrated = models.BooleanField(default=False)
 
-    description = models.TextField()
+    description = models.TextField(max_length=500)
     additional_information = RichTextField(blank=True, null=True,
-                                           help_text='Provide additional information about '                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'your product. Buyers mostly buy from'
-                                                     ' well detailed products and '
-                                                     'specifications')
+                                           help_text='Add product description')
+
     meta_keywords = models.CharField("Meta Keywords",
                                      max_length=100,
                                      help_text='Comma-delimited set of SEO keywords that summarize the type of '
@@ -444,9 +482,9 @@ class ProductDetail(CreationModificationDateMixin):
     specific, extra details.
     """
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
-    attribute = models.CharField(max_length=50)
-    value = models.CharField(max_length=500)
-    description = models.TextField(blank=True)
+    attribute = models.CharField(max_length=50, help_text="Add a product feature such as Weight")
+    value = models.CharField(max_length=50, help_text="Add the value of the attribute above i.e 1kg")
+    description = models.TextField(blank=True, help_text="Add some information to describe the attribute above.")
 
     def __str__(self):
         return u'%s: %s - %s' % (self.product,

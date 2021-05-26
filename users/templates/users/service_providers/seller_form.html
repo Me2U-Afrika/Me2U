@@ -29,15 +29,13 @@
 			<div class="row">
 				<div class="col-lg-10 offset-lg-1">
 					<div class="contact_form_container">
-						<div class="contact_form_title">Register your Business</div>
-						<p>Tell us about your business Before you can start trading with Me2U|Afrika, we need to learn more about you and your business.
-                       We collect this information to comply with requirements from regulators and the terms of our Services Agreement.</p>
+						<div class="contact_form_title">Your Business Contact Information</div>
 
 						<form action="#" method="POST" id="contact_form" enctype="multipart/form-data">
 							{% csrf_token %}
 	                        {{ form|crispy }}
 							<div class="contact_form_button">
-								<button type="submit" class="button contact_submit_button">Next</button>
+								<button type="submit" class="button contact_submit_button">Submit</button>
 							</div>
 						</form>
 

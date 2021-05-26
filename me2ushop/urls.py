@@ -32,7 +32,8 @@ urlpatterns = [
 
     url(r'^product/(?P<slug>[\w-]+)/$', views.ProductDetailedView.as_view(), name='product'),
     url(r'^full-catalog/', views.ProductListView.as_view(), name='full_catalog'),
-    url('new-product/', views.ProductCreateView.as_view(), name='product-create'),
+    url('new-product/(?P<pk>[-\w]+)/$', views.ProductCreateView.as_view(), name='product-create'),
+
     # NEW ATTRIBUTES
     url(r'^product-attributes/(?P<slug>[\w-]+)/create$', views.ProductAttributesCreateView.as_view(),
         name='product_attributes_create'),
@@ -54,7 +55,8 @@ urlpatterns = [
         name='product_image_create'),
     # url(r'^product-images/(?P<slug>[\w-]+)/create$', views.product_image_create, name='product_image_create'),
     url("^image-(?P<pk>[\w-]+)/update/$", views.ProductImageUpdateView.as_view(), name="product_image_update"),
-    url('^image-(?P<pk>[\w-]+)/delete/$', views.ProductImageDeleteView.as_view(), name="product_image_delete"),
+    # url('^image-(?P<pk>[\w-]+)/delete/$', views.ProductImageDeleteView.as_view(), name="product_image_delete"),
+    url('^image-(?P<pk>[\w-]+)/delete/$', views.delete_image, name="product_image_delete"),
 
     url(r'^order_summary/', views.Order_summary_view.as_view(), name='order_summary'),
     url(r'^wishlist-summary/', views.WishList_Summary.as_view(), name='wishlist_summary'),

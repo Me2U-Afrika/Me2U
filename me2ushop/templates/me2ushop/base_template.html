@@ -144,9 +144,34 @@
                                             {% include "currencies/navbar/currency-chooser-bs3fa.html" %}
                                         {% endwith %}
 
-                                    <li>
-                                        <a href="{%  url 'sellers:seller_home' %}" style="color:MediumSeaGreen;">Advertise<i class="fas fa-chevron-down"></i></a>
-                                    </li>
+                                        {% if request.user.is_authenticated %}
+                                            {% if user_brands %}
+                                                {% if user.brands.count > 1 %}
+                                                <li class="hassubs">
+                                                    <a href="#" style="color:MediumSeaGreen;">Seller Dashboard</a>
+                                                    <ul>
+                                                        {% for brand in user_brands %}
+                                                        <li><a href="{%  url 'sellers:seller_home' brand.id %}">{{ brand }}<i class="fas fa-chevron-down"></i></a></li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </li>
+                                                {% else %}
+                                                    {% for brand in user_brands %}
+                                                        <li><a href="{%  url 'sellers:seller_home' brand.id %}" style="color:MediumSeaGreen;">Seller Dashboard</a></li>
+                                                    {% endfor %}
+                                                {% endif %}
+
+                                            {% else %}
+                                            <li>
+                                                <a href="{%  url 'users:brand_create' %}" style="color:MediumSeaGreen;">Start Selling<i class="fas fa-chevron-down"></i></a>
+                                            </li>
+                                            {% endif %}
+                                        {% else %}
+                                        <li>
+                                            <a href="{%  url LOGIN_URL %}" style="color:MediumSeaGreen;"><img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;"> Sell On Me2U</a>
+                                        </li>
+                                        {% endif %}
+
                                 </ul>
                             </div>
                             <div class="top_bar_user">
@@ -208,7 +233,6 @@
                                     </div>
                                 </div>
 
-                                {% if request|cart_item_count > 0 %}
                                 <!-- Cart -->
                                 <div class="cart">
                                     <div class="cart_container d-flex flex-row align-items-center justify-content-end">
@@ -223,22 +247,6 @@
                                     </div>
                                 </div>
                                 <!-- cart -->
-                                {% else %}
-
-                                  <!-- Cart -->
-                                <div class="cart">
-                                    <div class="cart_container d-flex flex-row align-items-center justify-content-end">
-                                        <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}">
-                                            <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
-                                        </div>
-                                        <div class="cart_content">
-                                            <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}">Made In Afrika</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- cart -->
-
-                                {% endif %}
 
                             </div>
                         </div>
@@ -307,20 +315,9 @@
 
                                             </ul>
                                         </li>
-        <!--                                <li class="hassubs">-->
-        <!--                                    <a href="#">Shops<i class="fas fa-chevron-down"></i></a>-->
-        <!--                                    <ul>-->
-        <!--                                        <li><a href="#">Simba<i class="fas fa-chevron-down"></i></a></li>-->
-        <!--                                        <li><a href="#">Lamane<i class="fas fa-chevron-down"></i></a></li>-->
-        <!--                                        <li><a href="#">KFC<i class="fas fa-chevron-down"></i></a></li>-->
-        <!--                                        <li><a href="#">Kimironko Market<i class="fas fa-chevron-down"></i></a></li>-->
-        <!--                                        <li><a href="#">Nyarugenge Market<i class="fas fa-chevron-down"></i></a></li>-->
-        <!--                                        <li><a href="#">Nyabugogo Market<i class="fas fa-chevron-down"></i></a></li>-->
-        <!--                                    </ul>-->
-        <!--                                </li>-->
-                                        <li><a href="{%  url 'sellers:seller_home' %}">Sell On Me2U<i class="fas fa-chevron-down"></i></a></li>
+
                                         <li><a href="{% url 'blog:blog_home' %}">Blog<i class="fas fa-chevron-down"></i></a></li>
-                                        <li class="disabled"><a href="{% url 'users:automobile_create' %}">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
+                                        <li class="disabled"><a href="">Deliver On Me2U<i class="fas fa-chevron-down"></i></a></li>
                                     </ul>
                                 </div>
 
@@ -355,26 +352,40 @@
 
                                     <ul class="page_menu_nav">
                                         <li class="page_menu_item">
-                                            <a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a>
+                                            <a href="{% url 'me2ushop:home' %}">Go Home<i class="fa fa-angle-down"></i></a>
                                         </li>
-                                        <li class="page_menu_item">
-                                            <a href="{%  url 'sellers:seller_home' %}">
-                                                Sell On Me2U
-                                                <img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;">
-                                            </a>
+                                        {% if request.user.is_authenticated %}
+                                            {% if user_brands %}
+                                                {% if user_brands.count > 1 %}
+                                                    <li class="page_menu_item has-children">
+                                                            <a class="text-white">Seller Dashboard
+                                                            <img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;">
+                                                                <i class="fa fa-angle-down"></i></a>
+                                                            <ul class="page_menu_selection">
+                                                                {% for brand in user_brands %}
+                                                                <li><a href="{%  url 'sellers:seller_home' brand.id %}">{{ brand }}<i class="fas fa-chevron-down"></i></a></li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                    </li>
+                                                {% else %}
+                                                    {% for brand in user_brands %}
+                                                        <li class="page_menu_item">
+                                                            <a href="{%  url 'sellers:seller_home' brand.id %}">Seller Dashboard</a>
+                                                        </li>
+                                                    {% endfor %}
 
-                                        </li>
-<!--                                        <li class="page_menu_item has-children">-->
-<!--                                            <a href="#">Deals<i class="fa fa-angle-down"></i></a>-->
-<!--                                                <ul class="page_menu_selection">-->
-<!--                                                    {% for deal in deals %}-->
-<!--                                                    {% if deal.is_featured %}-->
-<!--                                                    <li><a href="{{ deal.product.get_absolute_url }}">{{ deal }}<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                                    {% endif %}-->
-<!--                                                    {% endfor %}-->
+                                                {% endif %}
 
-<!--                                                </ul>-->
-<!--                                        </li>-->
+                                            {% else %}
+                                                <li class="page_menu_item">
+                                                    <a href="{% url 'users:brand_create' %}">Start Selling</i></a>
+                                                </li>
+                                            {% endif %}
+                                        {% else %}
+                                            <li class="page_menu_item">
+                                                <a href="{% url LOGIN_URL %}" >Sell On Me2U<img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;"></a>
+                                            </li>
+                                        {% endif %}
 <!--                                        <li class="page_menu_item has-children">-->
 <!--                                            <a href="#">Featured Brands<i class="fa fa-angle-down"></i></a>-->
 <!--                                            <ul class="page_menu_selection">-->
