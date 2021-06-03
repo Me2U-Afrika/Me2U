@@ -399,16 +399,31 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
     def test_func(self):
-        current_app = SellerProfile.objects.filter(user=self.request.user, application_status__gt=20)
-        if not current_app:
+        print('we came to test available applications')
+        try:
+            current_app = SellerProfile.objects.get(user=self.request.user)
+            print('current status:', current_app.active)
+            if current_app.application_status == 10:
+                messages.warning(self.request, 'Your application is under review')
+            elif current_app.application_status == 20:
+                print('current status is active')
+                messages.warning(self.request, "You Do not have a registered brand.")
+                return reverse_lazy('users:brand_create')
+        except:
             return True
+      
+        
 
 
 class BrandCreateView(LoginRequiredMixin, CreateView):
     model = Brand
     template_name = 'users/service_providers/brand_create_form.html'
-    fields = ['title', 'business_type', 'business_description', 'country', 'subscription_type', 'logo']
+    fields = ['title', 'business_type', 'business_description', 'shipping_status', 'country', 'subscription_type', 'logo']
     success_url = reverse_lazy("users:seller_confirm")
+
+    def get_success_url(self):
+        # Assuming there is a ForeignKey from Productattribute to Product in your model
+        return reverse_lazy('sellers:seller_home', kwargs={'brand_id': self.object.id})
 
     def form_valid(self, form):
         print('registering brand')
@@ -420,7 +435,6 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
 
         except ObjectDoesNotExist:
             seller_group = Group.objects.create(name='Sellers')
-
 
         obj = form.save(commit=False)
         seller = SellerProfile.objects.get(user=self.request.user)
@@ -440,6 +454,15 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
         obj.save()
         # form.save()
         return super().form_valid(form)
+
+    # def test_func(self):
+    #     current_app = SellerProfile.objects.filter(user=self.request.user, application_status__gt=20)
+    #     print('current app:', current_app)
+    #     if not current_app:
+    #         print('no current app')
+    #         messages.warning(request, "You are not a registered Me2U seller Sign Up")
+    #         return redirect('users:seller_create')
+
 
 
 class AutomobileCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -468,3 +491,6 @@ class AutomobileCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
             except Exception:
                 return True
             return True
+
+
+

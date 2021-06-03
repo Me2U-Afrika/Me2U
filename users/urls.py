@@ -29,9 +29,13 @@ urlpatterns = [
     url('automobile-register-confirm/',
             TemplateView.as_view(template_name='users/service_providers/automobile_register_confirm.html'),
             name='automobile_confirm'),
-    url('seller-register-confirm/',
-                TemplateView.as_view(template_name='users/service_providers/seller_register_confirm.html'),
-                name='seller_confirm'),
+    # url('seller-register-confirm/',
+    #             TemplateView.as_view(template_name='users/service_providers/seller_register_confirm.html'),
+    #             name='seller_confirm'),
+
+    url("^address-(?P<pk>[\w-]+)/update/$", views.AddressUpdateView.as_view(), name="address_update", ),
+
+                
     url(r'^activate/(?P<activationKey>[\w-]+)/$', views.activation_view, name='activation_view'),
     url('login/', auth_views.LoginView.as_view(template_name='users/registration/login.html'), name='login'),
     # url('login/', views.Login, name='login'),

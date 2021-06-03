@@ -50,7 +50,7 @@ DEBUG = env('DEBUG')
 # DEBUG = False
 # print('debug:', DEBUG)
 
-SITE_URL = 'https://me2uafrica.herokuapp.com'
+SITE_URL = 'https://www.me2uafrika.com'
 
 if DEBUG:
     SITE_URL = 'http://127.0.0.1:8000'
@@ -151,12 +151,12 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'Me2U.SSLMiddleware.SSLRedirect',
@@ -164,8 +164,35 @@ MIDDLEWARE = [
     # 'marketing.urlcanon.URLCanonicalizationMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'asymmetric_jwt_auth.middleware.JWTAuthMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 
 ]
+# if DEBUG:
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+
+if not DEBUG:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_bmemcached.memcached.BMemcached',
+            'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS').split(','),
+            'OPTIONS': {
+                'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
+                'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
+            }
+        }
+    }
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+CACHE_MIDDLEWARE_SECONDS = 120
+CACHE_MIDDLEWARE_KEY_PREFIX = ''
+CACHE_MIDDLEWARE_ALIAS = 'default'
+
+
 INTERNAL_IPS = ['127.0.0.1']
 
 ROOT_URLCONF = 'Me2U.urls'
@@ -230,25 +257,6 @@ CHANNEL_LAYERS = {
 SITE_ID = 1
 GA_TRACKER_ID = '123'
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-# if not DEBUG:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': 'me2uafrica',
-#             'USER': os.environ.get('USER'),
-#             'PASSWORD': os.environ.get('PASSWORD_AWS'),
-#             'HOST': 'database-1.ckkeiam4jjhu.ap-southeast-2.rds.amazonaws.com',
-#         }
-#     }
-#
-#     import dj_database_url
-#
-#     db_from_env = dj_database_url.config(conn_max_age=600)
-#     DATABASES['default'].update(db_from_env)
-
 
 if not DEBUG:
 
@@ -300,6 +308,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+USE_THOUSAND_SEPARATOR = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -416,82 +426,12 @@ servers = os.environ.get('MEMCACHIER_SERVERS')
 username = os.environ.get('MEMCACHIER_USERNAME')
 password = os.environ.get('MEMCACHIER_PASSWORD')
 
-if DEBUG:
-    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-
-    # CACHES = {
-    #     'default': {
-    #         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-    #         'LOCATION': '127.0.0.1:11211',
-    #     }
-    # }
-
-if not DEBUG:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django_bmemcached.memcached.BMemcached',
-            'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS').split(','),
-            'OPTIONS': {
-                'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
-                'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
-            }
-        }
-    }
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.environ.get('SECRET_KEY')
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "filters": {
-        "require_debug_false": {
-            "()": "django.utils.log.RequireDebugFalse",
-        },
-        "require_debug_true": {
-            "()": "django.utils.log.RequireDebugTrue",
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": "INFO",
-            "filters": ["require_debug_true"],
-            "class": "logging.StreamHandler",
-        },
-        "null": {
-            "class": "django.utils.log.NullHandler",
-        },
-        "mail_admins": {
-            "level": "ERROR",
-            "filters": ["require_debug_false"],
-            "class": "django.utils.log.AdminEmailHandler",
-            "include_html": True,
-        }
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-        },
-        "django.request": {
-            "handlers": ["mail_admins"],
-            "level": "ERROR",
-            "propagate": False,
-        },
-        "django.security": {
-            "handlers": ["mail_admins"],
-            "level": "ERROR",
-            "propagate": False,
-        },
-        "py.warnings": {
-            "handlers": ["console"],
-        },
-    }
-}
 
 try:
     from settings_local import *

@@ -1,3 +1,4 @@
+from marketing.models import Slider
 from .models import Category, Department
 from django.core import serializers
 from django.http import HttpResponse
@@ -20,7 +21,14 @@ def categoriesHomePage(request):
     # print('request', request)
     page_title = 'Categories'
     site_name = 'Me2U|Market'
-    template_name = 'categories.html'
+    template_name = 'index.html'
+    try:
+        # SLIDERS
+        slider = Slider.objects.get(active=True, slider_type='La')
+        print('home_slider:', slider)
+
+    except:
+        pass
 
     return render(request, template_name, locals())
 

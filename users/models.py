@@ -123,10 +123,7 @@ class User(AbstractUser):
 
     @property
     def is_seller(self):
-        return self.is_active and (
-                self.is_staff
-                or self.groups.filter(name='Sellers').exists()
-        )
+        return self.is_active and self.groups.filter(name='Sellers').exists()
 
 
 class EmailConfirmed(models.Model):
@@ -293,6 +290,11 @@ STATUSES = ((UNDER_REVIEW, "Under Review"),
 class BusinessInformation(models.Model):
     pass
 
+SHIPPING_CAPABILITY = (
+    ('Cd', 'Can Ship Abroad and Deliver Locally'),
+    ('Cl', 'Can Deliver Locally'),
+    ('CO', 'Not Able to Deliver')
+)
 
 class SellerProfile(CreationModificationDateMixin):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -307,7 +309,7 @@ class SellerProfile(CreationModificationDateMixin):
                                                                    'country code . i.e +250 785011413')
 
     verification_id = StdImageField(upload_to='images/sellerID', blank=True, null=True, help_text='Upload your '
-                                                                                                  'ID/Passport') 
+                                                                                                  'ID/Passport')
 
     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
     active = models.BooleanField(default=True)

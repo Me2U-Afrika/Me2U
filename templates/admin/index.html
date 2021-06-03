@@ -39,6 +39,8 @@
             <p>No reports</p>
         {% endif %}
 
+        {% include "memcache_status/memcache_status.html" %}
+
         {% if app_list %}
             {% for app in app_list %}
             <div class="app-{{ app.app_label }} module">

@@ -15,3 +15,4 @@ application = ProtocolTypeRouter(
             me2ushop.routing.http_urlpatterns + [re_path(r"", AsgiHandler)]
         )
     })
+

@@ -41,33 +41,19 @@
                                 </div>
                             </div>
 
-    <!--                        &lt;!&ndash; Cart &ndash;&gt;-->
-    <!--                        <div class="cart">-->
-    <!--                            <div class="cart_container d-flex flex-row align-items-center justify-content-end">-->
-    <!--                                <div class="cart_icon">-->
-    <!--                                    <img src="media/images/cart.png" alt="">-->
-    <!--                                    <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>-->
-    <!--                                </div>-->
-    <!--                                <div class="cart_content">-->
-    <!--                                    <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}" target="_blank">Cart</a></div>-->
-    <!--                                    <div class="cart_price">{{ request|cart_item_total }} </div>-->
-    <!--                                </div>-->
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                        &lt;!&ndash; cart &ndash;&gt;-->
-
-                              <!-- Cart -->
+                            <!-- Cart -->
                             <div class="cart">
                                 <div class="cart_container d-flex flex-row align-items-center justify-content-end">
-                                    <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}" target="_blank">
-                                        <img src="{{ STATIC_URL }}images/add-icon.png" alt=""></a>
+                                    <div class="cart_icon">
+                                        <img src="media/images/cart.png" alt="">
+                                        <div class="cart_count"><span>{{ request|cart_item_count }} </span></div>
                                     </div>
                                     <div class="cart_content">
-                                        <div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" target="_blank">Mada In Afrika</a></div>
+                                        <div class="cart_text"><a href="{% url 'me2ushop:order_summary' %}" target="_blank">Cart</a></div>
+                                        <div class="cart_price">{{ request|cart_item_total }} </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- cart -->
 
                         </div>
                     </div>
@@ -82,14 +68,31 @@
                 <div class="col">
                     <div class="main_nav_content d-flex flex-row">
 
+
                         <!-- Categories Menu -->
 
                         <div class="cat_menu_container">
                             <div class="cat_menu_title d-flex flex-row align-items-center justify-content-start">
                                 <div class="cat_burger"><span></span><span></span><span></span></div>
-                                <div class="cat_menu_text">Made In Afrika</div>
+                                <div class="cat_menu_text">Brand Settings</div>
                             </div>
-                            {% include 'tags/department_list.html' %}
+
+                            <ul class="cat_menu">
+
+                                    <li><a href="" target="_blank">Update Brand Information</a></li>
+                                    <li><a href="{% url 'users:brand_create' %}">Create A New Business Brand</a></li>
+                                    <li><a href="">Delete Brand</a></li>
+<!--                                    <li>-->
+<!--                                        <a href="">Manage Account</a>-->
+<!--                                        <ul class="children">-->
+<!--                                            <li><a href="" target="_blank">Email Settings</a></li>-->
+<!--                                            <li class="disabled"><a href="">Customer Care</a></li>-->
+<!--                                            <li class="disabled"><a href="">Report Abuse</a></li>-->
+<!--                                            <li class="disabled"><a href="">Delete Account</a></li>-->
+<!--                                        </ul>-->
+<!--                                    </li>-->
+                            </ul>
+
                         </div>
 
                         <!-- Main Nav Menu -->
@@ -97,7 +100,8 @@
                         <div class="main_nav_menu ml-auto">
                             <ul class="standard_dropdown main_nav_dropdown">
                                 <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
-                                <li><a href="{% url 'sellers:seller_home' %}">MyDashboard<i class="fas fa-chevron-down"></i></a></li>
+
+                                <li><a href="{% url 'sellers:seller_home' brand_id %}">Dashboard<i class="fas fa-chevron-down"></i></a></li>
 
 
                                 <li class="hassubs">
@@ -111,27 +115,21 @@
 <!--                                                <li><a href="#">Menu Item<i class="fas fa-chevron-down"></i></a></li>-->
 <!--                                            </ul>-->
                                         </li>
-                                        <li><a href="{% url 'blog:post_create' brand.id %}">Create New Blog<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="{% url 'blog:post_create' brand_id %}">Create New Blog<i class="fas fa-chevron-down"></i></a></li>
                                     </ul>
                                 </li>
                                 <li class="hassubs">
-                                    <a href="{% url 'sellers:seller_products' %}">Manage Products<i class="fas fa-chevron-down"></i></a>
+                                    <a href="">Manage Products<i class="fas fa-chevron-down"></i></a>
                                     <ul>
-<!--                                        <li>-->
-<!--                                            <a href="#">Active Products<i class="fas fa-chevron-down"></i></a>-->
-<!--                                            <ul>-->
-<!--                                                <li><a href="{% url 'sellers:seller_products' %}">Manage Existing<i class="fas fa-chevron-down"></i></a></li>-->
 
-<!--                                            </ul>-->
-<!--                                        </li>-->
-                                        <li><a href="{% url 'sellers:seller_products' %}">Manage Existing<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="{% url 'sellers:seller_products' brand_id %}">Manage Existing<i class="fas fa-chevron-down"></i></a></li>
 
-                                        <li><a href="{% url 'me2ushop:seller_page' brand.id %}">My Store<i class="fas fa-chevron-down"></i></a></li>
-                                        <li><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fas fa-chevron-down"></i></a></li>
+                                        <li><a href="{% url 'me2ushop:seller_page' brand_id %}">Storefront</a></li>
+                                        <li><a href="{% url 'me2ushop:product-create' brand_id %}">Add New Product</a></li>
 
                                     </ul>
                                 </li>
-                                <li><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fas fa-chevron-down"></i></a></li>
+                                <li><a href="{% url 'me2ushop:product-create' brand_id %}">Add New Product<i class="fas fa-chevron-down"></i></a></li>
 
                                 <li><a href="#">Deliver with Me2U<i class="fas fa-chevron-down"></i></a></li>
                             </ul>
@@ -184,16 +182,16 @@
 <!--                                    <li><a href="#">JPY Francs<i class="fa fa-angle-down"></i></a></li>-->
 <!--                                </ul>-->
 <!--                            </li>-->
-                            <li class="page_menu_item"><a href="{% url 'me2ushop:home' %}">Me2U|Afrika<i class="fa fa-angle-down"></i></a></li>
-                            <li class="page_menu_item"><a href="{% url 'sellers:seller_home' %}">MyDashboard<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{% url 'sellers:seller_home' brand_id%}">MyDashboard<i class="fa fa-angle-down"></i></a></li>
 
                             <li class="page_menu_item"><a href="{% url 'blog:blog_list' %}">My Blogs</a></li>
-                            <li class="page_menu_item"><a href="{% url 'blog:post_create' brand.id %}">Create New Blog<i class="fas fa-chevron-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{% url 'blog:post_create' brand_id %}">Create New Blog<i class="fas fa-chevron-down"></i></a></li>
 
 
-                            <li class="page_menu_item"><a href="{% url 'me2ushop:product-create' %}">Add New Product<i class="fa fa-angle-down"></i></a></li>
-                            <li class="page_menu_item"><a href="{% url 'sellers:seller_products' %}">Manage Existing<i class="fa fa-angle-down"></i></a></li>
-                            <li class="page_menu_item"><a href="{% url 'me2ushop:seller_page' brand.id %}">My Store<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{% url 'me2ushop:product-create' brand_id %}">Add New Product<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{% url 'sellers:seller_products' brand_id %}">Manage Existing<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{% url 'me2ushop:seller_page' brand_id %}">My Store<i class="fa fa-angle-down"></i></a></li>
                             <li class="page_menu_item"><a href="#">Deliver With Me2U<i class="fa fa-angle-down"></i></a></li>
                             <li class="page_menu_item"><a href="contact.html">contact us<i class="fa fa-angle-down"></i></a></li>
                         </ul>

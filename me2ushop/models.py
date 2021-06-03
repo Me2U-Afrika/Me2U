@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
 from categories.models import Category, Department
-from users.models import Profile, SellerProfile
+from users.models import Profile, SellerProfile, STATUSES, UNDER_REVIEW
 from utils.models import CreationModificationDateMixin
 from sellers.models import Sellers
 from PIL import Image
@@ -21,6 +21,7 @@ from tagging.models import Tag
 import itertools
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
+from django.utils.functional import cached_property
 
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
@@ -76,37 +77,56 @@ CONDITION_CHOICES = {
     ('U', "Used"),
 
 }
+SHIPPING_CAPABILITY = (
+    ('Cd', 'Can Ship Abroad and Deliver Locally'),
+    ('Cl', 'Can Deliver Locally'),
+    ('CO', 'Not Able to Deliver')
+)
+from django_countries import Countries
+
+
+class AfrikanCountries(Countries):
+    only = [
+        'DZ', 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD',
+        'KM', 'CG', 'CD', 'CI', 'DJ', 'EG', 'GQ', 'ER', 'ET', 'GA',
+        'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'ML',
+        'MW', 'MR', 'MU', 'YT', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RE',
+        'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD', 'SZ',
+        'TZ', 'TG', 'TN', 'UG', 'EH', 'ZM', 'ZW'
+    ]
 
 
 class Brand(CreationModificationDateMixin):
-    user = models.OneToOneField(SellerProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, null=True, default=1)
     title = models.CharField(max_length=100, unique=True, help_text='Unique business title to identify Your store and '
                                                                     'your product line')
 
+    business_phone = models.CharField(max_length=20, blank=True, null=True,
+                                      help_text='Business Phone Number . i.e +250785....')
+    business_email = models.EmailField(blank=True, null=True, max_length=254,
+                                       help_text='Business Phone Number . i.e +250785....')
     business_description = models.TextField(help_text="Tell us what you do and the kind of products you sell")
 
-    website_link = models.CharField(max_length=255, blank=True, null=True, help_text='If you have a website by which '
-                                                                                     'buyers can find out more about '
-                                                                                     'your services.e.g. '
-                                                                                     'https://www.facebook.com')
-    facebook = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a facebook page. '
-                                                                                 'Copy '
-                                                                                 'paste your page link here '
-                                                                                 'e.g.. '
-                                                                                 'https://www.facebook.com'
-                                                                                 '/Me2UAfrika')
-    instagram = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a instagram page. Copy '
-                                                                                  'paste your page link here eg. '
-                                                                                  'https://www.instagram.com'
-                                                                                  '/me2u_afrika/')
-    twitter = models.CharField(max_length=255, blank=True, null=True, help_text='Do you have a Telegram Channel. Copy '
-                                                                                'paste your page link here. e.g.. '
-                                                                                'https://t.me/me2uafrika')
+    website_link = models.CharField(max_length=255, blank=True, null=True,
+                                    help_text='If you have a website by which buyers can find out more about your '
+                                              'services.e.g. https://www.facebook.com')
+    facebook = models.CharField(max_length=255, blank=True, null=True,
+                                help_text='Do you have a facebook page. Copy paste your page link here '
+                                          'e.g..https://www.facebook.com/Me2UAfrika')
+    instagram = models.CharField(max_length=255, blank=True, null=True,
+                                 help_text='Do you have a instagram page. Copy paste your page link here '
+                                           'eg..https://www.instagram.com/me2u_afrika/')
+    twitter = models.CharField(max_length=255, blank=True, null=True,
+                               help_text='Do you have a Telegram Channel. Copy paste your page link here. '
+                                         'e.g..https://t.me/me2uafrika')
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
     # date_of_registration = models.DateField
     country = CountryField(multiple=False)
     subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
                                          help_text='Select a monthly recurring subscription fees')
+    shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
+                                       help_text='Is Your company able to ship or deliver your products once they '
+                                                 'buyers order online?')
     valid_payment_method = models.BooleanField(default=False, null=True, blank=True)
     active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False, blank=True, null=True)
@@ -121,6 +141,7 @@ class Brand(CreationModificationDateMixin):
                              'medium': (150, 150, True),
 
                          }, delete_orphans=True)
+    application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW, blank=True, null=True)
 
     def __str__(self):
         return str(self.title)
@@ -134,7 +155,6 @@ class ActiveProductManager(models.Manager):
 class ProductManager(models.Manager):
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
-
 
 class Product(CreationModificationDateMixin):
     title = models.CharField(max_length=100)
@@ -169,7 +189,8 @@ class Product(CreationModificationDateMixin):
 
     description = models.TextField()
     additional_information = RichTextField(blank=True, null=True,
-                                           help_text='Provide additional information about '                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'your product. Buyers mostly buy from'
+                                           help_text='Provide additional information about '
+                                                     'your product. Buyers mostly buy from'
                                                      ' well detailed products and '
                                                      'specifications')
     meta_keywords = models.CharField("Meta Keywords",
@@ -244,16 +265,20 @@ class Product(CreationModificationDateMixin):
         diff = ((self.price - self.discount_price) / self.price) * 100
         return round(diff)
 
+    @cached_property
     def get_absolute_url(self):
 
         return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
+    @cached_property
     def get_add_cart_url(self):
         return reverse('me2ushop:add_cart', kwargs={'slug': self.slug})
 
+    @cached_property
     def get_images(self):
         return self.productimage_set.all()
 
+    @cached_property
     def get_image_in_display(self):
         image = self.productimage_set.filter(in_display=True)
         if image:
@@ -265,12 +290,14 @@ class Product(CreationModificationDateMixin):
     def get_order_summary_url(self):
         return reverse('me2ushop:order_summary')
 
+    @cached_property
     def cross_sells(self):
         orders = Order.objects.filter(items__item=self)
         order_items = OrderItem.objects.filter(order__in=orders).exclude(item=self)
         products = Product.active.filter(orderitem__in=order_items).filter().distinct()
         return products
 
+    @cached_property
     def cross_sells_user(self):
         from users.models import User
 
@@ -279,6 +306,7 @@ class Product(CreationModificationDateMixin):
         products = Product.active.filter(orderitem__in=items).distinct()
         return
 
+    @cached_property
     def cross_sells_sellers(self):
         from search.search import _prepare_words
         from users.models import User
@@ -305,6 +333,7 @@ class Product(CreationModificationDateMixin):
             # print('from sellers', products)
             return products
 
+    @cached_property
     def cross_sells_hybrid(self):
         from users.models import User
 
@@ -414,6 +443,7 @@ class ProductImage(CreationModificationDateMixin):
     def natural_key(self):
         return (self.item.slug,)
 
+    @cached_property
     def get_absolute_url(self):
         return reverse('me2ushop:product_images', kwargs={'slug': self.item.slug})
 

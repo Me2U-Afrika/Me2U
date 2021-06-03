@@ -13,6 +13,7 @@ def tracking_id(request):
     try:
         return request.session['tracking_id']
     except KeyError:
+        print('we have no tracking id')
         request.session['tracking_id'] = codecs.encode(os.urandom(32), 'hex').decode()
 
         return request.session['tracking_id']

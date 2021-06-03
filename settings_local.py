@@ -15,9 +15,18 @@ import os
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'master',
+        'NAME': 'me2udev',
         'USER': os.environ.get('USER'),
         'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
         'HOST': 'localhost',
     }
+}
+
+LOGGING = {'handlers': {
+    'console': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'verbose', },
+},
+    'loggers': {'django.db': {
+        'handlers': ['console', ], 'level': 'DEBUG',
+    },
+    },
 }

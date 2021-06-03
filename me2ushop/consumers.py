@@ -17,6 +17,9 @@ from . import models
 from Me2U import settings
 
 logger = logging.getLogger(__name__)
+from django.views.decorators.cache import never_cache
+
+
 
 
 # class ChatConsumer(AsyncConsumer):
@@ -29,7 +32,6 @@ logger = logging.getLogger(__name__)
 #
 #     async def websocket_receive(self, event):
 #        print('receive', event)
-
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     # print('we check this functions first')
@@ -154,7 +156,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def chat_leave(self, event):
         await self.send_json(event)
 
-
 class ChatNotifyConsumer(AsyncHttpConsumer):
     # print("we came to notify customer service")
 
@@ -246,7 +247,6 @@ class ChatNotifyConsumer(AsyncHttpConsumer):
             "Closing notify stream for user %s", self.scope.get("user"),
         )
         self.is_streaming = False
-
 
 class OrderTrackerConsumer(AsyncHttpConsumer):
     # print('we came here to check')

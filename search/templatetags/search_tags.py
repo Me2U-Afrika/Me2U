@@ -1,7 +1,7 @@
 from django import template
 from search.forms import SearchForm
 import urllib.parse
-from categories.models import Category, Department
+from categories.models import Department
 
 register = template.Library()
 

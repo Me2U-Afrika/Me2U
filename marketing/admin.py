@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MarketingMessage, Slider, MarketingEmails, Banner, Trend, TrendInfo
+from .models import *
 
 
 # Register your models here.
@@ -32,10 +32,14 @@ class DealsAdmin(admin.ModelAdmin):
     list_editable = ('is_featured',)
 
 
+class SliderImagesAdmin(admin.ModelAdmin):
+    list_display = ['slider']
+
+
 admin.site.register(MarketingMessage, MarketingMessageAdmin)
 admin.site.register(Slider, SliderAdmin)
 admin.site.register(MarketingEmails, MarketingEmailsAdmin)
 admin.site.register(Banner, BannerAdmin)
 admin.site.register(Trend, TrendAdmin)
 admin.site.register(TrendInfo, TrendInfoAdmin)
-# admin.site.register(Deals, DealsAdmin)
+admin.site.register(SliderImages, SliderImagesAdmin)

@@ -13,7 +13,7 @@
 <!--product styles-->
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_styles.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_responsive.css">
-
+	<link rel="stylesheet" type="text/css" href="css/zoom.css">
 <style>
 	@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
 
@@ -52,44 +52,102 @@
 <div class="super_container">
 
 	<!-- Single Product -->
-
 	<div class="single_product">
 
 		<div class="container">
 
 			<div class="row">
-
+				<!-- PRODUCT IMAGE-->
 				<div class="col-lg-6 order-lg-2 order-1">
 				{% for image in object.productimage_set.all %}
 				{% if image.in_display %}
 
-					<div class="image_selected" id="imagebox" style="height: auto;"></div>
+					<div class="image_selected xzoom-container" id="imagebox" style="height: auto;"></div>
+					<br>
+					<div class="row">
+						<div class="ml-3">
+							{% post_to_linkedin object.get_absolute_url %}
+						</div>
+						<div class="ml-3">
+							{% post_to_facebook object.get_absolute_url %}
+						</div>
+						<div class="ml-3">
+							{% post_to_reddit "New Product: {{object.title}}" object.get_absolute_url %}
+						</div>
+						<div class="ml-3">
+							{% post_to_twitter "New Product: {{object.title}}. Check it out!" object.get_absolute_url %}
+						</div>
+
+						<div class="ml-3">
+							{% post_to_telegram "New Product: {{object.title}}" object.get_absolute_url %}
+						</div>
+						<div class="ml-3">
+							{% post_to_whatsapp object.get_absolute_url %}
+						</div>
+
+						<div class="ml-3">
+							{% send_email object.title "New Product: {{object.title}}. Check it out!" object.get_absolute_url %}
+						</div>
+						<div class="ml-3">
+							{% save_to_pinterest object.get_absolute_url %}
+							{% add_pinterest_script %}
+						</div>
+
+					</div>
 
 				{% endif %}
 				{% endfor %}
 					</div>
+				<!-- PRODUCT IMAGE-->
 
-				<!-- Description -->
+				<!-- DESCRIPTION-->
 				<div class="col-lg-6 order-3">
 					<div class="product_description">
-						<div class="product_category">{{ object.get_category_choice_display }}</div>
+						{% if object.brand_name.user.user == request.user %}
+							{% if product.is_active %}
+								<div class="product_name green-text">Product is Active</div>
+							{% else %}
+								<div class="product_name red-text">Product is Inactive</div>
+							{% endif %}
+						{% endif %}
 						<div class="product_name">{{ object.title }}</div>
 						<div class="rating_r rating_r_4 product_rating"><i></i><i></i><i></i><i></i><i></i></div>
-						{% if brand_id %}
+						{% if object.brand_name %}
 	                        <div>
-	                            Brand: <a href="{% url 'me2ushop:seller_page' brand_id %}"> {{ object.brand_name }}</a>
+	                            Brand: <a href="{% url 'me2ushop:seller_page' object.brand_name.id %}"> {{ object.brand_name }}</a>
 	                        </div>
 						{% endif %}
-						<div class="product_text"><p>{{ object.description|linebreaks }}</p></div>
+						<hr>
+
+						<!--PRODUCT PRICE-->
+						{% if object.discount_price %}
+							<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
+							<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
+						{% else %}
+							<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
+						{% endif %}
+						<!--PRODUCT PRICE-->
+
+						<!--PRODUCT DESCRIPTION-->
+							<div class="product_text">
+								<p>{{ object.description|linebreaks }}</p>
+							</div>
+						<!--PRODUCT DESCRIPTION-->
+
+						<!--PRODUCT CALL TO ACTION-->
 						<div class="order_info d-flex flex-row">
 							<form action="{{ object.get_add_cart_url }}" method="POST">
 								{% csrf_token %}
-								<div class="clearfix" style="z-index: 1000;">
+
+								{% if not object.brand_name.user.user == request.user %}
+								<!--ADD TO CART OPTIONS-->
+								{% if object.brand_name.valid_payment_method %}
+									<div class="clearfix" style="z-index: 1000;">
 									{% if object.stock > 0 %}
-		                            <p>Stock: {{ object.stock }}</p>
-		                            {% else %}
-		                            <p>Stock:Product Not in Stock</p>
-		                            {% endif %}
+									<p>Stock: {{ object.stock }}</p>
+									{% else %}
+									<p>Stock:Product Not in Stock</p>
+									{% endif %}
 
 									<!-- Product Quantity -->
 									<div class="product_quantity clearfix">
@@ -116,140 +174,140 @@
 <!--										</li>-->
 <!--									</ul>-->
 								</div>
-								{% if object.discount_price %}
-									<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
-									<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
-								{% else %}
-									<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
-								{% endif %}
 
-								{% if object.brand_name.valid_payment_method %}
-									<!--Payment methods-->
 									<div class="button_container">
 										<button type="submit" class="button cart_button" >Add to Cart</button>
 										<a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>
 									</div>
 
 									<div class="clearfix mt-2" style="z-index: 1000;">
-									<div id="paypal-button-container"></div>
 
-									<!-- Include the PayPal JavaScript SDK -->
-									<script src="https://www.paypal.com/sdk/js?client-id=AWO1FayVTNuxrcjUZSL57i0QYdqQKpCZ3CcG9Ttvxi_qChYoKbqySBy_zhf2yR4AOyWD-cuqUc5Tm9_g&currency=USD"></script>
+									<!--PAY NOW OPTION-->
 
-									<script>
-										function getCookie(name) {
-											let cookieValue = null;
-											if (document.cookie && document.cookie !== '') {
-												const cookies = document.cookie.split(';');
-												for (let i = 0; i < cookies.length; i++) {
-													const cookie = cookies[i].trim();
-													// Does this cookie string begin with the name we want?
-													if (cookie.substring(0, name.length + 1) === (name + '=')) {
-														cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-														break;
-													}
-												}
-											}
-											return cookieValue;
-										}
-										const csrftoken = getCookie('csrftoken');
+<!--									<div id="paypal-button-container"></div>-->
 
+<!--									<script src="https://www.paypal.com/sdk/js?client-id=AWO1FayVTNuxrcjUZSL57i0QYdqQKpCZ3CcG9Ttvxi_qChYoKbqySBy_zhf2yR4AOyWD-cuqUc5Tm9_g&currency=USD"></script>-->
 
-										var total = '{{ object.sale_price|currency:"USD" }}'
-										var productId = '{{ object.id }}'
-
-										function completeOrder(){
-											var url = "{% url 'me2ushop:complete' %}"
-											fetch(url,{
-
-												method:'POST',
-												headers: {
-													'Content-type':'application/json',
-													'X-CSRFToken': csrftoken
-												},
-												body: JSON.stringify({'productId': productId})
+<!--									<script>-->
+<!--										function getCookie(name) {-->
+<!--											let cookieValue = null;-->
+<!--											if (document.cookie && document.cookie !== '') {-->
+<!--												const cookies = document.cookie.split(';');-->
+<!--												for (let i = 0; i < cookies.length; i++) {-->
+<!--													const cookie = cookies[i].trim();-->
+<!--													// Does this cookie string begin with the name we want?-->
+<!--													if (cookie.substring(0, name.length + 1) === (name + '=')) {-->
+<!--														cookieValue = decodeURIComponent(cookie.substring(name.length + 1));-->
+<!--														break;-->
+<!--													}-->
+<!--												}-->
+<!--											}-->
+<!--											return cookieValue;-->
+<!--										}-->
+<!--										const csrftoken = getCookie('csrftoken');-->
 
 
-											});
+<!--										var total = '{{ object.sale_price|currency:"USD" }}'-->
+<!--										var productId = '{{ object.id }}'-->
 
-										}
+<!--										function completeOrder(){-->
+<!--											var url = "{% url 'me2ushop:complete' %}"-->
+<!--											fetch(url,{-->
 
-
-										// Render the PayPal button into #paypal-button-container
-										paypal.Buttons({
-
-											// Set up the transaction
-											createOrder: function(data, actions) {
-												return actions.order.create({
-													purchase_units: [{
-														amount: {
-															value: total
-														}
-													}]
-												});
-											},
-
-											// Finalize the transaction
-											onApprove: function(data, actions) {
-												return actions.order.capture().then(function(details) {
-													// Show a success message to the buyer
-													completeOrder()
-													alert('Transaction completed by ' + details.payer.name.given_name + '!');
-													window.location.href = '{% url 'me2ushop:checkout-done' %}'
-												});
-											}
+<!--												method:'POST',-->
+<!--												headers: {-->
+<!--													'Content-type':'application/json',-->
+<!--													'X-CSRFToken': csrftoken-->
+<!--												},-->
+<!--												body: JSON.stringify({'productId': productId})-->
 
 
-										}).render('#paypal-button-container');
-									</script>
+<!--											});-->
+
+<!--										}-->
+
+
+<!--										// Render the PayPal button into #paypal-button-container-->
+<!--										paypal.Buttons({-->
+
+<!--											// Set up the transaction-->
+<!--											createOrder: function(data, actions) {-->
+<!--												return actions.order.create({-->
+<!--													purchase_units: [{-->
+<!--														amount: {-->
+<!--															value: total-->
+<!--														}-->
+<!--													}]-->
+<!--												});-->
+<!--											},-->
+
+<!--											// Finalize the transaction-->
+<!--											onApprove: function(data, actions) {-->
+<!--												return actions.order.capture().then(function(details) {-->
+<!--													// Show a success message to the buyer-->
+<!--													completeOrder()-->
+<!--													alert('Transaction completed by ' + details.payer.name.given_name + '!');-->
+<!--													window.location.href = '{% url "me2ushop:checkout-done" %}'-->
+<!--												});-->
+<!--											}-->
+
+
+<!--										}).render('#paypal-button-container');-->
+<!--									</script>-->
+
+									<!--PAY NOW OPTION-->
+
+								</div>
 								{% endif %}
+								<!--ADD TO CART OPTIONS-->
+								{% else %}
+								<div class="card card-body">
 
-							</div>
+									<a class="btn btn-outline-orange" href="{% url 'me2ushop:product-update' object.slug %}">UPDATE Product</a>
+									<a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}">Product Detailed Information</a>
+									<a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}">ADD Attributes</a>
 
-								{% if object.brand_name.user.user == request.user %}
-	                            <div class="card card-body">
-	                                <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-update' object.slug %}">UPDATE Product</a>
-	                                <a class="btn btn-outline-green " href="{% url 'me2ushop:product-create' %}">New Product</a>
-		                            <a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}">Additional Information</a>
+									{% if object.productimage_set.all %}
+									<a class="btn btn-outline-purple" href="{% url 'me2ushop:product_images' object.slug %}">Product Images</a>
+									{% else %}
+									<a class="btn btn-outline-purple" href="{% url 'me2ushop:product_image_create' object.slug %}">Add Images</a>
+									{% endif %}
 
-		                            {% if object.productimage_set.all %}
-	                                <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_images' object.slug %}">Product Images</a>
-		                            {% else %}
-		                            <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_image_create' object.slug %}">Add Images</a>
-		                            {% endif %}
+									<a class="btn btn-outline-grey" href="{% url 'sellers:seller_products' object.brand_name.id %}">My Products</a>
+									<a class="btn btn-outline-green " href="{% url 'me2ushop:product-create' object.brand_name.id  %}">New Product</a>
 
-	                                <a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}">ADD Attributes</a>
 
-	                                <a class="btn btn-outline-grey" href="{% url 'sellers:seller_products' %}">My Products</a>
-
-	                                {% if pending_item %}
-		                            <a class="btn text-muted disabled red-text" href="#">Delete Product</a>
-		                            {% else %}
-		                            <a class="btn" href="{% url 'me2ushop:product-delete' object.slug %}">Delete</a>
-		                            {% endif %}
-	                            </div>
-								{% endif %}
+									{% if pending_item %}
+									<a class="btn text-muted disabled red-text" href="#">Delete Product</a>
+									{% else %}
+									<a class="btn" href="{% url 'me2ushop:product-delete' object.slug %}">Delete</a>
+									{% endif %}
+								</div>
+								{% endif%}
 
 							</form>
 						</div>
+						<!--PRODUCT CALL TO ACTION-->
 
+						<!--SELLER INFO-->
 						{% if object.brand_name %}
-								<div class="mt-2">
+							<div class="mt-2">
 									<button class="button cart_button quick-contact" id="contact_seller"><i class="fas fa-phone-square">Contact Seller</i></button>
 
-									<a href="{% url 'me2ushop:seller_page' brand_id %}" role="button" class="button cart_button quick-contact"><i class="fas fa-store"> Visit Store</i></a>
+									<a href="{% url 'me2ushop:seller_page' object.brand_name.id %}" role="button" class="button cart_button quick-contact"><i class="fas fa-store"> Visit Store</i></a>
 								</div>
-							{% endif %}
+							<div class="cart mt-2">
+								<div class="cart_container d-flex flex-row align-items-center justify-content-start">
+									<div class="cart_icon"><a href="{%  url 'sellers:seller_home' object.brand_name.id %}">
+										<img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height: 35px; width: 35px;"></a>
+									</div>
+									<div class="cart_text"><a href="{%  url 'sellers:seller_home' object.brand_name.id %}" style="color:MediumSeaGreen;">Sell</a></div>
+								</div>
+                        	</div>
+						{% endif %}
+						<!--SELLER INFO-->
 
-						<div class="cart mt-2">
-                            <div class="cart_container d-flex flex-row align-items-center justify-content-start">
-                                <div class="cart_icon"><a href="{%  url 'sellers:seller_home' %}">
-                                    <img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height: 35px; width: 35px;"></a>
-                                </div>
-								<div class="cart_text"><a href="{%  url 'sellers:seller_home' %}" style="color:MediumSeaGreen;">Sell</a></div>
-                            </div>
-                        </div>
-
+						<!--CATEGORIES WHERE-->
 						<div class="mt-2">
 	                    In categor{{ object.product_categories.count|pluralize:"y,ies" }}:
 	                            {% for c in object.product_categories.all %}
@@ -257,49 +315,16 @@
 	                            {% if not forloop.last %} , {% endif %}
 	                            {% endfor %}
 						</div>
-
-						<br>
-						<div class="row">
-							<div class="ml-3">
-								{% post_to_linkedin object.get_absolute_url %}
-							</div>
-							<div class="ml-3">
-								{% post_to_facebook object.get_absolute_url %}
-							</div>
-							<div class="ml-3">
-								{% post_to_reddit "New Product: {{object.title}}" object.get_absolute_url %}
-							</div>
-							<div class="ml-3">
-								{% post_to_twitter "New Product: {{object.title}}. Check it out!" object.get_absolute_url %}
-							</div>
-
-							<div class="ml-3">
-								{% post_to_telegram "New Product: {{object.title}}" object.get_absolute_url %}
-							</div>
-							<div class="ml-3">
-								{% post_to_whatsapp object.get_absolute_url %}
-							</div>
-
-							<div class="ml-3">
-								{% send_email object.title "New Product: {{object.title}}. Check it out!" object.get_absolute_url %}
-							</div>
-							<div class="ml-3">
-								{% save_to_pinterest object.get_absolute_url %}
-								{% add_pinterest_script %}
-							</div>
-
-						</div>
-
+						<!--CATEGORIES WHERE-->
 
 					</div>
 				</div>
+				<!-- DESCRIPTION-->
 			</div>
+
 		</div>
-		<br>
-		<br>
 
 		<div class="container">
-
 
 		{% if object.brand_name %}
 
@@ -310,28 +335,24 @@
 	                <div class="row">
 	                    <div class="col-md-4">
 	                        <h1 class="title-contact">
-	                            Quick Contact</h1>
+	                            {{ object.brand_name }}</h1>
 	                    </div>
 
-
 	                    <div class="col-md-4 contact-email">
-	                        <h2>
-		                       <a href="mailto:{{ object.brand_name.user.email }}"><i class="fas fa-envelope-square" style="color:#20639B;"> Email</i></a>
-	                            </h2>
-	                        <h3>
-	                            {{ object.brand_name.user.phone }}</h3>
+	                        <h2><a href="mailto:{{ object.brand_name.business_email }}" target="_blank"><i class="fas fa-envelope-square" style="color:#20639B;"> Email</i></a></h2>
+	                        <h3>{{ object.brand_name.business_phone }}</h3>
 	                    </div>
 	                    <div class="col-md-4">
 	                        <div class="row contact row-first">
 		                        {% if object.brand_name.facebook %}
 	                            <div class="col-md-6">
-	                                <a href="{{ object.brand_name.facebook }}" class="facebook"><i class="fa fa-facebook"></i>Facebook</a>
+	                                <a href="{{ object.brand_name.facebook }}" class="facebook" target="_blank"><i class="fa fa-facebook"></i>Facebook</a>
 	                            </div>
 		                        {% endif %}
 
 		                        {% if object.brand_name.instagram %}
 	                            <div class="col-md-6">
-	                                <a href="{{ object.brand_name.instagram }}" class="instagram"><i class="fa fa-instagram"></i>instagram</a>
+	                                <a href="{{ object.brand_name.instagram }}" class="instagram" target="_blank"><i class="fa fa-instagram"></i>instagram</a>
 	                            </div>
 		                        {% endif %}
 	                        </div>
@@ -339,13 +360,13 @@
 
 		                        {% if object.brand_name.website_link %}
 	                            <div class="col-md-6">
-	                                <a href="{{ object.brand_name.website_link }}" class="email"><i class="fa fa-globe"></i>Website</a>
+	                                <a href="{{ object.brand_name.website_link }}" class="email" target="_blank"><i class="fa fa-globe"></i>Website</a>
 	                            </div>
 		                        {% endif %}
 
 		                        {% if object.brand_name.twitter %}
 	                            <div class="col-md-6">
-	                                <a href="{{ object.brand_name.twitter }}" class="telegram"><i class="far fa-paper-plane"></i>Twitter</a>
+	                                <a href="{{ object.brand_name.twitter }}" class="telegram" target="_blank"><i class="far fa-paper-plane"></i>Twitter</a>
 	                            </div>
 		                        {% endif %}
 	                        </div>
@@ -362,7 +383,6 @@
 		<div class="classic-tabs border rounded px-4 pt-1 mt-4">
 
 	    <ul class="nav tabs-primary nav-justified" id="advancedTab" role="tablist">
-
 
 	        <li class="nav-item">
 	            <a class="nav-link active show" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Product Tags</a>
@@ -428,7 +448,7 @@
 			<div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
 	        <h5>Product Attributes</h5>
 
-			    {% if object.object.productdetail_set.all %}
+			    {% if object.productdetail_set.all %}
 
 		      <table class="table table-striped table-bordered mt-3">
 		        <thead>
@@ -728,10 +748,10 @@
 							</div>
 							{% endfor %}
 
-
 						</div>
 						<div class="reviews_dots"></div>
 					</div>
+
 				</div>
 			</div>
 		</div>
@@ -756,54 +776,59 @@
 						<div class="viewed_slider_container">
 
 							<!-- Recently Viewed Slider -->
-
+							{% if recently_viewed %}
 							<div class="owl-carousel owl-theme viewed_slider">
 
 								<!-- Recently Viewed Item -->
 								{% for product in recently_viewed %}
-								{% if product.slug != object.slug %}
-								{% if product.discount_price %}
-								<div class="owl-item">
-									<div class="viewed_item discount d-flex flex-column align-items-center justify-content-center text-center">
-										{% for image in product.get_images %}
-										{% if image.in_display %}
-										<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
-										{% endif %}
-										{% endfor %}
-										<div class="viewed_content text-center">
-											<div class="viewed_price">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</span></div>
-											<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+									{% if product.slug != object.slug %}
+										{% if product.discount_price %}
+										<div class="owl-item">
+											<div class="viewed_item discount d-flex flex-column align-items-center justify-content-center text-center">
+												{% for image in product.get_images %}
+												{% if image.in_display %}
+												<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
+												{% endif %}
+												{% endfor %}
+												<div class="viewed_content text-center">
+													<div class="viewed_price">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</span></div>
+													<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+												</div>
+												<ul class="item_marks">
+													<li class="item_mark item_discount">-{{ product.total_discount }}%</li>
+													<li class="item_mark item_new">new</li>
+												</ul>
+											</div>
 										</div>
-										<ul class="item_marks">
-											<li class="item_mark item_discount">-{{ product.total_discount }}%</li>
-											<li class="item_mark item_new">new</li>
-										</ul>
-									</div>
-								</div>
-								{% else %}
 
-								<!-- Recently Viewed Item -->
-								<div class="owl-item">
-									<div class="viewed_item d-flex flex-column align-items-center justify-content-center text-center">
-										{% for image in product.get_images %}
-										{% if image.in_display %}
-										<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
-										{% endif %}
-										{% endfor %}
-										<div class="viewed_content text-center">
-											<div class="viewed_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div>
-											<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+										{% else %}
+
+										<!-- Recently Viewed Item -->
+										<div class="owl-item">
+											<div class="viewed_item d-flex flex-column align-items-center justify-content-center text-center">
+												{% for image in product.get_images %}
+												{% if image.in_display %}
+												<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
+												{% endif %}
+												{% endfor %}
+												<div class="viewed_content text-center">
+													<div class="viewed_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div>
+													<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+												</div>
+												<ul class="item_marks">
+													<li class="item_mark item_new">new</li>
+												</ul>
+											</div>
 										</div>
-										<ul class="item_marks">
-											<li class="item_mark item_new">new</li>
-										</ul>
-									</div>
-								</div>
-								{% endif %}
-								{% endif %}
+										{% endif %}
+									{% endif %}
 								{% endfor %}
 
 							</div>
+							{% endif %}
+							<!-- Recently Viewed Slider -->
+
+
 						</div>
 					</div>
 				</div>
@@ -813,6 +838,8 @@
 
 		</div>
 	</div>
+	<!-- Single Product -->
+
 </div>
 
 
@@ -829,6 +856,11 @@
 <!--images react -->
 <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+<script src="js/zoom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zoom.js/0.0.1/zoom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zoom.js/0.0.1/zoom.js"></script>
+
+
 {% render_bundle 'imageswitcher' 'js' %}
 <script>
     const e = React.createElement;
@@ -837,7 +869,8 @@
             var images = [
                 {% for image in object.productimage_set.all %}
                     {"image": "{{image.image.large.url|safe }}",
-                        "thumbnail": "{{ image.image.thumbnail.url|safe }}"
+                        "thumbnail": "{{ image.image.thumbnail.url|safe }}",
+							"original":"{{ image.image.url|safe }}"
                     },
                 {% endfor %}
             ]
@@ -846,6 +879,13 @@
              imageStart:images[0]}),
                document.getElementById('imagebox')
             );
+
+			$("x.zoom").addClass('xoriginal: images[2]').attr('data-action', 'zoom')
+            $(".xzoom, .xzoom-gallery").xzoom({
+				zoomWidth: 400,
+				tint: "#333",
+				Xoffset: 15,
+			})
         });
 </script>
 <!--images react -->
@@ -861,6 +901,12 @@
 <script>
 	$(document).ready(function () {
     $(".title-contact, .contact-email").fadeIn("slow");
+    document.getElementById("contact_seller").addEventListener("click",
+		function () {
+    		window.scrollBy(0, 100);
+		}
+	)
+
 });
 </script>
 <!--show seller contact-->

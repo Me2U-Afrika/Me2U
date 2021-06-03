@@ -510,7 +510,7 @@
 									<div class="featured_slider_item">
 										<div class="border_active"></div>
 										<div class="product_item discount d-flex flex-column align-items-center justify-content-center text-center">
-											{% for image in product.productimage_set.all %}
+											{% for image in product.get_images %}
 											{% if image.in_display %}
 
 												<div class="product_image d-flex flex-column align-items-center justify-content-center">
@@ -934,7 +934,7 @@
 								<div class="bestsellers_item discount">
 									<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
 
-										{% for image in product.productimage_set.all %}
+										{% for image in product.get_images %}
 										{% if image.in_display %}
 
 										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
@@ -1018,7 +1018,7 @@
 								<div class="bestsellers_item discount">
 									<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
 
-										{% for image in product.productimage_set.all %}
+										{% for image in product.get_images %}
 										{% if image.in_display %}
 
 										<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>

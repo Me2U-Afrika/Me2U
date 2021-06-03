@@ -67,8 +67,18 @@ class MarketingMessage(CreationModificationDateMixin):
 # def slider_upload(instance, filename):
 #     return 'images/marketing/slider/%s/%s' % (instance.id, filename)
 
+SLIDER_TYPE = (
+    ('La', 'Landing page'),
+    ('Ho', 'Home page'),
+)
+
+
 class Slider(CreationModificationDateMixin):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+    header_text = models.CharField(max_length=120, null=True, blank=True)
+    text = models.CharField(max_length=120, null=True, blank=True)
+
+    slider_type = models.CharField(max_length=2, choices=SLIDER_TYPE, blank=True, null=True, unique=True, default='La')
 
     image = StdImageField(upload_to='images/marketing/slider', blank=True, null=True, variations={
         'slider_size': (520, 460),
@@ -77,8 +87,6 @@ class Slider(CreationModificationDateMixin):
     image_url = models.CharField(max_length=250, null=True, blank=True)
     background_image_url = models.CharField(max_length=250, null=True, blank=True)
     link_url = models.CharField(max_length=250, null=True, blank=True)
-    header_text = models.CharField(max_length=120, null=True, blank=True)
-    text = models.CharField(max_length=120, null=True, blank=True)
     active = models.BooleanField(default=True)
     featured = models.BooleanField(default=False)
     start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
@@ -95,13 +103,36 @@ class Slider(CreationModificationDateMixin):
         ordering = ['-end_date']
 
     def __str__(self):
-        return str(self.product.title)
+        return str(self.slider_type)
+
+
+class SliderImages(CreationModificationDateMixin):
+    slider = models.ForeignKey(Slider, on_delete=models.CASCADE)
+    image = StdImageField(upload_to='images/marketing/slider', blank=True, null=True, variations={
+        'slider_size': (520, 460),
+
+    }, delete_orphans=True)
+    image_url = models.CharField(max_length=250, null=True, blank=True)
+    background_image_url = models.CharField(max_length=250, null=True, blank=True)
+    link_url = models.CharField(max_length=250, null=True, blank=True)
+    background_image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
+        'back_size': (520, 460),
+
+    }, delete_orphans=True)
+
+    in_display = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ('-in_display',)
+
+    def __str__(self):
+        return str(self.slider)
 
 
 class Banner(CreationModificationDateMixin):
-    banner_text = models.CharField(max_length=200, null=True, blank=True)
-    banner_header = models.CharField(max_length=120, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    banner_header = models.CharField(max_length=120, null=True, blank=True)
+    banner_text = models.CharField(max_length=200, null=True, blank=True)
     active = models.BooleanField(default=True, editable=False)
     is_deal = models.BooleanField(default=False)
     bestselling = models.BooleanField(default=False)

@@ -30,16 +30,10 @@
 						<form method="POST" enctype="multipart/form-data">
 							{% csrf_token %}
 	                        {{ form|crispy }}
-							<input type="hidden" id="id_slug" value="{{ object.slug }}"/>
-<!--							<div class="form-group">-->
-<!--				                <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>-->
-<!--				                <a class="btn btn-outline-secondary" href="{{ object.get_absolute_url }} ">Cancel</a>-->
-<!--				            </div>-->
+
 							<div class="contact_form_button form-group">
 								<button type="submit" class="button contact_submit_button">Submit</button>
-
-								<button class="button contact_submit_button"><a href="{% url 'sellers:seller_products' %}">Cancel</a></button>
-
+								<button class="button danger-color ml-2"><a href="{% url 'me2ushop:product_images' object.item.slug %}">Cancel</a></button>
 							</div>
 						</form>
 

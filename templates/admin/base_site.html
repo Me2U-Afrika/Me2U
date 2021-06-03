@@ -4,9 +4,11 @@
 {% load cart_template_tag %}
 {% load mptt_tags %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 
 {% block extrahead %}
+<link rel="stylesheet" href="{% static 'memcache_status.css' %}"/>
 
 {% endblock %}
 
@@ -16,6 +18,7 @@
 {% endblock %}
 
 {% block extrastyle %}
+
 <style type="text/css" media="screen">
 #header {
     background: {{site_header_color}};
@@ -24,12 +27,13 @@
     background: {{module_caption_color}};
   }
 </style>
+
 {% endblock extrastyle %}
 
 {% block branding %}
 <h1 id="site-name">
     <a href="{% url 'admin:index' %}">
-        {{ site_header|default:_('Django administration') }}
+        {{ site_header|default:_('Me2U Afrika') }}
     </a>
 </h1>
 {% endblock %}

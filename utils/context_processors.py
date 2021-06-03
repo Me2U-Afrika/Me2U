@@ -15,10 +15,7 @@ def me2u(request):
     context = {
         'active_departments': Department.objects.filter(is_active=True),
         'reviews': ProductReview.objects.all().order_by('-date'),
-        'recently_viewed': stats.get_recently_viewed(request),
         'brands': Brand.objects.filter(active=True),
-        'trends': Banner.objects.filter(active=True, is_trending=True),
-        'deals': Banner.objects.deals(),
         'site_name': settings.SITE_NAME,
         'LOGIN_URL': settings.LOGIN_URL,
         'meta_keywords': settings.META_KEYWORDS,
@@ -29,18 +26,32 @@ def me2u(request):
 
     if request.user.is_authenticated and request.user.is_seller:
         try:
-            brand = Brand.objects.get(user__user=request.user)
+            brand = Brand.objects.filter(user__user=request.user)
+            # print('brand context:', brand)
             if brand:
-                context.update({'brand': brand})
+                context.update({'user_brands': brand})
         except Exception:
-            brand = None
-            context.update({'brand': brand})
+            pass
 
     if request.user.is_authenticated:
         wish_list = WishList.objects.filter(user=request.user)
 
         if wish_list.exists():
             context.update({'wish_list': wish_list})
+
+    try:
+        session = request.session['tracking_id']
+        if session:
+            context.update({'recently_viewed': stats.get_recently_viewed(request)})
+    except KeyError:
+        context.update({'recently_viewed': None})
+
+    banners = Banner.objects.filter(active=True)
+    try:
+        context.update({'trends': banners.filter(is_trending=True).select_related('product'),
+                        'deals': banners.filter(is_deal=True).select_related('product')})
+    except:
+        banners=None
 
     return context
 
