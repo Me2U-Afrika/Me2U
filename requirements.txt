@@ -114,6 +114,7 @@ pydotplus==2.0.2
 Pygments==2.7.0
 PyHamcrest==2.0.2
 PyJWT==1.7.1
+pylibmc==1.6.1
 pymemcache==3.4.0
 pyOpenSSL==19.1.0
 pyparsing==2.4.7
