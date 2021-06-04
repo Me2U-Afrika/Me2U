@@ -72,3 +72,13 @@ venv\Scripts\activate
 git push origin +dd61ab32^:master revert changes by deleting the latest
 
 git branch -D  branchname
+
+flushing cache heroku
+curl "https://analytics.memcachier.com/api/v1/login" --user "653655:EC5B884EB0B5E2B9C1D1B661F85134E2"
+
+after obtaining id...
+curl "https://analytics.memcachier.com/api/v1/ 751364/flush" -X POST --user "653655:EC5B884EB0B5E2B9C1D1B661F85134E2"
+
+deploy hook heroku:
+
+heroku addons:create deployhooks:http --url="https://653655:EC5B884EB0B5E2B9C1D1B661F85134E2@analytics.memcachier.com/api/v1//751364/flush"

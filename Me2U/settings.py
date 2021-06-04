@@ -171,26 +171,50 @@ MIDDLEWARE = [
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 
-if not DEBUG:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django_bmemcached.memcached.BMemcached',
-            'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS').split(','),
-            'OPTIONS': {
-                'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
-                'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
-            }
-        }
-    }
+# if not DEBUG:
+#     CACHES = {
+#         'default': {
+#             'BACKEND': 'django_bmemcached.memcached.BMemcached',
+#             'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS').split(','),
+#             'OPTIONS': {
+#                 'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
+#                 'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
+#             }
+#         }
+#     }
+
+servers = os.environ['MEMCACHIER_SERVERS']
+username = os.environ['MEMCACHIER_USERNAME']
+password = os.environ['MEMCACHIER_PASSWORD']
+
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        # Use django-bmemcached
+        'BACKEND': 'django_bmemcached.memcached.BMemcached',
+
+        # TIMEOUT is not the connection timeout! It's the default expiration
+        # timeout that should be applied to keys! Setting it to `None`
+        # disables expiration.
+        'TIMEOUT': None,
+
+        'LOCATION': servers,
+
+        'OPTIONS': {
+            'username': username,
+            'password': password,
+        }
     }
 }
+
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         'LOCATION': '127.0.0.1:11211',
+#     }
+# }
+
 CACHE_MIDDLEWARE_SECONDS = 120
-CACHE_MIDDLEWARE_KEY_PREFIX = ''
-CACHE_MIDDLEWARE_ALIAS = 'default'
+
 
 
 INTERNAL_IPS = ['127.0.0.1']
@@ -236,15 +260,6 @@ WSGI_APPLICATION = 'Me2U.wsgi.application'
 ASGI_APPLICATION = 'Me2U.routing.application'
 
 REDIS_URL = os.environ.get('REDIS_URL')
-
-# REDIS_URL = 'localhost'
-# REDIS_URL = redis.StrictRedis(host="localhost", port=6379).keys()
-# print('redis_url', REDIS_URL)
-
-# Amazon Web Services (AWS) SDK for Python. It enables Python
-# developers to create, configure, and manage AWS services
-
-# s3 = boto3.client('s3', config=Config(signature_version='S3_USE_SIGV4'))
 
 CHANNEL_LAYERS = {
     'default': {
