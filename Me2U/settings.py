@@ -437,11 +437,6 @@ EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD', '')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
-servers = os.environ.get('MEMCACHIER_SERVERS')
-username = os.environ.get('MEMCACHIER_USERNAME')
-password = os.environ.get('MEMCACHIER_PASSWORD')
-
-
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
 
