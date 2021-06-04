@@ -257,6 +257,15 @@ class Profile(models.Model):
         'medium': (200, 200),
     }, delete_orphans=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
+    first_name = models.CharField(max_length=15, null=True, blank=True, help_text="Provide official First name on passport or ID")
+    middle_name = models.CharField(max_length=15, blank=True, null=True, help_text="Provide official Middle name on "
+                                                                                   "passport or ID")
+    last_name = models.CharField(max_length=15, null=True, blank=True, help_text="Provide official Last name on passport or ID")
+
+    verification_id = StdImageField(upload_to='images/sellerID', blank=True, null=True, help_text='Upload your '
+                                                                                                  'ID/Passport')
+
+    active = models.BooleanField(default=True, null=True, blank=True)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):

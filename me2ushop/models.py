@@ -97,7 +97,8 @@ class AfrikanCountries(Countries):
 
 
 class Brand(CreationModificationDateMixin):
-    user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, null=True, default=1)
+    user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, blank=True, null=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100, unique=True, help_text='Unique business title to identify Your store and '
                                                                     'your product line')
 
