@@ -98,7 +98,7 @@ class AfrikanCountries(Countries):
 
 class Brand(CreationModificationDateMixin):
     user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, blank=True, null=True)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True, null=True)
+    profile = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100, unique=True, help_text='Unique business title to identify Your store and '
                                                                     'your product line')
 
@@ -188,7 +188,7 @@ class Product(CreationModificationDateMixin):
     is_featured = models.BooleanField(default=False)
     is_bestrated = models.BooleanField(default=False)
 
-    description = models.TextField()
+    description = models.TextField(max_length=400)
     additional_information = RichTextField(blank=True, null=True,
                                            help_text='Provide additional information about '
                                                      'your product. Buyers mostly buy from'
@@ -266,20 +266,16 @@ class Product(CreationModificationDateMixin):
         diff = ((self.price - self.discount_price) / self.price) * 100
         return round(diff)
 
-    @cached_property
     def get_absolute_url(self):
 
         return reverse('me2ushop:product', kwargs={'slug': self.slug})
 
-    @cached_property
     def get_add_cart_url(self):
         return reverse('me2ushop:add_cart', kwargs={'slug': self.slug})
 
-    @cached_property
     def get_images(self):
         return self.productimage_set.all()
 
-    @cached_property
     def get_image_in_display(self):
         image = self.productimage_set.filter(in_display=True)
         if image:
@@ -444,7 +440,6 @@ class ProductImage(CreationModificationDateMixin):
     def natural_key(self):
         return (self.item.slug,)
 
-    @cached_property
     def get_absolute_url(self):
         return reverse('me2ushop:product_images', kwargs={'slug': self.item.slug})
 

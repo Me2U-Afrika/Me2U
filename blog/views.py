@@ -22,7 +22,7 @@ def blogList(request):
     try:
         blogs = Post.objects.filter(author=request.user)
 
-        brand_name = Brand.objects.get(user__user=request.user)
+        brand_name = Brand.objects.get(profile=request.user)
 
         return render(request, 'blog/blog_list.html', locals())
 
@@ -64,6 +64,7 @@ class PostDetailedView(DetailView):
         if post.likes.filter(id=self.request.user.id).exists():
             liked = True
         context['liked'] = liked
+        context['brand_id'] = post.product.brand_name.id
 
         # authors = {'author': []}
         # posts = Post.objects.all()
@@ -108,12 +109,22 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('blog:postView', kwargs={'slug': self.object.slug})
 
+    def get_form_kwargs(self):
+        kwargs = super(PostCreateView, self).get_form_kwargs()
+        kwargs['brand_id'] = self.kwargs['pk']
+        print(kwargs['brand_id'])
+
+        return kwargs
+
+
     def get_context_data(self, **kwargs):
         context = super(PostCreateView, self).get_context_data(**kwargs)
+
 
         context.update({
 
             'page_title': 'post Create',
+            'brand_id': self.kwargs['pk']
         })
         return context
 
@@ -125,12 +136,6 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         obj.save()
         return super(PostCreateView, self).form_valid(form)
 
-    def get_form_kwargs(self):
-        kwargs = super(PostCreateView, self).get_form_kwargs()
-        kwargs['brand_id'] = self.kwargs['pk']
-        print(kwargs['brand_id'])
-
-        return kwargs
 
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
@@ -149,6 +154,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
         context.update({
 
             'page_title': 'post Update',
+            'brand_id': self.get_object().product.brand_name.id
         })
         return context
 

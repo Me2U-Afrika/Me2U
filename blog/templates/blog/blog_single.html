@@ -511,7 +511,7 @@
 		<!-- Single Blog Post -->
 
 		<div class="single_post">
-			<div class="container">
+			<div class="super_container">
 				<div class="row">
 					<div class="col-lg-8 offset-lg-2">
 
@@ -582,8 +582,8 @@
 
 											{% if object.author.is_seller %}
 
-											<a class="team-contact-link" href="{% url 'me2ushop:seller_page'  object.author.sellerprofile.brand.id %}">
-												<i class="fe-icon-phone"></i>&nbsp;{{  object.author.sellerprofile.brand }}</a>
+											<a class="team-contact-link" href="{% url 'me2ushop:seller_page' brand_id%}">
+												<i class="fe-icon-phone"></i>&nbsp;{{ object.product.brand }}</a>
 
 											{% endif %}
 
