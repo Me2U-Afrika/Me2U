@@ -162,15 +162,9 @@
                                                 {% endif %}
 
                                             {% else %}
-                                                {% if request.user.is_seller %}
                                                 <li>
-                                                    <a href="{%  url 'users:brand_create' %}" style="color:MediumSeaGreen;">Create Brand<i class="fas fa-chevron-down"></i></a>
+                                                    <a href="{%  url 'users:brand_create' %}" style="color:MediumSeaGreen;">Start Selling<i class="fas fa-chevron-down"></i></a>
                                                 </li>
-                                                {% else %}
-                                                <li>
-                                                    <a href="{%  url 'users:seller_create' %}" style="color:MediumSeaGreen;">Start Selling<i class="fas fa-chevron-down"></i></a>
-                                                </li>
-                                                {% endif %}
                                             {% endif %}
                                         {% else %}
                                         <li>
@@ -188,8 +182,8 @@
                                 {% else %}
                                 <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
 <!--                                <div><a href="{% url 'users:register' %}">Register</a></div>-->
-                                <div><a href="{% url 'account_signup' %}">Register</a></div>
-                                <div><a href="{% url LOGIN_URL  %}">Sign In</a></div>
+                                <div><a href="{% url 'account_signup' %}?next={{ request.path }}">Register</a></div>
+                                <div><a href="{% url LOGIN_URL  %}?next={{ request.path }}">Sign In</a></div>
 
 
                                 {% endif %}

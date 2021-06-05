@@ -23,7 +23,7 @@ from marketing.models import *
 
 from .models import *
 
-from django.views.generic import ListView, DetailView, View, CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import ListView, DetailView, View, CreateView, UpdateView, DeleteView, FormView, TemplateView
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 
@@ -41,6 +41,8 @@ from django.db import models as django_models
 import django_filters
 from django_filters.views import FilterView
 from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import never_cache
+
 
 import random
 import string
@@ -258,6 +260,127 @@ class HomeView(ListView):
         return context
 
 
+class HomeViewTemplateView(TemplateView):
+    site_name = 'Me2U|Market'
+    # template_name = 'trialTemplates/home.html'
+    template_name = 'home/home.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        super(HomeViewTemplateView, self).get_context_data(**kwargs)
+
+        from utils import context_processors
+        context = {}
+
+        active_products = Product.active.all().select_related()
+
+        try:
+            # TOP BANNER
+            top_banner = Banner.objects.filter(top_display=True).select_related()
+            context.update({'top_banner': top_banner[0]})
+
+        except:
+            pass
+
+        try:
+            # FEATURING PRODUCTS
+            featuring = active_products.filter(is_featured=True)
+            context.update({'featuring': featuring})
+
+        except:
+            pass
+
+        try:
+            # BESTSELLING BANNER
+            bestselling_banner = Banner.objects.bestselling()
+            context.update({'best_seller_banner': bestselling_banner[0]})
+
+        except:
+            pass
+
+        try:
+            # BESTRATED
+            bestrated = active_products.filter(is_bestrated=True)
+            context.update({'bestrated': bestrated})
+
+        except:
+            pass
+
+        try:
+            # MARKETING MESSAGES
+            marketing_messages = MarketingMessage.objects.get_featured_item()
+            context.update({'marketing_messages': marketing_messages})
+
+        except:
+            pass
+
+        try:
+            # RECENT PRODUCTS
+            recent_products = active_products.order_by('-created').exclude(is_featured=True, is_bestseller=True,
+                                                                           is_bestrated=True)
+            context.update({'recent_products': recent_products[:20]})
+
+        except:
+            pass
+
+        try:
+            # BESTSELLING PRODUCTS
+            bestselling = active_products.filter(is_bestseller=True)
+            context.update({'bestselling': bestselling})
+
+        except:
+            pass
+
+        try:
+            # CATEGORIES RANDOM
+            categories = Department.objects.filter(is_active=True)
+            # categories = context_processors.me2u(self.request)['active_departments']
+            # categories = context_processors.me2u(self.request)['active_departments'].prefetch_related("product_set")
+
+            rand_department = random.choices(categories, k=3)
+            context.update({
+                'rand_department_1': rand_department[0],
+                'rand_department_2': rand_department[1],
+                'rand_department_3': rand_department[2]
+            })
+        except:
+            pass
+
+        try:
+            # SLIDERS
+            sliders = Slider.objects.featured().select_related('product')
+            context.update({'sliders': sliders, })
+
+        except:
+            pass
+
+        try:
+            # TRENDS INFORMATION
+            trend_info = TrendInfo.objects.all()
+            context.update({'trend_info': trend_info})
+
+        except:
+            pass
+
+        try:
+            # RECOMMENDATION FROM VIEWS
+            view_recommendation = stats.recommended_from_views(self.request)
+            context.update({'view_recomms': view_recommendation})
+
+        except:
+            pass
+
+        try:
+            # SEARCH RECOMMENDATIONS
+            search_recored = stats.recommended_from_search(self.request)
+            context.update({'search_recomms': search_recored})
+
+        except:
+            pass
+
+        return context
+
+
+
 # class HomeView(ListView):
 #     model = Product
 #     site_name = 'Me2U|Market'
@@ -378,46 +501,6 @@ class HomeView(ListView):
 #
 #         return context
 
-
-# def homeView(request):
-#     site_name = 'Me2U|Market'
-#     # template_name = 'home-page.html'
-#     template_name = 'home/home.html'
-#
-#     search_recored = stats.recommended_from_search(request)
-#     # print('search:', search_recored)
-#
-#     if search_recored:
-#         for record in search_recored:
-#             search_recs = record
-#             # print('search:', search_recs)
-#             top_search = search_recored[0]
-#
-#     featuring = Product.featured.all()
-#     bestselling = Product.bestseller.all()
-#     recently_viewed = stats.get_recently_viewed(request)
-#     view_recored = stats.recommended_from_views(request)
-#     if view_recored:
-#         view_recs = view_recored[0:PRODUCTS_PER_ROW]
-#
-#     if featuring or bestselling:
-#         featured = featuring[0:PRODUCTS_PER_ROW]
-#         bestseller = bestselling[0:PRODUCTS_PER_ROW]
-#         if bestseller:
-#             top_bestseller = [bestseller[0]]
-#
-#     # print('view recs:', view_recs)
-#     return render(request, template_name, locals())
-#     # model = Product
-#     # paginate_by = 8
-#     # template_name = 'home-page.html'
-#     #
-#     # def get_context_data(self, **kwargs):
-#     #     context = super(HomeView, self).get_context_data(**kwargs)
-#     #     categories = Category.objects.all()
-#     #     context['categories'] = categories
-#     #
-#     #     return context
 
 
 class ProductListView(ListView):
@@ -550,7 +633,6 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        form.instance.seller = self.request.user
         obj = form.save(commit=False)
         stock = obj.stock
         # print('stock:', stock)
@@ -569,7 +651,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         product_posted = self.get_object()
-        if self.request.user == product_posted.brand_name.user.user:
+        if self.request.user == product_posted.brand_name.profile:
             return True
         return False
 
@@ -605,7 +687,7 @@ class ProductUpdateAdditionalInforView(LoginRequiredMixin, UserPassesTestMixin, 
 
     def test_func(self):
         product_posted = self.get_object()
-        if self.request.user == product_posted.brand_name.user.user:
+        if self.request.user == product_posted.brand_name.profile:
             return True
         return False
 
@@ -631,7 +713,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         product_posted = self.get_object()
-        if self.request.user == product_posted.brand_name.user.user:
+        if self.request.user == product_posted.brand_name.profile:
             return True
         return False
 
@@ -676,7 +758,7 @@ class ProductAttributesCreateView(LoginRequiredMixin, CreateView):
 
     # def test_func(self):
     #     product_posted = self.get_object()
-    #     if self.request.user == product_posted.product.brand_name.user.user:
+    #     if self.request.user == product_posted.product.brand_name.profile:
     #         return True
     #     return False
 
@@ -727,18 +809,11 @@ class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
         product = self.object.product
         return reverse_lazy('me2ushop:product', kwargs={'slug': product.slug})
 
-
+@never_cache
 @login_required
 def show_product_image(request, slug):
-    # print('person:', request.user)
     product = get_object_or_404(Product, slug=slug)
-    # print('product:', product)
-    # product_reviews = ProductReview.approved.filter(product=product).order_by('-date')[0:PRODUCTS_PER_ROW]
-    # print('productreviews:', product_reviews)
-    # review_form = ProductReviewForm()
-    profile = Profile.objects.get(user=request.user)
-    product_image = ProductImage.objects.filter(item__brand_name__user__user=profile.user, item=product)
-    print('brand_id:', product.brand_name.id)
+    product_image = ProductImage.objects.filter(item=product)
     context = {
         'object': product,
         'brand_id': product.brand_name.id,
@@ -770,7 +845,7 @@ def product_image_create(request, slug):
             # print('indisplay', in_display)
             # print('image:', image)
 
-            if product.brand_name.user.user == request.user:
+            if product.brand_name.profile == request.user:
 
                 current_saved_default = ProductImage.displayed.filter(item__brand_name__user=request.user,
                                                                       item=product)
@@ -833,22 +908,19 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        # print(form)
+        print('In Add Image Form')
         obj = form.save(commit=False)
         print('obj:', obj)
         item = form.cleaned_data.get('item')
         image = form.cleaned_data.get('image')
-        # print('item:', item)
-        # print('image:', image)
-        # print(item.brand_name)
+
         user = self.request.user
-        # print(user)
 
         default_image = obj.in_display
 
-        if item.brand_name.user.user == self.request.user:
+        if item.brand_name.profile == self.request.user:
 
-            current_saved_default = ProductImage.displayed.filter(item__brand_name__user__user=user, item=item)
+            current_saved_default = ProductImage.displayed.filter(item__brand_name__profile=user, item=item)
             # print('current', current_saved_default)
 
             if default_image:
@@ -856,12 +928,9 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
                     current_saved = current_saved_default[0]
                     current_saved.in_display = False
                     current_saved.save()
-                    # print('current', current_saved.default)
 
-            # obj.user = user
             obj.save()
         return super().form_valid(form)
-        # return redirect("me2ushop:home")
 
 
 class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -883,6 +952,8 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
         return context
 
     def form_valid(self, form):
+        print('In Update Image Form')
+
         obj = form.save(commit=False)
         # print('obj', obj)
 
@@ -890,28 +961,24 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
         # print('item:', item)
         user = self.request.user
         default_image = obj.in_display
-        print('set as default', default_image)
 
-        current_saved_default = ProductImage.displayed.filter(item=item,
-                                                              in_display=True)
-        print('current', current_saved_default)
+        current_saved_default = ProductImage.displayed.filter(item=item, in_display=True)
 
         if default_image:
             if current_saved_default.exists():
                 print('we came to change the default image in display')
+
                 current_saved = current_saved_default[0]
                 current_saved.in_display = False
                 current_saved.save()
 
         obj.save()
-        # print('default', default)
 
         return super().form_valid(form)
 
     def test_func(self):
         image_posted = self.get_object()
-        # print(image_posted)
-        if self.request.user == image_posted.item.brand_name.user.user:
+        if self.request.user == image_posted.item.brand_name.profile:
             return True
         return False
 
@@ -921,6 +988,11 @@ class ProductImageDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'sellers/product_image_delete.html'
 
     # success_url = reverse_lazy("sellers:seller_products")
+
+    def get_success_url(self):
+        product = self.object.item
+
+        return reverse_lazy('me2ushop:product', kwargs={'slug': product.slug})
 
     def get_context_data(self, **kwargs):
         context = super(ProductImageDeleteView, self).get_context_data(**kwargs)
@@ -935,43 +1007,41 @@ class ProductImageDeleteView(LoginRequiredMixin, DeleteView):
         })
         return context
 
-    def get_success_url(self):
-        # Assuming there is a ForeignKey from prooduct to Product in your model
-        product = self.object.item
-
-        return reverse_lazy('me2ushop:product', kwargs={'slug': product.slug})
 
 
 def delete_image(request, pk):
+    print('using delete image function')
     image = ProductImage.objects.filter(id=pk)
     print('image:', image)
-    slug = image[0].item.slug
-    print('slug:', slug)
+    if image:
+        slug = image[0].item.slug
+        print('slug:', slug)
 
-    if not image[0].in_display:
-        image.delete()
-        image.save()
-    else:
-        image.delete()
-
-        product = Product.objects.get(slug=slug)
-        print('product:', product)
-        current = product.productimage_set.all()
-
-        print('images:', current)
-        if current.exists():
-            print('we setting the new image on display')
-            new_image = current[0]
-            new_image.in_display = True
-            # delete old image
-            new_image.save()
-            return redirect('me2ushop:product', slug=slug)
-        else:
-            product = Product.objects.get(slug=slug)
+        if not image[0].in_display:
             image.delete()
-            product.save()
-            # image.save()
-            return redirect('me2ushop:product_image_create', slug=slug)
+            return redirect('me2ushop:product', slug=slug)
+
+        else:
+            image.delete()
+
+            product = Product.objects.get(slug=slug)
+            print('product:', product)
+            current = product.productimage_set.all()
+            print('images:', current)
+            if current.exists():
+                print('we setting the new image on display')
+                new_image = current[0]
+                new_image.in_display = True
+                # delete old image
+                new_image.save()
+                return redirect('me2ushop:product', slug=slug)
+            else:
+                product = Product.objects.get(slug=slug)
+                product.save()
+                return redirect('me2ushop:product_image_create', slug=slug)
+    else:
+        messages.warning(request, "An Error Occured: Clear Cache")
+        return redirect('me2ushop:home')
 
 
 # PRODUCT ADD TO CART

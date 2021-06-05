@@ -130,14 +130,13 @@ class SliderImages(CreationModificationDateMixin):
 
 
 class Banner(CreationModificationDateMixin):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    banner_header = models.CharField(max_length=120, null=True, blank=True)
-    banner_text = models.CharField(max_length=200, null=True, blank=True)
-    active = models.BooleanField(default=True, editable=False)
     is_deal = models.BooleanField(default=False)
     bestselling = models.BooleanField(default=False)
     is_trending = models.BooleanField(default=False)
     top_display = models.BooleanField(default=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    banner_header = models.CharField(max_length=120, null=True, blank=True)
+    banner_text = models.CharField(max_length=200, null=True, blank=True)
     start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     end_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     image = StdImageField(upload_to='images/marketing/banner', blank=True, null=True, variations={
@@ -151,6 +150,8 @@ class Banner(CreationModificationDateMixin):
         'back_size': (520, 460),
 
     }, delete_orphans=True)
+    active = models.BooleanField(default=True, editable=False)
+
 
     objects = MarketingManager()
 

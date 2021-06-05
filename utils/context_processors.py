@@ -26,10 +26,9 @@ def me2u(request):
 
     if request.user.is_authenticated and request.user.is_seller:
         try:
-            brand = Brand.objects.filter(user__user=request.user)
+            brand = Brand.objects.filter(profile=request.user)
             # print('brand context:', brand)
-            if brand:
-                context.update({'user_brands': brand})
+            context.update({'user_brands': brand})
         except Exception:
             pass
 

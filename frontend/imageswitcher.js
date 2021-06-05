@@ -26,7 +26,7 @@ const ReactDOM = require("react-dom")
                 e('div', {style: imageStyle, className: "image view overlay zoom", key: i.id},
                 e('img', {onClick: this.click.bind(this, i),
                         width: "100",
-                        height:"65",
+                        height:"80",
                         src: i.thumbnail }),
                 ),
 

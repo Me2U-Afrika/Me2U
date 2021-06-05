@@ -419,7 +419,7 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
     model = Brand
     template_name = 'users/service_providers/brand_create_form.html'
     fields = ['title', 'business_type', 'business_description', 'shipping_status', 'country', 'subscription_type', 'logo']
-    success_url = reverse_lazy("users:seller_confirm")
+    # success_url = reverse_lazy("users:seller_confirm")
 
     def get_success_url(self):
         # Assuming there is a ForeignKey from Productattribute to Product in your model
@@ -435,22 +435,23 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
 
         except ObjectDoesNotExist:
             seller_group = Group.objects.create(name='Sellers')
+            seller_group.save()
 
         obj = form.save(commit=False)
-        seller = SellerProfile.objects.get(user=self.request.user)
-        user = seller
+        # seller = SellerProfile.objects.get(user=self.request.user)
+        user = self.request.user
         # user_instance = User.objects.get(email=user)
         # print(seller_group)
         # print(user_instance)
         if seller_group:
             seller_group.user_set.add(self.request.user)
             user.is_staff = True
-            seller.application_status = 20
-            seller.save()
+            obj.application_status = 20
+            # seller.save()
             user.save()
         # print(user.is_seller)
 
-        obj.user = user
+        obj.profile = user
         obj.save()
         # form.save()
         return super().form_valid(form)
