@@ -92,10 +92,32 @@
         .form-control {
             color: #000000;
         }
-        @media only screen and (min-width: 576px){
+        @media only screen and (min-width: 992px){
             .logo_container, .wishlist_cart, .header_search{
                 height: 200px;
                 padding-top: 52px;
+            }
+        }
+         @media only screen and (min-width: 768px){
+            .logo_container, .wishlist_cart, .header_search{
+                padding-top: 40px;
+            }
+        }
+
+          @media only screen and (min-width: 576px) and (max-width: 767px) {
+            .wishlist_cart{
+                padding-left: 250px;
+            }
+        }
+
+          @media only screen and (min-width: 576px) and (max-width: 767px) {
+           .logo_container, .wishlist_cart{
+                padding-top: 40px;
+            }
+        }
+        @media only screen and (min-width: 768px) and (max-width: 991px) {
+           .main_nav{
+                margin-top: 30px;
             }
         }
 
@@ -153,9 +175,9 @@
                                         {% if request.user.is_authenticated %}
                                             {% if user_brands %}
                                                 {% if user_brands.count > 1 %}
-                                                <li class="hassubs">
-                                                    <a href="#" style="color:MediumSeaGreen;">Seller Dashboard<i class="fas fa-chevron-down"></i></a>
-                                                    <ul>
+                                                <li class="dropdown collapsed-nav">
+                                                    <a class="dropdown-toggle" href="#" style="color:MediumSeaGreen;">Seller</a>
+                                                    <ul class="dropdown-menu" role="menu">
                                                         {% for brand in user_brands %}
                                                         <li><a href="{%  url 'sellers:seller_home' brand.id %}">{{ brand }}</a></li>
                                                         {% endfor %}
@@ -163,18 +185,18 @@
                                                 </li>
                                                 {% else %}
                                                     {% for brand in user_brands %}
-                                                        <li><a href="{%  url 'sellers:seller_home' brand.id %}" style="color:MediumSeaGreen;">Seller Dashboard</a></li>
+                                                        <li><a href="{%  url 'sellers:seller_home' brand.id %}" style="color:MediumSeaGreen;">Seller</a></li>
                                                     {% endfor %}
                                                 {% endif %}
 
                                             {% else %}
                                                 <li>
-                                                    <a href="{%  url 'users:brand_create' %}" style="color:MediumSeaGreen;">Start Selling<i class="fas fa-chevron-down"></i></a>
+                                                    <a href="{%  url 'users:brand_create' %}" style="color:MediumSeaGreen;">Sell On Me2U<i class="fas fa-chevron-down"></i></a>
                                                 </li>
                                             {% endif %}
                                         {% else %}
                                         <li>
-                                            <a href="{%  url LOGIN_URL %}" style="color:MediumSeaGreen;"><img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;"> Sell On Me2U</a>
+                                            <a href="{%  url LOGIN_URL %}" style="color:MediumSeaGreen;">Sell On Me2U</a>
                                         </li>
                                         {% endif %}
 
@@ -183,15 +205,13 @@
                             <div class="top_bar_user">
                                 {% if request.user.is_authenticated %}
                                 <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
-                                <div><a href="{% url 'users:profile' %}">Karibu {{ request.user.username|title }}</a></div>
+                                <div><a href="{% url 'users:profile' %}">Karibu {{ request.user.username|title|truncatechars:12 }}</a></div>
                                 <div><a href="{% url 'account_logout' %}">LogOut</a></div>
                                 {% else %}
                                 <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
 <!--                                <div><a href="{% url 'users:register' %}">Register</a></div>-->
                                 <div><a href="{% url 'account_signup' %}?next={{ request.path }}">Register</a></div>
                                 <div><a href="{% url LOGIN_URL  %}?next={{ request.path }}">Sign In</a></div>
-
-
                                 {% endif %}
                             </div>
                         </div>
