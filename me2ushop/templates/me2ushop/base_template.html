@@ -7,6 +7,7 @@
 {% load crispy_forms_tags %}
 {% load currency %}
 {% currency_context %}
+{% load cache %}
 
 
 
@@ -144,6 +145,7 @@
         {% endif %}
     </div>
     {% endblock %}
+
 
     {% block navbar %}
     <!-- Header -->
@@ -465,6 +467,7 @@
 
     </header>
     {% endblock %}
+
 
     <!-- site wrapper-->
     {% block site_wrapper %}

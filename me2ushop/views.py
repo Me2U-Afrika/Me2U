@@ -522,8 +522,9 @@ class ProductListView(ListView):
 
 
 # PRODUCT DETAILED CREATE, UPDATE, DELETE VIEWS
+from utils.views import CachedDetailView
 
-class ProductDetailedView(DetailView):
+class ProductDetailedView(CachedDetailView):
     model = Product
     # template_name = 'home/products_detailed_page.html'
     template_name = 'home/product_detail.html'

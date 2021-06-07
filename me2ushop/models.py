@@ -22,6 +22,8 @@ import itertools
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
 from django.utils.functional import cached_property
+from django.core.cache import cache
+
 
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
@@ -388,6 +390,7 @@ class Product(CreationModificationDateMixin):
         return sku
 
     def save(self, *args, **kwargs):
+        # print('just updated model...seeing if it will save')
         if not self.pk:
             self.slug = self._generate_slug()
             self.sku = self._generate_sku()
@@ -402,6 +405,8 @@ class Product(CreationModificationDateMixin):
             self.is_active = True
         else:
             self.is_active = False
+
+        cache.delete('product-%s' % self.slug)
 
         super().save(*args, **kwargs)
 
@@ -442,6 +447,12 @@ class ProductImage(CreationModificationDateMixin):
 
     def get_absolute_url(self):
         return reverse('me2ushop:product_images', kwargs={'slug': self.item.slug})
+
+    def save(self, *args, **kwargs):
+
+        cache.delete('productimage-%s' % self.pk)
+
+        super().save(*args, **kwargs)
 
 
 #
