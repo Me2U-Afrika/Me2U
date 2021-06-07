@@ -180,13 +180,14 @@
 	<!-- Header -->
 
 	<!-- Banner -->
-
 	<div class="banner">
 		{% if top_banner.background_image %}
 		<div class="banner_background" style="background-image:url( {{ top_banner.background_image.back_size.url }})"></div>
 		{% else %}
 		<div class="banner_background" style="background-image:url( {{ STATIC_URL }}images/banner_background.jpg)"></div>
 		{% endif %}
+
+		{% if top_banner %}
 		<div class="container fill_height">
 			<div class="row fill_height">
 				{% if top_banner.image %}
@@ -223,7 +224,11 @@
 
 			</div>
 		</div>
+		{% endif %}
+
 	</div>
+	<!-- Banner -->
+
 
 	<!-- Characteristics -->
 

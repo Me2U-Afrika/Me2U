@@ -195,7 +195,8 @@ CACHES = {
         # TIMEOUT is not the connection timeout! It's the default expiration
         # timeout that should be applied to keys! Setting it to `None`
         # disables expiration.
-        'TIMEOUT': None,
+        # 'TIMEOUT': None,
+        'TIMEOUT': 600,
 
         'LOCATION': servers,
 
@@ -206,7 +207,7 @@ CACHES = {
     }
 }
 
-CACHE_MIDDLEWARE_SECONDS = 600
+# CACHE_MIDDLEWARE_SECONDS = 2
 
 
 
@@ -218,7 +219,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        # 'APP_DIRS': True,
+        #'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -349,7 +350,7 @@ ACCOUNT_EMAIL_VERIFICATION = None
 SOCIALACCOUNT_ADAPTER = 'users.adapter.MySocialAccountAdapter'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-#
+
 
 STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 
@@ -441,7 +442,7 @@ try:
 except ImportError:
     pass
 
-    # print(e.message)
+# print(e.message)
 # Activate Django-Heroku.
 django_heroku.settings(locals())
 

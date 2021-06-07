@@ -9,12 +9,6 @@
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/blog_single_responsive.css">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
-<!--	comment tags-->
-	<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!--	comment tags-->
-
 
 	<style>
 
@@ -372,7 +366,6 @@
 	</style>
 
 	<!--	comment styles-->
-
 	<style>
 			/*
 		Image credits:
@@ -472,11 +465,7 @@
 
 
 	</style>
-
-
-
 	<!--	comment styles-->
-
 
 
 
@@ -536,7 +525,7 @@
 							<form action="{% url 'blog:like_post' object.slug %}" method="post">
 								{% csrf_token %}
 
-								{% if request.user.is_authenticated %}
+								{% if request.user.is_authenticated and not request.user == object.author %}
 
 									{% if liked %}
 
@@ -580,17 +569,17 @@
 										</div>
 										<h4 class="team-name">{{ object.author.username }}</h4>
 
-											{% if object.author.is_seller %}
+											{% if object.product %}
 
-											<a class="team-contact-link" href="{% url 'me2ushop:seller_page' brand_id%}">
-												<i class="fe-icon-phone"></i>&nbsp;{{ object.product.brand }}</a>
+											<a class="team-contact-link" href="{% url 'me2ushop:seller_page' object.product.brand_name.id%}">
+												<i class="fe-icon-phone"></i>&nbsp;{{ object.product.brand_name }}</a>
 
 											{% endif %}
 
 										{% if request.user.is_authenticated %}
 
 											<a class="team-contact-link" href="mailto:{{ object.author.email }}">
-												<i class="fe-icon-mail"></i>&nbsp;{{ object.author.email }}</a>
+												<i class="fe-icon-mail"></i>&nbsp;Send Email</a>
 											<div class="team-social-bar-wrap">
 												<div class="team-social-bar">
 													<a class="social-btn sb-style-1 sb-twitter" href="#">

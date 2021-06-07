@@ -64,7 +64,6 @@ class PostDetailedView(DetailView):
         if post.likes.filter(id=self.request.user.id).exists():
             liked = True
         context['liked'] = liked
-        context['brand_id'] = post.product.brand_name.id
 
         # authors = {'author': []}
         # posts = Post.objects.all()
@@ -143,7 +142,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     # fields = ['product', 'title', 'content', 'snippet', 'image']
     form_class = PostUpdateForm
 
-    template_name = 'sellers/product_form.html'
+    template_name = 'blog/blog_form.html'
 
     # widgets = {
     #     'snippet': forms.Textarea(attrs={'class': 'form-control'})
@@ -154,7 +153,6 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
         context.update({
 
             'page_title': 'post Update',
-            'brand_id': self.get_object().product.brand_name.id
         })
         return context
 
