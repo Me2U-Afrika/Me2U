@@ -418,7 +418,7 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 class BrandCreateView(LoginRequiredMixin, CreateView):
     model = Brand
     template_name = 'users/service_providers/brand_create_form.html'
-    fields = ['title', 'business_type', 'business_description', 'shipping_status', 'country', 'subscription_type', 'logo']
+    fields = ['title', 'business_type', 'business_description', 'business_email', 'business_phone', 'shipping_status', 'country', 'subscription_type', 'logo']
     # success_url = reverse_lazy("users:seller_confirm")
 
     def get_success_url(self):
