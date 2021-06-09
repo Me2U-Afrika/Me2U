@@ -313,6 +313,7 @@
 										{% for image in deal.product.get_images %}
 										{% if image.in_display %}
 
+
 											<div class="deals_image">
 												<a href="{{ deal.product.get_absolute_url }}"><img src="{{ image.image.large.url }}" alt="{{ product.title }}"></a>
 											</div>
@@ -323,11 +324,13 @@
 
 									<div class="deals_content">
 										<div class="deals_info_line d-flex flex-row justify-content-start">
-											<div class="deals_item_category"><a href="#">{{ deal.product.get_category_choice_display }}</a></div>
+											{% if deal.product.brand_name %}
+											<div class="deals_item_category"><a href="{% url 'me2ushop:seller_page' deal.product.brand_name.id %}">{{ deal.product.brand_name }}</a></div>
+											{% endif %}
 											<div class="deals_item_price_a ml-auto">{{ CURRENCY.symbol }}{{ deal.product.price|currency:CURRENCY.code }} </div>
 										</div>
 										<div class="deals_info_line d-flex flex-row justify-content-start">
-											<div class="deals_item_name"><a href="{{ deal.product.get_absolute_url }}"> {{ deal.product.title }}</a></div>
+											<div class="deals_item_name"><a href="{{ deal.product.get_absolute_url }}" style="color:#000000" > {{ deal.product.title }}</a></div>
 											{% if deal.product.discount_price %}
 											<div class="deals_item_price ml-auto">{{ CURRENCY.symbol }}{{ deal.product.discount_price|currency:CURRENCY.code }} </div>
 											{% endif %}
@@ -855,7 +858,7 @@
 
 							</div>
 
-							{% if best_seller_banner %}
+							{% if best_dea_banner %}
 							<div class="col-lg-3">
 								<div class="arrivals_single clearfix">
 									<div class="d-flex flex-column align-items-center justify-content-center">
