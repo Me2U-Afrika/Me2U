@@ -18,40 +18,44 @@ def seller_page(request, brand_id):
 
     try:
         brand = Brand.objects.get(id=brand_id, active=True)
-        brand_id = brand.id
-        
-        print('user is an active seller')
-        brand_name = brand
+        if brand:
+            brand_id = brand.id
 
-        # print(brand_name.id)
+            print('user is an active seller')
+            brand_name = brand
 
-        products = brand_name.product_set.all()
-        orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
-        items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
-        # print('items:', items_delivered)
+            # print(brand_name.id)
 
-        # orders = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(status=20).distinct()
-        orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
-            status=30).distinct()
+            products = brand_name.product_set.all()
+            orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
+            items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
+            # print('items:', items_delivered)
 
-        order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
-            status__gt=20).distinct()
+            # orders = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(status=20).distinct()
+            orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
+                status=30).distinct()
 
-        total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
+            order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
+                status__gt=20).distinct()
 
-        cancelled = total_orders.filter(status=40)
-        delivered = OrderItem.objects.filter(status=50, item__in=products)
-        pending = total_orders.filter(status=10)
-        in_transit = total_orders.filter(status=45)
-        page_title = 'Seller-Central'
+            total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
 
-        return render(request, 'sellers/seller_dashboard_template.html', locals())
-        # return render(request, 'sellers/seller_test_page.html', locals())
-    except:
-        messages.warning(request, "You Do not have a registered brand.")
-        return redirect('users:brand_create')
-        # except ObjectDoesNotExist:
-        #     return redirect('users:seller_create')
+            cancelled = total_orders.filter(status=40)
+            delivered = OrderItem.objects.filter(status=50, item__in=products)
+            pending = total_orders.filter(status=10)
+            in_transit = total_orders.filter(status=45)
+            page_title = 'Seller-Central'
+
+            return render(request, 'sellers/seller_dashboard_template.html', locals())
+            # return render(request, 'sellers/seller_test_page.html', locals())
+        else:
+            return redirect('users:brand_create')
+
+    except Exception as ex:
+        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        print(message)
+        return redirect('me2ushop:home')
 
 
 def automobile_page(request):

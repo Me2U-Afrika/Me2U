@@ -29,18 +29,14 @@
 		{% endif %}
 
 		<div class="home_overlay"></div>
-		<div class="home_content d-flex flex-column align-items-center justify-content-center">
-            		{% if brand.logo %}
-
-            <div class="logo_container">
-                <div class="logo mr-0"><img src="{{ brand.logo.medium.url }}"></div>
-            </div>
-            		{% endif %}
+			<div class="home_content d-flex flex-column align-items-center justify-content-center">
+				{% if brand.logo %}
+					<div class="logo_container">
+						<div class="logo mr-0 "><img style="height: 250px;height: 250px; object-fit: scale-down" src="{{ brand.logo.url }}"></div>
+					</div>
+				{% endif %}
 			<br>
-			<br>
-
 			<h2 class="home_title">{{ brand }}</h2>
-
 		</div>
 	</div>
 

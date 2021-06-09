@@ -24,6 +24,8 @@ urlpatterns = [
     url("automobile-create/", views.AutomobileCreateView.as_view(), name="automobile_create", ),
     url("seller-create/", views.SellerCreateView.as_view(), name="seller_create", ),
     url("brand-create/", views.BrandCreateView.as_view(), name="brand_create", ),
+    url(r'^brand-(?P<pk>[\w-]+)/update/$', views.BrandUpdateView.as_view(),
+        name="brand_update"),
     url("^address-(?P<pk>[\w-]+)/update/$", views.AddressUpdateView.as_view(), name="address_update", ),
     url('^address-(?P<pk>[\w-]+)/delete/$', views.AddressDeleteView.as_view(), name="address_delete", ),
     url('automobile-register-confirm/',
