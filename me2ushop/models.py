@@ -126,6 +126,9 @@ class Brand(CreationModificationDateMixin):
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
     # date_of_registration = models.DateField
     country = CountryField(multiple=False)
+    address1 = models.CharField(max_length=60, blank=True, null=True)
+    address2 = models.CharField(max_length=60, blank=True, null=True)
+    zip_code = models.CharField(max_length=12, blank=True, null=True)
     subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
                                          help_text='Select a monthly recurring subscription fees')
     shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
