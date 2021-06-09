@@ -569,11 +569,10 @@
 										</div>
 										<h4 class="team-name">{{ object.author.username }}</h4>
 
-											{% if object.product %}
-
+											{% if object.product.brand_name %}
 											<a class="team-contact-link" href="{% url 'me2ushop:seller_page' object.product.brand_name.id%}">
-												<i class="fe-icon-phone"></i>&nbsp;{{ object.product.brand_name }}</a>
-
+												<i class="fe-icon-phone"></i>&nbsp;{{ object.product.brand_name }}
+											</a>
 											{% endif %}
 
 										{% if request.user.is_authenticated %}
