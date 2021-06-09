@@ -3,36 +3,36 @@
 
 <!-- Brands -->
 
-<!--<div class="brands">-->
-<!--    <div class="container">-->
-<!--        <div class="row">-->
-<!--            <div class="col">-->
-<!--                <div class="brands_slider_container">-->
+<div class="brands">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="brands_slider_container">
 
-<!--                    &lt;!&ndash; Brands Slider &ndash;&gt;-->
+                    <!-- Brands Slider -->
 
-<!--                    <div class="owl-carousel owl-theme brands_slider">-->
+                    <div class="owl-carousel owl-theme brands_slider">
 
-<!--                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><img src="{{ STATIC_URL }}images/brands_1.jpg" alt=""></div></div>-->
-<!--                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><img src="{{ STATIC_URL }}images/brands_2.jpg" alt=""></div></div>-->
-<!--                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><img src="{{ STATIC_URL }}images/brands_3.jpg" alt=""></div></div>-->
-<!--                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><img src="{{ STATIC_URL }}images/brands_4.jpg" alt=""></div></div>-->
-<!--                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><img src="{{ STATIC_URL }}images/brands_5.jpg" alt=""></div></div>-->
-<!--                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><img src="{{ STATIC_URL }}images/brands_6.jpg" alt=""></div></div>-->
-<!--                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><img src="{{ STATIC_URL }}images/brands_7.jpg" alt=""></div></div>-->
-<!--                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><img src="{{ STATIC_URL }}images/brands_8.jpg" alt=""></div></div>-->
+                        {% for brand in brands %}
+                        {% if brand.is_featured %}
+                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><img src="{{ brand.logo.url }}" alt=""></div></div>
+                        {% endif %}
+                        {% endfor %}
 
-<!--                    </div>-->
+                    </div>
 
-<!--                    &lt;!&ndash; Brands Slider Navigation &ndash;&gt;-->
-<!--                    <div class="brands_nav brands_prev"><i class="fas fa-chevron-left"></i></div>-->
-<!--                    <div class="brands_nav brands_next"><i class="fas fa-chevron-right"></i></div>-->
+                    <!-- Brands Slider Navigation -->
+                    <div class="brands_nav brands_prev"><i class="fas fa-chevron-left"></i></div>
+                    <div class="brands_nav brands_next"><i class="fas fa-chevron-right"></i></div>
 
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Brands -->
+
 
 <!--&lt;!&ndash; Newsletter &ndash;&gt;-->
 

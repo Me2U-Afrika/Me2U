@@ -103,13 +103,6 @@ class Brand(CreationModificationDateMixin):
     profile = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100, unique=True, help_text='Unique business title to identify Your store and '
                                                                     'your product line')
-
-    business_phone = models.CharField(max_length=20, blank=True, null=True,
-                                      help_text='Business Phone Number . i.e +250785....')
-    business_email = models.EmailField(blank=True, null=True, max_length=254,
-                                       help_text='Business Phone Number . i.e +250785....')
-    business_description = models.TextField(help_text="Tell us what you do and the kind of products you sell")
-
     website_link = models.CharField(max_length=255, blank=True, null=True,
                                     help_text='If you have a website by which buyers can find out more about your '
                                               'services.e.g. https://www.facebook.com')
@@ -122,6 +115,14 @@ class Brand(CreationModificationDateMixin):
     twitter = models.CharField(max_length=255, blank=True, null=True,
                                help_text='Do you have a Telegram Channel. Copy paste your page link here. '
                                          'e.g..https://t.me/me2uafrika')
+
+    business_phone = models.CharField(max_length=20, blank=True, null=True,
+                                      help_text='Business Phone Number . i.e +250785....')
+    business_email = models.EmailField(blank=True, null=True, max_length=254,
+                                       help_text='Business Phone Number . i.e +250785....')
+    business_description = models.TextField(help_text="Tell us what you do and the kind of products you sell")
+
+
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
     # date_of_registration = models.DateField
     country = CountryField(multiple=False)
@@ -148,6 +149,10 @@ class Brand(CreationModificationDateMixin):
 
     def __str__(self):
         return str(self.title)
+
+    def get_absolute_url(self):
+
+        return reverse('sellers:seller_home', kwargs={'brand_id': self.pk})
 
 
 class ActiveProductManager(models.Manager):

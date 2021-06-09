@@ -4,6 +4,7 @@ from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 
 from .models import Profile, User, AutomobileProfile, SellerProfile
+from me2ushop.models import Brand
 from django_countries.fields import CountryField
 import logging
 
@@ -55,6 +56,11 @@ class SellerRegisterForm(forms.ModelForm):
         model = SellerProfile
         fields = "__all__"
 
+
+class BrandForm(forms.ModelForm):
+    class Meta:
+        model = Brand
+        exclude = ['user', 'profile', 'valid_payment_method', 'active','is_featured', 'application_status']
 
 class AddressForm(forms.ModelForm):
     pass
