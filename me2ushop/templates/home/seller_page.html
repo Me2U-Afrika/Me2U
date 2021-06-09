@@ -134,7 +134,7 @@
 								{% endif %}
 								{% endfor %}
 								<div class="product_content">
-									<a href="{{ product.get_absolute_url }}"><div class="product_price black-text">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div></a>
+									<a href="{{ product.get_absolute_url }}"><div class="product_price black-text"> {{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }}</div></a>
 									<div class="product_name"><div><a href="{{ product.get_absolute_url }}" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
 								<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -168,7 +168,7 @@
 								{% endfor %}
 
 								<div class="product_content">
-									<a href="{{ product.get_absolute_url }}"><div class="product_price red-text">{{ product.discount_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}<span>{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</span></div></a>
+									<a href="{{ product.get_absolute_url }}"><div class="product_price red-text">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }}<span> {{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }}</span></div></a>
 									<div class="product_name"><div><a href="{{ product.get_absolute_url }}" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
 								<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
@@ -201,7 +201,7 @@
 								{% endif %}
 								{% endfor %}
 								<div class="product_content">
-									<a href="{{ product.get_absolute_url }}"><div class="product_price black-text">{{ product.price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</div></a>
+									<a href="{{ product.get_absolute_url }}"><div class="product_price black-text">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div></a>
 									<div class="product_name"><div><a href="{{ product.get_absolute_url }}" tabindex="0">{{ product.title|truncatechars:19}}</a></div></div>
 								</div>
 								<a href="{% url 'me2ushop:add_wishlist' product.slug %}" target="_blank">
