@@ -153,3 +153,13 @@ git push origin -u <newname>
 
 And finally if you want to Delete the remote branch:
 git push origin --delete <oldname>
+
+
+PRINTING EXCEPTIONS THAT OCCUR IN A FUNCTION
+
+try:
+    someFunction()
+except Exception as ex:
+    template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+    message = template.format(type(ex).__name__, ex.args)
+    print message
