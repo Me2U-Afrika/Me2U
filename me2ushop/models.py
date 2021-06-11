@@ -168,7 +168,7 @@ class ProductManager(models.Manager):
         return self.get(slug=slug)
 
 class Product(CreationModificationDateMixin):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=300)
     slug = models.SlugField(unique=True,
                             default='',
                             editable=False,
