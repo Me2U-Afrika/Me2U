@@ -15,7 +15,7 @@
 
                         {% for brand in brands %}
                         {% if brand.is_featured %}
-                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><img src="{{ brand.logo.url }}" alt=""></div></div>
+                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><a href="{% url 'me2ushop:seller_page' brand.id %}"><img src="{{ brand.logo.url }}" alt=""></a></div></div>
                         {% endif %}
                         {% endfor %}
 
