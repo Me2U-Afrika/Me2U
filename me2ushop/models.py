@@ -100,7 +100,7 @@ class AfrikanCountries(Countries):
 class Brand(CreationModificationDateMixin):
     # user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, blank=True, null=True)
     profile = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-    slug = models.SlugField(unique=True,
+    slug = models.SlugField(
                             default='',
                             editable=False,
                             blank=True,
@@ -158,7 +158,7 @@ class Brand(CreationModificationDateMixin):
         return str(self.title)
 
     def get_absolute_url(self):
-        return reverse('sellers:seller_home', kwargs={'brand_id': self.pk})
+        return reverse('sellers:seller_home', kwargs={'slug': self.slug})
 
     def get_backstore_url(self):
         return reverse('sellers:seller_home', kwargs={'slug': self.slug})
