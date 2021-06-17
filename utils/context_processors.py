@@ -50,8 +50,7 @@ def me2u(request):
         context.update({'trends': banners.filter(is_trending=True).select_related('product'),
                         'deals': banners.filter(is_deal=True).select_related('product')})
     except:
-        banners=None
-
+        pass
     return context
 
 
