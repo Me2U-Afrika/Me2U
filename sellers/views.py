@@ -9,7 +9,7 @@ from me2ushop.models import ProductImage, Product, Order, OrderItem, Address, Br
 
 
 @login_required()
-def seller_page(request, brand_id):
+def seller_page(request, slug):
     print('We are in the seller View')
 
     # from utils import context_processors
@@ -17,7 +17,7 @@ def seller_page(request, brand_id):
     # brand = utils['brand']
 
     try:
-        brand = Brand.objects.get(id=brand_id, active=True)
+        brand = Brand.objects.get(slug=slug, active=True)
         if brand:
             brand_id = brand.id
 
@@ -49,7 +49,7 @@ def seller_page(request, brand_id):
             return render(request, 'sellers/seller_dashboard_template.html', locals())
             # return render(request, 'sellers/seller_test_page.html', locals())
         else:
-            return redirect('users:brand_create')
+            return redirect('me2ushop:brand_create')
 
     except Exception as ex:
         template = "An exception of type {0} occurred. Arguments:\n{1!r}"

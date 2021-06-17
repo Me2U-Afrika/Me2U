@@ -158,7 +158,7 @@
                 <div class="row">
                     <div class="col d-flex flex-row">
                         <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/phone.png" alt=""></div><strong>+250 785 011 413</strong> </div>
-                        <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">Email US</a></div>
+                        <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">Email</a></div>
                         <div class="top_bar_content ml-auto">
                             <div class="top_bar_menu">
                                 <ul class="standard_dropdown top_bar_dropdown">
@@ -182,24 +182,24 @@
                                                     <a class="dropdown-toggle" href="#" style="color:MediumSeaGreen;">Seller</a>
                                                     <ul class="dropdown-menu" role="menu">
                                                         {% for brand in user_brands %}
-                                                        <li><a href="{%  url 'sellers:seller_home' brand.id %}">{{ brand }}</a></li>
+                                                        <li><a href="{{ brand.get_backstore_url }}">{{ brand }}</a></li>
                                                         {% endfor %}
                                                     </ul>
                                                 </li>
                                                 {% else %}
                                                     {% for brand in user_brands %}
-                                                        <li><a href="{%  url 'sellers:seller_home' brand.id %}" style="color:MediumSeaGreen;">Seller</a></li>
+                                                        <li><a href="{{ brand.get_backstore_url }}" style="color:MediumSeaGreen;">Seller</a></li>
                                                     {% endfor %}
                                                 {% endif %}
 
                                             {% else %}
                                                 <li>
-                                                    <a href="{%  url 'users:brand_create' %}" style="color:MediumSeaGreen;">Sell On Me2U<i class="fas fa-chevron-down"></i></a>
+                                                    <a href="{%  url 'me2ushop:brand_create' %}" style="color:MediumSeaGreen;">Start Selling<i class="fas fa-chevron-down"></i></a>
                                                 </li>
                                             {% endif %}
                                         {% else %}
                                         <li>
-                                            <a href="{%  url LOGIN_URL %}" style="color:MediumSeaGreen;">Sell On Me2U</a>
+                                            <a href="{%  url LOGIN_URL %}?next={{ request.path }}" style="color:MediumSeaGreen;">Sell On Me2U</a>
                                         </li>
                                         {% endif %}
 
@@ -330,7 +330,7 @@
 
                                                 {% for brand in brands %}
                                                 {% if brand.is_featured %}
-                                                <li><a href="{% url 'me2ushop:seller_page' brand.id %}">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
+                                                <li><a href="{{ brand.get_frontstore_url }}">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>
                                                 {% endif %}
                                                 {% endfor %}
 
@@ -393,14 +393,14 @@
                                                                 <i class="fa fa-angle-down"></i></a>
                                                             <ul class="page_menu_selection">
                                                                 {% for brand in user_brands %}
-                                                                <li><a href="{%  url 'sellers:seller_home' brand.id %}">{{ brand }}<i class="fas fa-chevron-down"></i></a></li>
+                                                                <li><a href="{{ brand.get_backstore_url }}">{{ brand }}<i class="fas fa-chevron-down"></i></a></li>
                                                                 {% endfor %}
                                                             </ul>
                                                     </li>
                                                 {% else %}
                                                     {% for brand in user_brands %}
                                                         <li class="page_menu_item">
-                                                            <a href="{%  url 'sellers:seller_home' brand.id %}">Seller Dashboard</a>
+                                                            <a href="{{ brand.get_backstore_url }}">Seller Dashboard</a>
                                                         </li>
                                                     {% endfor %}
 
@@ -413,7 +413,7 @@
                                             {% endif %}
                                         {% else %}
                                             <li class="page_menu_item">
-                                                <a href="{% url LOGIN_URL %}" >Sell On Me2U<img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;"></a>
+                                                <a href="{% url LOGIN_URL %}?next={{ request.path }}" >Sell On Me2U<img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;"></a>
                                             </li>
                                         {% endif %}
 <!--                                        <li class="page_menu_item has-children">-->
@@ -456,8 +456,8 @@
                                             <div class="menu_contact_item">
                                                 <div class="menu_contact_icon"></div><a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i> LogOut</a></div>
                                         {% else %}
-                                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url 'account_signup' %}"><i class="far fa-registered"></i> Register</a></div>
-                                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url LOGIN_URL %}"><i class="fas fa-sign-in-alt"></i> LogIn</a></div>
+                                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url 'account_signup' %}?next={{ request.path }}"><i class="far fa-registered"></i> Register</a></div>
+                                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url LOGIN_URL %}?next={{ request.path }}"><i class="fas fa-sign-in-alt"></i> LogIn</a></div>
                                         {% endif %}
                                     </div>
                                 </div>
