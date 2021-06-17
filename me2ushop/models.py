@@ -98,7 +98,7 @@ class AfrikanCountries(Countries):
 
 
 class Brand(CreationModificationDateMixin):
-    user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, blank=True, null=True)
+    # user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, blank=True, null=True)
     profile = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     slug = models.SlugField(unique=True,
                             default='',
