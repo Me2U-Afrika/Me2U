@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -13,18 +12,17 @@ from django.utils import timezone
 from django.views.generic import ListView
 from django.views.generic.edit import (CreateView, UpdateView, DeleteView, )
 from me2ushop import models
-from me2ushop.models import Order, OrderItem, Product, Brand
+from me2ushop.models import Order, OrderItem, Product
 
-from .forms import PersonalInfoForm, ProfilePicForm, BrandForm
+from .forms import PersonalInfoForm, ProfilePicForm
 from .forms import UserRegisterForm
-from .models import Profile, User, SellerProfile, AutomobileProfile, EmailConfirmed
+from .models import Profile, User, AutomobileProfile, EmailConfirmed
 from .profile import retrieve_profile, set_pic
 
 logger = logging.getLogger(__name__)
 
 
-# we going to create a view for register page using existing classes in django. The classes are converted to html.
-
+# ___REGISTER VIEW NO LONGER USED..USE IT AS REFERENCE__
 def register(request):
     # create an instance of form
     if request.method == 'POST':
@@ -101,32 +99,6 @@ def activation_view(request, activationKey):
         raise Http404
 
 
-# def Login(request):
-#     if request.method == 'POST':
-#
-#         # AuthenticationForm_can_also_be_used__
-#
-#         username = request.POST['username']
-#         password = request.POST['password']
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None:
-#             email_confirmed = EmailConfirmed.objects.get(user=user)
-#             if email_confirmed:
-#                 login(request, user)
-#                 messages.success(request, f' wecome {username} !!')
-#                 return redirect('/')
-#             else:
-#                 messages.warning(request, 'Activate your email prior to login')
-#                 return redirect('login')
-#         else:
-#             messages.warning(request, 'Sign In')
-#         form = AuthenticationForm
-#
-#         return render(request, 'users/registration/login.html', {'form': form, 'title': 'log in'})
-#
-#     form = AuthenticationForm()
-#     return render(request, 'users/registration/login.html', {'form': form, 'title': 'log in'})
-
 @login_required()
 def profile(request):
     page_title = 'My Account'
@@ -151,16 +123,12 @@ def profile(request):
 @login_required
 def order_details(request, order_id, template_name="users/order-details.html"):
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    # print('order:', order)
     page_title = 'Order Details for Order #' + order_id
     order_items = OrderItem.objects.filter(user=request.user, order=order)
     seller_items = OrderItem.objects.filter(order=order, item__brand_name__user=request.user)
 
     print('seller_items:', order_items)
-    # for order_item in order_items:
-    # print('item:', order_item.item.slug)
 
-    # context_instance = RequestContext(request)
     return render(request, template_name, locals())
 
 
@@ -375,120 +343,6 @@ def personal_info(request, template_name="users/personal-info.html"):
         }
         return render(request, template_name, context)
 
-
-class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
-    model = SellerProfile
-    template_name = 'users/service_providers/seller_form.html'
-    fields = ['first_name', 'middle_name', 'last_name', 'email', 'phone']
-    success_url = reverse_lazy("users:brand_create")
-
-    def get_queryset(self):
-        print('we got here')
-        current_app = SellerProfile.objects.filter(user=self.request.user, application_status__lt=20)
-        if current_app:
-            print('current_app available:', current_app[0].application_status)
-
-    def form_valid(self, form):
-        print('registering business')
-        obj = form.save(commit=False)
-        # (print)
-        user = self.request.user
-
-        obj.user = user
-        obj.save()
-        return super().form_valid(form)
-
-    def test_func(self):
-        print('we came to test available applications')
-        try:
-            current_app = SellerProfile.objects.get(user=self.request.user)
-            print('current status:', current_app.active)
-            if current_app.application_status == 10:
-                messages.warning(self.request, 'Your application is under review')
-            elif current_app.application_status == 20:
-                print('current status is active')
-                messages.warning(self.request, "You Do not have a registered brand.")
-                return reverse_lazy('users:brand_create')
-        except:
-            return True
-
-class BrandCreateView(LoginRequiredMixin, CreateView):
-    model = Brand
-    template_name = 'users/service_providers/brand_create_form.html'
-    fields = ['title', 'business_type', 'business_description', 'business_email', 'business_phone', 'shipping_status',
-              'country', 'subscription_type', 'logo']
-
-    # success_url = reverse_lazy("users:seller_confirm")
-
-    def get_success_url(self):
-        # Assuming there is a ForeignKey from Productattribute to Product in your model
-        return reverse_lazy('sellers:seller_home', kwargs={'brand_id': self.object.id})
-
-    def form_valid(self, form):
-        print('registering brand')
-
-        from django.contrib.auth.models import Group
-
-        try:
-            seller_group = Group.objects.get(name='Sellers')
-
-        except ObjectDoesNotExist:
-            seller_group = Group.objects.create(name='Sellers')
-            seller_group.save()
-
-        obj = form.save(commit=False)
-        # seller = SellerProfile.objects.get(user=self.request.user)
-        user = self.request.user
-        # user_instance = User.objects.get(email=user)
-        # print(seller_group)
-        # print(user_instance)
-        if seller_group:
-            seller_group.user_set.add(self.request.user)
-            user.is_staff = True
-            obj.application_status = 20
-            # seller.save()
-            user.save()
-        # print(user.is_seller)
-
-        obj.profile = user
-        obj.save()
-        # form.save()
-        return super().form_valid(form)
-
-    # def test_func(self):
-    #     current_app = SellerProfile.objects.filter(user=self.request.user, application_status__gt=20)
-    #     print('current app:', current_app)
-    #     if not current_app:
-    #         print('no current app')
-    #         messages.warning(request, "You are not a registered Me2U seller Sign Up")
-    #         return redirect('users:seller_create')
-
-class BrandUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Brand
-    form_class = BrandForm
-    template_name = 'users/service_providers/brand_create_form.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(BrandUpdateView, self).get_context_data(**kwargs)
-
-        context.update({
-
-            'page_title': 'Brand Update',
-            'brand_id': self.get_object().id
-        })
-        return context
-
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.save()
-
-        return super(BrandUpdateView, self).form_valid(form)
-
-    def test_func(self):
-        brand = self.get_object()
-        if self.request.user == brand.profile:
-            return True
-        return False
 
 class AutomobileCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = AutomobileProfile
