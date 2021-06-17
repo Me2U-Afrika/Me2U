@@ -1,12 +1,12 @@
+import logging
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UsernameField
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-from .models import Profile, User, AutomobileProfile, SellerProfile
 from me2ushop.models import Brand
-from django_countries.fields import CountryField
-import logging
+from .models import Profile, User, AutomobileProfile
 
 logger = logging.getLogger(__name__)
 
@@ -49,12 +49,6 @@ class AutomobileRegisterForm(forms.ModelForm):
         model = AutomobileProfile
         fields = '__all__'
         exclude = ['date_of_registration']
-
-
-class SellerRegisterForm(forms.ModelForm):
-    class Meta:
-        model = SellerProfile
-        fields = "__all__"
 
 
 class BrandForm(forms.ModelForm):

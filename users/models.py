@@ -1,5 +1,3 @@
-import os
-
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.mail import send_mail
@@ -25,35 +23,6 @@ PAYMENT_OPTIONS = (
     ('D', "Debit Card"),
     ('C', "Cash On Delivery"),
 )
-
-
-# Create your models here.
-
-# class BaseOrderInfo(models.Model):
-#     class Meta:
-#         abstract = True
-#
-#     street_address = models.CharField(max_length=100)
-#     apartment_address = models.CharField(max_length=100)
-#     country = CountryField(multiple=False)
-#     zip = models.CharField(max_length=10)
-#     address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
-#     payment_option = models.CharField(choices=PAYMENT_OPTIONS)
-#     default = models.BooleanField(default=False)
-#     email = models.EmailField(max_length=50, blank=True, null=True, unique=True)
-#     phone = models.CharField(max_length=20, blank=True, null=True)
-
-
-#
-# def validateEmail(email):
-#     print('we came to validate email:', email)
-#     from django.core.validators import validate_email
-#     from django.core.exceptions import ValidationError
-#     try:
-#         validate_email(email)
-#         return True
-#     except ValidationError:
-#         raise ValueError("Users must a valid email address")
 
 
 class UserManager(BaseUserManager):
@@ -149,31 +118,6 @@ class EmailConfirmed(models.Model):
     def email_user(self, subject, message, from_email=None, *kwargs):
         send_mail(subject, message, from_email, [self.user.email], kwargs)
 
-        # from sendgrid import SendGridAPIClient
-        # from sendgrid.helpers.mail import Mail
-        #
-        # message = Mail(
-        #     from_email=settings.DEFAULT_FROM_EMAIL,
-        #     to_emails=self.user.email,
-        #     subject=subject,
-        #     html_content=message)
-        # try:
-        #     sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-        #     response = sg.send(message)
-        #     print(response.status_code)
-        #     print(response.body)
-        #     print(response.headers)
-        # except Exception as e:
-        #     print(e)
-
-        # return requests.post(
-        #     settings.MAILGUN_ACCESS_KEY,
-        #     auth=("api", settings.MAILGUN_API_KEY),
-        #     data={"from": settings.EMAIL_HOST,
-        #           "to": [self.user.email],
-        #           "subject": subject,
-        #           "text": message})
-
     def send_mail(self):
         context = {
 
@@ -189,66 +133,6 @@ class EmailConfirmed(models.Model):
             [self.user.email], fail_silently=True,
         )
 
-    #     # from sendgrid.helpers.mail import Mail
-    #
-    #     from sendgrid import SendGridAPIClient
-    #     from sendgrid.helpers.mail import Mail
-    #
-    #     message = Mail(
-    #         from_email=settings.DEFAULT_FROM_EMAIL,
-    #         to_emails=self.user.email,
-    #         subject=email_subject,
-    #         html_content=message)
-    #     try:
-    #         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-    #         response = sg.send(message)
-    #         print(response.status_code)
-    #         print(response.body)
-    #         print(response.headers)
-    #     except Exception as e:
-    #         print(e)
-
-    # sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
-    # data = {
-    #     "personalizations": [
-    #         {
-    #             "to": [
-    #                 {
-    #                     "email": self.user.email
-    #                 }
-    #             ],
-    #             "subject": email_subject
-    #         }
-    #     ],
-    #     "from": {
-    #         "email": settings.DEFAULT_FROM_EMAIL,
-    #     },
-    #     "content": [
-    #         {
-    #             "type": "text/plain",
-    #             "value": message
-    #         }
-    #     ]
-    # }
-    # response = sg.client.mail.send.post(request_body=data)
-    # print(response.status_code)
-    # print(response.body)
-    # print(response.headers)
-
-
-# class user_type(models.Model):
-#     is_seller = models.BooleanField(default=False)
-#     is_service_provider = models.BooleanField(default=False)
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#
-#     def __str__(self):
-#         if self.is_seller:
-#             return User.get_email(self.user) + " - is_seller"
-#         elif self.is_service_provider:
-#             return User.get_email(self.user) + " - is_service_provider"
-#         else:
-#             return User.get_email(self.user) + " - is_buyer"
-#
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -257,10 +141,12 @@ class Profile(models.Model):
         'medium': (200, 200),
     }, delete_orphans=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
-    first_name = models.CharField(max_length=15, null=True, blank=True, help_text="Provide official First name on passport or ID")
+    first_name = models.CharField(max_length=15, null=True, blank=True,
+                                  help_text="Provide official First name on passport or ID")
     middle_name = models.CharField(max_length=15, blank=True, null=True, help_text="Provide official Middle name on "
                                                                                    "passport or ID")
-    last_name = models.CharField(max_length=15, null=True, blank=True, help_text="Provide official Last name on passport or ID")
+    last_name = models.CharField(max_length=15, null=True, blank=True,
+                                 help_text="Provide official Last name on passport or ID")
 
     verification_id = StdImageField(upload_to='images/sellerID', blank=True, null=True, help_text='Upload your '
                                                                                                   'ID/Passport')
@@ -299,32 +185,30 @@ STATUSES = ((UNDER_REVIEW, "Under Review"),
 class BusinessInformation(models.Model):
     pass
 
+
 SHIPPING_CAPABILITY = (
     ('Cd', 'Can Ship Abroad and Deliver Locally'),
     ('Cl', 'Can Deliver Locally'),
     ('CO', 'Not Able to Deliver')
 )
 
-class SellerProfile(CreationModificationDateMixin):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=15, help_text="Provide official First name on passport or ID")
-    middle_name = models.CharField(max_length=15, blank=True, null=True, help_text="Provide official Middle name on "
-                                                                                   "passport or ID")
-    last_name = models.CharField(max_length=15, help_text="Provide official Last name on passport or ID")
-    email = models.EmailField(max_length=254, unique=True, help_text='Provide Business email '
-                                                                     'where customers can send'
-                                                                     'inquries')
-    phone = models.CharField(max_length=20, unique=True, help_text='This number will be visible to buyers. Start with '
-                                                                   'country code . i.e +250 785011413')
 
-    verification_id = StdImageField(upload_to='images/sellerID', blank=True, null=True, help_text='Upload your '
-                                                                                                  'ID/Passport')
-
-    application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
-    active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return str(self.user.username)
+# class SellerProfile(CreationModificationDateMixin): user = models.OneToOneField(User, on_delete=models.CASCADE)
+# first_name = models.CharField(max_length=15, help_text="Provide official First name on passport or ID") middle_name
+# = models.CharField(max_length=15, blank=True, null=True, help_text="Provide official Middle name on " "passport or
+# ID") last_name = models.CharField(max_length=15, help_text="Provide official Last name on passport or ID") email =
+# models.EmailField(max_length=254, unique=True, help_text='Provide Business email ' 'where customers can send'
+# 'inquries') phone = models.CharField(max_length=20, unique=True, help_text='This number will be visible to buyers.
+# Start with ' 'country code . i.e +250 785011413')
+#
+#     verification_id = StdImageField(upload_to='images/sellerID', blank=True, null=True, help_text='Upload your '
+#                                                                                                   'ID/Passport')
+#
+#     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW)
+#     active = models.BooleanField(default=True)
+#
+#     def __str__(self):
+#         return str(self.user.username)
 
 
 AUTOMOBILE_TYPE_CHOICE = (
