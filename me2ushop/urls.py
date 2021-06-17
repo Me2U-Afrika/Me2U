@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^remove_cart/(?P<slug>[\w-]+)/$', views.remove_cart, name='remove_cart'),
     url(r'^remove_single_item_cart/(?P<slug>[\w-]+)/$', views.remove_single_item_cart, name='remove_single_item_cart'),
 
-    url(r'^product/(?P<slug>[\w-]+)/$',  cache_page(60 * 8)(views.ProductDetailedView.as_view()), name='product'),
+    url(r'^product/(?P<slug>[\w-]+)/$', cache_page(60 * 8)(views.ProductDetailedView.as_view()), name='product'),
     # url(r'^product/(?P<slug>[\w-]+)/$',  views.ProductDetailedView.as_view(), name='product'),
 
     url(r'^full-catalog/', views.ProductListView.as_view(), name='full_catalog'),
