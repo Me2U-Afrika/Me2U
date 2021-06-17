@@ -34,7 +34,7 @@
 						            <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-create' brand_id %}"
 						               role="button">Add A New Product</a>
 						            </a>
-						           <a class="btn btn-outline-yellow" href="{% url 'sellers:seller_home' object.brand_name.id %}">Dashboard</a>
+						           <a class="btn btn-outline-yellow" href="{{ object.brand_name.get_backstore_url }}">Dashboard</a>
 
 						        </div>
 							</div>

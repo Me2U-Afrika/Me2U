@@ -313,6 +313,7 @@
 										{% for image in deal.product.get_images %}
 										{% if image.in_display %}
 
+
 											<div class="deals_image">
 												<a href="{{ deal.product.get_absolute_url }}"><img src="{{ image.image.large.url }}" alt="{{ product.title }}"></a>
 											</div>
@@ -323,11 +324,13 @@
 
 									<div class="deals_content">
 										<div class="deals_info_line d-flex flex-row justify-content-start">
-											<div class="deals_item_category"><a href="#">{{ deal.product.get_category_choice_display }}</a></div>
+											{% if deal.product.brand_name %}
+											<div class="deals_item_category"><a href="{% url 'me2ushop:seller_page' deal.product.brand_name.id %}">{{ deal.product.brand_name }}</a></div>
+											{% endif %}
 											<div class="deals_item_price_a ml-auto">{{ CURRENCY.symbol }}{{ deal.product.price|currency:CURRENCY.code }} </div>
 										</div>
 										<div class="deals_info_line d-flex flex-row justify-content-start">
-											<div class="deals_item_name"><a href="{{ deal.product.get_absolute_url }}"> {{ deal.product.title }}</a></div>
+											<div class="deals_item_name"><a href="{{ deal.product.get_absolute_url }}" style="color:#000000" > {{ deal.product.title }}</a></div>
 											{% if deal.product.discount_price %}
 											<div class="deals_item_price ml-auto">{{ CURRENCY.symbol }}{{ deal.product.discount_price|currency:CURRENCY.code }} </div>
 											{% endif %}
@@ -855,7 +858,7 @@
 
 							</div>
 
-							{% if best_seller_banner %}
+							{% if best_dea_banner %}
 							<div class="col-lg-3">
 								<div class="arrivals_single clearfix">
 									<div class="d-flex flex-column align-items-center justify-content-center">
@@ -1378,75 +1381,8 @@
 		</div>
 	</div>
 
-	<!-- Recently Viewed -->
-	{% if recently_viewed %}
-	<div class="viewed">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<div class="viewed_title_container">
-						<h3 class="viewed_title">Recently Viewed</h3>
-						<div class="viewed_nav_container">
-							<div class="viewed_nav viewed_prev"><i class="fas fa-chevron-left"></i></div>
-							<div class="viewed_nav viewed_next"><i class="fas fa-chevron-right"></i></div>
-						</div>
-					</div>
+	{% include "snippets/recently_viewed.html" %}
 
-					<div class="viewed_slider_container">
-
-						<!-- Recently Viewed Slider -->
-
-						<div class="owl-carousel owl-theme viewed_slider">
-
-							<!-- Recently Viewed Item -->
-							{% for product in recently_viewed %}
-							{% if product.discount_price %}
-							<div class="owl-item">
-								<div class="viewed_item discount d-flex flex-column align-items-center justify-content-center text-center">
-									{% for image in product.get_images %}
-									{% if image.in_display %}
-									<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
-									{% endif %}
-									{% endfor %}
-									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }} </span></div>
-										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
-									</div>
-									<ul class="item_marks">
-										<li class="item_mark item_discount">-{{ product.total_discount }}%</li>
-										<li class="item_mark item_new">new</li>
-									</ul>
-								</div>
-							</div>
-							{% else %}
-
-							<!-- Recently Viewed Item -->
-							<div class="owl-item">
-								<div class="viewed_item d-flex flex-column align-items-center justify-content-center text-center">
-									{% for image in product.get_images %}
-									{% if image.in_display %}
-									<div class="viewed_image"><a href="{{ product.get_absolute_url }}"><img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
-									{% endif %}
-									{% endfor %}
-									<div class="viewed_content text-center">
-										<div class="viewed_price">{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }} </div>
-										<div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
-									</div>
-									<ul class="item_marks">
-										<li class="item_mark item_new">new</li>
-									</ul>
-								</div>
-							</div>
-							{% endif %}
-							{% endfor %}
-
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	{% endif %}
 
 </div>
 </body>

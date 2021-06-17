@@ -188,7 +188,7 @@ class SellersProductAdmin(ProductAdmin):
 
 
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ('title', 'user', 'is_featured')
+    list_display = ('title', 'profile', 'is_featured')
     search_fields = ('title',)
     list_editable = ('is_featured',)
 

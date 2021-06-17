@@ -21,8 +21,13 @@ PAYMENT_CHOICES = {
     ('S', "Stripe"),
     ('P', "Debit Card/Credit Card"),
 
-
 }
+
+
+class BrandForm(forms.ModelForm):
+    class Meta:
+        model = Brand
+        exclude = ['user', 'profile', 'valid_payment_method', 'active', 'is_featured', 'application_status']
 
 
 class ProductForm(forms.ModelForm):
@@ -213,7 +218,6 @@ class PostCommentForm(forms.ModelForm):
 
 
 class ProductReviewForm(forms.ModelForm):
-
     class Meta:
         model = ProductReview
         exclude = ('user', 'product', 'is_approved')

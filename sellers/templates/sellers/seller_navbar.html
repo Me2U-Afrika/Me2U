@@ -79,8 +79,8 @@
 
                             <ul class="cat_menu">
 
-                                    <li><a href="" target="_blank">Update Brand Information</a></li>
-                                    <li><a href="{% url 'users:brand_create' %}">Create A New Business Brand</a></li>
+                                    <li><a href="{% url 'users:brand_update' brand_id %}" target="_blank">Update Brand Information</a></li>
+                                    <li><a href="{% url 'me2ushop:brand_create' %}">Create A New Business Brand</a></li>
                                     <li><a href="">Delete Brand</a></li>
 <!--                                    <li>-->
 <!--                                        <a href="">Manage Account</a>-->
@@ -101,7 +101,7 @@
                             <ul class="standard_dropdown main_nav_dropdown">
                                 <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
 
-                                <li><a href="{% url 'sellers:seller_home' brand_id %}">Dashboard<i class="fas fa-chevron-down"></i></a></li>
+                                <li><a href="{{ brand.get_backstore_url }}">Dashboard<i class="fas fa-chevron-down"></i></a></li>
 
 
                                 <li class="hassubs">
@@ -124,7 +124,7 @@
 
                                         <li><a href="{% url 'sellers:seller_products' brand_id %}">Manage Existing<i class="fas fa-chevron-down"></i></a></li>
 
-                                        <li><a href="{% url 'me2ushop:seller_page' brand_id %}">Storefront</a></li>
+                                        <li><a href="{{ brand.get_frontstore_url }}">Storefront</a></li>
                                         <li><a href="{% url 'me2ushop:product-create' brand_id %}">Add New Product</a></li>
 
                                     </ul>
@@ -191,9 +191,9 @@
 
                             <li class="page_menu_item"><a href="{% url 'me2ushop:product-create' brand_id %}">Add New Product<i class="fa fa-angle-down"></i></a></li>
                             <li class="page_menu_item"><a href="{% url 'sellers:seller_products' brand_id %}">Manage Existing<i class="fa fa-angle-down"></i></a></li>
-                            <li class="page_menu_item"><a href="{% url 'me2ushop:seller_page' brand_id %}">My Store<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{{ brand.get_storefront_url }}">My Store<i class="fa fa-angle-down"></i></a></li>
                             <li class="page_menu_item"><a href="#">Deliver With Me2U<i class="fa fa-angle-down"></i></a></li>
-                            <li class="page_menu_item"><a href="contact.html">contact us<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact us<i class="fa fa-angle-down"></i></a></li>
                         </ul>
 
                         <div class="menu_contact">
@@ -201,10 +201,10 @@
                             <div class="menu_contact_item"><div class="menu_contact_icon"><img src="{{ STATIC_URL }}images/mail_white.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
                               {% if request.user.is_authenticated %}
                             <div class="menu_contact_item"><div class="menu_contact_icon"><a href="{% url 'users:profile' %}" target="_blank"><i class="far fa-user-circle"></i> Karibu {{ request.user.username }} </a></div>
-                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i> LogOut</a></div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url 'account_logout' %}?next={{ request.path }}"><i class="fas fa-sign-out-alt"></i> LogOut</a></div>
                             {% else %}
-                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url 'account_signup' %}"><i class="far fa-registered"></i> Register</a></div>
-                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url LOGIN_URL %}"><i class="fas fa-sign-in-alt"></i> LogIn</a></div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url 'account_signup' %}?next={{ request.path }}"><i class="far fa-registered"></i> Register</a></div>
+                            <div class="menu_contact_item"><div class="menu_contact_icon"></div><a href="{% url LOGIN_URL %}?next={{ request.path }}"><i class="fas fa-sign-in-alt"></i> LogIn</a></div>
                             {% endif %}
                         </div>
                     </div>

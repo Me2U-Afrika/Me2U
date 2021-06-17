@@ -24,7 +24,6 @@ from ckeditor.fields import RichTextField
 from django.utils.functional import cached_property
 from django.core.cache import cache
 
-
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
     ('Bk', 'Books'),
@@ -99,17 +98,16 @@ class AfrikanCountries(Countries):
 
 
 class Brand(CreationModificationDateMixin):
-    user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, blank=True, null=True)
+    # user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, blank=True, null=True)
     profile = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    slug = models.SlugField(
+                            default='',
+                            editable=False,
+                            blank=True,
+                            null=True
+                            )
     title = models.CharField(max_length=100, unique=True, help_text='Unique business title to identify Your store and '
                                                                     'your product line')
-
-    business_phone = models.CharField(max_length=20, blank=True, null=True,
-                                      help_text='Business Phone Number . i.e +250785....')
-    business_email = models.EmailField(blank=True, null=True, max_length=254,
-                                       help_text='Business Phone Number . i.e +250785....')
-    business_description = models.TextField(help_text="Tell us what you do and the kind of products you sell")
-
     website_link = models.CharField(max_length=255, blank=True, null=True,
                                     help_text='If you have a website by which buyers can find out more about your '
                                               'services.e.g. https://www.facebook.com')
@@ -122,9 +120,19 @@ class Brand(CreationModificationDateMixin):
     twitter = models.CharField(max_length=255, blank=True, null=True,
                                help_text='Do you have a Telegram Channel. Copy paste your page link here. '
                                          'e.g..https://t.me/me2uafrika')
+
+    business_phone = models.CharField(max_length=20, blank=True, null=True,
+                                      help_text='Business Phone Number . i.e +250785....')
+    business_email = models.EmailField(blank=True, null=True, max_length=254,
+                                       help_text='Business Phone Number . i.e +250785....')
+    business_description = models.TextField(help_text="Tell us what you do and the kind of products you sell")
+
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
     # date_of_registration = models.DateField
     country = CountryField(multiple=False)
+    address1 = models.CharField(max_length=60, blank=True, null=True)
+    address2 = models.CharField(max_length=60, blank=True, null=True)
+    zip_code = models.CharField(max_length=12, blank=True, null=True)
     subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
                                          help_text='Select a monthly recurring subscription fees')
     shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
@@ -149,6 +157,32 @@ class Brand(CreationModificationDateMixin):
     def __str__(self):
         return str(self.title)
 
+    def get_absolute_url(self):
+        return reverse('sellers:seller_home', kwargs={'slug': self.slug})
+
+    def get_backstore_url(self):
+        return reverse('sellers:seller_home', kwargs={'slug': self.slug})
+
+    def get_frontstore_url(self):
+        return reverse('me2ushop:seller_page', kwargs={'slug': self.slug})
+
+    def _generate_slug(self):
+        value = self.title
+        slug_original = slugify(value, allow_unicode=True)
+
+        slug_candidate = '{}'.format(slug_original)
+
+        return slug_candidate
+
+    def save(self, *args, **kwargs):
+        # print('just updated model...seeing if it will save')
+        if not self.pk or self.slug == '':
+            self.slug = self._generate_slug()
+
+        cache.delete('brand-%s' % self.slug)
+
+        super().save(*args, **kwargs)
+
 
 class ActiveProductManager(models.Manager):
     def all(self):
@@ -159,8 +193,9 @@ class ProductManager(models.Manager):
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
 
+
 class Product(CreationModificationDateMixin):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=300)
     slug = models.SlugField(unique=True,
                             default='',
                             editable=False,
@@ -289,14 +324,12 @@ class Product(CreationModificationDateMixin):
     def get_order_summary_url(self):
         return reverse('me2ushop:order_summary')
 
-    @cached_property
     def cross_sells(self):
         orders = Order.objects.filter(items__item=self)
         order_items = OrderItem.objects.filter(order__in=orders).exclude(item=self)
         products = Product.active.filter(orderitem__in=order_items).filter().distinct()
         return products
 
-    @cached_property
     def cross_sells_user(self):
         from users.models import User
 
@@ -305,7 +338,6 @@ class Product(CreationModificationDateMixin):
         products = Product.active.filter(orderitem__in=items).distinct()
         return
 
-    @cached_property
     def cross_sells_sellers(self):
         from search.search import _prepare_words
         from users.models import User
@@ -332,7 +364,6 @@ class Product(CreationModificationDateMixin):
             # print('from sellers', products)
             return products
 
-    @cached_property
     def cross_sells_hybrid(self):
         from users.models import User
 
@@ -449,7 +480,6 @@ class ProductImage(CreationModificationDateMixin):
         return reverse('me2ushop:product_images', kwargs={'slug': self.item.slug})
 
     def save(self, *args, **kwargs):
-
         cache.delete('productimage-%s' % self.pk)
 
         super().save(*args, **kwargs)

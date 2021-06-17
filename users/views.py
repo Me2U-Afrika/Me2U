@@ -15,7 +15,7 @@ from django.views.generic.edit import (CreateView, UpdateView, DeleteView, )
 from me2ushop import models
 from me2ushop.models import Order, OrderItem, Product, Brand
 
-from .forms import PersonalInfoForm, ProfilePicForm
+from .forms import PersonalInfoForm, ProfilePicForm, BrandForm
 from .forms import UserRegisterForm
 from .models import Profile, User, SellerProfile, AutomobileProfile, EmailConfirmed
 from .profile import retrieve_profile, set_pic
@@ -412,7 +412,6 @@ class SellerCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         except:
             return True
 
-
 class BrandCreateView(LoginRequiredMixin, CreateView):
     model = Brand
     template_name = 'users/service_providers/brand_create_form.html'
@@ -464,6 +463,32 @@ class BrandCreateView(LoginRequiredMixin, CreateView):
     #         messages.warning(request, "You are not a registered Me2U seller Sign Up")
     #         return redirect('users:seller_create')
 
+class BrandUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Brand
+    form_class = BrandForm
+    template_name = 'users/service_providers/brand_create_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(BrandUpdateView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Brand Update',
+            'brand_id': self.get_object().id
+        })
+        return context
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.save()
+
+        return super(BrandUpdateView, self).form_valid(form)
+
+    def test_func(self):
+        brand = self.get_object()
+        if self.request.user == brand.profile:
+            return True
+        return False
 
 class AutomobileCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = AutomobileProfile
