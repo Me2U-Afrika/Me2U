@@ -114,17 +114,19 @@
 						<div class="rating_r rating_r_4 product_rating"><i></i><i></i><i></i><i></i><i></i></div>
 						{% if object.brand_name %}
 	                        <div>
-	                            Brand: <a href="{% url 'me2ushop:seller_page' object.brand_name.id %}"> {{ object.brand_name }}</a>
+	                            Brand: <a href="{{ object.brand_name.get_frontstore_url }}"> {{ object.brand_name }}</a>
 	                        </div>
 						{% endif %}
 						<hr>
 
 						<!--PRODUCT PRICE-->
-						{% if object.discount_price %}
-							<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
-							<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
-						{% else %}
-							<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
+						{% if CURRENCY.code %}
+							{% if object.discount_price %}
+								<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
+								<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
+							{% else %}
+								<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
+							{% endif %}
 						{% endif %}
 						<!--PRODUCT PRICE-->
 
@@ -159,20 +161,6 @@
 											</div>
 										</div>
 
-										<!-- Product Color -->
-	<!--									<ul class="product_color">-->
-	<!--										<li>-->
-	<!--											<span>Color: </span>-->
-	<!--											<div class="color_mark_container"><div id="selected_color" class="color_mark"></div></div>-->
-	<!--											<div class="color_dropdown_button"><i class="fas fa-chevron-down"></i></div>-->
-
-	<!--											<ul class="color_list">-->
-	<!--												<li><div class="color_mark" style="background: #999999;"></div></li>-->
-	<!--												<li><div class="color_mark" style="background: #b19c83;"></div></li>-->
-	<!--												<li><div class="color_mark" style="background: #000000;"></div></li>-->
-	<!--											</ul>-->
-	<!--										</li>-->
-	<!--									</ul>-->
 									</div>
 
 										<div class="button_container">
@@ -294,16 +282,8 @@
 							<div class="mt-2">
 									<button class="button cart_button quick-contact" id="contact_seller"><i class="fas fa-phone-square">Contact Seller</i></button>
 
-									<a href="{% url 'me2ushop:seller_page' object.brand_name.id %}" role="button" class="button cart_button quick-contact"><i class="fas fa-store"> Visit Store</i></a>
+									<a href="{{ object.brand_name.get_frontstore_url }}" role="button" class="button cart_button quick-contact"><i class="fas fa-store"> Visit Store</i></a>
 								</div>
-							<div class="cart mt-2">
-								<div class="cart_container d-flex flex-row align-items-center justify-content-start">
-									<div class="cart_icon"><a href="{%  url 'sellers:seller_home' object.brand_name.id %}">
-										<img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height: 35px; width: 35px;"></a>
-									</div>
-									<div class="cart_text"><a href="{%  url 'sellers:seller_home' object.brand_name.id %}" style="color:MediumSeaGreen;">Sell</a></div>
-								</div>
-                        	</div>
 						{% endif %}
 						<!--SELLER INFO-->
 
@@ -381,10 +361,10 @@
 	    <ul class="nav tabs-primary nav-justified" id="advancedTab" role="tablist">
 
 	        <li class="nav-item">
-	            <a class="nav-link active show" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Product Tags</a>
+	            <a class="nav-link active show" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Detailed Description</a>
 	        </li>
 	        <li class="nav-item">
-	            <a class="nav-link" id="detailed_description-tab" data-toggle="tab" href="#detailed_description" role="tab" aria-controls="detailed_description" aria-selected="false">Detailed Description</a>
+	            <a class="nav-link" id="detailed_description-tab" data-toggle="tab" href="#detailed_description" role="tab" aria-controls="detailed_description" aria-selected="false">Product Tags</a>
 	        </li>
 			<li class="nav-item">
 	            <a class="nav-link  " id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Product Attributes</a>
@@ -396,7 +376,16 @@
 
 
 		    <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
-	        <h4>
+			 <h5>Additional Information</h5>
+
+	        <div class="product_text"><p>{{ object.additional_information|safe }}</p></div>
+
+
+			</div>
+
+	        <div class="tab-pane fade" id="detailed_description" role="tabpanel" aria-labelledby="detailed_description-tab">
+
+	       <h4>
 	            <a href="{% url 'me2ushop:tag_cloud' %}">View TagCloud</a>
 	        </h4>
 	         <div class="media mt-3 mb-4">
@@ -411,7 +400,6 @@
 		                    </div>
 	                    {% endfor %}
 	               </div>
-
 	         </div>
 	        <hr>
 	        {% if request.user.is_authenticated %}
@@ -433,57 +421,52 @@
 	                Log in to tag this product.
 	            </a></div>
 	        {% endif %}
-	        </div>
 
-	        <div class="tab-pane fade" id="detailed_description" role="tabpanel" aria-labelledby="detailed_description-tab">
-	        <h5>Additional Information</h5>
-
-	        <div class="product_text"><p>{{ object.additional_information|safe }}</p></div>
 	    </div>
 
-			<div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
-	        <h5>Product Attributes</h5>
+		<div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+			<h5>Product Attributes</h5>
 
-			    {% if object.productdetail_set.all %}
+				{% if object.productdetail_set.all %}
 
-		      <table class="table table-striped table-bordered mt-3">
-		        <thead>
-		          <tr>
-		            <th scope="row" class="w-150 dark-grey-text h6">Attribute</th>
-		            <td><em>Value</em></td>
-			          {% if object.brand_name.profile == request.user %}
-		            <td><em>Actions</em></td>
-			          {% else %}
-			          <td><em>Description</em></td>
-			          {% endif %}
-		          </tr>
-		        </thead>
-		        <tbody>
+			  <table class="table table-striped table-bordered mt-3">
+				<thead>
+				  <tr>
+					<th scope="row" class="w-150 dark-grey-text h6">Attribute</th>
+					<td><em>Value</em></td>
+					  {% if object.brand_name.profile == request.user %}
+					<td><em>Actions</em></td>
+					  {% else %}
+					  <td><em>Description</em></td>
+					  {% endif %}
+				  </tr>
+				</thead>
+				<tbody>
 
-		        {% for pdattribute in object.productdetail_set.all %}
+				{% for pdattribute in object.productdetail_set.all %}
 
-			          <tr>
-			            <th scope="row" class="w-150 dark-grey-text h6">{{ pdattribute.attribute }}</th>
-			            <td><em>{{ pdattribute.value }}</em></td>
-			            {% if object.brand_name.profile == request.user %}
-	                     <td>
+					  <tr>
+						<th scope="row" class="w-150 dark-grey-text h6">{{ pdattribute.attribute }}</th>
+						<td><em>{{ pdattribute.value }}</em></td>
+						{% if object.brand_name.profile == request.user %}
+						 <td>
 
-			                     <em><a class="btn btn-outline-red" href="{% url 'me2ushop:product_delete_attributes' pdattribute.id %}">DELETE </a></em>
-			                     <br>
-			                     <span><a class="btn btn-outline-green " href="{% url 'me2ushop:product_update_attributes' pdattribute.id %}">UPDATE</a></span>
+								 <em><a class="btn btn-outline-red" href="{% url 'me2ushop:product_delete_attributes' pdattribute.id %}">DELETE </a></em>
+								 <br>
+								 <span><a class="btn btn-outline-green " href="{% url 'me2ushop:product_update_attributes' pdattribute.id %}">UPDATE</a></span>
 
-	                     </td>
-				          {% else %}
-				          <td><em>{{ pdattribute.description }}</em></td>
-		                {% endif %}
-			          </tr>
+						 </td>
+						  {% else %}
+						  <td><em>{{ pdattribute.description }}</em></td>
+						{% endif %}
+					  </tr>
 
-		        {% endfor %}
-		        </tbody>
-		      </table>
+				{% endfor %}
+				</tbody>
+			  </table>
 
-		    {% endif %}
-	    </div>
+			{% endif %}
+		</div>
 
 	  </div>
 	</div>

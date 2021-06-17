@@ -1,0 +1,67 @@
+{% extends 'me2ushop/base_template.html' %}
+{% load crispy_forms_tags %}
+
+{% block headblock %}
+
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
+
+{% endblock %}
+
+
+
+<body>
+
+ {% block navbar_inner %}
+ {% endblock %}
+
+{% block site_wrapper %}
+
+<div class="super_container">
+
+	<!-- Cart -->
+	<div class="contact_form">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10 offset-lg-1">
+					<div class="contact_form_container">
+						<div class="contact_form_title">Create Form</div>
+
+						<form action="#" method="POST" id="contact_form" enctype="multipart/form-data">
+							{% csrf_token %}
+							{{ form.media }}
+	                        {{ form|crispy }}
+							<input type="hidden" name="brand_id" value="{{ brand_id }}"/>
+								<div class="contact_form_button form-group">
+									<button type="submit" class="button contact_submit_button">Submit</button>
+								<button class="button danger-color ml-2"><a href="{% url 'sellers:seller_home' brand_id %}">Cancel</a></button>
+
+								</div>
+
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel"></div>
+	</div>
+
+</div>
+
+
+{% endblock %}
+
+ {% block footer %}
+ {% endblock %}
+
+
+
+{% block extra_scripts %}
+
+<!-- contact styles-->
+<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
+
+{% endblock %}
+</body>
+

@@ -8,7 +8,8 @@ app_name = 'sellers'
 
 urlpatterns = [
     # url(r'sellers/', views.seller_page, name='seller_home'),
-    url('sellers/(?P<brand_id>[-\w]+)/$', views.seller_page, name='seller_home'),
+    # url('^(?P<brand_id>[-\w]+)/$', views.seller_page, name='seller_home'),
+    url(r'^(?P<slug>[\w-]+)/$', views.seller_page, name='seller_home'),
 
     # url('customer-details/(?P<id>[-\w]+)/$', views.customer_details, name='customer_details'),
     path('customer-details/<str:id>', views.customer_details, name='customer_details'),

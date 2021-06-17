@@ -43,7 +43,6 @@ from django_filters.views import FilterView
 from django.views.decorators.cache import cache_page
 from django.views.decorators.cache import never_cache
 
-
 import random
 import string
 import stripe
@@ -62,6 +61,82 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
+
+
+class BrandCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Brand
+    template_name = 'modelforms/brand_create_form.html'
+    fields = ['title', 'business_type', 'business_description', 'business_email', 'business_phone', 'shipping_status',
+              'country', 'subscription_type', 'logo']
+
+    # success_url = reverse_lazy("users:seller_confirm")
+
+    def get_success_url(self):
+        # Assuming there is a ForeignKey from Productattribute to Product in your model
+        return reverse_lazy('sellers:seller_home', kwargs={'slug': self.object.slug})
+
+    def form_valid(self, form):
+        print('registering brand')
+
+        from django.contrib.auth.models import Group
+
+        try:
+            seller_group = Group.objects.get(name='Sellers')
+
+        except ObjectDoesNotExist:
+            seller_group = Group.objects.create(name='Sellers')
+            seller_group.save()
+
+        obj = form.save(commit=False)
+        user = self.request.user
+        if seller_group:
+            seller_group.user_set.add(self.request.user)
+            user.is_staff = True
+            obj.application_status = 20
+            user.save()
+
+        obj.profile = user
+        obj.save()
+        return super().form_valid(form)
+
+    def test_func(self):
+        print('We came to check if the current user is eligible to create a brand. None of his brands should be set '
+              'as inactive')
+        current_app = Brand.objects.filter(profile=self.request.user)
+        if current_app.exists():
+            for brand in current_app:
+                if not brand.active:
+                    return False
+                return True
+        return True
+
+
+class BrandUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Brand
+    form_class = BrandForm
+    template_name = 'modelforms/brand_create_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(BrandUpdateView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Brand Update',
+            'brand_id': self.get_object().id
+        })
+        return context
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.save()
+
+        return super(BrandUpdateView, self).form_valid(form)
+
+    def test_func(self):
+        brand = self.get_object()
+        if self.request.user == brand.profile:
+            return True
+        return False
 
 
 # chat room view
@@ -110,7 +185,7 @@ class SellerView(ListView):
 
     def get_queryset(self):
         # user = get_object_or_404(User, id=self.kwargs.get('id'))
-        brand = get_object_or_404(Brand, id=self.kwargs.get('id'))
+        brand = get_object_or_404(Brand, slug=self.kwargs.get('slug'))
         # print('user:', self.kwargs)
         if brand:
             return Product.active.filter(brand_name=brand).order_by('-created')
@@ -119,7 +194,7 @@ class SellerView(ListView):
         super(SellerView, self).get_context_data(**kwargs)
 
         # user = get_object_or_404(User, id=self.kwargs.get('id'))
-        store = get_object_or_404(Brand, id=self.kwargs.get('id'))
+        store = get_object_or_404(Brand, slug=self.kwargs.get('slug'))
         brand = Brand.objects.get(title=store)
         if brand:
             # other brands
@@ -380,7 +455,6 @@ class HomeViewTemplateView(TemplateView):
         return context
 
 
-
 # class HomeView(ListView):
 #     model = Product
 #     site_name = 'Me2U|Market'
@@ -502,7 +576,6 @@ class HomeViewTemplateView(TemplateView):
 #         return context
 
 
-
 class ProductListView(ListView):
     model = Product
     # template_name = 'trialTemplates/home.html'
@@ -523,6 +596,7 @@ class ProductListView(ListView):
 
 # PRODUCT DETAILED CREATE, UPDATE, DELETE VIEWS
 from utils.views import CachedDetailView
+
 
 class ProductDetailedView(CachedDetailView):
     model = Product
@@ -578,7 +652,7 @@ class ProductDetailedView(CachedDetailView):
 class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Product
     form_class = ProductForm
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
 
     def get_success_url(self):
         # Assuming there is a ForeignKey from Productattribute to Product in your model
@@ -620,7 +694,7 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductUpdateView, self).get_context_data(**kwargs)
@@ -646,7 +720,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
         if product:
             obj.brand_name = product.brand_name
-            
+
         obj.save()
         return super(ProductUpdateView, self).form_valid(form)
 
@@ -665,7 +739,7 @@ class ProductUpdateAdditionalInforView(LoginRequiredMixin, UserPassesTestMixin, 
         'meta_keywords',
         'meta_description',
     ]
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductUpdateAdditionalInforView, self).get_context_data(**kwargs)
@@ -695,13 +769,13 @@ class ProductUpdateAdditionalInforView(LoginRequiredMixin, UserPassesTestMixin, 
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
-    template_name = 'sellers/product_confirm_delete.html'
+    template_name = 'modelforms/product_confirm_delete.html'
+
     # success_url = reverse_lazy('sellers:seller_products' )
 
     def get_success_url(self):
         # Assuming there is a ForeignKey from Productattribute to Product in your model
         return reverse_lazy('sellers:seller_products', kwargs={'brand_id': self.object.brand_name.id})
-
 
     def get_context_data(self, **kwargs):
         context = super(ProductDeleteView, self).get_context_data(**kwargs)
@@ -724,7 +798,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class ProductAttributesCreateView(LoginRequiredMixin, CreateView):
     model = ProductDetail
     form_class = ProductAttributeCreate
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductAttributesCreateView, self).get_context_data(**kwargs)
@@ -767,7 +841,7 @@ class ProductAttributesCreateView(LoginRequiredMixin, CreateView):
 class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
     model = ProductDetail
     fields = '__all__'
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeUpdateView, self).get_context_data(**kwargs)
@@ -791,7 +865,7 @@ class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
 
 class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
     model = ProductDetail
-    template_name = 'sellers/product_confirm_delete.html'
+    template_name = 'modelforms/product_confirm_delete.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeDeleteView, self).get_context_data(**kwargs)
@@ -810,7 +884,7 @@ class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
         product = self.object.product
         return reverse_lazy('me2ushop:product', kwargs={'slug': product.slug})
 
-@never_cache
+
 @login_required
 def show_product_image(request, slug):
     product = get_object_or_404(Product, slug=slug)
@@ -822,7 +896,7 @@ def show_product_image(request, slug):
         'page_title': 'ImageList-' + str(product)
     }
 
-    return render(request, 'sellers/product_images_list.html', context)
+    return render(request, 'modelforms/product_images_list.html', context)
 
 
 # PRODUCT IMAGE CREATE UPDATE DELETE VIEWS
@@ -872,13 +946,12 @@ def product_image_create(request, slug):
             'form': form,
         }
 
-        return render(request, 'sellers/product_image_form.html', context)
+        return render(request, 'modelforms/product_image_form.html', context)
 
 
 class ProductImageCreateView(LoginRequiredMixin, CreateView):
     model = ProductImage
-    template_name = 'sellers/product_image_form.html'
-    # fields = ["item", "image", "in_display"]
+    template_name = 'modelforms/product_image_form.html'
     form_class = ProductImageCreate
 
     # success_url = reverse_lazy("sellers:seller_products")
@@ -936,7 +1009,7 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
 
 class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = ProductImage
-    template_name = 'sellers/product_image_update_form.html'
+    template_name = 'modelforms/product_image_update_form.html'
     fields = ["image", "in_display"]
 
     def get_context_data(self, **kwargs):
@@ -986,7 +1059,7 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
 
 class ProductImageDeleteView(LoginRequiredMixin, DeleteView):
     model = ProductImage
-    template_name = 'sellers/product_image_delete.html'
+    template_name = 'modelforms/product_image_delete.html'
 
     # success_url = reverse_lazy("sellers:seller_products")
 
@@ -1007,7 +1080,6 @@ class ProductImageDeleteView(LoginRequiredMixin, DeleteView):
             'brand_id': image_posted.item.brand_name.id
         })
         return context
-
 
 
 def delete_image(request, pk):

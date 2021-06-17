@@ -1,0 +1,65 @@
+{% extends 'me2ushop/base_template.html' %}
+{% load crispy_forms_tags %}
+
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
+
+{% endblock %}
+
+
+<body>
+ {% block navbar %}
+ {% endblock %}
+
+{% block site_wrapper %}
+
+<div class="super_container">
+
+	<!-- Cart -->
+	<div class="contact_form">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10 offset-lg-1">
+					<div class="contact_form_container">
+						<div class="contact_form_title">Add a new Image</div>
+
+						<form method="POST" enctype="multipart/form-data">
+							{% csrf_token %}
+	                        {{ form|crispy }}
+							<input type="hidden" id="id_slug" value="{{ object.slug }}"/>
+							<div class="contact_form_button form-group">
+								<button type="submit" class="button contact_submit_button">Submit</button>
+								<button class="button danger-color ml-2"><a href="{% url 'me2ushop:product_images' product.slug %}">Cancel</a></button>
+
+
+							</div>
+
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel"></div>
+	</div>
+
+
+</div>
+
+
+{% endblock %}
+
+
+ {% block footer %}
+ {% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
+
+
+{% endblock %}
+</body>
+
