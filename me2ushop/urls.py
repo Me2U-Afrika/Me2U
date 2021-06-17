@@ -19,11 +19,14 @@ urlpatterns = [
 
     # url(r'^$', cache_page(60 * 4)(views.HomeView.as_view()), name='home'),
     url(r'^$', cache_page(60 * 4)(views.HomeViewTemplateView.as_view()), name='home'),
+    url("brand-create/", views.BrandCreateView.as_view(), name="brand_create", ),
 
     url('customer-service/(?P<order_id>[-\w]+)/$', views.room, name="cs_chat"),
     url('customer-service/', TemplateView.as_view(template_name='customer_service.html'),
         name="cs_main"),
-    url('seller/(?P<id>[-\w]+)/$', views.SellerView.as_view(), name='seller_page'),
+
+    # url('seller/(?P<id>[-\w]+)/$', views.SellerView.as_view(), name='seller_page'),
+    url(r'^(?P<slug>[\w-]+)/$', views.SellerView.as_view(), name='seller_page'),
 
     url(r'^add_cart/(?P<slug>[\w-]+)/$', views.add_cart, name='add_cart'),
     url(r'^add-wishlist/(?P<slug>[\w-]+)/$', views.add_wishlist, name='add_wishlist'),
@@ -31,7 +34,7 @@ urlpatterns = [
     url(r'^remove_cart/(?P<slug>[\w-]+)/$', views.remove_cart, name='remove_cart'),
     url(r'^remove_single_item_cart/(?P<slug>[\w-]+)/$', views.remove_single_item_cart, name='remove_single_item_cart'),
 
-    url(r'^product/(?P<slug>[\w-]+)/$',  cache_page(60 * 8)(views.ProductDetailedView.as_view()), name='product'),
+    url(r'^product/(?P<slug>[\w-]+)/$', cache_page(60 * 8)(views.ProductDetailedView.as_view()), name='product'),
     # url(r'^product/(?P<slug>[\w-]+)/$',  views.ProductDetailedView.as_view(), name='product'),
 
     url(r'^full-catalog/', views.ProductListView.as_view(), name='full_catalog'),

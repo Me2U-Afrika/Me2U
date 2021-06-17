@@ -1,61 +1,36 @@
-import tempfile
-
-from django.conf import settings
-from django.contrib import messages
-from django.contrib.auth import user_logged_in
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.dispatch import receiver
-from django.template.loader import render_to_string
-# from django.utils import simplejson as json
 import json
-
-from weasyprint import HTML
-
-from search.search import _prepare_words
-from .forms import *
-from django.shortcuts import render, get_object_or_404
-from django.shortcuts import redirect
-from django.urls import reverse, reverse_lazy
-from categories.models import Category, Department
-from marketing.models import *
-
-from .models import *
-
-from django.views.generic import ListView, DetailView, View, CreateView, UpdateView, DeleteView, FormView, TemplateView
-from django.utils import timezone
-from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
-
-# from django.contrib.auth.models import User
-from django.template import RequestContext
-
-from stats import stats
-from stats.models import ProductView
-
-from Me2U.settings import PRODUCTS_PER_ROW, PRODUCTS_PER_PAGE
-
-from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
-from django import forms as django_forms
-from django.db import models as django_models
-import django_filters
-from django_filters.views import FilterView
-from django.views.decorators.cache import cache_page
-from django.views.decorators.cache import never_cache
-
-
 import random
 import string
+import tempfile
+
+import django_filters
 import stripe
 import tagging
+from django import forms as django_forms
+from django.contrib import messages
+from django.contrib.auth import user_logged_in
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models as django_models
+from django.dispatch import receiver
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.views.generic import ListView, View, CreateView, UpdateView, DeleteView, FormView, TemplateView
+from django_filters.views import FilterView
 from tagging.models import Tag, TaggedItem
-from users.models import User
+from weasyprint import HTML
 
-from users.models import Profile
-
+from marketing.models import *
 from marketing.models import Slider
+from stats import stats
+from .forms import *
+from .models import *
 
-from users.models import EmailConfirmed
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -64,11 +39,89 @@ def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
 
 
-# chat room view
+# ___BRAND CREATE VIEWS___
+class BrandCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Brand
+    template_name = 'modelforms/brand_create_form.html'
+    fields = ['title', 'business_type', 'business_description', 'business_email', 'business_phone', 'shipping_status',
+              'country', 'subscription_type', 'logo']
+
+    # success_url = reverse_lazy("users:seller_confirm")
+
+    def get_success_url(self):
+        # Assuming there is a ForeignKey from Productattribute to Product in your model
+        return reverse_lazy('sellers:seller_home', kwargs={'slug': self.object.slug})
+
+    def form_valid(self, form):
+        print('registering brand')
+
+        from django.contrib.auth.models import Group
+
+        try:
+            seller_group = Group.objects.get(name='Sellers')
+
+        except ObjectDoesNotExist:
+            seller_group = Group.objects.create(name='Sellers')
+            seller_group.save()
+
+        obj = form.save(commit=False)
+        user = self.request.user
+        if seller_group:
+            seller_group.user_set.add(self.request.user)
+            user.is_staff = True
+            obj.application_status = 20
+            user.save()
+
+        obj.profile = user
+        obj.save()
+        return super().form_valid(form)
+
+    def test_func(self):
+        print('We came to check if the current user is eligible to create a brand. None of his brands should be set '
+              'as inactive')
+        current_app = Brand.objects.filter(profile=self.request.user)
+        if current_app.exists():
+            for brand in current_app:
+                if not brand.active:
+                    return False
+                return True
+        return True
+
+
+class BrandUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Brand
+    form_class = BrandForm
+    template_name = 'modelforms/brand_create_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(BrandUpdateView, self).get_context_data(**kwargs)
+
+        context.update({
+
+            'page_title': 'Brand Update',
+            'brand_id': self.get_object().id
+        })
+        return context
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.save()
+
+        return super(BrandUpdateView, self).form_valid(form)
+
+    def test_func(self):
+        brand = self.get_object()
+        if self.request.user == brand.profile:
+            return True
+        return False
+
+
+# ___CHAT ROOM VIEWS___
 def room(request, order_id):
     return render(request, 'chat_room.html', {'room_name_json': str(order_id)}, )
 
 
+# ___ORDER VIEW___
 class DateInput(django_forms.DateInput):
     input_type = 'date'
 
@@ -102,6 +155,7 @@ class OrderView(UserPassesTestMixin, FilterView):
         return self.request.user.is_staff is True
 
 
+# ___SELLER VIEW___
 class SellerView(ListView):
     model = Product
     # template_name = 'seller-page.html'
@@ -110,7 +164,7 @@ class SellerView(ListView):
 
     def get_queryset(self):
         # user = get_object_or_404(User, id=self.kwargs.get('id'))
-        brand = get_object_or_404(Brand, id=self.kwargs.get('id'))
+        brand = get_object_or_404(Brand, slug=self.kwargs.get('slug'))
         # print('user:', self.kwargs)
         if brand:
             return Product.active.filter(brand_name=brand).order_by('-created')
@@ -119,7 +173,7 @@ class SellerView(ListView):
         super(SellerView, self).get_context_data(**kwargs)
 
         # user = get_object_or_404(User, id=self.kwargs.get('id'))
-        store = get_object_or_404(Brand, id=self.kwargs.get('id'))
+        store = get_object_or_404(Brand, slug=self.kwargs.get('slug'))
         brand = Brand.objects.get(title=store)
         if brand:
             # other brands
@@ -139,6 +193,7 @@ class SellerView(ListView):
             return context
 
 
+# ___HOME VIEW___
 class HomeView(ListView):
     model = Product
     site_name = 'Me2U|Market'
@@ -149,7 +204,6 @@ class HomeView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         super(HomeView, self).get_context_data(**kwargs)
 
-        from utils import context_processors
         context = {}
 
         active_products = Product.active.all()
@@ -268,7 +322,6 @@ class HomeViewTemplateView(TemplateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         super(HomeViewTemplateView, self).get_context_data(**kwargs)
 
-        from utils import context_processors
         context = {}
 
         active_products = Product.active.all().select_related()
@@ -378,7 +431,6 @@ class HomeViewTemplateView(TemplateView):
             pass
 
         return context
-
 
 
 # class HomeView(ListView):
@@ -501,8 +553,7 @@ class HomeViewTemplateView(TemplateView):
 #
 #         return context
 
-
-
+# ___DEPARTMENT LIST PRODUCT VIEW___
 class ProductListView(ListView):
     model = Product
     # template_name = 'trialTemplates/home.html'
@@ -521,8 +572,9 @@ class ProductListView(ListView):
         return context
 
 
-# PRODUCT DETAILED CREATE, UPDATE, DELETE VIEWS
+#___PRODUCT DETAILED CREATE, UPDATE, DELETE VIEWS___
 from utils.views import CachedDetailView
+
 
 class ProductDetailedView(CachedDetailView):
     model = Product
@@ -578,7 +630,7 @@ class ProductDetailedView(CachedDetailView):
 class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Product
     form_class = ProductForm
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
 
     def get_success_url(self):
         # Assuming there is a ForeignKey from Productattribute to Product in your model
@@ -620,7 +672,7 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductUpdateView, self).get_context_data(**kwargs)
@@ -646,7 +698,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
         if product:
             obj.brand_name = product.brand_name
-            
+
         obj.save()
         return super(ProductUpdateView, self).form_valid(form)
 
@@ -665,7 +717,7 @@ class ProductUpdateAdditionalInforView(LoginRequiredMixin, UserPassesTestMixin, 
         'meta_keywords',
         'meta_description',
     ]
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductUpdateAdditionalInforView, self).get_context_data(**kwargs)
@@ -695,13 +747,13 @@ class ProductUpdateAdditionalInforView(LoginRequiredMixin, UserPassesTestMixin, 
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
-    template_name = 'sellers/product_confirm_delete.html'
+    template_name = 'modelforms/product_confirm_delete.html'
+
     # success_url = reverse_lazy('sellers:seller_products' )
 
     def get_success_url(self):
         # Assuming there is a ForeignKey from Productattribute to Product in your model
         return reverse_lazy('sellers:seller_products', kwargs={'brand_id': self.object.brand_name.id})
-
 
     def get_context_data(self, **kwargs):
         context = super(ProductDeleteView, self).get_context_data(**kwargs)
@@ -719,12 +771,11 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-# PRODUCT ATTRIBUTES CREATE, UPDATE, DELETE
-
+#___PRODUCT ATTRIBUTES CREATE, UPDATE, DELETE___
 class ProductAttributesCreateView(LoginRequiredMixin, CreateView):
     model = ProductDetail
     form_class = ProductAttributeCreate
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductAttributesCreateView, self).get_context_data(**kwargs)
@@ -767,7 +818,7 @@ class ProductAttributesCreateView(LoginRequiredMixin, CreateView):
 class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
     model = ProductDetail
     fields = '__all__'
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeUpdateView, self).get_context_data(**kwargs)
@@ -791,7 +842,7 @@ class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
 
 class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
     model = ProductDetail
-    template_name = 'sellers/product_confirm_delete.html'
+    template_name = 'modelforms/product_confirm_delete.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeDeleteView, self).get_context_data(**kwargs)
@@ -810,7 +861,7 @@ class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
         product = self.object.product
         return reverse_lazy('me2ushop:product', kwargs={'slug': product.slug})
 
-@never_cache
+
 @login_required
 def show_product_image(request, slug):
     product = get_object_or_404(Product, slug=slug)
@@ -822,11 +873,10 @@ def show_product_image(request, slug):
         'page_title': 'ImageList-' + str(product)
     }
 
-    return render(request, 'sellers/product_images_list.html', context)
+    return render(request, 'modelforms/product_images_list.html', context)
 
 
-# PRODUCT IMAGE CREATE UPDATE DELETE VIEWS
-
+#___PRODUCT IMAGE CREATE UPDATE DELETE VIEWS___
 def product_image_create(request, slug):
     product = get_object_or_404(Product, slug=slug)
     # print('slug:', slug)
@@ -872,13 +922,12 @@ def product_image_create(request, slug):
             'form': form,
         }
 
-        return render(request, 'sellers/product_image_form.html', context)
+        return render(request, 'modelforms/product_image_form.html', context)
 
 
 class ProductImageCreateView(LoginRequiredMixin, CreateView):
     model = ProductImage
-    template_name = 'sellers/product_image_form.html'
-    # fields = ["item", "image", "in_display"]
+    template_name = 'modelforms/product_image_form.html'
     form_class = ProductImageCreate
 
     # success_url = reverse_lazy("sellers:seller_products")
@@ -936,7 +985,7 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
 
 class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = ProductImage
-    template_name = 'sellers/product_image_update_form.html'
+    template_name = 'modelforms/product_image_update_form.html'
     fields = ["image", "in_display"]
 
     def get_context_data(self, **kwargs):
@@ -986,7 +1035,7 @@ class ProductImageUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
 
 class ProductImageDeleteView(LoginRequiredMixin, DeleteView):
     model = ProductImage
-    template_name = 'sellers/product_image_delete.html'
+    template_name = 'modelforms/product_image_delete.html'
 
     # success_url = reverse_lazy("sellers:seller_products")
 
@@ -1007,7 +1056,6 @@ class ProductImageDeleteView(LoginRequiredMixin, DeleteView):
             'brand_id': image_posted.item.brand_name.id
         })
         return context
-
 
 
 def delete_image(request, pk):
@@ -1045,8 +1093,7 @@ def delete_image(request, pk):
         return redirect('me2ushop:home')
 
 
-# PRODUCT ADD TO CART
-
+#___PRODUCT ADD TO CART, TAG, REVIEWS___
 @login_required
 def add_tag(request):
     print("we came to add the tag")
@@ -1087,23 +1134,6 @@ def tag(request, tag, template_name='home/product_tag_list.html'):
     page_title = str(tag)
 
     return render(request, template_name, locals())
-
-
-# def show_product_image(request, slug):
-#     # print('person:', request.user)
-#     product = get_object_or_404(Product, slug=slug)
-#     # print('product:', product)
-#     # product_reviews = ProductReview.approved.filter(product=product).order_by('-date')[0:PRODUCTS_PER_ROW]
-#     # print('productreviews:', product_reviews)
-#     # review_form = ProductReviewForm()
-#     product_image = ProductImage.objects.filter(item__seller=request.user, item=product)
-#
-#     context = {
-#         'object': product,
-#         'product_image': product_image
-#     }
-#
-#     return render(request, 'product_images_list.html', context)
 
 
 @login_required
@@ -2758,258 +2788,4 @@ def refund_status(request, order_id):
         messages.warning(request, "No active requests found")
         return redirect('me2ushop:home')
 
-# def get_cartID(request):
-#     # we take the online provided code and run it through our available coupons in order to determine it's value
-#     cart_id = CartID.objects.get_or_create(cart_id=_cart_id(request))
-#
-#     print("cart_id from get method:", cart_id)
-#
-#     return cart_id
-# CART_ID_SESSION_KEY = 'cart_id'
-#
-#
-# def _generate_cart_id():
-#     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=50))
-#
-#
-# def _cart_id(request):
-#     if request.session.get(CART_ID_SESSION_KEY, '') == '':
-#         request.session['CART_ID_SESSION_KEY'] = _generate_cart_id()
-#     return request.session['CART_ID_SESSION_KEY']
 
-
-# def add_cart_product(request, slug):
-#     if request.POST or None:
-#
-#         # add to cart…create the bound form
-#         postdata = request.POST.copy()
-#
-#         # form instance
-#         form = ProductAddToCartForm(request, postdata)
-#
-#         print('form is valid:', form.is_valid())
-#         print('form is bound:', form.is_bound)
-#
-#         # check if posted data is valid
-#         if form.is_valid():
-#             # add to cart and redirect to cart page
-#             print("got to this method")
-#
-#             cart.add_cart_qty(request)
-#
-#             print("trynaa get out of it to this method")
-#             # if test cookie worked, get rid of it
-#             if request.session.test_cookie_worked():
-#                 request.session.delete_test_cookie()
-#             url = reverse('cart:show_cart')
-#             return HttpResponseRedirect(url)
-#
-#     else:
-#         object = get_object_or_404(Product, slug=slug)
-#         categories = object.product_categories.all()
-#         print("product collected:", object)
-#
-#         # it’s a GET, create the unbound form. Note request as a kwarg
-#         form = ProductAddToCartForm(request=request, label_suffix=':')
-#         form.fields['product_slug'].widget.attrs['value'] = slug
-#         request.session.set_test_cookie()
-#
-#         return render(request, 'product-page.html', locals())
-# def add_cart_qty(request, slug):
-#     if request.method == "POST":
-#
-#         form = CartAddProductForm(request.POST or None)
-#         if form.is_valid():
-#
-#             try:
-#                 # Get quantity from useronline
-#                 qty = form.cleaned_data.get('quantity')
-#                 print("qty:", qty)
-#
-#                 # Determine the item and assign quantity provieded by user to their cart.
-#                 item = get_object_or_404(Product, slug=slug)
-#                 order_item, created = OrderItem.objects.get_or_create(
-#                     item=item,
-#                     user=request.user,
-#                     ordered=False,
-#                 )
-#
-#                 order_query_set = Order.objects.filter(user=request.user, ordered=False)
-#                 if order_query_set.exists():
-#                     order = order_query_set[0]
-#
-#                     # check if this specific order item is in the order in order to increment it or update it
-#
-#                     if order.items.filter(item__slug=item.slug).exists():
-#                         order_item.quantity = qty
-#                         order_item.save()
-#                         messages.info(request, 'This item quantity has been updated.')
-#                         return redirect("me2ushop:order_summary")
-#                     else:
-#                         messages.info(request, 'This item has been added to your cart.')
-#                         order.items.add(order_item)
-#                         order_item.quantity = qty
-#                         order_item.save()
-#                         return redirect("me2ushop:order_summary")
-#                 else:
-#                     order_date = timezone.now()
-#                     order = Order.objects.create(user=request.user, order_date=order_date)
-#                     order.items.add(order_item)
-#                     order_item.quantity = qty
-#                     order_item.save()
-#                     messages.info(request, 'This item has been added to your cart.')
-#                     return redirect("me2ushop:order_summary")
-#
-#             except Exception:
-#                 messages.warning(request, 'no data yet')
-#                 return redirect('me2ushop.order_summary')
-#
-#     messages.warning(request, "Something is a miss here!")
-#     return redirect('me2ushop:home')
-#
-#     # form = CartAddProductForm(request.POST or None)
-#     # if form.is_valid():
-#     #
-#     #     try:
-#     #
-#     #         # Get quantity from useronline
-#     #         qty = form.cleaned_data.get('code')
-#     #         print("qty:", qty)
-#     #
-#     #         # post to our database
-#     #         recored_qty = post_cart_qty(request, qty)
-#     #         print("recorded_qty:", recored_qty)
-#     #
-#     #         item = get_object_or_404(Item, slug=slug)
-#     #         order_item, created = OrderItem.objects.get_or_create(
-#     #             item=item,
-#     #             user=request.user,
-#     #             ordered=False
-#     #         )
-#     #         order_query_set = Order.objects.filter(user=request.user, ordered=False)
-#     #
-#     #         if order_query_set.exists():
-#     #             order = order_query_set[0]
-#     #
-#     #             # check if the order item is in the order
-#     #
-#     #             if order.items.filter(item__slug=item.slug).exists():
-#     #                 order_item.quantity += recored_qty
-#     #                 order_item.save()
-#     #                 messages.info(request, 'This item quantity was updated.')
-#     #                 return redirect("me2ushop:order_summary")
-#     #             else:
-#     #                 messages.info(request, 'This item has been added to your cart.')
-#     #                 order.items.add(order_item)
-#     #                 order_item.quantity = recored_qty
-#     #                 order_item.save()
-#     #                 return redirect("me2ushop:order_summary")
-#     #         else:
-#     #             order_date = timezone.now()
-#     #             order = Order.objects.create(user=request.user, order_date=order_date)
-#     #             order.items.add(order_item)
-#     #             order_item.quantity = recored_qty
-#     #             order_item.save()
-#     #             messages.info(request, 'This item has been added to your cart.')
-#     #             return redirect("me2ushop:order_summary")
-#     #
-#     #     except Exception:
-#     #         messages.warning(request, 'no data yet')
-#     #         return redirect('me2ushop.order_summary')
-#     #
-
-# def add_cart_product(request, slug):
-#     if request.method == "POST":
-#         messages.info(request, "we in the add_cart_product page function, working so far")
-#
-#         item = get_object_or_404(Item, slug=slug)
-#
-#         form = CartAddProductForm(request.POST or None)
-#         if form.is_valid():
-#
-#             # Get quantity of the item ordered so far
-#             qty = form.cleaned_data.get('quantity')
-#             print("qty:", qty)
-#
-#             new_qty = qty + 3
-#             form.quantity = new_qty
-#             update = form.cleaned_data.get('quantity')
-#             print("update:", update)
-#             return redirect("me2ushop:product", slug=slug)
-#         return redirect("me2ushop:product", slug=slug)
-#     return redirect("me2ushop:product", slug=slug)
-
-
-#     order_item, created = OrderItem.objects.get_or_create(
-#         item=item,
-#         ordered=False)
-#     order_query_set = Order.objects.filter(ordered=False)
-#
-#     if order_query_set.exists():
-#         order = order_query_set[0]
-#
-#         # check if the order item is in the order
-#         if order.items.filter(item__slug=item.slug).exists():
-#             order_item.quantity += 1
-#             order_item.save()
-#             messages.info(request, 'Your Order quantity was updated.')
-#             return redirect("me2ushop:product", slug=slug)
-#         else:
-#             messages.info(request, 'This item has been added to your cart.')
-#             order.items.add(order_item)
-#             order_item.quantity = 1
-#             order_item.save()
-#             return redirect("me2ushop:product", slug=slug)
-#
-#     else:
-#         order_date = timezone.now()
-#         order = Order.objects.create(order_date=order_date)
-#         order.items.add(order_item)
-#         order_item.quantity = 1
-#         order_item.save()
-#         messages.info(request, 'This item has been added to your cart.')
-#         return redirect("me2ushop:product", slug=slug)
-
-
-# def remove_single_item_cart_product(request, slug):
-#     item = get_object_or_404(Item, slug=slug)
-#
-#     order_query_set = Order.objects.filter(
-#         user=request.user,
-#         ordered=False)
-#
-#     if order_query_set.exists():
-#         order = order_query_set[0]
-#         print('order:', order)
-#
-#         #         check if the order item is in the order
-#         if order.items.filter(item__slug=item.slug).exists():
-#             order_item = OrderItem.objects.filter(
-#                 item=item,
-#                 user=request.user,
-#                 ordered=False
-#             )[0]
-#
-#             if order_item.quantity >= 1:
-#                 order_item.quantity -= 1
-#                 order_item.save()
-#                 messages.info(request, 'This item was reduced.')
-#
-#                 if order_item.quantity == 0:
-#                     order.items.remove(order_item)
-#                     messages.info(request, 'Note that the item has been removed from your cart.')
-#                     return redirect("me2ushop:product", slug=slug)
-#         else:
-#             messages.info(request, 'You do not have an active order.')
-#             return redirect("me2ushop:product", slug=slug)
-#     messages.warning(request, 'You need to be logged in')
-#     return redirect("me2ushop:product", slug=slug)
-
-#
-# def cart_item_count(user):
-#     if user.is_authenticated:
-#         query_set = Order.objects.filter(user=user, ordered=False)
-#         if query_set.exists():
-#             return query_set[0].items.count()
-#
-#     return 0
