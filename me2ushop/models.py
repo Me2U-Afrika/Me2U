@@ -1,28 +1,20 @@
+import collections
+import itertools
+
+from ckeditor.fields import RichTextField
 from django.conf import settings
-from Me2U.settings import PRODUCTS_PER_ROW
-from django.core.exceptions import ValidationError
+from django.core.cache import cache
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import Count
-from django.db.models.signals import post_save
-from django.utils import timezone
 from django.shortcuts import reverse
-from django_countries.fields import CountryField
-from categories.models import Category, Department
-from users.models import Profile, SellerProfile, STATUSES, UNDER_REVIEW
-from utils.models import CreationModificationDateMixin
-from sellers.models import Sellers
-from PIL import Image
-from django.db import models
-from stdimage import StdImageField, JPEGField
-import collections
-from tagging.registry import register
-from tagging.models import Tag
-import itertools
 from django.utils.text import slugify
-from ckeditor.fields import RichTextField
-from django.utils.functional import cached_property
-from django.core.cache import cache
+from django_countries.fields import CountryField
+from stdimage import StdImageField
+from tagging.registry import register
+
+from categories.models import Department
+from users.models import STATUSES, UNDER_REVIEW
+from utils.models import CreationModificationDateMixin
 
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
@@ -98,10 +90,8 @@ class AfrikanCountries(Countries):
 
 
 class Brand(CreationModificationDateMixin):
-    # user = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, blank=True, null=True)
     profile = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-    slug = models.SlugField(
-                            default='',
+    slug = models.SlugField(default='',
                             editable=False,
                             blank=True,
                             null=True
@@ -128,7 +118,6 @@ class Brand(CreationModificationDateMixin):
     business_description = models.TextField(help_text="Tell us what you do and the kind of products you sell")
 
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
-    # date_of_registration = models.DateField
     country = CountryField(multiple=False)
     address1 = models.CharField(max_length=60, blank=True, null=True)
     address2 = models.CharField(max_length=60, blank=True, null=True)
@@ -175,7 +164,6 @@ class Brand(CreationModificationDateMixin):
         return slug_candidate
 
     def save(self, *args, **kwargs):
-        # print('just updated model...seeing if it will save')
         if not self.pk or self.slug == '':
             self.slug = self._generate_slug()
 
@@ -207,9 +195,7 @@ class Product(CreationModificationDateMixin):
     sku = models.CharField(max_length=120, default='',
                            editable=False, )
     in_stock = models.BooleanField(default=True, editable=False)
-    # condition = models.CharField(choices=CONDITION_CHOICES, max_length=2,
-    #                              help_text='Choose the current condition for the product'
-    #                              )
+
     price = models.DecimalField(max_digits=9, decimal_places=2, help_text="Please note that the default currency is "
                                                                           "USD. Converty your product price to "
                                                                           "US dollar before listing")
@@ -217,8 +203,6 @@ class Product(CreationModificationDateMixin):
                                          help_text="Please note that the default currency is "
                                                    "USD. Converty your product price to "
                                                    "US Dollar before listing")
-    # made_in_afrika = models.BooleanField(default=False, help_text="Is the product you adding produced and "
-    #                                                               "manufactured in Afrika? If so, check this box")
 
     is_active = models.BooleanField(default=True, editable=False)
     is_bestseller = models.BooleanField(default=False)
@@ -258,19 +242,8 @@ class Product(CreationModificationDateMixin):
     objects = ProductManager()
     active = ActiveProductManager()
 
-    # made_in_afrika = ActiveAfricaProductManager()
-
     def __str__(self):
         return str(self.title)
-
-    # def clean(self):
-    #     # Don't allow draft entries to have a pub_date.
-    #     if self.seller != settings.AUTH_USER_MODEL:
-    #         print(self.seller)
-    #         print(settings.AUTH_PROFILE_MODULE)
-    #
-    #         raise ValidationError('Please select your seller email prior to adding. Make sure the selected email '
-    #                               'belongs to you.')
 
     def natural_key(self):
         return (self.slug,)
@@ -340,7 +313,6 @@ class Product(CreationModificationDateMixin):
 
     def cross_sells_sellers(self):
         from search.search import _prepare_words
-        from users.models import User
         from django.db.models import Q
 
         category = self.product_categories
@@ -405,23 +377,20 @@ class Product(CreationModificationDateMixin):
         return slug_candidate
 
     def _generate_sku(self):
-        # Brand > Product > Category > Productcondition >
 
         brand = str(self.brand_name)[:3]
         title = str(self.title)[:3]
-        # category = str(self.product_categories.all()[0])[:3]
-        condition = str(self.created)
+        created = str(self.created)
 
-        sku = '{}-{}-{}'.format(brand, title, condition)
+        sku = '{}-{}-{}'.format(brand, title, created)
 
         for i in itertools.count(1):
             if not Product.objects.filter(sku=sku).exists():
                 break
-            sku = '{}-{}-{}-{}'.format(brand, title, condition, i)
+            sku = '{}-{}-{}-{}'.format(brand, title, created, i)
         return sku
 
     def save(self, *args, **kwargs):
-        # print('just updated model...seeing if it will save')
         if not self.pk:
             self.slug = self._generate_slug()
             self.sku = self._generate_sku()
@@ -442,8 +411,7 @@ class Product(CreationModificationDateMixin):
         super().save(*args, **kwargs)
 
 
-# Product model class definition here
-# tags register
+# REGISTER PRODUCT MODEL AS A TAG
 register(Product)
 
 
@@ -590,7 +558,6 @@ class StatusCode(CreationModificationDateMixin):
 
 
 class OrderItem(CreationModificationDateMixin):
-    # from stats.models import ProductView
     NEW = 10
     PROCESSING = 20
     SENT = 30
@@ -700,7 +667,6 @@ class Order(CreationModificationDateMixin):
     billing_country = models.CharField(max_length=3)
     billing_city = models.CharField(max_length=12, blank=True, null=True)
 
-    # shipping_name = models.CharField(max_length=60, blank=True, null=True)
     shipping_address1 = models.CharField(max_length=60)
     shipping_address2 = models.CharField(max_length=60, blank=True)
     shipping_zip_code = models.CharField(max_length=12)
@@ -796,9 +762,7 @@ class ProductReview(models.Model):
 
 
 class Address(models.Model):
-    from stats.models import ProductView
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.CASCADE)
-    # cart_id = models.ForeignKey(ProductView, max_length=70, blank=True, null=True, on_delete=models.CASCADE)
     cart_id = models.CharField(max_length=40, blank=True, null=True)
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
@@ -812,8 +776,6 @@ class Address(models.Model):
     email = models.EmailField(max_length=50, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     date_updated = models.DateTimeField(auto_now_add=True)
-
-    # contact info
 
     def __str__(self):
         return "%s, %s, %s, %s, %s" % (self.street_address, self.country, self.city, self.zip, self.phone)
@@ -853,28 +815,3 @@ class RequestRefund(models.Model):
 
     def __str__(self):
         return f"{self.pk}"
-# class OrderAnonymous(OrderInfo): from stats.models import ProductView cart_id = models.ForeignKey(ProductView,
-# max_length=70, blank=True, null=True, on_delete=models.CASCADE) billing_address = models.ForeignKey('Address',
-# related_name='billing_address_anonymous', on_delete=models.SET_NULL, blank=True, null=True) shipping_address =
-# models.ForeignKey('Address', related_name='shipping_address_anonymous', on_delete=models.SET_NULL, blank=True,
-# null=True)
-#
-#     class Meta:
-#         ordering = ['-order_date']
-#         verbose_name_plural = 'OrderAnonymous'
-#
-#     def __str__(self):
-#         return str(self.cart_id)
-#
-#     def get_total(self):
-#         total = 0
-#         for order_item in self.items.all():
-#             total += order_item.get_final_price()
-#         return total
-#
-#     def total_items(self):
-#         total = 0
-#         for order_item in self.items.all():
-#             total += order_item.quantity
-#         return total
-#

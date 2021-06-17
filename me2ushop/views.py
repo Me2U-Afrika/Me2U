@@ -19,10 +19,9 @@ from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.utils import timezone
 from django.views.generic import ListView, View, CreateView, UpdateView, DeleteView, FormView, TemplateView
 from django_filters.views import FilterView
-from tagging.models import Tag, TaggedItem
+from tagging.models import TaggedItem
 from weasyprint import HTML
 
 from marketing.models import *
@@ -46,10 +45,8 @@ class BrandCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     fields = ['title', 'business_type', 'business_description', 'business_email', 'business_phone', 'shipping_status',
               'country', 'subscription_type', 'logo']
 
-    # success_url = reverse_lazy("users:seller_confirm")
 
     def get_success_url(self):
-        # Assuming there is a ForeignKey from Productattribute to Product in your model
         return reverse_lazy('sellers:seller_home', kwargs={'slug': self.object.slug})
 
     def form_valid(self, form):

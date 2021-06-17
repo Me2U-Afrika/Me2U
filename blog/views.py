@@ -1,18 +1,14 @@
-import json
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django import forms
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from me2ushop.forms import ProductForm, PostForm, PostUpdateForm, PostCommentForm
+from me2ushop.forms import PostForm, PostUpdateForm
 from me2ushop.models import Brand
-from users.models import SellerProfile
 from .models import *
-from django.views.generic import ListView, DetailView, View, CreateView, UpdateView, DeleteView, FormView
 
 
 # Create your views here.
