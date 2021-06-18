@@ -38,10 +38,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000', 'me2uafrika.com', 'www.me2uafrika.com']
+ALLOWED_HOSTS = ['me2uafrica.herokuapp.com', '127.0.0.1:8000', 'me2uafrika.com', 'www.me2uafrika.com']
 
-# CANON_URL_HOST = 'https://me2uafricaherokuapp.com/'
-# CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com', 'me2u africa.herokuapp.com']
+CANON_URL_HOST = 'www.me2uafrika.com'
+CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'me2uafrica.herokuapp.com']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
@@ -162,7 +162,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'Me2U.SSLMiddleware.SSLRedirect',
     'main.middleware.cart_middleware',
-    # 'marketing.urlcanon.URLCanonicalizationMiddleware',
+    'marketing.urlcanon.URLCanonicalizationMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'asymmetric_jwt_auth.middleware.JWTAuthMiddleware',
 

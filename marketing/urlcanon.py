@@ -12,6 +12,7 @@ class URLCanonicalizationMiddleware(object):
             """ only perform the redirect if not in debug mode """
             protocol = 'https://' if request.is_secure() else 'http://'
             host = get_host(request)
+            print('host:', host)
             new_url = ''
             try:
                 if host in settings.CANON_URLS_TO_REWRITE:
