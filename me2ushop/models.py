@@ -196,10 +196,12 @@ class Product(CreationModificationDateMixin):
                            editable=False, )
     in_stock = models.BooleanField(default=True, editable=False)
 
-    price = models.DecimalField(max_digits=9, decimal_places=2, help_text="Please note that the default currency is "
-                                                                          "USD. Converty your product price to "
-                                                                          "US dollar before listing")
-    discount_price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True,
+    price = models.DecimalField(max_digits=9, decimal_places=2, default=0,
+                                help_text="Please note that the default currency is "
+                                          "USD. Converty your product price to "
+                                          "US dollar before listing")
+    discount_price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(1)],
+                                         blank=True, null=True,
                                          help_text="Please note that the default currency is "
                                                    "USD. Converty your product price to "
                                                    "US Dollar before listing")
@@ -342,7 +344,6 @@ class Product(CreationModificationDateMixin):
         from django.db.models import Q
         orders = Order.objects.filter(items__item=self)
         users = User.objects.filter(order__items__item=self)
-        # print('users', users)
         items = OrderItem.objects.filter(Q(order__user__in=users) |
                                          Q(order__in=orders)
                                          ).exclude(item=self)
@@ -359,14 +360,11 @@ class Product(CreationModificationDateMixin):
         c = collections.Counter(matching)
 
         for product, count in c.most_common(3):
-            # print('%s: %7d' % (product, count))
             most_products.append(product)
-        # print('most_products:', most_products)
 
         return most_products
 
     def _generate_slug(self):
-        max_length = self._meta.get_field('slug').max_length
         value = self.title
         slug_candidate = slug_original = slugify(value, allow_unicode=True)
         for i in itertools.count(1):
