@@ -397,28 +397,6 @@
                                                 <a href="{% url LOGIN_URL %}?next={{ request.path }}" >Sell On Me2U<img src="{{ STATIC_URL }}images/add-icon.png" alt="" style="height:28px; width:28px;"></a>
                                             </li>
                                         {% endif %}
-<!--                                        <li class="page_menu_item has-children">-->
-<!--                                            <a href="#">Featured Brands<i class="fa fa-angle-down"></i></a>-->
-<!--                                            <ul class="page_menu_selection">-->
-
-<!--                                                    {% for brand in brands %}-->
-<!--                                                    {% if brand.is_featured %}-->
-<!--                                                    <li><a href="{% url 'me2ushop:seller_page' brand.id %}">{{ brand.title }}<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                                    {% endif %}-->
-<!--                                                    {% endfor %}-->
-
-<!--                                                </ul>-->
-<!--                                        </li>-->
-<!--                                        <li class="page_menu_item has-children">-->
-<!--                                            <a href="#">Trending Products<i class="fa fa-angle-down"></i></a>-->
-<!--                                            <ul class="page_menu_selection">-->
-
-<!--                                                    {% for trend in trends %}-->
-<!--                                                    <li><a href="{{ trend.product.get_absolute_url }}">{{ trend.product.title }}<i class="fas fa-chevron-down"></i></a></li>-->
-<!--                                                    {% endfor %}-->
-
-<!--                                            </ul>-->
-<!--                                        </li>-->
 
                                         <li class="page_menu_item"><a href="{% url 'blog:blog_home' %}">blog<i class="fa fa-angle-down"></i></a></li>
                                         <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact<i class="fa fa-angle-down"></i></a></li>

@@ -1200,19 +1200,18 @@ def add_cart(request, slug):
             cart = Order.objects.create(user=user, order_date=order_date)
 
         request.session['cart_id'] = cart.id
-        print('cart2:', cart)
 
     if request.method == "POST":
         print('we came to post')
         form = CartAddFormSet(request.POST or None)
         if form.is_valid():
-            print("is valid:", form.is_valid())
+            # print("is valid:", form.is_valid())
             try:
                 # Get quantity from useronline
                 quantity = form.cleaned_data.get('quantity')
-                print("qty:", quantity)
+                # print("qty:", quantity)
                 item = get_object_or_404(Product, slug=slug)
-                print("item we found:", item)
+                # print("item we found:", item)
 
                 order_item, created = OrderItem.objects.get_or_create(
                     customer_order=cart,
@@ -1220,7 +1219,7 @@ def add_cart(request, slug):
                     ordered=False
                 )
                 print("order_item:", order_item)
-                print("created:", created)
+                # print("created:", created)
 
                 # check if the order item is in the order
                 if cart.items.filter(item__slug=item.slug).exists():
@@ -1248,7 +1247,7 @@ def add_cart(request, slug):
                         order_item.user = request.user
 
                 order_item.save()
-                print(order_item.quantity)
+                # print(order_item.quantity)
                 return redirect("me2ushop:order_summary")
             except Exception:
                 messages.info(request, 'ERROR.')
@@ -1892,6 +1891,7 @@ class WishListView(LoginRequiredMixin, ListView):
 
 
 class Order_summary_view(View):
+    # print('we came here Order summary')
     def get(self, *args, **kwargs):
         try:
             if self.request.user.is_authenticated:
