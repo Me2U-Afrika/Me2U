@@ -13,14 +13,6 @@
 
                     <div class="owl-carousel owl-theme brands_slider">
 
-                        {% for brand in brands %}
-                        {% if brand.is_featured %}
-                        <div class="owl-item">
-                            <div class="brands_item d-flex flex-column justify-content-center"><a href="{{ brand.get_frontstore_url }}"><img src="{{ brand.logo.url }}" alt=""></a></div>
-                        </div>
-                        {% endif %}
-                        {% endfor %}
-
                     </div>
 
                     <!-- Brands Slider Navigation -->
