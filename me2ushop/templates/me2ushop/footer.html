@@ -15,7 +15,9 @@
 
                         {% for brand in brands %}
                         {% if brand.is_featured %}
-                        <div class="owl-item"><div class="brands_item d-flex flex-column justify-content-center"><a href="{% url 'me2ushop:seller_page' brand.id %}"><img src="{{ brand.logo.url }}" alt=""></a></div></div>
+                        <div class="owl-item">
+                            <div class="brands_item d-flex flex-column justify-content-center"><a href="{{ brand.get_frontstore_url }}"><img src="{{ brand.logo.url }}" alt=""></a></div>
+                        </div>
                         {% endif %}
                         {% endfor %}
 
@@ -153,7 +155,8 @@
             <div class="col">
 
                 <div class="copyright_container d-flex flex-sm-row flex-column align-items-center justify-content-start">
-                    <div class="copyright_content"><!-- Link back to Me2UAfrika can't be removed. Licensed under CC BY 3.0. -->
+                    <div class="copyright_content">
+                        <!-- Link back to Me2UAfrika can't be removed. Licensed under CC BY 3.0. -->
                         Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | <a href="{% url 'me2ushop:home' %}" target="_blank">Me<i class="fa fa-heart" aria-hidden="true"></i>U|Afrika</a> | made by <a href="https://colorlib.com" target="_blank">Colorlib</a>
                         </div>
                         <div class="logos ml-sm-auto">
