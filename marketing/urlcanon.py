@@ -4,7 +4,7 @@ from urllib3 import get_host
 from Me2U import settings
 
 
-class URLCanonicalizationMiddleware(object):
+class URLCanonicalizationMiddleware:
     def process_view(self, request, view_func, view_args, view_kwargs):
         if not settings.DEBUG:
             # print(settings.DEBUG)
