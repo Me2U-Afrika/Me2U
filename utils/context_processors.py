@@ -1,12 +1,11 @@
-from categories.models import Category, Department
-from me2ushop.models import Product, ProductReview, Brand, WishList
 import os
 
 from django.conf import settings
 
-from stats import stats
+from categories.models import Department
 from marketing.models import *
-from django.views.decorators.cache import cache_page
+from me2ushop.models import ProductReview, Brand, WishList
+from stats import stats
 
 timeout = 600  # 10 min
 
@@ -27,7 +26,6 @@ def me2u(request):
     if request.user.is_authenticated and request.user.is_seller:
         try:
             brand = Brand.objects.filter(profile=request.user)
-            # print('brand context:', brand)
             context.update({'user_brands': brand})
         except Exception:
             pass
@@ -43,7 +41,7 @@ def me2u(request):
         if session:
             context.update({'recently_viewed': stats.get_recently_viewed(request)})
     except KeyError:
-        context.update({'recently_viewed': None})
+        pass
 
     banners = Banner.objects.filter(active=True)
     try:
