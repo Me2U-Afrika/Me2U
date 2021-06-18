@@ -29,10 +29,6 @@
     <title>{% block title %}{% if page_title %}{{ page_title }} - {% endif %} {{ site_name }}{% endblock %}</title>
     <meta name="google-site-verification" content="m99rTgHStqJaWoR2y0EqD02MxvoJXP_lLhSQ9VeMjqc" />
 
-    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">-->
-    <!--	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
-    <!--	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>-->
-    <!--    <link href="{{ STATIC_URL }}css/plugins/fontawesome-free-5.0.1/css/fontawesome-all.css" rel="stylesheet" type="text/css">-->
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
 
@@ -131,21 +127,6 @@
 <body>
 
     {% include "tags/modal.html" %}
-
-    {% block sms %}
-    <div class="pt-0 ms">
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} " role="alert">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        {% endfor %}
-        {% endif %}
-    </div>
-    {% endblock %}
 
 
     {% block navbar %}
@@ -471,10 +452,23 @@
     </header>
     {% endblock %}
 
+    {% block sms %}
+    <div class="pt-0 ms">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} " role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    {% endblock %}
 
     <!-- site wrapper-->
     {% block site_wrapper %}
-
 
     {% endblock %}
     <!-- site wrapper-->
