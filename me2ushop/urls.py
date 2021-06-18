@@ -20,6 +20,7 @@ urlpatterns = [
     # url(r'^$', cache_page(60 * 4)(views.HomeView.as_view()), name='home'),
     url(r'^$', cache_page(60 * 4)(views.HomeViewTemplateView.as_view()), name='home'),
     url("brand-create/", views.BrandCreateView.as_view(), name="brand_create", ),
+    url("^brand-(?P<pk>[\w-]+)/update/$", views.BrandUpdateView.as_view(), name="brand_update", ),
 
     url('customer-service/(?P<order_id>[-\w]+)/$', views.room, name="cs_chat"),
     url('customer-service/', TemplateView.as_view(template_name='customer_service.html'),
