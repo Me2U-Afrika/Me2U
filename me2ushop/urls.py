@@ -27,7 +27,7 @@ urlpatterns = [
         name="cs_main"),
 
     # url('seller/(?P<id>[-\w]+)/$', views.SellerView.as_view(), name='seller_page'),
-    url(r'^(?P<slug>[\w-]+)/$', views.SellerView.as_view(), name='seller_page'),
+    url(r'^brand/(?P<slug>[\w-]+)/$', views.SellerView.as_view(), name='seller_page'),
 
     url(r'^add_cart/(?P<slug>[\w-]+)/$', views.add_cart, name='add_cart'),
     url(r'^add-wishlist/(?P<slug>[\w-]+)/$', views.add_wishlist, name='add_wishlist'),
