@@ -1,3 +1,12 @@
+GETTING STARTED:
+Fork project:
+install postgres
+createdatabase with name and password you desire
+you can comment out the memcachier requirements or get your credentials by creating an account with memcachier
+
+after creating a database with postgres, run python manage.py makemigrations
+createsuperuser: python manage.py createsuperuser
+then run python manage.py runserver
 
 Dump whole database in to a db.json file
     -manage.py dumpdata > db.json
