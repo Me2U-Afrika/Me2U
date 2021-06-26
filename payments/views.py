@@ -6,7 +6,7 @@ import os
 
 from me2ushop.models import Order
 
-rave = Rave(os.environ.get('RAVE_PRODUCTION_PUBLIC_KEY'), os.environ.get('RAVE_SANDBOX_SECRET_KEY'))
+rave = Rave(os.environ.get('RAVE_PRODUCTION_PUBLIC_KEY'), os.environ.get('RAVE_SANDBOX_SECRET_KEY'), usingEnv=False)
 
 
 # Create your views here.

@@ -55,6 +55,7 @@ urlpatterns = [
     # url(r'^cache/', include('django_memcached.urls')),
 
     url('categories', include('categories.urls', namespace='categories')),
+    path("djangorave/", include("djangorave.urls", namespace="djangorave"))
 
     # url('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     # url('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
