@@ -20,6 +20,7 @@ PAYMENT_CHOICES = {
     ('P', "Paypal"),
     ('S', "Stripe"),
     ('P', "Debit Card/Credit Card"),
+    ('Fw', "Flutterwave"),
 
 }
 

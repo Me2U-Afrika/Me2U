@@ -1,0 +1,26 @@
+{% load crispy_forms_tags %}
+
+<form id="card-form" method="post" action="{% url 'payments:rave_charge_card' %}">
+       {% csrf_token %}
+    <div class="cardno">
+            <label for="cardno">Card Number: </label>
+            <input type="text" name="cardno" id="cardno">
+    </div>
+
+    <div class="cvv">
+        <label for="cvv">CVV: </label>
+        <input type="text" name="cvv" id="cvv">
+    </div>
+
+    <div class="expiry">
+        <label for="expiry">Expiry Date: </label>
+        <input type="text" name="expdate" id="expdate">
+    </div>
+    <div class="pin">
+        <label for="pin">PIN: </label>
+        <input type="text" name="pin" id="pin">
+    </div>
+    <input type="hidden" name="order_id" value="{{ order.id }}" />
+    <button class="pay" id="card-pay" type="submit">Pay Here</button>
+
+</form>

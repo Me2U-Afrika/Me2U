@@ -78,7 +78,7 @@ $ python -m pip install --force-reinstall --ignore-installed --upgrade --no-inde
 VIRTUAL ENV
 venv\Scripts\activate
 
-git push origin +1cc6e86^:me2udev revert changes by deleting the latest
+git push origin +81feb0d^:master revert changes by deleting the latest
 
 git branch -D  branchname
 

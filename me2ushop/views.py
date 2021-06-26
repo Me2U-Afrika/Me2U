@@ -2091,11 +2091,7 @@ class Checkout_page(View):
         try:
             if self.request.user.is_authenticated:
                 order = Order.objects.get(user=self.request.user, ordered=False)
-                # if form_address.is_valid():
-                #     print('true it\'s valid')
-                #     use_shipping = form.cleaned_data.get('shipping_address')
-                #     use_billing = form.cleaned_data.get('billing_address')
-                #     print('shipping:', use_shipping)
+
                 if form.is_valid():
                     print(form.is_valid())
                     # if not order.billing_address1:
@@ -2103,6 +2099,7 @@ class Checkout_page(View):
 
                     use_default_billing = form.cleaned_data.get('use_default_billing')
                     payment_option = form.cleaned_data.get('payment_option')
+                    print('payment_option:', payment_option)
 
                     if use_default_shipping:
 
@@ -2133,25 +2130,21 @@ class Checkout_page(View):
 
                     else:
                         print('we adding new address')
-                        name = form.cleaned_data.get('name')
-                        email = form.cleaned_data.get('email')
-                        phone = form.cleaned_data.get('phone')
                         city = form.cleaned_data.get('shipping_city')
-                        print('city:', city)
                         shipping_address1 = form.cleaned_data.get('shipping_address')
                         shipping_address2 = form.cleaned_data.get('shipping_address2')
                         shipping_country = form.cleaned_data.get('shipping_country')
                         shipping_zip = form.cleaned_data.get('shipping_zip')
 
-                        if is_valid_form(
-                                [shipping_address1, shipping_country, shipping_zip, city, name, phone, email]):
+                        if is_valid_form([shipping_address1, shipping_country, shipping_zip, city]):
                             print('form is valid')
+                            print('phone:', self.request.user.profile.phone)
 
                             shipping_address = Address(
                                 user=self.request.user,
-                                name=name,
-                                email=email,
-                                phone=phone,
+                                name=self.request.user.username,
+                                email=self.request.user.email,
+                                phone=self.request.user.profile.phone,
                                 city=city,
                                 street_address=shipping_address1,
                                 apartment_address=shipping_address2,
@@ -2278,6 +2271,8 @@ class Checkout_page(View):
                         return redirect("me2ushop:payment", payment_option='mpesa')
                     elif payment_option == 'C':
                         return redirect("me2ushop:payment", payment_option='cash_on_delivery')
+                    elif payment_option == 'Fw':
+                        return redirect("me2ushop:payment", payment_option='flutterwave')
                     else:
                         messages.warning(self.request, 'Invalid Payment Option. Select mode of payment to continue')
                         return redirect("me2ushop:checkout")
@@ -2305,6 +2300,7 @@ class Checkout_page(View):
                         if is_valid_form([shipping_address1, shipping_country, city, shipping_zip, name, phone, email]):
                             print('valid details')
                             shipping_address = Address(
+                                # cart_id=order.id,
                                 name=name,
                                 email=email,
                                 phone=phone,
@@ -2395,6 +2391,8 @@ class Checkout_page(View):
                             return redirect("me2ushop:payment", payment_option='mpesa')
                         elif payment_option == 'C':
                             return redirect("me2ushop:payment", payment_option='cash_on_delivery')
+                        elif payment_option == 'Fw':
+                            return redirect("me2ushop:payment", payment_option='flutterwave')
                         else:
                             messages.warning(self.request, 'Invalid Payment Option. Select mode of payment to continue')
                             return redirect("me2ushop:checkout")
@@ -2405,7 +2403,10 @@ class Checkout_page(View):
         except ObjectDoesNotExist:
             messages.error(self.request, "YOU DO NOT HAVE ANY ACTIVE ORDER!")
             return redirect("me2ushop:home")
-        except Exception:
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
             messages.error(self.request, "Error occured")
             return redirect("me2ushop:checkout")
 
@@ -2505,7 +2506,10 @@ class PaymentView(View):
             messages.warning(self.request, "You have no active orders")
             return redirect("me2ushop:home")
 
-        except Exception:
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
             return redirect("me2ushop:home")
 
     def post(self, *args, **kwargs):
@@ -2528,9 +2532,10 @@ class PaymentView(View):
 
             if form.is_valid():
                 print('valid payment form')
-                print('order:', self.request.POST['stripeToken'])
-                token = self.request.POST['stripeToken']
-                # print('token', token)
+                print('order:', self.request.POST)
+                
+                token = self.request.POST.get('stripeToken', False)
+                print('token', token)
 
                 amount = int(order.get_total() * 100)  # get in ksh
 
@@ -2615,7 +2620,10 @@ class PaymentView(View):
             else:
                 messages.error(self.request, "Invalid form ")
                 return redirect("me2ushop:home")
-        except Exception:
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
             return redirect("me2ushop:home")
 
 
@@ -2682,16 +2690,17 @@ def checkout_done(request):
         print(order_id)
 
         order = Order.objects.get(id=order_id)
+        print(order.ordered)
 
         context = {
             'order': order,
-
         }
-        print('request.session:', request.session['cart_id'])
 
         del request.session['cart_id']
 
-        return render(request, 'home/checkout_done.html', context)
+
+
+        return render(request, 'home/checkout_done.html', locals())
 
     except Exception:
         messages.warning(request, "No active orders")
