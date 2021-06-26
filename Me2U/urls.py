@@ -34,6 +34,7 @@ urlpatterns = [
 
     path('api-auth', include('rest_framework.urls')),
     path('api/payments/', include('payments.mpesaApi.urls')),
+    path('payments/', include('payments.urls')),
     path('accounts/', include('allauth.urls')),
 
     # cerbot

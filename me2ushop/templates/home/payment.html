@@ -163,11 +163,13 @@ label {
                         {% include 'snippets/mpesa_snippet.html' %}
                     </div>
                 {% endif %}
+                {% if payment == 'Fw' %}
+                    <div class="new-card-form center">
+                        {% include 'payments/flutterwave_payment.html' %}
+                    </div>
+                {% endif %}
 
           </div>
-
-
-
                 <!--Call to action-->
               <div class="pt-4 text-center font-small mt-4 wow fadeIn">
                   <a class="btn btn-outline-orange"  href="{% url 'me2ushop:home'%}"

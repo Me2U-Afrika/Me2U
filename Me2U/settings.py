@@ -38,10 +38,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-ALLOWED_HOSTS = ['https://me2uafrica.herokuapp.com', 'http://127.0.0.1:8000', 'me2uafrika.com', 'www.me2uafrika.com']
+ALLOWED_HOSTS = ['me2uafrica.herokuapp.com', '127.0.0.1:8000', 'me2uafrika.com', 'www.me2uafrika.com']
 
-# CANON_URL_HOST = 'https://me2uafricaherokuapp.com/'
-# CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'www.me2uafrika.com', 'me2u africa.herokuapp.com']
+CANON_URL_HOST = 'www.me2uafrika.com'
+CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'me2uafrica.herokuapp.com']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     # 'django_memcached',
     'memcache_status',
     # 'redis_cache',
+    'djangorave',
     'blog',
     'main',
     'bootstrap3',
@@ -171,18 +172,6 @@ MIDDLEWARE = [
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 
-# if not DEBUG:
-#     CACHES = {
-#         'default': {
-#             'BACKEND': 'django_bmemcached.memcached.BMemcached',
-#             'LOCATION': os.environ.get('MEMCACHEDCLOUD_SERVERS').split(','),
-#             'OPTIONS': {
-#                 'username': os.environ.get('MEMCACHEDCLOUD_USERNAME'),
-#                 'password': os.environ.get('MEMCACHEDCLOUD_PASSWORD')
-#             }
-#         }
-#     }
-
 servers = os.environ['MEMCACHIER_SERVERS']
 username = os.environ['MEMCACHIER_USERNAME']
 password = os.environ['MEMCACHIER_PASSWORD']
@@ -210,7 +199,6 @@ CACHES = {
 # CACHE_MIDDLEWARE_SECONDS = 2
 
 
-
 INTERNAL_IPS = ['127.0.0.1']
 
 ROOT_URLCONF = 'Me2U.urls'
@@ -219,7 +207,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        #'APP_DIRS': True,
+        # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -266,9 +254,7 @@ CHANNEL_LAYERS = {
 SITE_ID = 1
 GA_TRACKER_ID = '123'
 
-
 if not DEBUG:
-
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -340,7 +326,11 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'me2ushop:home'
 LOGIN_URL = 'account_login'
 
-# LOGIN_URL = 'login'
+RAVE_PRODUCTION_PUBLIC_KEY = os.environ.get('RAVE_PRODUCTION_PUBLIC_KEY')
+RAVE_PRODUCTION_SECRET_KEY = os.environ.get('RAVE_PRODUCTION_SECRET_KEY')
+RAVE_SANDBOX_PUBLIC_KEY = os.environ.get('RAVE_SANDBOX_PUBLIC_KEY')
+RAVE_SANDBOX_SECRET_KEY = os.environ.get('RAVE_SANDBOX_SECRET_KEY')
+RAVE_SANDBOX = True
 
 ACCOUNT_EMAIL_REQUIRED = True
 # ACCOUNT_USERNAME_REQUIRED = False
@@ -350,7 +340,6 @@ ACCOUNT_EMAIL_VERIFICATION = None
 SOCIALACCOUNT_ADAPTER = 'users.adapter.MySocialAccountAdapter'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 STATICFILES_STORAGE = 'Me2U.storage.WhiteNoiseStaticFilesStorage'
 
@@ -433,7 +422,6 @@ DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
 PRODUCTS_PER_PAGE = 4
 PRODUCTS_PER_ROW = 12
-
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 

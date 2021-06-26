@@ -125,7 +125,7 @@ def order_details(request, order_id, template_name="users/order-details.html"):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     page_title = 'Order Details for Order #' + order_id
     order_items = OrderItem.objects.filter(user=request.user, order=order)
-    seller_items = OrderItem.objects.filter(order=order, item__brand_name__user=request.user)
+    seller_items = OrderItem.objects.filter(order=order, item__brand_name__profile=request.user)
 
     print('seller_items:', order_items)
 

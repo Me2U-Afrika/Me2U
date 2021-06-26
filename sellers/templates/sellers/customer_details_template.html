@@ -43,9 +43,9 @@
     </div>
     <div class="col-md">
         <div class="card card-body">
-            <h5>Total Orders</h5>
+            <h5>Orders from {{ order.name }}</h5>
             <hr>
-            <h1 style="text-align: center; padding: 10px"> {{ previous_orders.count }}</h1>
+            <h1 style="text-align: center; padding: 10px"> {{ all_orders }}</h1>
         </div>
     </div>
 </div>
@@ -64,18 +64,19 @@
     <div class="row">
     <div class="col-md">
         <div class="card card-body">
+            <h3>New Orders</h3>
            <table class="table table-sm">
                <tr>
                    <th>Product</th>
-                   <th>Category</th>
+                   <th>Total Paid</th>
                    <th>Date Ordered</th>
                    <th>Status</th>
                    <th>Update</th>
                </tr>
-               {% for order in previous_orders %}
+               {% for order in customer_orders %}
                <tr>
                    <td>{{ order }}</td>
-                   <td>{{ order.item.get_category_choice_display }}</td>
+                   <td>{{ order.get_total_price }}</td>
                    <td>{{ order.date_ordered }}</td>
                    <td>{{ order.get_status_display }}</td>
                    <td><a href="/seller-admin" target="_blank">update</a></td>
@@ -85,7 +86,36 @@
         </div>
     </div>
     <br>
-</div>
+    </div>
+    {% if previous_orders %}
+    <div class="row">
+    <div class="col-md">
+        <div class="card card-body">
+            <h3>Previous Orders</h3>
+
+           <table class="table table-sm">
+               <tr>
+                   <th>Product</th>
+                   <th>Total Paid</th>
+                   <th>Date Ordered</th>
+                   <th>Status</th>
+                   <th>Update</th>
+               </tr>
+               {% for order in previous_orders %}
+               <tr>
+                   <td>{{ order }}</td>
+                   <td>{{ order.get_total_price }}</td>
+                   <td>{{ order.date_ordered }}</td>
+                   <td>{{ order.get_status_display }}</td>
+                   <td><a href="/seller-admin" target="_blank">update</a></td>
+               </tr>
+               {% endfor %}
+           </table>
+        </div>
+    </div>
+    <br>
+    </div>
+    {% endif %}
 
 </div>
 

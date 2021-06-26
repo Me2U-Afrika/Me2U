@@ -98,7 +98,7 @@ class CommentCreateView(CreateView):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     # fields = ['product', 'title', 'content', 'image']
-    template_name = 'sellers/product_form.html'
+    template_name = 'modelforms/product_form.html'
     form_class = PostForm
 
     def get_success_url(self):
@@ -111,10 +111,8 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
         return kwargs
 
-
     def get_context_data(self, **kwargs):
         context = super(PostCreateView, self).get_context_data(**kwargs)
-
 
         context.update({
 
@@ -130,7 +128,6 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
         obj.save()
         return super(PostCreateView, self).form_valid(form)
-
 
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
@@ -155,7 +152,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    template_name = 'sellers/product_confirm_delete.html'
+    template_name = 'modelforms/product_confirm_delete.html'
 
     def get_success_url(self):
         return reverse_lazy('blog:blog_home')
