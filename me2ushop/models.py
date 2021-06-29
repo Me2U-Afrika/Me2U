@@ -15,6 +15,7 @@ from tagging.registry import register
 from categories.models import Department
 from users.models import STATUSES, UNDER_REVIEW
 from utils.models import CreationModificationDateMixin
+from djangorave.models import DRPaymentTypeModel
 
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
@@ -54,6 +55,7 @@ PAYMENT_CHOICES = {
 
 SUBSCRIPTION_TYPE_CHOICE = (
     ('Fr', 'Free'),
+    ('St', 'Standard'),
     ('Bs', 'Basic'),
     ('Pr', 'Premium')
 )
@@ -122,8 +124,11 @@ class Brand(CreationModificationDateMixin):
     address1 = models.CharField(max_length=60, blank=True, null=True)
     address2 = models.CharField(max_length=60, blank=True, null=True)
     zip_code = models.CharField(max_length=12, blank=True, null=True)
-    subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
-                                         help_text='Select a monthly recurring subscription fees')
+    subscription_plan = models.ForeignKey(DRPaymentTypeModel, blank=True, null=True, on_delete=models.SET_NULL)
+    # subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
+    #                                      help_text='Select a monthly recurring subscription fees')
+    subscription_reference = models.CharField(max_length=200, blank=True, null=True)
+    subscription_status = models.BooleanField(blank=True, null=True)
     shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
                                        help_text='Is Your company able to ship or deliver your products once they '
                                                  'buyers order online?')
@@ -155,6 +160,9 @@ class Brand(CreationModificationDateMixin):
     def get_frontstore_url(self):
         return reverse('me2ushop:seller_page', kwargs={'slug': self.slug})
 
+    def get_brandupdate_url(self):
+        return reverse('me2ushop:brand_update', kwargs={'pk': self.pk})
+
     def _generate_slug(self):
         value = self.title
         slug_original = slugify(value, allow_unicode=True)
@@ -166,6 +174,10 @@ class Brand(CreationModificationDateMixin):
     def save(self, *args, **kwargs):
         if not self.pk or self.slug == '':
             self.slug = self._generate_slug()
+
+        if self.product_set.all():
+            for product in self.product_set.all():
+                product.save()
 
         cache.delete('brand-%s' % self.slug)
 
@@ -400,6 +412,11 @@ class Product(CreationModificationDateMixin):
         image = self.productimage_set.filter(in_display=True)
         # print('image', image.exists())
         if image.exists() and self.in_stock:
+            self.is_active = True
+        else:
+            self.is_active = False
+
+        if self.brand_name.subscription_status:
             self.is_active = True
         else:
             self.is_active = False

@@ -80,6 +80,7 @@ urlpatterns = [
     url(r'payment/(?P<payment_option>[\w-]+)/$', views.PaymentView.as_view(), {'SSL': True}, name='payment'),
     url(r'complete/', views.paypal_payment_complete, name='complete'),
     url(r'complete-cart/', views.paypal_payment_complete_cart, name='complete-cart'),
+    path('brand-pay/<int:brand_id>/', views.brand_subscription, name="brand_payment"),
 
     url('request_refund/', views.RefundView.as_view(), name='request_refund'),
     url('add/review', views.add_review),

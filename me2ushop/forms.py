@@ -28,7 +28,10 @@ PAYMENT_CHOICES = {
 class BrandForm(forms.ModelForm):
     class Meta:
         model = Brand
-        exclude = ['user', 'profile', 'valid_payment_method', 'active', 'is_featured', 'application_status']
+        exclude = ['user', 'profile', 'valid_payment_method', 'active', 'is_featured', 'application_status',
+                   'subscription_status',
+                   'subscription_reference'
+                   ]
 
 
 class ProductForm(forms.ModelForm):
