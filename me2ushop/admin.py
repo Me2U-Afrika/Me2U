@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 from .models import *
 
+
 # This mixin will be used for the invoice functionality, which is
 # only available to owners and employees, but not dispatchers
 
@@ -97,7 +98,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_per_page = 50
     ordering = ['-created']
     list_editable = ('stock',)
-    list_filter = ('brand_name','product_categories')
+    list_filter = ('brand_name', 'product_categories')
 
     search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'product_categories', 'brand_name']
     exclude = ('created', 'modified',)
@@ -170,25 +171,26 @@ class SellersProductAdmin(ProductAdmin):
                     'meta_description',
                     ]
     list_editable = ('stock',)
-    readonly_fields = ("brand_name", "is_bestseller", "is_featured","is_bestrated")
+    readonly_fields = ("brand_name", "is_bestseller", "is_featured", "is_bestrated")
     autocomplete_fields = ()
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        brand = Brand.objects.get(user=request.user)
-        if brand:
-            return qs.filter(brand_name=brand)
+        brands = Brand.objects.filter(profile=request.user)
+        if brands:
+            for brand in brands:
+                return qs.filter(brand_name=brand)
 
     def save_model(self, request, obj, form, change):
-        brand = Brand.objects.get(user__user=request.user)
-        if brand:
+        brands = Brand.objects.filter(profile=request.user)
+        if brands:
             if not obj.brand_name:
-                obj.brand_name = brand
+                obj.brand_name = brands[0]
             obj.save()
 
 
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ('title', 'profile', 'is_featured')
+    list_display = ('title', 'profile', 'is_featured', 'subscription_status')
     search_fields = ('title',)
     list_editable = ('is_featured',)
 
@@ -416,29 +418,18 @@ class SellersOrderAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         from utils import context_processors
         qs = super().get_queryset(request)
-        try:
-
-            brand = context_processors.me2u(request)['brand'][0]
-        except Exception:
-            brand = None
-        # print('qs:', qs.filter(items__item__brand_name=brand[0]))
-        # print('brand:', brand)
-        if brand:
-            products = brand.product_set.all()
-            # print('products:', products)
-
-            return qs.filter(items__item__in=products).distinct()
-
-            # for order in qs:
-            #     print('items:', order, order.items.filter(item__brand_name=brand[0]))
-            #     return order.items.filter(item__brand_name=brand[0])
+        brands = Brand.objects.filter(profile=request.user)
+        if brands:
+            for brand in brands:
+                return qs.filter(items__item__brand_name=brand)
 
 
 class SellersOrderItemAdmin(admin.ModelAdmin):
     list_display = (
+        'customer_order',
         'user',
         'item',
-        'order_received',
+        'quantity',
         'status',
         'created',
         'modified',
@@ -446,7 +437,7 @@ class SellersOrderItemAdmin(admin.ModelAdmin):
         'delivered_by'
     )
     # list_editable = ['being_delivered', 'received']
-    list_display_links = ('item',)
+    list_display_links = ('item', 'user',)
     # inlines = (OrderInline,)
 
     readonly_fields = (
@@ -455,22 +446,18 @@ class SellersOrderItemAdmin(admin.ModelAdmin):
         'status',
         'ordered',
         'delivered_by',
+        'quantity',
     )
 
     list_filter = ("status", "ordered", "item",)
-    list_editable = ('order_received',)
 
     # Dispatchers are only allowed to see order that# are ready to be shipped
     def get_queryset(self, request):
-        from utils import context_processors
         qs = super().get_queryset(request)
-        try:
-            brand = context_processors.me2u(request)['brand'][0]
-        except Exception:
-            brand = None
-
-        if brand:
-            return qs.filter(item__brand_name=brand)
+        brands = Brand.objects.filter(profile=request.user)
+        if brands:
+            for brand in brands:
+                return qs.filter(item__brand_name=brand)
 
 
 class DispatchersOrderAdmin(admin.ModelAdmin):

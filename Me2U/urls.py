@@ -25,6 +25,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 import certbot_django.server.urls
 
+from me2ushop.views import TransactionDetailView
 
 urlpatterns = [
     url(r'^main-admin/', admin.site.urls),
@@ -34,6 +35,7 @@ urlpatterns = [
 
     path('api-auth', include('rest_framework.urls')),
     path('api/payments/', include('payments.mpesaApi.urls')),
+    path('payments/', include('payments.urls')),
     path('accounts/', include('allauth.urls')),
 
     # cerbot
@@ -54,6 +56,8 @@ urlpatterns = [
     # url(r'^cache/', include('django_memcached.urls')),
 
     url('categories', include('categories.urls', namespace='categories')),
+    path("djangorave/<str:reference>/", TransactionDetailView.as_view(), name="reference"),
+    path("djangorave/", include("djangorave.urls", namespace="djangorave"))
 
     # url('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     # url('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),

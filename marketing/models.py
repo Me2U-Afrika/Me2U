@@ -152,7 +152,6 @@ class Banner(CreationModificationDateMixin):
     }, delete_orphans=True)
     active = models.BooleanField(default=True, editable=False)
 
-
     objects = MarketingManager()
 
     class Meta:

@@ -29,19 +29,24 @@
             <h5>Delivery Address</h5>
             <hr>
             <h3>Shipping Address</h3>
-            <p>Street Address: {{order.customer_order.shipping_address1 }}</p>
-            <p>Apartment Address: {{order.customer_order.shipping_address2 }}</p>
-            <p>Country: {{order.customer_order.shipping_country }}</p>
-            <p>City: {{order.customer_order.shipping_city }}</p>
-            <p>Zip Code: {{order.customer_order.shipping_zip_code }}</p>
+            <p>Customer Name: {{ order.name }}</p>
+            <p>Street Address: {{order.shipping_address1 }}</p>
+            {% if order.shipping_address2 %}
+            <p>Apartment Address: {{order.shipping_address2 }}</p>
+            {% endif %}
+            <p>Country: {{ order.shipping_country }}</p>
+            <p>City: {{ order.shipping_city }}</p>
+            <p>Email: {{ order.email }}</p>
+            <p>phone: {{ order.phone }}</p>
 
-            <h3>Billing Address</h3>
-            <p>Street Address: {{order.customer_order.billing_address1 }}</p>
-            <p>Apartment Address: {{order.customer_order.billing_address2 }}</p>
-            <p>Country: {{order.customer_order.billing_country }}</p>
-            <p>City: {{order.customer_order.billing_city }}</p>
-            <p>Zip Code: {{order.customer_order.billing_zip_code }}</p>
+            <p>Zip Code: {{order.shipping_zip_code }}</p>
 
+<!--            <h3>Billing Address</h3>-->
+<!--            <p>Street Address: {{order.billing_address1 }}</p>-->
+<!--            <p>Apartment Address: {{order.billing_address2 }}</p>-->
+<!--            <p>Country: {{order.billing_country }}</p>-->
+<!--            <p>City: {{order.billing_city }}</p>-->
+<!--            <p>Zip Code: {{order.billing_zip_code }}</p>-->
 
         </div>
     </div>

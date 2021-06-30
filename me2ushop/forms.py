@@ -16,10 +16,11 @@ from mptt.forms import TreeNodeMultipleChoiceField, TreeNodePositionField
 
 PAYMENT_CHOICES = {
 
-    ('M', "M-Pesa"),
+    # ('M', "M-Pesa"),
     ('P', "Paypal"),
-    ('S', "Stripe"),
+    # ('S', "Stripe"),
     ('P', "Debit Card/Credit Card"),
+    ('Fw', "Flutterwave"),
 
 }
 
@@ -27,7 +28,10 @@ PAYMENT_CHOICES = {
 class BrandForm(forms.ModelForm):
     class Meta:
         model = Brand
-        exclude = ['user', 'profile', 'valid_payment_method', 'active', 'is_featured', 'application_status']
+        exclude = ['user', 'profile', 'valid_payment_method', 'active', 'is_featured', 'application_status',
+                   'subscription_status',
+                   'subscription_reference'
+                   ]
 
 
 class ProductForm(forms.ModelForm):
