@@ -480,6 +480,8 @@ class HomeViewTemplateView(TemplateView):
         context = {}
 
         active_products = Product.active.all().select_related()
+        RAVE_SANDBOX = getattr(settings, "RAVE_SANDBOX", True)
+        print('sandbox', RAVE_SANDBOX)
 
         try:
             # TOP BANNER
