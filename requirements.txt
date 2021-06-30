@@ -115,7 +115,7 @@ pycparser==2.20
 pycryptodome==3.10.1
 pydot==1.4.1
 pydotplus==2.0.2
-Pygments==2.7.0
+Pygments==2.7.4
 PyHamcrest==2.0.2
 PyJWT==1.7.1
 pymemcache==3.4.0
