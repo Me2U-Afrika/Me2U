@@ -662,7 +662,7 @@ class Order(CreationModificationDateMixin):
     status = models.IntegerField(choices=STATUSES, default=NEW)
     status_code = models.ForeignKey('StatusCode', on_delete=models.SET_NULL, blank=True, null=True)
     items = models.ManyToManyField('OrderItem')
-    ref_code = models.CharField(max_length=20)
+    ref_code = models.CharField(max_length=200)
     start_date = models.DateTimeField(auto_now_add=True)
     order_date = models.DateTimeField(auto_now=True)
     ordered = models.BooleanField(default=False)

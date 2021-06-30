@@ -23,12 +23,14 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, View, CreateView, UpdateView, DeleteView, FormView, TemplateView
 from django_filters.views import FilterView
 from djangorave.models import DRPaymentTypeModel, DRTransactionModel
-from tagging.models import TaggedItem
+from tagging.models import TaggedItem, Tag
 from weasyprint import HTML
 
 from marketing.models import *
 from marketing.models import Slider
+from payments.models import DRCTransactionModel
 from stats import stats
+from users.models import User
 from .forms import *
 from .models import *
 import datetime
@@ -2649,7 +2651,8 @@ class PaymentView(View):
                     context = {
                         'order': order,
                         'DISPLAY_COUPON_FORM': False,
-                        'payment': order.payment
+                        'payment': order.payment,
+                        'public_key': settings.RAVE_SANDBOX_PUBLIC_KEY
 
                     }
 
@@ -2837,6 +2840,131 @@ def paypal_payment_complete_cart(request):
     order.save()
 
     return JsonResponse("payment successful", safe=False)
+
+
+def flutterCompleteTrans(request, reference):
+
+    order = get_object_or_404(Order, id=reference.split('__')[0])
+    print('Order we paying for:', order)
+
+    data = {
+        "txref": reference,
+        # this is the reference from the payment button response after customer paid.
+        "SECKEY": settings.RAVE_SANDBOX_SECRET_KEY
+    }
+
+    # this is the url of the staging server. Please make sure to change to that of production server when you
+    # are ready to go live.
+    url = "https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/v2/verify"
+    headers = {"Authorization": "Bearer %s" % settings.RAVE_SANDBOX_SECRET_KEY}
+
+    # make the http post request to our server with the parameters
+    response = requests.post(url, json=data, headers=headers)
+
+    # print(response.json())
+    if response:
+        response = response.json()
+
+        transaction = DRCTransactionModel.objects.get_or_create(
+            order=order,
+            reference=reference,
+            flutterwave_reference=response['data']['flwref'],
+            order_reference=response['data']['orderref'],
+            amount=response['data']['amount'],
+            charged_amount=response['data']['chargedamount'],
+            status=response['data']['status'],
+
+        )
+        print('transaction:', transaction)
+
+        if request.user.is_authenticated:
+            transaction = DRCTransactionModel.objects.get(
+                order=order,
+                reference=reference)
+            user = User.objects.get(id=request.user.id)
+            transaction.user = user
+            transaction.save()
+
+        order.ordered = True
+        order.ref_code = reference
+        order.status = 20
+        order_items = order.items.all()
+        order_items.update(ordered=True)
+        for item in order_items:
+            item.save()
+        order.save()
+
+        return checkout_done(request)
+
+
+class FlutterTransactionDetailView(LoginRequiredMixin, TemplateView):
+    """Returns a transaction template"""
+
+    template_name = "home/checkout_done.html"
+
+    def get_context_data(self, **kwargs):
+        """Add plan to context data"""
+        kwargs = super().get_context_data(**kwargs)
+
+        order = get_object_or_404(Order, id=self.kwargs["reference"].split('__')[0])
+        print('Order we paying for:', order)
+
+        try:
+            transaction = DRCTransactionModel.objects.get(
+                user=self.request.user,
+                reference=self.kwargs["reference"])
+
+            kwargs["transaction"] = transaction
+
+        except DRCTransactionModel.DoesNotExist:
+            print('Transaction does not exist creating another')
+
+            # checking if the passed transaction is valid
+
+            data = {
+                "txref": kwargs["reference"],
+                # this is the reference from the payment button response after customer paid.
+                "SECKEY": settings.RAVE_SANDBOX_SECRET_KEY
+            }
+
+            # this is the url of the staging server. Please make sure to change to that of production server when you
+            # are ready to go live.
+            url = "https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/v2/verify"
+            headers = {"Authorization": "Bearer %s" % settings.RAVE_SANDBOX_SECRET_KEY}
+
+            # make the http post request to our server with the parameters
+            response = requests.post(url, json=data, headers=headers)
+
+            # print(response.json())
+            if response:
+                response = response.json()
+
+                transaction = DRCTransactionModel.objects.get_or_create(
+                    user=self.request.user,
+                    order=order,
+                    reference=self.kwargs["reference"],
+                    flutterwave_reference=response['data']['flwref'],
+                    order_reference=response['data']['orderref'],
+                    amount=response['data']['amount'],
+                    charged_amount=response['data']['chargedamount'],
+                    status=response['data']['status'],
+
+                )
+                print('transaction:', transaction)
+
+                order.ordered = True
+                order.ref_code = self.kwargs["reference"]
+                order.status = 20
+                order_items = order.items.all()
+                order_items.update(ordered=True)
+                for item in order_items:
+                    item.save()
+                order.save()
+                del self.request.session['cart_id']
+
+        kwargs["order"] = order
+
+        return kwargs
 
 
 def checkout_done(request):

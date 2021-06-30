@@ -14,7 +14,6 @@ from djangorave.models import DRPaymentTypeModel
 from djangorave import settings
 from djangorave.utils import create_integrity_hash
 
-
 register = template.Library()
 UserModel = get_user_model()
 
@@ -43,6 +42,28 @@ def pay_button_params(user_pk: str, payment_type_pk: str, brand_id: str) -> str:
             "redirect_url": redirect_url,
             "pub_key": settings.PUBLIC_KEY,
             "integrity_hash": integrity_hash,
+        }
+    )
+
+
+@register.simple_tag()
+def pay_button_params_cart(order_id: str) -> str:
+    """Returns params required when submitting a payment request to rave.
+
+    Returns:
+        txref: created by combining payment_type_pk, timestamp and user_pk
+        redirect_url: transaction detail page to redirect to
+        pub_key: PBFPubKey from settings
+        integrity_hash: used by rave to ensure client side values are not altered
+    """
+    now = timezone.now().timestamp()
+    txref = f"{order_id}__{now}"
+    redirect_url = reverse("me2ushop:flutter_checkout", kwargs={"reference": txref})
+    return json.dumps(
+        {
+            "txref": txref,
+            "redirect_url": redirect_url,
+            "pub_key": settings.PUBLIC_KEY,
         }
     )
 

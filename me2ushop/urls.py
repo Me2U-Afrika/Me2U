@@ -28,6 +28,8 @@ urlpatterns = [
 
     # url('seller/(?P<id>[-\w]+)/$', views.SellerView.as_view(), name='seller_page'),
     url(r'^brand/(?P<slug>[\w-]+)/$', views.SellerView.as_view(), name='seller_page'),
+    # path("flutter-payment/<str:reference>/", views.FlutterTransactionDetailView.as_view(), name="flutter_checkout"),
+    path("flutter-payment/<str:reference>/", views.flutterCompleteTrans, name="flutter_checkout"),
 
     url(r'^add_cart/(?P<slug>[\w-]+)/$', views.add_cart, name='add_cart'),
     url(r'^add-wishlist/(?P<slug>[\w-]+)/$', views.add_wishlist, name='add_wishlist'),
