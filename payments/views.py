@@ -6,7 +6,7 @@ import os
 
 from me2ushop.models import Order
 
-rave = Rave(settings.RAVE_SANDBOX_PUBLIC_KEY, settings.RAVE_SANDBOX_SECRET_KEY, usingEnv=False)
+rave = Rave(os.environ.get('RAVE_PRODUCTION_PUBLIC_KEY'), os.environ.get('RAVE_SANDBOX_SECRET_KEY'), usingEnv=False)
 
 
 # Create your views here.
@@ -86,3 +86,4 @@ def rave_charge_card(request):
     except RaveExceptions.TransactionVerificationError as e:
         print(e.err["errMsg"])
         print(e.err["txRef"])
+

@@ -183,7 +183,7 @@
 <!--                                </ul>-->
 <!--                            </li>-->
                             <li class="page_menu_item"><a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a></li>
-                            <li class="page_menu_item"><a href="{% url 'sellers:seller_home' brand_id%}">MyDashboard<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{{ brand.get_backstore_url }}">MyDashboard<i class="fa fa-angle-down"></i></a></li>
 
                             <li class="page_menu_item"><a href="{% url 'blog:blog_list' %}">My Blogs</a></li>
                             <li class="page_menu_item"><a href="{% url 'blog:post_create' brand_id %}">Create New Blog<i class="fas fa-chevron-down"></i></a></li>

@@ -1,0 +1,95 @@
+{% extends 'me2ushop/base_template.html' %}
+{% load crispy_forms_tags %}
+
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
+<!--contact styles-->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
+
+{% endblock %}
+
+
+<body>
+
+{% block site_wrapper %}
+
+<div class="super_container">
+
+	<!-- Cart -->
+	<div class="cart_section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 offset-lg-1 mt-5">
+                  <h2>Transaction Details</h2>
+
+                    {% if transaction %}
+                        <p>
+                            <strong>Brand: </strong><span>{{ brand }}</span>
+                        </p>
+                        <p>
+                            <strong>Reference: </strong><span>{{ transaction.reference }}</span>
+                        </p>
+                        <p>
+                            <strong>Created Date / Time: </strong><span>{{ transaction.created_datetime }}</span>
+                        </p>
+                        <p>
+                            <strong>Amount: </strong><span>{{ transaction.amount }}</span>
+                        </p>
+
+
+                    {% else %}
+                    <div>
+                        <p class="red-text">
+                            Transaction does not exist.
+                        </p>
+                        <p class="red-text">
+                            Confirmation of payment might not have been received yet. Please check back again later.
+                        </p>
+                    </div>
+                    {% endif %}
+                    <br>
+                    <br>
+                    <div class="row">
+                        {% if brand %}
+                            {% if brand.active %}
+                                <button class="button success-color ml-2"><a href="{{ brand.get_backstore_url }}">Start Selling</a></button>
+                            {% else %}
+                                <button class="button danger-color ml-2"><a href="{{ brand.get_backstore_url }}">Start Selling</a></button>
+                            {% endif %}
+                        {% else %}
+                        <button class="button success-color ml-2"><a href="{% url 'me2ushop:home' %}">Home</a></button>
+                        {% endif %}
+                        <button class="button primary-color ml-2"><a href="{% url 'main:contact_us' %}">Customer Care</a></button>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+<!-- contact styles-->
+<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
+
+{% endblock %}
+</body>
+
+
+
+

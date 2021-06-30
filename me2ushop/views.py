@@ -4,6 +4,7 @@ import string
 import tempfile
 
 import django_filters
+import requests
 import stripe
 import tagging
 from django import forms as django_forms
@@ -21,15 +22,19 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import ListView, View, CreateView, UpdateView, DeleteView, FormView, TemplateView
 from django_filters.views import FilterView
-from tagging.models import TaggedItem
+from djangorave.models import DRPaymentTypeModel, DRTransactionModel
+from tagging.models import TaggedItem, Tag
 from weasyprint import HTML
 
 from marketing.models import *
 from marketing.models import Slider
+from payments.models import DRCTransactionModel
 from stats import stats
+from users.models import User
 from .forms import *
 from .models import *
-
+import datetime
+from django.utils.timezone import utc
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -43,11 +48,10 @@ class BrandCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Brand
     template_name = 'modelforms/brand_create_form.html'
     fields = ['title', 'business_type', 'business_description', 'business_email', 'business_phone', 'shipping_status',
-              'country', 'subscription_type', 'logo']
-
+              'country', 'subscription_plan', 'logo']
 
     def get_success_url(self):
-        return reverse_lazy('sellers:seller_home', kwargs={'slug': self.object.slug})
+        return reverse_lazy('me2ushop:brand_payment', kwargs={'brand_id': self.object.id})
 
     def form_valid(self, form):
         print('registering brand')
@@ -85,10 +89,164 @@ class BrandCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return True
 
 
+def brand_subscription(request, brand_id):
+    from djangorave.models import DRTransactionModel, DRPaymentTypeModel
+    context = {}
+    brand = get_object_or_404(Brand, id=brand_id)
+    plan = brand.subscription_plan
+    print('prlan:', plan)
+
+    plan_type = 'Basic'
+
+    if brand.subscription_reference:
+        transaction = DRTransactionModel.objects.get(
+            user=request.user,
+            reference=brand.subscription_reference)
+        now = datetime.datetime.now().replace(tzinfo=utc)
+        print("now", now)
+        timediff = now - transaction.created_datetime
+        timediff = timediff.total_seconds()
+        days = timediff // 86400
+
+        if days > 0:
+            brand.subscription_status = False
+            brand.save()
+
+    elif plan.description == 'Free':
+        print('New brand being added or a it\'s under free plan')
+        # Format: "Apr 11 2021 14:19:23"
+        now = datetime.datetime.now().replace(tzinfo=utc)
+        print("now", now)
+        timediff = now - brand.created
+        print("time diff", timediff.total_seconds())
+
+        days = timediff.total_seconds() // 86400
+        if days < 0:
+            print('still a new client updating their brand')
+            brand.subscription_status = True
+            brand.save()
+            context.update({'free_plan': True})
+
+        else:
+            print('new client sticking to old ways')
+            brand.subscription_status = False
+            brand.save()
+            context.update({'free_plan': False})
+    else:
+        plan_type = plan.description
+
+    payment_type = DRPaymentTypeModel.objects.get(description=plan_type)
+
+    context.update({
+        'brand': brand,
+        'payment_type': payment_type
+    })
+
+    return render(request, 'me2ushop/brand_payment.html', context)
+
+
+class TransactionDetailView(LoginRequiredMixin, TemplateView):
+    """Returns a transaction template"""
+
+    template_name = "djangorave/transaction.html"
+
+    def get_context_data(self, **kwargs):
+        """Add plan to context data"""
+        kwargs = super().get_context_data(**kwargs)
+        brand = None
+        try:
+            brand = get_object_or_404(Brand, id=self.kwargs["reference"].split('__')[3])
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+        if brand:
+            print('id', brand.slug)
+            kwargs['brand'] = brand
+
+        try:
+            transaction = DRTransactionModel.objects.get(
+                user=self.request.user,
+                reference=self.kwargs["reference"])
+
+            kwargs["transaction"] = transaction
+
+        except DRTransactionModel.DoesNotExist:
+            print('Transaction does not exist creating another')
+
+            # checking if the passed transaction is valid
+
+            def callback_function(response):
+                # confirm that the response for the transaction is successful
+                if response.body['data']['status'] == 'success':
+                    print('success')
+
+                # confirm that the amount for that transaction is the amount you wanted to charge
+                if response.body['data']['chargecode'] == '00':
+                    print('chargecode= 00')
+
+                if response.body['data']['amount'] == 8:
+                    print("Payment successful then give value")
+
+            data = {
+                "txref": kwargs["reference"],
+                # this is the reference from the payment button response after customer paid.
+                "SECKEY": settings.RAVE_SANDBOX_SECRET_KEY
+            }
+
+            # this is the url of the staging server. Please make sure to change to that of production server when you
+            # are ready to go live.
+            url = "https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/v2/verify"
+            headers = {"Authorization": "Bearer %s" % settings.RAVE_SANDBOX_SECRET_KEY}
+
+            # make the http post request to our server with the parameters
+            response = requests.post(url, json=data, headers=headers)
+
+            # print(response.json())
+            response = response.json()
+
+            transaction = DRTransactionModel.objects.get_or_create(
+                user=self.request.user,
+                reference=self.kwargs["reference"],
+                flutterwave_reference=response['data']['flwref'],
+                order_reference=response['data']['orderref'],
+                amount=response['data']['amount'],
+                charged_amount=response['data']['chargedamount'],
+                status=response['data']['status'],
+                payment_type_id=kwargs['reference'].split("__")[0]
+
+            )
+            kwargs["transaction"] = transaction
+
+            tran = DRTransactionModel.objects.get(
+                user=self.request.user,
+                reference=self.kwargs["reference"])
+            plan = DRPaymentTypeModel.objects.get(id=tran.payment_type_id)
+            print('plan:', plan)
+            print('plan:', plan.description)
+
+            brand.subscription_plan = plan
+            brand.subscription_status = True
+            for product in brand.product_set.all():
+                print('product', product.is_active)
+                product.save()
+            brand.subscription_reference = tran.reference
+            brand.save()
+
+        return kwargs
+
+
 class BrandUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Brand
     form_class = BrandForm
     template_name = 'modelforms/brand_create_form.html'
+
+    def get_success_url(self):
+        brand = get_object_or_404(Brand, id=self.object.id)
+        print(brand.subscription_status)
+
+        return reverse_lazy('me2ushop:brand_payment', kwargs={'brand_id': self.object.id})
 
     def get_context_data(self, **kwargs):
         context = super(BrandUpdateView, self).get_context_data(**kwargs)
@@ -569,7 +727,7 @@ class ProductListView(ListView):
         return context
 
 
-#___PRODUCT DETAILED CREATE, UPDATE, DELETE VIEWS___
+# ___PRODUCT DETAILED CREATE, UPDATE, DELETE VIEWS___
 from utils.views import CachedDetailView
 
 
@@ -768,7 +926,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-#___PRODUCT ATTRIBUTES CREATE, UPDATE, DELETE___
+# ___PRODUCT ATTRIBUTES CREATE, UPDATE, DELETE___
 class ProductAttributesCreateView(LoginRequiredMixin, CreateView):
     model = ProductDetail
     form_class = ProductAttributeCreate
@@ -873,7 +1031,7 @@ def show_product_image(request, slug):
     return render(request, 'modelforms/product_images_list.html', context)
 
 
-#___PRODUCT IMAGE CREATE UPDATE DELETE VIEWS___
+# ___PRODUCT IMAGE CREATE UPDATE DELETE VIEWS___
 def product_image_create(request, slug):
     product = get_object_or_404(Product, slug=slug)
     # print('slug:', slug)
@@ -1090,7 +1248,7 @@ def delete_image(request, pk):
         return redirect('me2ushop:home')
 
 
-#___PRODUCT ADD TO CART, TAG, REVIEWS___
+# ___PRODUCT ADD TO CART, TAG, REVIEWS___
 @login_required
 def add_tag(request):
     print("we came to add the tag")
@@ -2493,7 +2651,8 @@ class PaymentView(View):
                     context = {
                         'order': order,
                         'DISPLAY_COUPON_FORM': False,
-                        'payment': order.payment
+                        'payment': order.payment,
+                        'public_key': settings.RAVE_SANDBOX_PUBLIC_KEY
 
                     }
 
@@ -2533,7 +2692,7 @@ class PaymentView(View):
             if form.is_valid():
                 print('valid payment form')
                 print('order:', self.request.POST)
-                
+
                 token = self.request.POST.get('stripeToken', False)
                 print('token', token)
 
@@ -2665,8 +2824,9 @@ def paypal_payment_complete(request):
 
 
 def paypal_payment_complete_cart(request):
+    print('we came to post payment', request)
     body = json.loads(request.body)
-    # print("body:", body)
+    print("body:", body)
 
     order = Order.objects.get(id=body['orderId'])
     # print(order)
@@ -2682,8 +2842,135 @@ def paypal_payment_complete_cart(request):
     return JsonResponse("payment successful", safe=False)
 
 
+def flutterCompleteTrans(request, reference):
+
+    order = get_object_or_404(Order, id=reference.split('__')[0])
+    print('Order we paying for:', order)
+
+    data = {
+        "txref": reference,
+        # this is the reference from the payment button response after customer paid.
+        "SECKEY": settings.RAVE_SANDBOX_SECRET_KEY
+    }
+
+    # this is the url of the staging server. Please make sure to change to that of production server when you
+    # are ready to go live.
+    url = "https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/v2/verify"
+    headers = {"Authorization": "Bearer %s" % settings.RAVE_SANDBOX_SECRET_KEY}
+
+    # make the http post request to our server with the parameters
+    response = requests.post(url, json=data, headers=headers)
+
+    # print(response.json())
+    if response:
+        response = response.json()
+
+        transaction = DRCTransactionModel.objects.get_or_create(
+            order=order,
+            reference=reference,
+            flutterwave_reference=response['data']['flwref'],
+            order_reference=response['data']['orderref'],
+            amount=response['data']['amount'],
+            charged_amount=response['data']['chargedamount'],
+            status=response['data']['status'],
+
+        )
+        print('transaction:', transaction)
+
+        if request.user.is_authenticated:
+            transaction = DRCTransactionModel.objects.get(
+                order=order,
+                reference=reference)
+            user = User.objects.get(id=request.user.id)
+            transaction.user = user
+            transaction.save()
+
+        order.ordered = True
+        order.ref_code = reference
+        order.status = 20
+        order_items = order.items.all()
+        order_items.update(ordered=True)
+        for item in order_items:
+            item.save()
+        order.save()
+
+        return checkout_done(request)
+
+
+class FlutterTransactionDetailView(LoginRequiredMixin, TemplateView):
+    """Returns a transaction template"""
+
+    template_name = "home/checkout_done.html"
+
+    def get_context_data(self, **kwargs):
+        """Add plan to context data"""
+        kwargs = super().get_context_data(**kwargs)
+
+        order = get_object_or_404(Order, id=self.kwargs["reference"].split('__')[0])
+        print('Order we paying for:', order)
+
+        try:
+            transaction = DRCTransactionModel.objects.get(
+                user=self.request.user,
+                reference=self.kwargs["reference"])
+
+            kwargs["transaction"] = transaction
+
+        except DRCTransactionModel.DoesNotExist:
+            print('Transaction does not exist creating another')
+
+            # checking if the passed transaction is valid
+
+            data = {
+                "txref": kwargs["reference"],
+                # this is the reference from the payment button response after customer paid.
+                "SECKEY": settings.RAVE_SANDBOX_SECRET_KEY
+            }
+
+            # this is the url of the staging server. Please make sure to change to that of production server when you
+            # are ready to go live.
+            url = "https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/v2/verify"
+            headers = {"Authorization": "Bearer %s" % settings.RAVE_SANDBOX_SECRET_KEY}
+
+            # make the http post request to our server with the parameters
+            response = requests.post(url, json=data, headers=headers)
+
+            # print(response.json())
+            if response:
+                response = response.json()
+
+                transaction = DRCTransactionModel.objects.get_or_create(
+                    user=self.request.user,
+                    order=order,
+                    reference=self.kwargs["reference"],
+                    flutterwave_reference=response['data']['flwref'],
+                    order_reference=response['data']['orderref'],
+                    amount=response['data']['amount'],
+                    charged_amount=response['data']['chargedamount'],
+                    status=response['data']['status'],
+
+                )
+                print('transaction:', transaction)
+
+                order.ordered = True
+                order.ref_code = self.kwargs["reference"]
+                order.status = 20
+                order_items = order.items.all()
+                order_items.update(ordered=True)
+                for item in order_items:
+                    item.save()
+                order.save()
+                del self.request.session['cart_id']
+
+        kwargs["order"] = order
+
+        return kwargs
+
+
 def checkout_done(request):
     print('In checkoutdone')
+    print('request:', request)
+
     print('request cart Start:', request.cart)
     try:
         order_id = request.cart.id
@@ -2697,8 +2984,6 @@ def checkout_done(request):
         }
 
         del request.session['cart_id']
-
-
 
         return render(request, 'home/checkout_done.html', locals())
 
@@ -2793,5 +3078,3 @@ def refund_status(request, order_id):
     except Exception:
         messages.warning(request, "No active requests found")
         return redirect('me2ushop:home')
-
-
