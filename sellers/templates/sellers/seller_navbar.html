@@ -81,6 +81,7 @@
 
                                     <li><a href="{% url 'me2ushop:brand_update' brand_id %}" target="_blank">Update Brand Information</a></li>
                                     <li><a href="{% url 'me2ushop:brand_create' %}">Create A New Business Brand</a></li>
+                                    <li><a href="{% url 'me2ushop:brand_payment' brand_id %}">Brand Summary</a></li>
                                     <li><a href="">Delete Brand</a></li>
 <!--                                    <li>-->
 <!--                                        <a href="">Manage Account</a>-->
@@ -173,17 +174,17 @@
 <!--                                    <li><a href="#">French<i class="fa fa-angle-down"></i></a></li>-->
 <!--                                </ul>-->
 <!--                            </li>-->
-<!--                            <li class="page_menu_item has-children" id="menu_hide">-->
-<!--                                <a href="#">Currency<i class="fa fa-angle-down"></i></a>-->
-<!--                                <ul class="page_menu_selection">-->
-<!--                                    <li><a href="#">US Dollar<i class="fa fa-angle-down"></i></a></li>-->
-<!--                                    <li><a href="#">KES Shilling<i class="fa fa-angle-down"></i></a></li>-->
-<!--                                    <li><a href="#">RWF Francs<i class="fa fa-angle-down"></i></a></li>-->
-<!--                                    <li><a href="#">JPY Francs<i class="fa fa-angle-down"></i></a></li>-->
-<!--                                </ul>-->
-<!--                            </li>-->
+                            <li class="page_menu_item has-children" id="menu_hide">
+                                <a href="#">Brand Settings<i class="fa fa-angle-down"></i></a>
+                                <ul class="page_menu_selection">
+                                     <li><a href="{% url 'me2ushop:brand_update' brand_id %}"target="_blank">Update Brand Information</a></li>
+                                    <li><a href="{% url 'me2ushop:brand_create' %}">Create A New Business Brand</a></li>
+                                    <li><a href="{% url 'me2ushop:brand_payment' brand_id %}">Brand Summary</a></li>
+                                    <li><a href="#">Delete<i class="fa fa-angle-down"></i></a></li>
+                                </ul>
+                            </li>
                             <li class="page_menu_item"><a href="{% url 'me2ushop:home' %}">Home<i class="fa fa-angle-down"></i></a></li>
-                            <li class="page_menu_item"><a href="{{ brand.get_backstore_url }}">MyDashboard<i class="fa fa-angle-down"></i></a></li>
+                            <li class="page_menu_item"><a href="{{ brand.get_backstore_url }}">Dashboard<i class="fa fa-angle-down"></i></a></li>
 
                             <li class="page_menu_item"><a href="{% url 'blog:blog_list' %}">My Blogs</a></li>
                             <li class="page_menu_item"><a href="{% url 'blog:post_create' brand_id %}">Create New Blog<i class="fas fa-chevron-down"></i></a></li>

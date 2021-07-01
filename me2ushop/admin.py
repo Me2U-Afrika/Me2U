@@ -92,7 +92,7 @@ class StatusCodeAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     # form = ProductAdminForm()
     list_display = (
-        'title', 'price', 'slug', 'sku', 'brand_name', 'in_stock', 'stock', 'is_active', 'created',
+        'title', 'price', 'brand_name', 'is_active', 'in_stock', 'stock', 'sku', 'created',
         'modified',)
     list_display_links = ('title',)
     list_per_page = 50
@@ -190,8 +190,8 @@ class SellersProductAdmin(ProductAdmin):
 
 
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ('title', 'profile', 'is_featured', 'subscription_status')
-    search_fields = ('title',)
+    list_display = ('title', 'profile', 'is_active', 'is_featured')
+    search_fields = ('title', 'profile',)
     list_editable = ('is_featured',)
 
 
