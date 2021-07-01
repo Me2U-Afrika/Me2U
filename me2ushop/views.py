@@ -345,7 +345,7 @@ class SellerView(ListView):
         brand = Brand.objects.get(title=store)
         if brand:
             # other brands
-            brands = Brand.objects.filter(active=True).exclude(title=store)
+            brands = Brand.objects.filter(is_active=True).exclude(title=store)
 
             # products = Product.active.filter(seller=user).order_by('-created')
             products = Product.active.filter(brand_name=store).order_by('-created')
