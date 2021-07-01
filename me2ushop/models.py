@@ -124,16 +124,17 @@ class Brand(CreationModificationDateMixin):
     address1 = models.CharField(max_length=60, blank=True, null=True)
     address2 = models.CharField(max_length=60, blank=True, null=True)
     zip_code = models.CharField(max_length=12, blank=True, null=True)
-    subscription_plan = models.ForeignKey(DRPaymentTypeModel, blank=True, null=True, on_delete=models.SET_NULL)
+    subscription_plan = models.ForeignKey(DRPaymentTypeModel, blank=True, null=True, on_delete=models.SET_NULL,
+                                          help_text='Select a monthly recurring subscription fees')
     # subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
     #                                      help_text='Select a monthly recurring subscription fees')
     subscription_reference = models.CharField(max_length=200, blank=True, null=True)
-    subscription_status = models.BooleanField(blank=True, null=True)
+    # subscription_status = models.BooleanField(blank=True, null=True)
     shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
                                        help_text='Is Your company able to ship or deliver your products once they '
                                                  'buyers order online?')
     valid_payment_method = models.BooleanField(default=False, null=True, blank=True)
-    active = models.BooleanField(default=True)
+    is_active = models.BooleanField(editable=False, default=True)
     is_featured = models.BooleanField(default=False, blank=True, null=True)
     image = StdImageField(upload_to='images/brands/brand_background', blank=True, null=True,
                           help_text='wallpaper for your store.Leave blank if you don\'t have one',
@@ -416,7 +417,7 @@ class Product(CreationModificationDateMixin):
         else:
             self.is_active = False
 
-        if self.brand_name.subscription_status:
+        if self.brand_name.is_active:
             self.is_active = True
         else:
             self.is_active = False
