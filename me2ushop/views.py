@@ -129,7 +129,7 @@ def brand_subscription(request, brand_id):
         # print("time diff", timediff.total_seconds())
 
         days = timediff.total_seconds() // 86400
-        if days < 0:
+        if days < 60:
             print('still a new client updating their brand')
             brand.is_active = True
             if plan is None:
