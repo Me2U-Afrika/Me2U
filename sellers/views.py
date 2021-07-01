@@ -17,7 +17,7 @@ def seller_page(request, slug):
     # brand = utils['brand']
 
     try:
-        brand = Brand.objects.get(slug=slug, active=True)
+        brand = Brand.objects.get(slug=slug)
         if brand:
             brand_id = brand.id
 

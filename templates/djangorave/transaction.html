@@ -56,9 +56,9 @@
                     <div class="row">
                         {% if brand %}
                             {% if brand.active %}
-                                <button class="button success-color ml-2"><a href="{{ brand.get_backstore_url }}">Start Selling</a></button>
+                                <button class="button success-color ml-2"><a href="{{ brand.get_backstore_url }}">Seller</a></button>
                             {% else %}
-                                <button class="button danger-color ml-2"><a href="{{ brand.get_backstore_url }}">Start Selling</a></button>
+                                <button class="button danger-color ml-2"><a href="{{ brand.get_backstore_url }}">Seller</a></button>
                             {% endif %}
                         {% else %}
                         <button class="button success-color ml-2"><a href="{% url 'me2ushop:home' %}">Home</a></button>
