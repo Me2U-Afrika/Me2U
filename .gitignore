@@ -17,6 +17,7 @@ latest.dump
 media/
 nginx/
 staticfiles/
+discrete.py/
 #bundles/
 node_modules/
 webpack-stats.json

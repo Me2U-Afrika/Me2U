@@ -1,4 +1,5 @@
 import collections
+import decimal
 import itertools
 
 from ckeditor.fields import RichTextField
@@ -411,13 +412,16 @@ class Product(CreationModificationDateMixin):
             self.in_stock = False
 
         image = self.productimage_set.filter(in_display=True)
-        # print('image', image.exists())
-        if image.exists() and self.in_stock:
+
+
+        if self.brand_name.is_active:
             self.is_active = True
         else:
             self.is_active = False
 
-        if self.brand_name.is_active:
+        # print('image', image.exists())
+
+        if image.exists() and self.in_stock and self.price > 0:
             self.is_active = True
         else:
             self.is_active = False

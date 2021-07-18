@@ -325,7 +325,6 @@
 											{% if deal.product.brand_name %}
 											<div class="deals_item_category"><a href="{% url 'me2ushop:seller_page' deal.product.brand_name.id %}">{{ deal.product.brand_name }}</a></div>
 											{% endif %}
-
 											<div class="deals_item_price_a ml-auto">{{ CURRENCY.symbol }} {{ deal.product.price|currency:CURRENCY.code }} </div>
 										</div>
 										<div class="deals_info_line d-flex flex-row justify-content-start">
@@ -410,10 +409,14 @@
 											{% endfor %}
 
 											<div class="product_content">
-												{% if product.discount_price %}
-												<div class="product_price discount">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </span></div>
-												{% else %}
-												<div class="product_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div>
+												{% if CURRENCY.code %}
+													{% if product.price > 0 %}
+														{% if product.discount_price %}
+														<div class="product_price discount">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </span></div>
+														{% else %}
+														<div class="product_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div>
+														{% endif %}
+													{% endif %}
 												{% endif %}
 												<div class="product_name"><div><a href="{{ product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -468,10 +471,14 @@
 											{% endfor %}
 
 											<div class="product_content">
-												{% if product.discount_price %}
-												<div class="product_price discount">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </span></div>
-												{% else %}
-												<div class="product_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div>
+												{% if CURRENCY.code %}
+													{% if product.price > 0 %}
+														{% if product.discount_price %}
+														<div class="product_price discount">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </span></div>
+														{% else %}
+														<div class="product_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div>
+														{% endif %}
+													{% endif %}
 												{% endif %}
 												<div class="product_name"><div><a href="{{ product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -526,10 +533,14 @@
 											{% endfor %}
 
 											<div class="product_content">
-												{% if product.discount_price %}
-												<div class="product_price discount">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </span></div>
-												{% else %}
-												<div class="product_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div>
+												{% if CURRENCY.code %}
+													{% if product.price > 0 %}
+														{% if product.discount_price %}
+														<div class="product_price discount">{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </span></div>
+														{% else %}
+														<div class="product_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div>
+														{% endif %}
+													{% endif %}
 												{% endif %}
 												<div class="product_name"><div><a href="{{ product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
@@ -713,7 +724,7 @@
 												{% else %}
 												<div class="product_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} </div>
 												{% endif %}
-												<div class="product_name"><div><a href="product.html">{{ product.title|truncatechars:18 }}</a></div></div>
+												<div class="product_name"><div><a href="{{product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
 													<div class="product_color">
 														<input type="radio" checked name="product_color" style="background:#b19c83">
@@ -766,7 +777,7 @@
 												{% if product.deal_discount_price %}
 												<div class="product_price discount">{{ CURRENCY.symbol }} {{ product.deal_discount_price|currency:CURRENCY.code }} <span>{{ CURRENCY.symbol }} {{ product.product.price|currency:CURRENCY.code }}</span></div>
 												{% endif %}
-												<div class="product_name"><div><a href="product.html">{{ product.product.title|truncatechars:18 }}</a></div></div>
+												<div class="product_name"><div><a href="{{product.get_absolute_url }}">{{ product.product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
 													<div class="product_color">
 														<input type="radio" checked name="product_color" style="background:#b19c83">
@@ -818,7 +829,7 @@
 												{% else %}
 												<div class="product_price">{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</div>
 												{% endif %}
-												<div class="product_name"><div><a href="product.html">{{ product.title|truncatechars:18 }}</a></div></div>
+												<div class="product_name"><div><a href="{{ product.get_absolute_url }}">{{ product.title|truncatechars:18 }}</a></div></div>
 												<div class="product_extras">
 													<div class="product_color">
 														<input type="radio" checked name="product_color" style="background:#b19c83">
