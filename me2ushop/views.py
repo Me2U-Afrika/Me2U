@@ -48,7 +48,7 @@ class BrandCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Brand
     template_name = 'modelforms/brand_create_form.html'
     fields = ['title', 'business_type', 'business_description', 'business_email', 'business_phone', 'shipping_status',
-              'country', 'subscription_plan', 'logo']
+              'country', 'logo']
 
     def get_success_url(self):
         return reverse_lazy('me2ushop:brand_payment', kwargs={'brand_id': self.object.id})
@@ -94,7 +94,7 @@ def brand_subscription(request, brand_id):
     context = {}
     brand = get_object_or_404(Brand, id=brand_id)
     plan = brand.subscription_plan
-    print('prlan:', plan)
+    # print('prlan:', plan)
 
     plan_type = 'Basic'
 
@@ -129,7 +129,7 @@ def brand_subscription(request, brand_id):
         # print("time diff", timediff.total_seconds())
 
         days = timediff.total_seconds() // 86400
-        if days < 60:
+        if days < 365:
             print('still a new client updating their brand')
             brand.is_active = True
             if plan is None:

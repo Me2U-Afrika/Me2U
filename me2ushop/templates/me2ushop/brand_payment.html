@@ -43,9 +43,11 @@
 					<p>
 						<strong>Subscription Plan: </strong><span>{{ brand.subscription_plan }}</span>
 					</p>
+					{% if brand.subscription_reference %}
 					<p>
 						<strong>Subscription Reference No: </strong><span>{{ brand.subscription_reference }}</span>
 					</p>
+					{% endif %}
 
 					{% if brand.is_active %}
 					<p>
@@ -68,13 +70,13 @@
 					{% if free_plan %}
 					<div class="row">
 						<p><a href="{{ brand.get_brandupdate_url }}">Update Brand</a></p>
-						<p class="red-text ml-4"><a href="{{ brand.get_backstore_url }}"><strong class="green-text">Free 30 Days</strong></a></p>
+						<p class="red-text ml-4"><a href="{{ brand.get_backstore_url }}"><strong class="green-text">Seller DashBoard</strong></a></p>
 					</div>
 					{% else %}
 						{% if brand.is_active %}
 							<div class="row">
 								<p><a href="{{ brand.get_brandupdate_url }}">Update Brand</a></p>
-								<p class="green-text ml-4"><a href="{{ brand.get_backstore_url }}"><strong>My Store</strong></a></p>
+								<p class="green-text ml-4"><a href="{{ brand.get_backstore_url }}"><strong>Seller DashBoard</strong></a></p>
 							</div>
 						{% else %}
 							<p>Continue With <strong class="green-text">{% include 'djangorave/pay_button.html' with payment_model=payment_type %}</strong></p>
