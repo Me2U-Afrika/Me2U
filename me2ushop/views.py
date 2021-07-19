@@ -30,6 +30,7 @@ from marketing.models import *
 from marketing.models import Slider
 from payments.models import DRCTransactionModel
 from stats import stats
+from stats.models import ProductView, BrandView
 from users.models import User
 from .forms import *
 from .models import *
@@ -83,7 +84,7 @@ class BrandCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         current_app = Brand.objects.filter(profile=self.request.user)
         if current_app.exists():
             for brand in current_app:
-                if not brand.active:
+                if not brand.is_active:
                     return False
                 return True
         return True
@@ -357,6 +358,15 @@ class SellerView(ListView):
                 'brands': brands,
 
             }
+            from stats import stats
+
+            stats.log_brand_view(self.request, brand)
+
+            brand_views = BrandView.objects.filter(brand=brand).count()
+            # print('Views:', product_views)
+            context.update({
+                'brand_views': brand_views
+            })
 
             return context
 
@@ -785,6 +795,13 @@ class ProductDetailedView(CachedDetailView):
         from stats import stats
 
         stats.log_product_view(self.request, product)
+
+        product_views = ProductView.objects.filter(product=product).count()
+        # print('Views:', product_views)
+        context.update({
+            'product_views': product_views
+        })
+
 
         return context
 
@@ -1275,7 +1292,7 @@ def add_tag(request):
         html = u''
         template = 'tags/tag_link.html'
 
-        for tags in tags.split():
+        for tags in tags.split('#'):
             print('tag_split', tags)
             tags.strip(',')
 

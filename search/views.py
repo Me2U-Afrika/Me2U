@@ -39,9 +39,10 @@ def search_results(request, template_name="home/search_results.html"):
 
     # generate the pagintor object
     # print('matching:', matching)
+
     paginator = Paginator(matching, settings.PRODUCTS_PER_PAGE)
     try:
-        results = paginator.page(page).object_list
+        results = paginator.page(page)
         # for product in result:
         # print('results', results)
         #     results = product
@@ -50,9 +51,12 @@ def search_results(request, template_name="home/search_results.html"):
         #     print('item', item)
 
     except (InvalidPage, EmptyPage):
-        results = paginator.page(1).object_list
+        results = paginator.page(1)
 
     # store the search
+
+
+
     matching_count = len(matching)
     print('matching count:', matching_count)
     search.store(request, q)
