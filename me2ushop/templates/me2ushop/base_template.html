@@ -30,6 +30,10 @@
     <meta name="google-site-verification" content="m99rTgHStqJaWoR2y0EqD02MxvoJXP_lLhSQ9VeMjqc" />
 
 
+    <!--autocomplete-->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!--autocomplete-->
+
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
 
     <link rel="preload" as="style" href="{{ STATIC_URL }}css/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
@@ -460,6 +464,7 @@
 
 
 
+
     <!--common scripts oneteh-->
     <script src="{{ STATIC_URL }}js/jquery-3.3.1.min.js"></script>
     <script src="{{ STATIC_URL }}css/bootstrap4/popper.js"></script>
@@ -511,9 +516,9 @@
             {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path and not "blog" in request.get_full_path and not "accounts" in request.get_full_path and not "checkout" in request.get_full_path and not "payment" in request.get_full_path %}
 
                 function showModal(){
-                    $("#marketingModal").modal("show").setTimeout(showModal, 20000);
+                    $("#marketingModal").modal("show").setTimeout(showModal, 50000);
                 }
-                setTimeout(showModal, 15000);
+                setTimeout(showModal, 30000);
 
                 $("#sendMarketingForm").click(function(e){
                     e.preventDefault()
@@ -590,6 +595,21 @@
     <script>
         document.getElementById("main_hide").style.display = "none";
     </script>
+
+
+<!--autocomplete-->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+<script>
+  $( function() {
+    $( "#id_q" ).autocomplete({
+        source: '{% url 'search:autocomplete' %}',
+        // minLength: 2
+    });
+  });
+</script>
+<!--autocomplete-->
 
 
 </body>
