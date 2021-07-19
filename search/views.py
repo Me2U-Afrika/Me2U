@@ -1,7 +1,12 @@
+from django.http import JsonResponse
+from tagging.models import TaggedItem
+
 from Me2U.settings import PRODUCTS_PER_ROW
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render
+
+from me2ushop.models import Product, Brand
 from stats import stats
 
 from . import search
@@ -55,8 +60,6 @@ def search_results(request, template_name="home/search_results.html"):
 
     # store the search
 
-
-
     matching_count = len(matching)
     print('matching count:', matching_count)
     search.store(request, q)
@@ -71,7 +74,6 @@ def search_results(request, template_name="home/search_results.html"):
     if search_recored:
         search_recored = search_recored
 
-
     # the usual…
     if category != '':
         page_title = 'Search Results for: ' + q + 'in' + category
@@ -79,3 +81,20 @@ def search_results(request, template_name="home/search_results.html"):
         page_title = 'Search Results for: ' + q
     # context_instance = RequestContext(request)
     return render(request, template_name, locals())
+
+
+def autocomplete(request):
+    if 'term' in request.GET:
+        qs = Product.objects.filter(title__icontains=request.GET.get('term'))
+        brands = Brand.objects.filter(title__icontains=request.GET.get('term'))
+
+        titles = list()
+        for product in qs:
+            if not product.title in titles:
+                titles.append(product.title)
+
+        for brand in brands:
+            if not brand.title in titles:
+                titles.append(brand.title)
+
+        return JsonResponse(titles, safe=False)
