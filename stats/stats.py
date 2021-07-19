@@ -6,7 +6,7 @@ from search.models import SearchTerm
 from Me2U.settings import PRODUCTS_PER_ROW
 import collections
 from me2ushop.models import Product
-from .models import ProductView
+from .models import ProductView, BrandView
 
 
 def tracking_id(request):
@@ -105,6 +105,28 @@ def log_product_view(request, product):
         view.save()
 
 
+def log_brand_view(request, brand):
+    # print('r', request)
+    # print('p', brand)
+
+    track_id = tracking_id(request)
+    # print('T', track_id)
+
+    try:
+        view = BrandView.objects.get(tracking_id=track_id, brand=brand)
+        view.save()
+    except BrandView.DoesNotExist:
+        view = BrandView()
+        view.brand = brand
+        view.ip_address = request.META.get('REMOTE_ADDR')
+        # print('ip', view.ip_address)
+        view.tracking_id = track_id
+        view.user = None
+        if request.user.is_authenticated:
+            view.user = request.user
+        view.save()
+
+
 def recommended_from_views(request):
     track_id = tracking_id(request)
 
@@ -130,7 +152,8 @@ def recommended_from_views(request):
                 # print('others_viewed_track_ids:', others_viewed)
 
                 if others_viewed:
-                    products = Product.active.filter(productview__in=others_viewed).distinct().prefetch_related('productimage_set')
+                    products = Product.active.filter(productview__in=others_viewed).distinct().prefetch_related(
+                        'productimage_set')
                     # print('products others viewed i havent:', products)
                     return products
 
