@@ -44,6 +44,7 @@ urlpatterns = [
     url('currencies/', include('currencies.urls')),
     url('main/', include('main.urls')),
     url('blog/', include('blog.urls')),
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url('users/', include('users.urls')),
     url('users/', include('django.contrib.auth.urls')),
 

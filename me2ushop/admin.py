@@ -69,6 +69,26 @@ def make_inactive(modelAdmin, request, queryset):
 make_inactive.short_description = "Mark selected items as inactive"
 
 
+class ProductVariationAdmin(admin.ModelAdmin):
+    list_display = ['variation', 'value', 'attachment']
+
+    search_fields = ['value']
+    list_filter = ['variation', 'variation__product']
+
+
+class ProductVariationInlineAdmin(admin.TabularInline):
+    model = ProductVariation
+    extra = 1
+
+
+class VariationAdmin(admin.ModelAdmin):
+    list_display = ['product', 'name']
+    search_fields = ['product']
+    list_filter = ['name']
+
+    inlines = [ProductVariationInlineAdmin]
+
+
 class OrderItemInline(admin.TabularInline):
     # list_display = ('user', 'item', 'quantity', 'ordered')
     model = OrderItem
@@ -737,23 +757,17 @@ class SellersAdminSite(ColoredAdminSite):
 
 main_admin = OwnersAdminSite()
 
-admin.site.register(Product, ProductAdmin)
 
+admin.site.register(ProductVariation, ProductVariationAdmin)
+admin.site.register(Variation, VariationAdmin)
 admin.site.register(Brand, BrandAdmin)
-
 admin.site.register(ProductImage, ProductImageAdmin)
-
 admin.site.register(ProductReview, ProductReviewAdmin)
-
 admin.site.register(OrderItem, Items_Ordered)
-
 admin.site.register(Order, Ordered)
 admin.site.register(WishList, WishListAdmin)
-
 admin.site.register(StripePayment, Payment)
-
 admin.site.register(Coupon, CouponDisplay)
-
 admin.site.register(StatusCode, StatusCodeAdmin)
 
 admin.site.register(RequestRefund, RefundDisplay)

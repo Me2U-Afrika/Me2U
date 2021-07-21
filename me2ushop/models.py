@@ -3,6 +3,7 @@ import decimal
 import itertools
 
 from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.conf import settings
 from django.core.cache import cache
 from django.core.validators import MinValueValidator
@@ -225,8 +226,8 @@ class Product(CreationModificationDateMixin):
     is_featured = models.BooleanField(default=False)
     is_bestrated = models.BooleanField(default=False)
 
-    description = models.TextField(max_length=400)
-    additional_information = RichTextField(blank=True, null=True,
+    description = RichTextField(max_length=400, config_name='Special')
+    additional_information = RichTextUploadingField(blank=True, null=True,
                                            help_text='Provide additional information about '
                                                      'your product. Buyers mostly buy from'
                                                      ' well detailed products and '
@@ -413,7 +414,6 @@ class Product(CreationModificationDateMixin):
 
         image = self.productimage_set.filter(in_display=True)
 
-
         if self.brand_name.is_active:
             self.is_active = True
         else:
@@ -490,6 +490,37 @@ VAR_CATEGORIES = (
     ('color', 'color'),
     ('package', 'package'),
 )
+
+
+class Variation(CreationModificationDateMixin):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        unique_together = (
+            ('product', 'name')
+        )
+
+    def __str__(self):
+        return self.name
+
+
+class ProductVariation(CreationModificationDateMixin):
+    variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
+    value = models.CharField(max_length=200)
+    attachment = StdImageField(upload_to='images/products/productsVariation/', variations={
+        'thumbnail': (180, 150),
+        'large': (415, 430),
+
+    }, delete_orphans=True)
+
+    class Meta:
+        unique_together = (
+            ('variation', 'value')
+        )
+
+    def __str__(self):
+        return self.value
 
 
 class ProductDetail(CreationModificationDateMixin):

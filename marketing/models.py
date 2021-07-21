@@ -1,3 +1,4 @@
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.utils import timezone
@@ -277,3 +278,28 @@ class MarketingEmails(CreationModificationDateMixin):
 
     def __str__(self):
         return str(self.email)
+
+
+class FAQCategory(CreationModificationDateMixin):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class FAQ(CreationModificationDateMixin):
+    STATUS = (
+        ('General', 'General'),
+        ('Orders', 'Orders'),
+        ('Payment', 'Payment'),
+        ('Seller', 'Seller'),
+    )
+
+    faqnumber = models.IntegerField()
+    category = models.ForeignKey(FAQCategory, on_delete=models.SET_NULL, blank=True, null=True)
+    question = models.CharField(max_length=200)
+    answer = RichTextUploadingField()
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.question

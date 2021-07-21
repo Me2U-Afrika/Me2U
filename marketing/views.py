@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from Me2U.settings import BASE_DIR
 from .forms import EmailForm
-from .models import MarketingEmails
+from .models import MarketingEmails, FAQ, FAQCategory
 
 import os
 import json
@@ -38,3 +38,9 @@ def email_signup(request):
 
     else:
         raise Http404
+
+
+def FAQs(request):
+    q_category = FAQCategory.objects.all()
+
+    return render(request, 'marketing/FAQs.html', locals())
