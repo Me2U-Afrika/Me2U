@@ -1,0 +1,532 @@
+{% extends 'me2ushop/base_template.html' %}
+{% load catalog_filters %}
+{% load mptt_tags %}
+
+{% block headblock %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shop_responsive.css">
+
+<!--faq 2-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.2.0/css/ionicons.min.css" integrity="sha256-F3Xeb7IIFr1QsWD113kV2JXaEbjhsfpgrKkwZFGIA4E=" crossorigin="anonymous" />
+<!--faq 2-->
+
+<!--faqs styles-->
+<script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script>
+ $(function() {
+    $( "#accordion-1" ).accordion();
+ });
+</script>
+
+<style>
+ #accordion-1{font-size: 14px;}
+</style>
+<!--faq2-->
+<style>
+    body{
+    margin-top:10px;
+}
+/*Faq*/
+
+.faq-search-wrap {
+    padding: 50px 0 60px;
+}
+
+.faq-search-wrap .form-group .form-control,
+.faq-search-wrap .form-group .dd-handle {
+    border-top-right-radius: .25rem;
+    border-bottom-right-radius: .25rem;
+}
+
+.faq-search-wrap .form-group .input-group-append {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.faq-search-wrap .form-group .input-group-append .input-group-text {
+    background: transparent;
+    border: none;
+}
+
+.faq-search-wrap .form-group .input-group-append .input-group-text .feather-icon > svg {
+    height: 18px;
+    width: 18px;
+}
+.bg-teal-light-3 {
+    background-color: #7fcdc1 !important;
+}
+
+.hk-row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -10px;
+    margin-left: -10px;
+}
+
+@media (min-width: 576px){
+    .mt-sm-60 {
+        margin-top: 60px !important;
+    }
+}
+.mt-30 {
+    margin-top: 30px !important;
+}
+
+.list-group-item.active {
+    background-color: #00acf0;
+    border-color: #00acf0;
+}
+.accordion .card .card-header.activestate {
+    border-width: 1px;
+}
+.accordion .card .card-header {
+    padding: 0;
+    border-width: 0;
+}
+.card.card-lg .card-header, .card.card-lg .card-footer {
+    padding: .9rem 1.5rem;
+}
+.accordion>.card .card-header {
+    margin-bottom: -1px;
+}
+.card .card-header {
+    background: transparent;
+    border: none;
+}
+.accordion.accordion-type-2 .card .card-header > a.collapsed {
+    color: #324148;
+}
+.accordion .card:first-of-type .card-header:first-child > a {
+    border-top-left-radius: calc(.25rem - 1px);
+    border-top-right-radius: calc(.25rem - 1px);
+}
+.accordion.accordion-type-2 .card .card-header > a {
+    background: transparent;
+    color: #00acf0;
+    padding-left: 50px;
+}
+.accordion .card .card-header > a.collapsed {
+    color: #324148;
+    background: transparent;
+}
+.accordion .card .card-header > a {
+    background: #00acf0;
+    color: #fff;
+    font-weight: 500;
+    padding: .75rem 1.25rem;
+    display: block;
+    width: 100%;
+    text-align: left;
+    position: relative;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+a {
+    text-decoration: none;
+    color: #00acf0;
+    -webkit-transition: color 0.2s ease;
+    -moz-transition: color 0.2s ease;
+    transition: color 0.2s ease;
+}
+
+
+.badge.badge-pill {
+    border-radius: 50px;
+}
+.badge.badge-light {
+    background: #eaecec;
+    color: #324148;
+}
+.badge {
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 5px 7px;
+    font-size: 72%;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+    display: inline-block;
+    text-align: center;
+    text-transform: capitalize;
+}
+.ml-15 {
+    margin-left: 15px !important;
+}
+
+.accordion.accordion-type-2 .card .card-header > a.collapsed:after {
+    content: "\f158";
+}
+
+.accordion.accordion-type-2 .card .card-header > a::after {
+    display: inline-block;
+    font: normal normal normal 14px/1 'Ionicons';
+    speak: none;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: auto;
+    position: absolute;
+    content: "\f176";
+    font-size: 21px;
+    top: 15px;
+    left: 20px;
+}
+
+.mr-15 {
+    margin-right: 15px !important;
+}
+
+</style>
+<!--faq2-->
+<style>
+
+    body{margin-top:10px;
+/*background:#eee;*/
+}
+
+.mar-btm {
+    margin-bottom: 15px
+}
+
+
+.list-group.bg-trans .list-group-item:not(.active):not(.disabled) {
+    background-color: transparent;
+    border-color: transparent;
+    color: inherit
+}
+
+.list-group.bg-trans .list-group-item .disabled {
+    opacity: .5
+}
+
+.list-group.bg-trans a.list-group-item:hover:not(.active) {
+    background-color: rgba(0, 0, 0, 0.05)
+}
+
+.list-group.bord-no .list-group-item {
+    border-color: transparent
+}
+
+.list-group .list-divider {
+    display: block
+}
+
+.list-group-item {
+    border-color: #e9e9e9
+}
+
+
+.list-group-item:first-child {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0
+}
+
+.list-group-item:last-child {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0
+}
+
+.list-group-item .list-group-item.disabled,
+.list-group-item .list-group-item.disabled:hover,
+.list-group-item .list-group-item.disabled:focus {
+    background-color: rgba(0, 0, 0, 0.07);
+    border-color: transparent
+}
+
+.list-group-item.active,
+.list-group-item.active:hover,
+.list-group-item.active:focus {
+    background-color: #54abd9;
+    border-color: #54abd9;
+    color: #fff
+}
+
+.list-group-item.active .list-group-item-text,
+.list-group-item.active:hover .list-group-item-text,
+.list-group-item.active:focus .list-group-item-text {
+    color: #fff
+}
+
+a.list-group-item:hover,
+a.list-group-item:focus {
+    background-color: rgba(0, 0, 0, 0.05)
+}
+
+a.list-group-item-primary,
+.list-group-item-primary {
+    background-color: #7cb3e3;
+    border-color: transparent;
+    color: #fff
+}
+
+a.list-group-item-primary:hover,
+a.list-group-item-primary:focus {
+    background-color: #89bae6;
+    color: #fff
+}
+
+a.list-group-item-info,
+.list-group-item-info {
+    background-color: #64c6e2;
+    border-color: transparent;
+    color: #fff
+}
+
+a.list-group-item-info:hover,
+a.list-group-item-info:focus {
+    background-color: #71cbe4;
+    color: #fff
+}
+
+a.list-group-item-success,
+.list-group-item-success {
+    background-color: #a3d272;
+    border-color: transparent;
+    color: #fff
+}
+
+a.list-group-item-success:hover,
+a.list-group-item-success:focus {
+    background-color: #aad57e;
+    color: #fff
+}
+
+a.list-group-item-warning,
+.list-group-item-warning {
+    background-color: #f3b961;
+    border-color: transparent;
+    color: #fff
+}
+
+a.list-group-item-warning:hover,
+a.list-group-item-warning:focus {
+    background-color: #f4bf70;
+    color: #fff
+}
+
+a.list-group-item-danger,
+.list-group-item-danger {
+    background-color: #f9826b;
+    border-color: transparent;
+    color: #fff
+}
+
+a.list-group-item-danger:hover,
+a.list-group-item-danger:focus {
+    background-color: #f98e7a;
+    color: #fff
+}
+
+a.list-group-item-mint,
+.list-group-item-mint {
+    background-color: #5ed4b2;
+    border-color: transparent;
+    color: #fff
+}
+
+a.list-group-item-mint:hover,
+a.list-group-item-mint:focus {
+    background-color: #6ad7b8;
+    color: #fff
+}
+
+a.list-group-item-purple,
+.list-group-item-purple {
+    background-color: #af69a4;
+    border-color: transparent;
+    color: #fff
+}
+
+a.list-group-item-purple:hover,
+a.list-group-item-purple:focus {
+    background-color: #b473aa;
+    color: #fff
+}
+
+a.list-group-item-pink,
+.list-group-item-pink {
+    background-color: #e899bb;
+    border-color: transparent;
+    color: #fff
+}
+
+a.list-group-item-pink:hover,
+a.list-group-item-pink:focus {
+    background-color: #eba5c3;
+    color: #fff
+}
+
+a.list-group-item-dark,
+.list-group-item-dark {
+    background-color: #44494d;
+    border-color: transparent;
+    color: #fff
+}
+
+a.list-group-item-dark:hover,
+a.list-group-item-dark:focus {
+    background-color: #4b5155;
+    color: #fff
+}
+
+
+.badge:empty.badge-icon {
+    display: inline-block;
+    width: .7em;
+    height: .7em;
+    padding: 0;
+    min-width: 5px;
+    margin: .5em;
+    border-radius: 50%
+}
+
+.badge.badge-fw,
+.badge:empty.badge-fw {
+    margin-right: 1em
+}
+
+.badge-default {
+    background-color: #e3e8ee;
+    color: #333
+}
+
+.badge-primary {
+    background-color: #5fa2dd
+}
+
+.badge-info {
+    background-color: #46bbdc
+}
+
+.badge-success {
+    background-color: #91c957
+}
+
+.badge-warning {
+    background-color: #f1aa40
+}
+
+.badge-danger {
+    background-color: #f76549
+}
+
+.badge-mint {
+    background-color: #42cca5
+}
+
+.badge-purple {
+    background-color: #9f5594
+}
+
+.badge-pink {
+    background-color: #e17ca7
+}
+
+.badge-dark {
+    background-color: #33373a
+}
+
+.pad-all {
+    padding: 15px;
+}
+.text-thin {
+    font-weight: 300;
+}
+.bord-btm {
+    border-bottom: 1px solid #e9e9e9;
+}
+.ui-accordion .ui-accordion-header {
+    background-color: #0E8CE4;
+}
+</style>
+
+{% endblock %}
+
+
+<body>
+{% block site_wrapper %}
+
+<div class="super_container">
+
+	<!-- Shop -->
+
+	<div class="shop">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+
+                    <!-- Tips Widget -->
+                    <!--===================================================-->
+                    <div class="mar-btm">
+                        <h4 class="text-thin"><i class="fa fa-lightbulb-o fa-lg fa-fw text-warning"></i> Quick Solutions</h4>
+                        <p class="text-muted mar-top">Learn how to get started with Me2U Afrika As a buyer and seller.</p>
+                        <div class="list-group bg-trans">
+                            <a class="list-group-item" href="#"><span class="badge badge-purple badge-icon badge-fw pull-left"></span> Selling Items</a>
+                            <a class="list-group-item" href="{% url 'me2ushop:request_refund' %}"><span class="badge badge-info badge-icon badge-fw pull-left"></span> Returns & Exchanges</a>
+                            <a class="list-group-item" href="#"><span class="badge badge-pink badge-icon badge-fw pull-left"></span> Me2U Afrika Delivery</a>
+                            <a class="list-group-item" href="{% url 'blog:blog_home' %}"><span class="badge badge-success badge-icon badge-fw pull-left"></span> Useful Blogs</a>
+                        </div>
+                    </div>
+                    <!--===================================================-->
+
+                    <hr>
+
+                    <!-- Contact us widget -->
+                    <!--===================================================-->
+                    <div class="mar-btm">
+                        <h4 class="text-thin"><i class="fa fa-question-circle fa-lg fa-fw text-primary"></i> Can't find the answer? </h4>
+                        <p class="text-muted mar-top">Our customer care agents are available 24/7. Leave Us A message</p>
+                        <a href="{% url 'main:contact_us' %}" class="btn" style="color:#0E8CE4">Contact us</a>
+                    </div>
+                    <!--===================================================-->
+
+                </div>
+                <div class="col-md-9">
+                    <div class="card card-lg">
+                        {% for category in q_category %}
+                            <h3 class="card-header border-bottom-0">
+                                {{category}}
+                            </h3>
+                            <div class="accordion accordion-type-2 accordion-flush" id="accordion_2">
+                                {% for faq in category.faq_set.all %}
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between activestate">
+                                        <a role="button" data-toggle="collapse" href="#{{faq.id}}" aria-expanded="false" class="collapsed">{{faq}}</a>
+                                    </div>
+                                    <div id="{{faq.id}}" class="collapsed collapse" data-parent="#accordion_2" role="tabpanel">
+                                        <div class="card-body pa-15">{{faq.answer|safe}}</div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+	</div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+<script src="{{ STATIC_URL }}css/plugins/Isotope/isotope.pkgd.min.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}css/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="{{ STATIC_URL }}js/shop_custom.js"></script>
+
+{% endblock %}

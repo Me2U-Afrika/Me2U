@@ -117,9 +117,36 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'webpack_loader',
     'ckeditor',
+    'ckeditor_uploader',
     'payments',
 
 ]
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'extraPlugins': ','.join(
+                    [
+                        'codesnippet',
+                        'youtube'
+                    ]
+                ),
+    },
+
+    'Special': {
+        'toolbar': 'Special',
+        'toolbar_Special': [
+
+            ['-', 'Outdent', 'Indent', '-', 'JustifyLeft',
+             'JustifyBlock'],
+            ['RemoveFormat', 'Source']
+        ]
+    }
+
+}
+
 DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap.html'
 
 # default is 10 pixels

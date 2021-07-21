@@ -21,9 +21,8 @@
             <form method="POST">
             {% csrf_token %}
 
-            {{ RefundForm }}
+            {{ RefundForm|crispy }}
 
-            {{ form|crispy }}
             <button type="submit" class="btn btn-primary"> Submit </button>
         </form>
             </div>
