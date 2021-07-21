@@ -3,6 +3,14 @@ from .models import *
 
 
 # Register your models here.
+class FAQAdmin(admin.ModelAdmin):
+    list_display = ['category','question', 'status']
+
+
+class FAQCategoryAdmin(admin.ModelAdmin):
+    list_display = ['name']
+
+
 class MarketingMessageAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'end_date', 'active']
 
@@ -43,3 +51,5 @@ admin.site.register(Banner, BannerAdmin)
 admin.site.register(Trend, TrendAdmin)
 admin.site.register(TrendInfo, TrendInfoAdmin)
 admin.site.register(SliderImages, SliderImagesAdmin)
+admin.site.register(FAQ, FAQAdmin)
+admin.site.register(FAQCategory, FAQCategoryAdmin)

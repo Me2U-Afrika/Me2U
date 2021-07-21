@@ -66,6 +66,7 @@
     <!-- common styles onetech-->
 
 
+
     <!-- extra head styles -->
     {% block headblock %}
 
@@ -150,6 +151,9 @@
                         <div class="top_bar_content ml-auto">
                             <div class="top_bar_menu">
                                 <ul class="standard_dropdown top_bar_dropdown">
+                                    <li>
+                                        <a href="{% url 'me2ushop:home' %}">Home</a>
+                                    </li>
                                     <li class="disabled">
                                         <a href="#">English<i class="fas fa-chevron-down"></i></a>
                                         <ul>
@@ -157,6 +161,9 @@
                                             <li><a href="#">Kinyarwanda</a></li>
                                             <li><a href="#">French</a></li>
                                         </ul>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'marketing:faqs' %}">FAQs</a>
                                     </li>
 
                                         {% with dropdown_extra_class="collapsed-nav red-text" %}
@@ -609,7 +616,6 @@
     });
   });
 </script>
-<!--autocomplete-->
 
 
 </body>

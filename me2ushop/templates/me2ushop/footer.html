@@ -105,6 +105,8 @@
                         {% if node.is_leaf_node %}
                         <li><a href="{{ node.get_absolute_url }}" target="_blank">{{ node.category_name }}</a></li>
                         {% endif %}
+                        <li><a href="{% url 'blog:blog_home' %}">Blog</a></li>
+
 
                     </ul>
                     {% endrecursetree %}
@@ -133,8 +135,7 @@
                         <li><a href="{% url 'main:contact_us' %}" target="_blank">Customer Services</a></li>
 
                         <li><a href="{% url 'me2ushop:request_refund' %}" target="_blank">Returns / Exchange</a></li>
-                        <li><a href="#">FAQs</a></li>
-                        <li><a href="#">Product Support</a></li>
+                        <li><a href="{% url 'marketing:faqs' %}">FAQs</a></li>
                     </ul>
                 </div>
             </div>

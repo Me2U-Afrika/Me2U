@@ -1,5 +1,6 @@
 import itertools
 
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -23,7 +24,7 @@ class Post(CreationModificationDateMixin):
                             max_length=255,
                             )
     # content = models.TextField()
-    content = RichTextField()
+    content = RichTextUploadingField()
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = StdImageField(blank=True, null=True, upload_to='images/products', help_text="upload blog cover Image",
                           variations={
