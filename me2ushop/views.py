@@ -759,8 +759,8 @@ from utils.views import CachedDetailView
 class ProductDetailedView(CachedDetailView):
     model = Product
     # template_name = 'home/products_detailed_page.html'
-    template_name = 'home/product_detail.html'
-    # template_name = 'home/product_page_test.html'
+    # template_name = 'home/product_detail.html'
+    template_name = 'home/product_page_test.html'
     query_pk_and_slug = False
 
     def get_context_data(self, **kwargs):
@@ -773,6 +773,10 @@ class ProductDetailedView(CachedDetailView):
 
         product_reviews = ProductReview.approved.filter(product=product).order_by('-date')
         # print('productreviews:', product_reviews)
+        product_variations = ProductDetail.objects.filter(product=product)
+        print('productv', product_variations)
+        for variation in product_variations:
+            print(variation.color)
 
         review_form = ProductReviewForm()
 
