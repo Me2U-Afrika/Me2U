@@ -100,8 +100,8 @@ class Brand(CreationModificationDateMixin):
     slug = models.SlugField(default='',
                             editable=False,
                             blank=True,
-                            null=True
-                            )
+                            null=True,
+                            max_length=255)
     title = models.CharField(max_length=200, unique=True, help_text='Unique business title to identify Your store and '
                                                                     'your product line')
     website_link = models.CharField(max_length=255, blank=True, null=True,
@@ -204,6 +204,7 @@ class Product(CreationModificationDateMixin):
     slug = models.SlugField(unique=True,
                             default='',
                             editable=False,
+                            max_length=300
                             )
     brand_name = models.ForeignKey('Brand', on_delete=models.SET_NULL, blank=True, null=True,
                                    help_text='Your store name')
