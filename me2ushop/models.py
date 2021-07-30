@@ -204,6 +204,7 @@ class Product(CreationModificationDateMixin):
     slug = models.SlugField(unique=True,
                             default='',
                             editable=False,
+                            max_length=300
                             )
     brand_name = models.ForeignKey('Brand', on_delete=models.SET_NULL, blank=True, null=True,
                                    help_text='Your store name')
