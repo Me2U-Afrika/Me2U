@@ -19,6 +19,8 @@ from users.models import STATUSES, UNDER_REVIEW
 from utils.models import CreationModificationDateMixin
 from djangorave.models import DRPaymentTypeModel
 
+from django.utils.safestring import mark_safe
+
 CATEGORY_CHOICES = (
     ('At', 'Arts, Crafts'),
     ('Bk', 'Books'),
@@ -100,7 +102,7 @@ class Brand(CreationModificationDateMixin):
                             blank=True,
                             null=True
                             )
-    title = models.CharField(max_length=100, unique=True, help_text='Unique business title to identify Your store and '
+    title = models.CharField(max_length=200, unique=True, help_text='Unique business title to identify Your store and '
                                                                     'your product line')
     website_link = models.CharField(max_length=255, blank=True, null=True,
                                     help_text='If you have a website by which buyers can find out more about your '
@@ -123,8 +125,8 @@ class Brand(CreationModificationDateMixin):
 
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
     country = CountryField(multiple=False)
-    address1 = models.CharField(max_length=60, blank=True, null=True)
-    address2 = models.CharField(max_length=60, blank=True, null=True)
+    address1 = models.CharField(max_length=100, blank=True, null=True)
+    address2 = models.CharField(max_length=100, blank=True, null=True)
     zip_code = models.CharField(max_length=12, blank=True, null=True)
     subscription_plan = models.ForeignKey(DRPaymentTypeModel, blank=True, null=True, on_delete=models.SET_NULL,
                                           help_text='Select a monthly recurring subscription fees')
@@ -202,7 +204,6 @@ class Product(CreationModificationDateMixin):
     slug = models.SlugField(unique=True,
                             default='',
                             editable=False,
-                            max_length=50,
                             )
     brand_name = models.ForeignKey('Brand', on_delete=models.SET_NULL, blank=True, null=True,
                                    help_text='Your store name')
@@ -228,10 +229,10 @@ class Product(CreationModificationDateMixin):
 
     description = RichTextField(max_length=400, config_name='Special')
     additional_information = RichTextUploadingField(blank=True, null=True,
-                                           help_text='Provide additional information about '
-                                                     'your product. Buyers mostly buy from'
-                                                     ' well detailed products and '
-                                                     'specifications')
+                                                    help_text='Provide additional information about '
+                                                              'your product. Buyers mostly buy from'
+                                                              ' well detailed products and '
+                                                              'specifications')
     meta_keywords = models.CharField("Meta Keywords",
                                      max_length=100,
                                      help_text='Comma-delimited set of SEO keywords that summarize the type of '
@@ -414,10 +415,11 @@ class Product(CreationModificationDateMixin):
 
         image = self.productimage_set.filter(in_display=True)
 
-        if self.brand_name.is_active:
-            self.is_active = True
-        else:
-            self.is_active = False
+        if self.brand_name:
+            if self.brand_name.is_active:
+                self.is_active = True
+            else:
+                self.is_active = False
 
         # print('image', image.exists())
 
@@ -492,35 +494,58 @@ VAR_CATEGORIES = (
 )
 
 
-class Variation(CreationModificationDateMixin):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
+# class Variation(CreationModificationDateMixin):
+#     variation_name = models.CharField(max_length=200, unique=True)
+#
+#     def __str__(self):
+#         return self.variation_name
+#
+#
+# class ProductVariation(CreationModificationDateMixin):
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
+#     variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
+#     value = models.CharField(max_length=200)
+#     price = models.DecimalField(max_digits=9, null=True, blank=True, decimal_places=2, default=0,
+#                                 help_text="Please note that the default currency is "
+#                                           "USD. Converty your product price to "
+#                                           "US dollar before listing")
+#
+#     discount_price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(1)],
+#                                          blank=True, null=True,
+#                                          help_text="Please note that the default currency is "
+#                                                    "USD. Converty your product price to "
+#                                                    "US Dollar before listing")
+#     variation_images = models.ManyToManyField(ProductImage)
+#
+#     class Meta:
+#         unique_together = (
+#             ('variation', 'value')
+#         )
+#
+#     def __str__(self):
+#         return self.value
 
-    class Meta:
-        unique_together = (
-            ('product', 'name')
-        )
+
+class Color(CreationModificationDateMixin):
+    name = models.CharField(max_length=20)
+    code = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
         return self.name
 
+    def color_tag(self):
+        if self.code is not None:
+            return mark_safe('<p style="background-color:{}">Color </p>'.format(self.code))
+        else:
+            return ""
 
-class ProductVariation(CreationModificationDateMixin):
-    variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
-    value = models.CharField(max_length=200)
-    attachment = StdImageField(upload_to='images/products/productsVariation/', variations={
-        'thumbnail': (180, 150),
-        'large': (415, 430),
 
-    }, delete_orphans=True)
-
-    class Meta:
-        unique_together = (
-            ('variation', 'value')
-        )
+class Size(CreationModificationDateMixin):
+    name = models.CharField(max_length=20)
+    code = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
-        return self.value
+        return self.name
 
 
 class ProductDetail(CreationModificationDateMixin):
@@ -529,18 +554,42 @@ class ProductDetail(CreationModificationDateMixin):
     to extend the information contained in the ``Product`` model with
     specific, extra details.
     """
+
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
-    attribute = models.CharField(max_length=50)
-    value = models.CharField(max_length=500)
-    description = models.TextField(blank=True)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, blank=True, null=True,
+                              help_text="Add if your product comes in different colors")
+
+    other_variant = models.CharField(max_length=100, blank=True, null=True,
+                                     help_text="if you product has other "
+                                               "variant like shape, Size or style, "
+                                               "write it here instead")
+    other_variant_value = models.CharField(max_length=200, blank=True, null=True,
+                                           help_text="if you added other variant, please provide it's "
+                                                     "value, i.e if you added size value can be 16GB")
+
+    price = models.DecimalField(max_digits=9, null=True, blank=True, decimal_places=2, default=0,
+                                help_text="If the above variables affect your original price, you can say how much "
+                                          "this variant costs.Please note that the default currency is "
+                                          "USD. Converty your product price to US dollar before listing")
+
+    discount_price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(1)],
+                                         blank=True, null=True,
+                                         help_text="Please note that the default currency is "
+                                                   "USD. Converty your product price to "
+                                                   "US Dollar before listing")
+    image = models.ForeignKey(ProductImage, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return u'%s: %s - %s' % (self.product,
-                                 self.attribute,
-                                 self.value)
+        return u'%s: %s - %s' % (self.product, self.color, self.other_variant,)
 
     def get_absolute_url(self):
         return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
+
+    def image_tag(self):
+        if self.image:
+            return mark_safe('<img src="{}" height="50"/>'.format(self.image.image.thumbnail.url))
+        else:
+            return ""
 
 
 class ProductAttribute(CreationModificationDateMixin):

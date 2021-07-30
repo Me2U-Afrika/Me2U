@@ -15,8 +15,100 @@
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_responsive.css">
 	<link rel="stylesheet" type="text/css" href="css/zoom.css">
 
-<!--Productimagestyles-->
+<!--size color input-->
+<style>
+	.heading-section h2 {
+	font-size: 32px;
+    font-weight: 500;
+    padding-top: 10px;
+    padding-bottom: 15px;
+	font-family: 'Poppins', sans-serif;
+}
 
+	.owl-nav button {
+	position: absolute;
+	top: 50%;
+	transform: translate(0, -50%);
+	outline: none;
+	height: 25px;
+}
+.owl-nav button svg {
+	width: 25px;
+	height: 25px;
+}
+
+	.owl-nav button span {
+	font-size: 45px;
+}
+.product-thumb .item img {
+	height: 100px;
+}
+
+	.reviews-counter span {
+	vertical-align: -2px;
+}
+
+	.rate:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+}
+.rate:not(:checked) > label {
+    float: right;
+    width: 15px;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 21px;
+    color:#ccc;
+	margin-bottom: 0;
+	line-height: 21px;
+}
+.rate:not(:checked) > label:before {
+    content: '\2605';
+}
+.rate > input:checked ~ label {
+    color: #ffc700;
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+}
+.product-dtl p {
+	font-size: 14px;
+	line-height: 24px;
+	color: #7a7a7a;
+}
+.product-dtl .form-control {
+	font-size: 15px;
+}
+.product-dtl label {
+	line-height: 16px;
+	font-size: 15px;
+}
+.form-control:focus {
+	outline: none;
+	box-shadow: none;
+}
+
+	.review-form .form-control {
+	font-size: 14px;
+}
+.review-form input.form-control {
+	height: 40px;
+}
+.review-form textarea.form-control {
+	resize: none;
+}
+</style>
+<!--size color input-->
+<!--Productimagestyles-->
 <style>
 	.glass-case * {
     -webkit-box-sizing: border-box !important;
@@ -90,16 +182,7 @@
     background-color: #fff;
 }
 
-.gc-zoom-inner {
-    cursor: crosshair;
-    border: 0 !important;
-    left: -2px !important;
-    top: -2px !important;
-    margin: 0 !important;
-    z-index: 1010 !important;
-}
-
-.gc-zoom-container {
+	.gc-zoom-container {
     position: relative;
     top: 0;
     left: 0;
@@ -134,56 +217,7 @@
         padding: 0 12px 0 12px;
     }
 
-.gc-caption-intop {
-    left: 0;
-    top: 0;
-}
-
-.gc-caption-inbottom {
-    left: 0;
-    bottom: 0;
-}
-
-.gc-caption-outtop, .gc-caption-outbottom {
-    width: 100%;
-    width: calc(100% + 4px);
-    border: 2px solid #f5f5f5;
-    background: #fff;
-}
-
-.gc-caption-outtop {
-    top: 0;
-    left: -2px;
-    -webkit-transform: translate(0, -100%);
-    -moz-transform: translate(0, -100%);
-    -ms-transform: translate(0, -100%);
-    -o-transform: translate(0, -100%);
-    transform: translate(0, -100%);
-}
-
-.gc-caption-outbottom {
-    bottom: 0;
-    left: -2px;
-    -webkit-transform: translate(0, 100%);
-    -moz-transform: translate(0, 100%);
-    -ms-transform: translate(0, 100%);
-    -o-transform: translate(0, 100%);
-    transform: translate(0, 100%);
-}
-
-.gc-alignment-center {
-    text-align: center;
-}
-
-.gc-alignment-left {
-    text-align: left;
-}
-
-.gc-alignment-right {
-    text-align: right;
-}
-
-/*********************UL***************************/
+	/*********************UL***************************/
 .gc-thumbs-area {
     position: absolute;
     overflow: hidden;
@@ -231,16 +265,7 @@
     cursor: hand;
 }
 
-.gc-thumbs-area-prev .gc-disabled, .gc-thumbs-area-next .gc-disabled, .gc-thumbs-area-prev .gc-disabled:hover, .gc-thumbs-area-next .gc-disabled:hover {
-    opacity: .3; /* IE 8 */
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; /* IE 5-7 */
-    filter: alpha(opacity=30); /* Netscape */
-    -moz-opacity: 0.3; /* Safari 1.x */
-    -khtml-opacity: 0.3;
-    cursor: default;
-}
-
-.glass-case ul {
+	.glass-case ul {
     position: relative;
     top: 0;
     left: 0;
@@ -273,26 +298,13 @@
     margin-bottom: 5px;
 }
 
-.glass-case ul li .gc-li-display-container {
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-    width: 100%;
-    display: inline-block;
-}
-
-.glass-case ul li:hover {
+	.glass-case ul li:hover {
     border-color: #4f4f4f;
     cursor: pointer;
     cursor: hand;
 }
 
-.glass-case ul li.gc-active, .glass-case ul li.gc-active:hover {
-    border-color: #669966;
-    cursor: default;
-}
-
-.glass-case ul li .gc-li-display-container img {
+	.glass-case ul li .gc-li-display-container img {
     position: relative;
     top: 50%;
     left: 50%;
@@ -332,20 +344,7 @@
     padding: 0;
 }
 
-.gc-ocd-top {
-    top: 0;
-}
-
-.gc-ocd-bottom {
-    bottom: 0;
-}
-
-.gc-overlay-fit {
-    padding: 4em 5.5em 1em 5.5em;
-    overflow: hidden;
-}
-
-.gc-overlay-display {
+	.gc-overlay-display {
     position: relative;
     top: 0;
     left: 0;
@@ -353,37 +352,7 @@
     cursor: crosshair;
 }
 
-.gc-overlay-display-center {
-    max-width: 100%;
-    max-height: 100%;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    -moz-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    -o-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
-
-.gc-overlay-display-vcenter {
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    -moz-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    -o-transform: translateY(-50%);
-    transform: translateY(-50%);
-}
-
-.gc-overlay-display-hcenter {
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    -moz-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
-    -o-transform: translateX(-50%);
-    transform: translateX(-50%);
-}
-
-.gc-overlay-top-icons {
+	.gc-overlay-top-icons {
     position: absolute;
     top: 0;
     padding: 1em 1.5em 1em 0;
@@ -476,19 +445,7 @@
         content: "\e04b";
     }
 
-.gc-icon-next-vt {
-    bottom: 0;
-    left: 50%;
-}
-
-    .gc-icon-next-vt:before {
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        content: "\e019";
-    }
-
-.gc-display-area .gc-icon-next {
+	.gc-display-area .gc-icon-next {
     font-size: 2em !important;
 }
 
@@ -497,11 +454,7 @@
     font-size: 2em !important;
 }
 
-.gc-thumbs-area-next .gc-icon-next-vt {
-    font-size: 1.5em !important;
-}
-
-.gc-overlay-area .gc-icon-next {
+	.gc-overlay-area .gc-icon-next {
     position: relative;
     right: 0;
     font-size: 3em;
@@ -519,19 +472,7 @@
         content: "\e03f";
     }
 
-.gc-icon-prev-vt {
-    top: 0;
-    left: 50%;
-}
-
-    .gc-icon-prev-vt:before {
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        content: "\e083";
-    }
-
-.gc-display-area .gc-icon-prev {
+	.gc-display-area .gc-icon-prev {
     font-size: 2em !important;
 }
 
@@ -539,11 +480,7 @@
     font-size: 2em !important;
 }
 
-.gc-thumbs-area-prev .gc-icon-prev-vt {
-    font-size: 1.5em !important;
-}
-
-.gc-overlay-area .gc-icon-prev {
+	.gc-overlay-area .gc-icon-prev {
     position: relative;
     left: 0;
     font-size: 3em;
@@ -604,41 +541,8 @@
         right: -2px;
     }
 /*********************LOADING***************************/
-.gc-loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 31px;
-    height: 31px;
-    margin-left: -15px;
-    margin-top: -15px;
-    background-image: url(../images/loader.gif);
-}
 
-.gc-loading3 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-left: -15px;
-    margin-top: -15px;
-    font-size: 0.25em;
-    text-indent: -9999em;
-    border-top: 1.1em solid rgba(102, 153, 102, 0.2);
-    border-right: 1.1em solid rgba(102, 153, 102, 0.2);
-    border-bottom: 1.1em solid rgba(102, 153, 102, 0.2);
-    border-left: 1.1em solid #669966;
-    -webkit-animation: loadGC 1.1s infinite linear;
-    animation: loadGC 1.1s infinite linear;
-}
-
-    .gc-loading3,
-    .gc-loading3:after {
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-    }
-
-@-webkit-keyframes loadGC {
+	@-webkit-keyframes loadGC {
     0% {
         -webkit-transform: rotate(0deg);
         transform: rotate(0deg);
@@ -662,17 +566,8 @@
     }
 }
 /*********************GENERAL***************************/
-.gc-hide {
-    display: none;
-    z-index: 0;
-    opacity: 0; /* IE 8 */
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"; /* IE 5-7 */
-    filter: alpha(opacity=0); /* Netscape */
-    -moz-opacity: 0; /* Safari 1.x */
-    -khtml-opacity: 0;
-}
 
-.gc-noscroll {
+	.gc-noscroll {
     overflow: hidden;
 }
 
@@ -687,6 +582,7 @@
 }
 
 </style>
+
 <!--Productimagestyles-->
 <style>
 	@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
@@ -741,6 +637,7 @@
 							{% endfor %}
 						</ul>
 					</div>
+					<br>
 					<div class="row">
 						<div class="col">
 							<div id="product_tags" >
@@ -823,9 +720,34 @@
 
 						<!--PRODUCT DESCRIPTION-->
 							<div class="product_text">
-								<p>{{ object.description|linebreaks }}</p>
+								<p>{{ object.description|safe }}</p>
 							</div>
 						<!--PRODUCT DESCRIPTION-->
+						{% if object.productdetail_set.all %}
+						<div class="row">
+							<div class="col-md-6">
+								<label for="size">Size</label>
+								<select id="size" name="size" class="form-control">
+									<option>S</option>
+									<option>M</option>
+									<option>L</option>
+									<option>XL</option>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<label for="color">Color</label>
+							{% for attribute in object.productdetail_set.all %}
+							{% if attribute.color %}
+
+								<select id="color" name="color" class="form-control">
+									<option>{{attribute.color}}</option>
+								</select>
+
+							{% endif %}
+							{% endfor %}
+							</div>
+						</div>
+						{% endif %}
 
 						<!--PRODUCT CALL TO ACTION-->
 						<div class="order_info d-flex flex-row">
@@ -1554,10 +1476,6 @@
 <!--images react -->
 <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-<script src="js/zoom.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/zoom.js/0.0.1/zoom.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/zoom.js/0.0.1/zoom.js"></script>
-
 
 {% render_bundle 'imageswitcher' 'js' %}
 <script>
