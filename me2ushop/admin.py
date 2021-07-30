@@ -69,24 +69,10 @@ def make_inactive(modelAdmin, request, queryset):
 make_inactive.short_description = "Mark selected items as inactive"
 
 
-class ProductVariationAdmin(admin.ModelAdmin):
-    list_display = ['variation', 'value', 'attachment']
-
-    search_fields = ['value']
-    list_filter = ['variation', 'variation__product']
-
-
 class ProductVariationInlineAdmin(admin.TabularInline):
-    model = ProductVariation
+    model = ProductDetail
     extra = 1
 
-
-class VariationAdmin(admin.ModelAdmin):
-    list_display = ['product', 'name']
-    search_fields = ['product']
-    list_filter = ['name']
-
-    inlines = [ProductVariationInlineAdmin]
 
 
 class OrderItemInline(admin.TabularInline):
@@ -104,6 +90,12 @@ class OrderItemInline(admin.TabularInline):
 # class OrderInline(admin.TabularInline):
 #     model = Order
 #     raw_id_fields = ('items',)
+
+class SizeAdmin(admin.ModelAdmin):
+    list_display = ("name", "code",)
+
+class ColorAdmin(admin.ModelAdmin):
+    list_display = ("name", "code",)
 
 class StatusCodeAdmin(admin.ModelAdmin):
     list_display = ("short_name", "name",)
@@ -126,7 +118,7 @@ class ProductAdmin(admin.ModelAdmin):
     # prepopulated_fields = {'slug': ('title',)}
     # autocomplete_fields = ('product_categories',)
 
-    # inlines = (ProductDetailInline,)
+    inlines = [ProductVariationInlineAdmin]
     actions = [make_active, make_inactive]
 
     # def get_readonly_fields(self, request, obj=None):
@@ -278,7 +270,7 @@ class WishListAdmin(admin.ModelAdmin):
 
 
 class ProductDetailAdmin(admin.ModelAdmin):
-    list_display = ('product', 'attribute', 'value',)
+    list_display = ('product', 'color', 'other_variant')
 
 
 class ProductAttributeAdmin(admin.ModelAdmin):
@@ -757,9 +749,8 @@ class SellersAdminSite(ColoredAdminSite):
 
 main_admin = OwnersAdminSite()
 
-
-admin.site.register(ProductVariation, ProductVariationAdmin)
-admin.site.register(Variation, VariationAdmin)
+admin.site.register(Color, ColorAdmin)
+admin.site.register(Size, SizeAdmin)
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)
 admin.site.register(ProductReview, ProductReviewAdmin)
