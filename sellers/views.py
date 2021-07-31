@@ -18,36 +18,40 @@ def seller_page(request, slug):
 
     try:
         brand = Brand.objects.get(slug=slug)
+
         if brand:
-            brand_id = brand.id
+            if brand.profile == request.user:
+                brand_id = brand.id
 
-            print('user is an active seller')
-            brand_name = brand
+                print('user is an active seller')
+                brand_name = brand
 
-            # print(brand_name.id)
+                # print(brand_name.id)
 
-            products = brand_name.product_set.all()
-            orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
-            items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
-            # print('items:', items_delivered)
+                products = brand_name.product_set.all()
+                orders = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=10)
+                items_delivered = OrderItem.objects.filter(item__in=products).filter(ordered=True).filter(status=50)
+                # print('items:', items_delivered)
 
-            # orders = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(status=20).distinct()
-            orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
-                status=30).distinct()
+                orders_completed = Order.objects.filter(items__item__in=products).filter(ordered=True).filter(
+                    status=30).distinct()
 
-            order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
-                status__gt=20).distinct()
+                order_id = Order.objects.filter(items__item__in=products, ordered=True).exclude(
+                    status__gt=20).distinct()
 
-            total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
+                total_orders = OrderItem.objects.filter(item__in=products, ordered=True)
 
-            cancelled = total_orders.filter(status=40)
-            delivered = OrderItem.objects.filter(status=50, item__in=products)
-            pending = total_orders.filter(status=10)
-            in_transit = total_orders.filter(status=45)
-            page_title = 'Seller-Central'
+                cancelled = total_orders.filter(status=40)
+                delivered = OrderItem.objects.filter(status=50, item__in=products)
+                pending = total_orders.filter(status=10)
+                in_transit = total_orders.filter(status=45)
+                page_title = 'Seller-Central'
 
-            return render(request, 'sellers/seller_dashboard_template.html', locals())
-            # return render(request, 'sellers/seller_test_page.html', locals())
+                return render(request, 'sellers/seller_dashboard_template.html', locals())
+                # return render(request, 'sellers/seller_test_page.html', locals())
+            else:
+                messages.warning(request, "You not allowed to access this brand")
+                return redirect('me2ushop:home')
         else:
             return redirect('me2ushop:brand_create')
 
