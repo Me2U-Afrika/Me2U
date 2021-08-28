@@ -70,9 +70,13 @@ make_inactive.short_description = "Mark selected items as inactive"
 
 
 class ProductVariationInlineAdmin(admin.TabularInline):
-    model = ProductDetail
+    model = ProductVariations
     extra = 1
 
+
+class ProductImageInlineAdmin(admin.TabularInline):
+    model = ProductImage
+    extra = 1
 
 
 class OrderItemInline(admin.TabularInline):
@@ -81,21 +85,13 @@ class OrderItemInline(admin.TabularInline):
     raw_id_fields = ('item',)
 
 
-# class ProductDetailInline(admin.TabularInline):
-#     # list_display = ('product', 'attribute', 'value')
-#     model = ProductDetail
-#     raw_id_fields = ('attribute',)
-
-
-# class OrderInline(admin.TabularInline):
-#     model = Order
-#     raw_id_fields = ('items',)
-
 class SizeAdmin(admin.ModelAdmin):
     list_display = ("name", "code",)
 
+
 class ColorAdmin(admin.ModelAdmin):
     list_display = ("name", "code",)
+
 
 class StatusCodeAdmin(admin.ModelAdmin):
     list_display = ("short_name", "name",)
@@ -105,12 +101,13 @@ class ProductAdmin(admin.ModelAdmin):
     # form = ProductAdminForm()
     list_display = (
         'title', 'price', 'brand_name', 'is_active', 'in_stock', 'stock', 'sku', 'created',
-        'modified',)
+        'modified', "image_tag")
     list_display_links = ('title',)
     list_per_page = 50
     ordering = ['-created']
     list_editable = ('stock',)
     list_filter = ('brand_name', 'product_categories')
+    readonly_fields = ['image_tag']
 
     search_fields = ['title', 'description', 'meta_keywords', 'meta_description', 'product_categories', 'brand_name']
     exclude = ('created', 'modified',)
@@ -118,7 +115,7 @@ class ProductAdmin(admin.ModelAdmin):
     # prepopulated_fields = {'slug': ('title',)}
     # autocomplete_fields = ('product_categories',)
 
-    inlines = [ProductVariationInlineAdmin]
+    inlines = [ProductImageInlineAdmin, ProductVariationInlineAdmin]
     actions = [make_active, make_inactive]
 
     # def get_readonly_fields(self, request, obj=None):
@@ -269,8 +266,8 @@ class WishListAdmin(admin.ModelAdmin):
     list_filter = ("user",)
 
 
-class ProductDetailAdmin(admin.ModelAdmin):
-    list_display = ('product', 'color', 'other_variant')
+class ProductVariationAdmin(admin.ModelAdmin):
+    list_display = ('product', 'color', 'size', 'stock', 'image_tag')
 
 
 class ProductAttributeAdmin(admin.ModelAdmin):
@@ -749,6 +746,7 @@ class SellersAdminSite(ColoredAdminSite):
 
 main_admin = OwnersAdminSite()
 
+admin.site.register(Product, ProductAdmin)
 admin.site.register(Color, ColorAdmin)
 admin.site.register(Size, SizeAdmin)
 admin.site.register(Brand, BrandAdmin)
@@ -764,7 +762,7 @@ admin.site.register(StatusCode, StatusCodeAdmin)
 admin.site.register(RequestRefund, RefundDisplay)
 
 admin.site.register(Address, AddressAdmin)
-admin.site.register(ProductDetail, ProductDetailAdmin)
+admin.site.register(ProductVariations, ProductVariationAdmin)
 admin.site.register(ProductAttribute, ProductAttributeAdmin)
 
 central_office_admin = CentralOfficeAdminSite("central-office-admin")
