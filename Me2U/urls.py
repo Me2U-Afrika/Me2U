@@ -28,45 +28,44 @@ import certbot_django.server.urls
 from me2ushop.views import TransactionDetailView
 
 urlpatterns = [
-    url(r'^main-admin/', admin.site.urls),
-    url(r'^office-admin/', main_admin.central_office_admin.urls),
-    url(r'^seller-admin/', main_admin.sellers_admin.urls),
-    url(r'^dispatch-admin/', main_admin.dispatchers_admin.urls),
-
-    path('api-auth', include('rest_framework.urls')),
-    path('api/payments/', include('payments.mpesaApi.urls')),
-    path('payments/', include('payments.urls')),
-    path('accounts/', include('allauth.urls')),
-
+    url('', include('me2ushop.urls')),
     # cerbot
     url(r'^\.well-known/', include(certbot_django.server.urls)),
 
-    url('currencies/', include('currencies.urls')),
-    url('main/', include('main.urls')),
-    url('blog/', include('blog.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('api-auth', include('rest_framework.urls')),
+    path('api/payments/', include('payments.mpesaApi.urls')),
+
+    url(r'^blog/', include('blog.urls')),
+
+    url(r'^currencies/', include('currencies.urls')),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
-    url('users/', include('users.urls')),
-    url('users/', include('django.contrib.auth.urls')),
+    # url(r'^cache/', include('django_memcached.urls')),
+    url('categories', include('categories.urls', namespace='categories')),
 
-    url('search/', include('search.urls')),
-    url('sellers/', include('sellers.urls')),
+    url(r'^dispatch-admin/', main_admin.dispatchers_admin.urls),
+    path("djangorave/<str:reference>/", TransactionDetailView.as_view(), name="reference"),
+    path("djangorave/", include("djangorave.urls", namespace="djangorave")),
 
-    url('', include('me2ushop.urls')),
+    url(r'^main-admin/', admin.site.urls),
+    url('main/', include('main.urls')),
     url('marketing/', include('marketing.urls')),
 
-    # url(r'^cache/', include('django_memcached.urls')),
+    url(r'^office-admin/', main_admin.central_office_admin.urls),
 
-    url('categories', include('categories.urls', namespace='categories')),
-    path("djangorave/<str:reference>/", TransactionDetailView.as_view(), name="reference"),
-    path("djangorave/", include("djangorave.urls", namespace="djangorave"))
+    path('payments/', include('payments.urls')),
 
-    # url('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-    # url('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-    # url('password-change/', auth_views.PasswordChangeView.as_view(template_name='users/password_change.html'),
-    #     name='password-change'),
-    # url('password_change_done/',
-    #     auth_views.PasswordChangeDoneView.as_view(template_name='users/password_change_done.html'),
-    #     name='password_change_done'),
+    url(r'^search/', include('search.urls')),
+    url(r'^sellers/', include('sellers.urls')),
+    url(r'^seller-admin/', main_admin.sellers_admin.urls),
+
+    url(r'^users/', include('users.urls')),
+    url(r'^users/', include('django.contrib.auth.urls')),
+
+
+
+
+
 
 ]
 

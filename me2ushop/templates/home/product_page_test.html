@@ -725,27 +725,31 @@
 						<!--PRODUCT DESCRIPTION-->
 						{% if object.productdetail_set.all %}
 						<div class="row">
-							<div class="col-md-6">
-								<label for="size">Size</label>
-								<select id="size" name="size" class="form-control">
-									<option>S</option>
-									<option>M</option>
-									<option>L</option>
-									<option>XL</option>
-								</select>
-							</div>
-							<div class="col-md-6">
+
+							{% if color_codes %}
+							<div class="row">
+								<div class="col-md-6">
 								<label for="color">Color</label>
-							{% for attribute in object.productdetail_set.all %}
-							{% if attribute.color %}
-
 								<select id="color" name="color" class="form-control">
-									<option>{{attribute.color}}</option>
+									{% for color in color_codes %}
+									<option style="background-color: #{{color.code}}">{{ color }}</option>
+									{% endfor %}
 								</select>
-
+								</div>
+							</div>
+							{% endif %}
+							{% for variant in product_variations %}
+							{% if variant.other_variant %}
+							<div class="row">
+								<div class="col-md-6">
+									<label for="size">{{ variant.other_variant }}</label>
+									<select id="size" name="size" class="form-control">
+										<option>{{ variant.other_variant_value}}</option>
+									</select>
+								</div>
+							</div>
 							{% endif %}
 							{% endfor %}
-							</div>
 						</div>
 						{% endif %}
 
