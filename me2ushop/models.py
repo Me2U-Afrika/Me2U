@@ -310,6 +310,13 @@ class Product(CreationModificationDateMixin):
         if image:
             return image[0]
 
+    def image_tag(self):
+        image = self.get_image_in_display()
+        if image:
+            return mark_safe('<img src="{}" height="50"/>'.format(image.image.thumbnail.url))
+        else:
+            return ""
+
     def get_remove_cart_url(self):
         return reverse('me2ushop:remove_cart', kwargs={'slug': self.slug})
 
@@ -549,7 +556,7 @@ class Size(CreationModificationDateMixin):
         return self.name
 
 
-class ProductDetail(CreationModificationDateMixin):
+class ProductVariations(CreationModificationDateMixin):
     """    The ``ProductDetail`` model represents information unique to a
     specific product. This is a generic design that can be used
     to extend the information contained in the ``Product`` model with
@@ -557,16 +564,15 @@ class ProductDetail(CreationModificationDateMixin):
     """
 
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, blank=True, null=True,
+                             help_text="if you product has other "
+                                       "variant like shape, Size or style, "
+                                       "write it here instead")
     color = models.ForeignKey(Color, on_delete=models.CASCADE, blank=True, null=True,
                               help_text="Add if your product comes in different colors")
 
-    other_variant = models.CharField(max_length=100, blank=True, null=True,
-                                     help_text="if you product has other "
-                                               "variant like shape, Size or style, "
-                                               "write it here instead")
-    other_variant_value = models.CharField(max_length=200, blank=True, null=True,
-                                           help_text="if you added other variant, please provide it's "
-                                                     "value, i.e if you added size value can be 16GB")
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, blank=True, null=True,
+                              help_text="Add if your product comes in different colors")
 
     price = models.DecimalField(max_digits=9, null=True, blank=True, decimal_places=2, default=0,
                                 help_text="If the above variables affect your original price, you can say how much "
@@ -580,8 +586,11 @@ class ProductDetail(CreationModificationDateMixin):
                                                    "US Dollar before listing")
     image = models.ForeignKey(ProductImage, on_delete=models.SET_NULL, blank=True, null=True)
 
+    stock = models.IntegerField(default=1, blank=True, null=True)
+
+
     def __str__(self):
-        return u'%s: %s - %s' % (self.product, self.color, self.other_variant,)
+        return u'%s: %s - %s' % (self.product, self.color, self.size,)
 
     def get_absolute_url(self):
         return reverse('me2ushop:product', kwargs={'slug': self.product.slug})

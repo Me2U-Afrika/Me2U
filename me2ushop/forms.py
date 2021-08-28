@@ -105,7 +105,7 @@ class PostForm(forms.ModelForm):
 
 class ProductAttributeCreate(forms.ModelForm):
     class Meta:
-        model = ProductDetail
+        model = ProductVariations
         fields = '__all__'
 
     def __init__(self, user, slug, *args, **kwargs):

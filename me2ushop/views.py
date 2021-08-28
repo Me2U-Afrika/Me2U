@@ -773,10 +773,18 @@ class ProductDetailedView(CachedDetailView):
 
         product_reviews = ProductReview.approved.filter(product=product).order_by('-date')
         # print('productreviews:', product_reviews)
-        product_variations = ProductDetail.objects.filter(product=product)
+        product_variations = ProductVariations.objects.filter(product=product)
         print('productv', product_variations)
+        color_code = {}
+        other_variants = {}
         for variation in product_variations:
             print(variation.color)
+            if variation.color.code not in color_code:
+                color_code[variation.color] = variation.color.code
+
+
+        print('color+code:', color_code)
+
 
         review_form = ProductReviewForm()
 
@@ -795,6 +803,7 @@ class ProductDetailedView(CachedDetailView):
             'product_reviews': product_reviews,
             'page_title': str(self.get_object()),
             'formset': formset,
+            'color_codes': color_code,
         })
         from stats import stats
 
@@ -805,7 +814,6 @@ class ProductDetailedView(CachedDetailView):
         context.update({
             'product_views': product_views
         })
-
 
         return context
 
@@ -964,7 +972,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 # ___PRODUCT ATTRIBUTES CREATE, UPDATE, DELETE___
 class ProductAttributesCreateView(LoginRequiredMixin, CreateView):
-    model = ProductDetail
+    model = ProductVariations
     form_class = ProductAttributeCreate
     template_name = 'modelforms/product_form.html'
 
@@ -1007,14 +1015,14 @@ class ProductAttributesCreateView(LoginRequiredMixin, CreateView):
 
 
 class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
-    model = ProductDetail
+    model = ProductVariations
     fields = '__all__'
     template_name = 'modelforms/product_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeUpdateView, self).get_context_data(**kwargs)
 
-        product_detail = ProductDetail.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
+        product_detail = ProductVariations.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
         print('productdetail:', product_detail)
 
         context.update({
@@ -1032,13 +1040,13 @@ class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
-    model = ProductDetail
+    model = ProductVariations
     template_name = 'modelforms/product_confirm_delete.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeDeleteView, self).get_context_data(**kwargs)
 
-        product_detail = ProductDetail.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
+        product_detail = ProductVariations.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
 
         context.update({
 

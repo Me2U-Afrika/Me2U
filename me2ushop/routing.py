@@ -1,12 +1,10 @@
 from channels.auth import AuthMiddlewareStack
-from django.conf.urls import url
 from django.urls import path, re_path
 from . import consumers
 from Me2U.auth import TokenGetAuthMiddlewareStack
 
 websocket_urlpatterns = [
     re_path('ws/me2ushop/customer-service/(?P<order_id>[-\w]+)/$', consumers.ChatConsumer),
-    # re_path(r'ws/main/(?P<room_name>\w+)/$', consumers.ChatConsumer),
 
 ]
 

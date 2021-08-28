@@ -2,6 +2,72 @@
 {% load mptt_tags %}
 
 <!-- Brands -->
+{% block headblock %}
+<style type="text/css">
+
+        .quote-card {
+          background: #fff;
+          color: #222222;
+          padding: 20px;
+          padding-left: 50px;
+          box-sizing: border-box;
+          box-shadow: 0 2px 4px rgba(34, 34, 34, 0.12);
+          position: relative;
+          overflow: hidden;
+          min-height: 120px;
+        }
+        .quote-card p {
+          font-size: 22px;
+          line-height: 1.5;
+          margin: 0;
+          max-width: 80%;
+        }
+        .quote-card cite {
+          font-size: 16px;
+          margin-top: 10px;
+          display: block;
+          font-weight: 200;
+          opacity: 0.8;
+        }
+        .quote-card:before {
+          font-family: Georgia, serif;
+          content: "“";
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          font-size: 5em;
+          color: rgba(238, 238, 238, 0.8);
+          font-weight: normal;
+        }
+        .quote-card:after {
+          font-family: Georgia, serif;
+          content: "”";
+          position: absolute;
+          bottom: -110px;
+          line-height: 100px;
+          right: -32px;
+          font-size: 25em;
+          color: rgba(238, 238, 238, 0.8);
+          font-weight: normal;
+        }
+        @media (max-width: 640px) {
+            .quote-card:after {
+                font-size: 22em;
+                right: -25px;
+            }
+        }
+
+        .quote-card.green-card {
+          background: #00970B;
+          color: #ffffff;
+          box-shadow: 0 1px 2px rgba(34, 34, 34, 0.12), 0 2px 4px rgba(34, 34, 34, 0.24);
+        }
+        .quote-card.green-card:before, .quote-card.green-card:after {
+          color:#59E063 ;
+        }
+
+    </style>
+{% endblock %}
 
 <div class="brands">
     <div class="container">
@@ -75,9 +141,7 @@
 
             <div class="col-lg-3 footer_col">
                 <div class="footer_column footer_contact">
-                    <div class="logo_container">
-                        <div class="logo"><a href="#">Me2U|Afrika </a></div>
-                    </div>
+
                     <div class="footer_title">Got Question? Call Us 24/7</div>
                     <div class="footer_phone">+250 785 011 413</div>
                     <div class="footer_contact_text">
@@ -85,6 +149,7 @@
                         <p>KG 7 Ave, Kigali</p>
                         <p>KBC 2nd Floor</p>
                     </div>
+
                     <div class="footer_social">
                         <ul>
                             <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
@@ -100,16 +165,15 @@
             <div class="col-lg-2 offset-lg-2">
                 <div class="footer_column">
                     <div class="footer_title">Find it Fast</div>
-                    {% recursetree active_departments %}
                     <ul class="footer_list">
-                        {% if node.is_leaf_node %}
-                        <li><a href="{{ node.get_absolute_url }}" target="_blank">{{ node.category_name }}</a></li>
-                        {% endif %}
+                        {% recursetree active_departments %}
+                            {% if node.is_leaf_node %}
+                            <li><a href="{{ node.get_absolute_url }}" target="_blank">{{ node.category_name }}</a></li>
+                            {% endif %}
+                        {% endrecursetree %}
                         <li><a href="{% url 'blog:blog_home' %}">Blog</a></li>
-
-
                     </ul>
-                    {% endrecursetree %}
+
                 </div>
             </div>
 
@@ -138,6 +202,35 @@
                         <li><a href="{% url 'marketing:faqs' %}">FAQs</a></li>
                     </ul>
                 </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-12 px-5 mb-5 mx-auto d-block justify-content-center">
+                  <h3 class="tm-text-primary mb-4 tm-footer-title">Me2UAfrika </h3>
+                  <p>
+                    Me2U Afrika is a modern-day e-commerce platform where brands and businesses operating in Africa can conveniently offer
+                      their services from the comfort of their laptops or smartphones.
+                      <br>
+                    A seller is able to customize their products as needed and be able to track how their business is faring on at no cost.
+                      <br>
+                    We've also integrated local transport for delivery services and anyone can sign up to deliver our products upon verification. To address the limited contact between the seller and the buyer during this pandemic, help deliver a product bought on Me2U Afrika and earn a commission. We hope to unite Afrika through Trade and provide Job opportunities to people across the  African continent and beyond.
+                    Please endorse us. Your support is highly appreciated.
+
+                      <p>
+                          <blockquote class="quote-card green-card">
+                            <p class="text-white">
+                              Unity is the resultant value that comes from what you and I can exchange, so is respect.
+                            </p>
+
+                            <cite>
+                              Daniel Ogechi
+                            </cite>
+                          </blockquote>
+                        </p>
+
+                  </p>
+              </div>
+
+            <div>
+
             </div>
 
         </div>
