@@ -34,7 +34,8 @@ ADMINS = (
     ('Me2U|Africa IT', 'danielmakori0@gmail.com'),
 )
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)).replace('\\', '/'))
+# print('base dir', BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -207,7 +208,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'Me2U.SSLMiddleware.SSLRedirect',
     'main.middleware.cart_middleware',
-    # 'marketing.urlcanon.URLCanonicalizationMiddleware',
+    'marketing.urlcanon.URLCanonicalizationMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'asymmetric_jwt_auth.middleware.JWTAuthMiddleware',
 
