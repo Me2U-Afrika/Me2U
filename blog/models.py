@@ -16,6 +16,7 @@ from ckeditor.fields import RichTextField
 # Create your models here.
 
 class Post(CreationModificationDateMixin):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,
@@ -24,14 +25,13 @@ class Post(CreationModificationDateMixin):
                             max_length=255,
                             )
     # content = models.TextField()
-    content = RichTextUploadingField()
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = StdImageField(blank=True, null=True, upload_to='images/products', help_text="upload blog cover Image",
                           variations={
                               'medium': (500, 460),
                               'large': (800, 460),
 
                           }, delete_orphans=True)
+    content = RichTextUploadingField()
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='post_likes')
     snippet = models.CharField(max_length=350, default='Click Below To Read Blog Post...',
                                help_text='This is what USERS/READERS who have NOT SIGNED in will see. Make them login '
