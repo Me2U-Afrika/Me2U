@@ -38,3 +38,25 @@ CACHES = {
 }
 
 RAVE_SANDBOX = True
+
+MIDDLEWARE = [
+    # "sslify.middleware.SSLifyMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'Me2U.SSLMiddleware.SSLRedirect',
+    'main.middleware.cart_middleware',
+    # 'marketing.urlcanon.URLCanonicalizationMiddleware',
+    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
+    'asymmetric_jwt_auth.middleware.JWTAuthMiddleware',
+
+]
