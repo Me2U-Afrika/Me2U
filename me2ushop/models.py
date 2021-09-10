@@ -6,7 +6,7 @@ from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.conf import settings
 from django.core.cache import cache
-from django.core.validators import MinValueValidatort
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.shortcuts import reverse
 from django.utils.text import slugify
