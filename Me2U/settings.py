@@ -197,9 +197,9 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -208,7 +208,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'Me2U.SSLMiddleware.SSLRedirect',
     'main.middleware.cart_middleware',
-    # 'marketing.urlcanon.URLCanonicalizationMiddleware',
+    'marketing.urlcanon.URLCanonicalizationMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'asymmetric_jwt_auth.middleware.JWTAuthMiddleware',
 
@@ -217,29 +217,29 @@ MIDDLEWARE = [
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 
-servers = os.environ['MEMCACHIER_SERVERS']
-username = os.environ['MEMCACHIER_USERNAME']
-password = os.environ['MEMCACHIER_PASSWORD']
-
-CACHES = {
-    'default': {
-        # Use django-bmemcached
-        'BACKEND': 'django_bmemcached.memcached.BMemcached',
-
-        # TIMEOUT is not the connection timeout! It's the default expiration
-        # timeout that should be applied to keys! Setting it to `None`
-        # disables expiration.
-        # 'TIMEOUT': None,
-        'TIMEOUT': 600,
-
-        'LOCATION': servers,
-
-        'OPTIONS': {
-            'username': username,
-            'password': password,
-        }
-    }
-}
+# servers = os.environ['MEMCACHIER_SERVERS']
+# username = os.environ['MEMCACHIER_USERNAME']
+# password = os.environ['MEMCACHIER_PASSWORD']
+#
+# CACHES = {
+#     'default': {
+#         # Use django-bmemcached
+#         'BACKEND': 'django_bmemcached.memcached.BMemcached',
+#
+#         # TIMEOUT is not the connection timeout! It's the default expiration
+#         # timeout that should be applied to keys! Setting it to `None`
+#         # disables expiration.
+#         # 'TIMEOUT': None,
+#         'TIMEOUT': 600,
+#
+#         'LOCATION': servers,
+#
+#         'OPTIONS': {
+#             'username': username,
+#             'password': password,
+#         }
+#     }
+# }
 
 # CACHE_MIDDLEWARE_SECONDS = 2
 
