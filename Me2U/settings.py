@@ -469,10 +469,14 @@ PRODUCTS_PER_ROW = 12
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-try:
-    from settings_local import *
-except ImportError:
-    pass
+if DEBUG:
+    try:
+        from settings_local import *
+    except ImportError:
+        pass
+
+print('Rave Sandbox:', RAVE_SANDBOX)
+
 
 # print(e.message)
 # Activate Django-Heroku.
