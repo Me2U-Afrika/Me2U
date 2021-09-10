@@ -168,6 +168,11 @@ label {
                         {% include 'snippets/flutterwave_snippet.html' %}
                     </div>
                 {% endif %}
+                {% if payment == 'DC' %}
+                    <div class="new-card-form center">
+                        {% include 'snippets/flutterwave_snippet.html' %}
+                    </div>
+                {% endif %}
 
           </div>
                 <!--Call to action-->

@@ -2591,8 +2591,8 @@ class Checkout_page(View):
                             return redirect("me2ushop:payment", payment_option='paypal')
                         elif payment_option == 'M':
                             return redirect("me2ushop:payment", payment_option='mpesa')
-                        elif payment_option == 'C':
-                            return redirect("me2ushop:payment", payment_option='cash_on_delivery')
+                        elif payment_option == 'DC':
+                            return redirect("me2ushop:payment", payment_option='flutterwave')
                         elif payment_option == 'Fw':
                             return redirect("me2ushop:payment", payment_option='flutterwave')
                         else:
