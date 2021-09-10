@@ -302,7 +302,7 @@ if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'me2u',
+            'NAME': 'me2udev',
             'USER': os.environ.get('USER'),
             'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
             'HOST': 'localhost',
