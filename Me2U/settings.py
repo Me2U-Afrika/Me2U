@@ -46,9 +46,9 @@ CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'me2uafrica.herokuapp.com']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
-DEBUG = env('DEBUG')
+# DEBUG = env('DEBUG')
 #
-# DEBUG = False
+DEBUG = False
 # print('debug:', DEBUG)
 
 SITE_URL = 'https://www.me2uafrika.com'
@@ -302,7 +302,7 @@ if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'me2u',
+            'NAME': 'me2udev',
             'USER': os.environ.get('USER'),
             'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
             'HOST': 'localhost',
