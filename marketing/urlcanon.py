@@ -1,11 +1,13 @@
 from django.http import HttpResponsePermanentRedirect
 from urllib3 import get_host
+from django.utils.deprecation import MiddlewareMixin
+
 
 from Me2U import settings
 
 
-class URLCanonicalizationMiddleware:
-    def process_view(self, request, view_func, view_args, view_kwargs):
+class URLCanonicalizationMiddleware(MiddlewareMixin):
+    def process_view(self, request, view_args, view_kwargs):
         if not settings.DEBUG:
             # print(settings.DEBUG)
 
