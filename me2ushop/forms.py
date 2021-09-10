@@ -17,9 +17,9 @@ from mptt.forms import TreeNodeMultipleChoiceField, TreeNodePositionField
 PAYMENT_CHOICES = {
 
     # ('M', "M-Pesa"),
-    ('P', "Paypal"),
+    # ('P', "Paypal"),
     # ('S', "Stripe"),
-    ('P', "Debit Card/Credit Card"),
+    ('DC', "Debit Card/Credit Card"),
     ('Fw', "Flutterwave"),
 
 }
