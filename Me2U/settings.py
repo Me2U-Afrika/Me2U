@@ -243,7 +243,6 @@ CACHES = {
 
 # CACHE_MIDDLEWARE_SECONDS = 2
 
-
 INTERNAL_IPS = ['127.0.0.1']
 
 ROOT_URLCONF = 'Me2U.urls'
@@ -447,7 +446,7 @@ else:
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-# SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 # SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 #
 # EMAIL_HOST = 'smtp.sendgrid.net'
