@@ -37,7 +37,6 @@ CACHES = {
     }
 }
 
-RAVE_SANDBOX = True
 
 MIDDLEWARE = [
     # "sslify.middleware.SSLifyMiddleware",
@@ -60,3 +59,4 @@ MIDDLEWARE = [
     'asymmetric_jwt_auth.middleware.JWTAuthMiddleware',
 
 ]
+RAVE_SANDBOX = True
