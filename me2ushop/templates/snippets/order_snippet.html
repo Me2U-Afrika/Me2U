@@ -18,13 +18,13 @@
           {% endif %}
           </div>
             {% if order_item.item.discount_price %}
-              <span class="text-muted">${{ order_item.get_total_discount_price|currency:"USD" }}</span>
+              <span class="text-muted">{{CURRENCY.symbol}}{{ order_item.get_total_discount_price|currency:CURRENCY.code }}</span>
               <span class="text-muted"><a class="btn btn-green btn-sm my-0 p">
-                 - ${{ order_item.get_total_saved|currency:"USD" }}
+                 - {{CURRENCY.symbol}}{{ order_item.get_total_saved|currency:CURRENCY.code }}
                 </a></span>
 
             {% else %}
-              <span class="text-muted">${{ order_item.get_total_price|currency:"USD" }}</span>
+              <span class="text-muted">{{CURRENCY.symbol}}{{ order_item.get_total_price|currency:CURRENCY.code }}</span>
             {% endif %}
             {% if not order.ordered %}
             <a style="color:orange" href="{% url 'me2ushop:remove_cart' order_item.item.slug %}">
@@ -41,16 +41,16 @@
             <h6 class="my-0">Promo code</h6>
             <small>{{ order.coupon.code}}</small>
           </div>
-          <span class="text-muted">-${{ order.coupon.amount|currency:"USD" }}</span>
+          <span class="text-muted">-{{CURRENCY.symbol}}{{ order.coupon.amount|currency:CURRENCY.code }}</span>
         </li>
         <li class="list-group-item d-flex justify-content-between">
-          <span>Total (USD)</span>
-          <strong>${{ order.get_coupon_total|currency:"USD" }}</strong>
+          <span>Total ({{CURRENCY.code}})</span>
+          <strong>{{CURRENCY.symbol}}{{ order.get_coupon_total|currency:CURRENCY.code }}</strong>
         </li>
           {% else %}
           <li class="list-group-item d-flex justify-content-between">
-          <span>Total (USD)</span>
-          <strong>${{ order.get_total|currency:"USD"}}</strong>
+          <span>Total ({{CURRENCY.code}})</span>
+          <strong>{{CURRENCY.symbol}}{{ order.get_total|currency:CURRENCY.code}}</strong>
         </li>
           {% endif %}
       </ul>
