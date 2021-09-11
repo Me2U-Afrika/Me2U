@@ -254,10 +254,17 @@ class ProductReviewAdmin(admin.ModelAdmin):
 
 
 class Items_Ordered(admin.ModelAdmin):
-    list_display = ('user', 'item', 'quantity', 'status', 'ordered', 'date_ordered')
+    list_display = ('user', 'name', 'item', 'quantity', 'status', 'ordered', 'date_ordered')
     search_fields = ['item', ]
     list_editable = ('status',)
     list_filter = ("status",)
+
+    def name(self, obj):
+        if obj.customer_order:
+            return obj.customer_order.name
+        return "-"
+
+    name.short_description = "Customer Name"
 
 
 class WishListAdmin(admin.ModelAdmin):
@@ -277,7 +284,7 @@ class ProductAttributeAdmin(admin.ModelAdmin):
 class Ordered(admin.ModelAdmin):
     list_display = (
         'user',
-        'last_spoken_to',
+        'name',
         'order_date',
         'ordered',
         "status_code",
@@ -286,7 +293,7 @@ class Ordered(admin.ModelAdmin):
         'ref_code',
         'shipping_country',
         'being_delivered',
-        'received', 'refund_requested', 'refund_granted')
+        'received', 'refund_requested', 'refund_granted','last_spoken_to',)
     list_display_links = [
         'user',
         'shipping_country',
