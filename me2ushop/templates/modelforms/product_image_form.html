@@ -22,12 +22,14 @@
 			<div class="row">
 				<div class="col-lg-10 offset-lg-1">
 					<div class="contact_form_container">
-						<div class="contact_form_title">Add a new Image</div>
+						<div class="contact_form_title">Add a new Image for {{ product }}</div>
 
 						<form method="POST" enctype="multipart/form-data">
 							{% csrf_token %}
 	                        {{ form|crispy }}
-							<input type="hidden" id="id_slug" value="{{ object.slug }}"/>
+							<div class="">
+								<input type="hidden" name="slug" id="id_slug" value="{{ product.slug }}"/>
+							</div>
 							<div class="contact_form_button form-group">
 								<button type="submit" class="button contact_submit_button">Submit</button>
 								<button class="button danger-color ml-2"><a href="{% url 'me2ushop:product_images' product.slug %}">Cancel</a></button>

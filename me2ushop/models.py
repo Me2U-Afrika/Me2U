@@ -133,7 +133,7 @@ class Brand(CreationModificationDateMixin):
     # subscription_type = models.CharField(max_length=2, choices=SUBSCRIPTION_TYPE_CHOICE,
     #                                      help_text='Select a monthly recurring subscription fees')
     subscription_reference = models.CharField(max_length=200, blank=True, null=True)
-    # subscription_status = models.BooleanField(blank=True, null=True)
+    subscription_status = models.BooleanField(default=True, blank=True, null=True)
     shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
                                        help_text='Is Your company able to ship or deliver your products once they '
                                                  'buyers order online?')
@@ -179,6 +179,11 @@ class Brand(CreationModificationDateMixin):
     def save(self, *args, **kwargs):
         if not self.pk or self.slug == '':
             self.slug = self._generate_slug()
+
+        if self.subscription_status:
+            self.is_active = True
+        else:
+            self.is_active = False
 
         if self.product_set.all():
             for product in self.product_set.all():
@@ -428,6 +433,8 @@ class Product(CreationModificationDateMixin):
                 self.is_active = True
             else:
                 self.is_active = False
+        else:
+            self.active = False
 
         # print('image', image.exists())
 
@@ -452,11 +459,10 @@ class DisplayImageManager(models.Manager):
 
 class ProductImage(CreationModificationDateMixin):
     item = models.ForeignKey(Product, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, blank=True, null=True, help_text="Image title")
     image = StdImageField(upload_to='images/products', variations={
         'thumbnail': (180, 150),
-        'medium': (365, 365),
-        'deals_size': (365, 365, True),
-        'large': (585, 525),
+        'large': (585, 585),
 
     }, delete_orphans=True)
 
@@ -541,12 +547,6 @@ class Color(CreationModificationDateMixin):
     def __str__(self):
         return self.name
 
-    def color_tag(self):
-        if self.code is not None:
-            return mark_safe('<p style="background-color:{}">Color </p>'.format(self.code))
-        else:
-            return ""
-
 
 class Size(CreationModificationDateMixin):
     name = models.CharField(max_length=20)
@@ -565,14 +565,12 @@ class ProductVariations(CreationModificationDateMixin):
 
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
     title = models.CharField(max_length=100, blank=True, null=True,
-                             help_text="if you product has other "
-                                       "variant like shape, Size or style, "
-                                       "write it here instead")
+                             help_text="Title for this product variant")
     color = models.ForeignKey(Color, on_delete=models.CASCADE, blank=True, null=True,
                               help_text="Add if your product comes in different colors")
 
     size = models.ForeignKey(Size, on_delete=models.CASCADE, blank=True, null=True,
-                              help_text="Add if your product comes in different colors")
+                             help_text="Add if your product comes in different colors")
 
     price = models.DecimalField(max_digits=9, null=True, blank=True, decimal_places=2, default=0,
                                 help_text="If the above variables affect your original price, you can say how much "
@@ -587,7 +585,6 @@ class ProductVariations(CreationModificationDateMixin):
     image = models.ForeignKey(ProductImage, on_delete=models.SET_NULL, blank=True, null=True)
 
     stock = models.IntegerField(default=1, blank=True, null=True)
-
 
     def __str__(self):
         return u'%s: %s - %s' % (self.product, self.color, self.size,)

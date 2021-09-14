@@ -75,8 +75,19 @@ class ProductVariationInlineAdmin(admin.TabularInline):
 
 
 class ProductImageInlineAdmin(admin.TabularInline):
+    list_display = ('item', 'in_display', 'pk', 'preview')
+
     model = ProductImage
     extra = 1
+
+    def preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="%s"/>' % obj.image.thumbnail.url
+            )
+        return "-"
+
+    preview.short_description = "preview"
 
 
 class OrderItemInline(admin.TabularInline):
@@ -90,7 +101,15 @@ class SizeAdmin(admin.ModelAdmin):
 
 
 class ColorAdmin(admin.ModelAdmin):
-    list_display = ("name", "code",)
+    list_display = ("name", "code", "color_tag")
+
+    def color_tag(self, obj):
+        if obj.code is not None:
+            return mark_safe('<p style="background-color:{}">Color </p>'.format(obj.code))
+        else:
+            return ""
+
+    color_tag.short_description = "Color Tag"
 
 
 class StatusCodeAdmin(admin.ModelAdmin):
@@ -293,7 +312,7 @@ class Ordered(admin.ModelAdmin):
         'ref_code',
         'shipping_country',
         'being_delivered',
-        'received', 'refund_requested', 'refund_granted','last_spoken_to',)
+        'received', 'refund_requested', 'refund_granted', 'last_spoken_to',)
     list_display_links = [
         'user',
         'shipping_country',

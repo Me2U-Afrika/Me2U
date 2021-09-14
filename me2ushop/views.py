@@ -1076,52 +1076,52 @@ def show_product_image(request, slug):
 
 
 # ___PRODUCT IMAGE CREATE UPDATE DELETE VIEWS___
-def product_image_create(request, slug):
-    product = get_object_or_404(Product, slug=slug)
-    # print('slug:', slug)
-
-    product_image = ProductImage.objects.filter(item__brand_name__user=request.user, item=product)
-    if request.method == 'POST':
-        # print('we came to post')
-        form = ProductImageCreate(request.POST, request.FILES, instance=request.user)
-        # print('form', form)
-        if form.is_valid():
-            print(form.is_valid())
-            # obj = form.save(commit=False)
-            in_display = form.cleaned_data.get('in_display')
-            image = form.cleaned_data.get('image')
-            item = form.cleaned_data.get('item')
-            # print('item:', item)
-            # print('indisplay', in_display)
-            # print('image:', image)
-
-            if product.brand_name.profile == request.user:
-
-                current_saved_default = ProductImage.displayed.filter(item__brand_name__user=request.user,
-                                                                      item=product)
-                # print('current', current_saved_default)
-                if current_saved_default.exists():
-                    if in_display:
-                        current_saved = current_saved_default[0]
-                        current_saved.in_display = False
-                        current_saved.save()
-                        # print('current', current_saved.default)
-
-                # obj.user = user
-                # obj.save()
-            # obj.save()
-            form.save()
-        return redirect('me2ushop:product', slug)
-    else:
-        form = ProductImageCreate(slug)
-        # form.fields['item'].widget.attrs['value'] = product
-        context = {
-            'object': product,
-            'product_image': product_image,
-            'form': form,
-        }
-
-        return render(request, 'modelforms/product_image_form.html', context)
+# def product_image_create(request, slug):
+#     product = get_object_or_404(Product, slug=slug)
+#     # print('slug:', slug)
+#
+#     product_image = ProductImage.objects.filter(item__brand_name__user=request.user, item=product)
+#     if request.method == 'POST':
+#         # print('we came to post')
+#         form = ProductImageCreate(request.POST, request.FILES, instance=request.user)
+#         # print('form', form)
+#         if form.is_valid():
+#             print(form.is_valid())
+#             # obj = form.save(commit=False)
+#             in_display = form.cleaned_data.get('in_display')
+#             image = form.cleaned_data.get('image')
+#             item = form.cleaned_data.get('item')
+#             # print('item:', item)
+#             # print('indisplay', in_display)
+#             # print('image:', image)
+#
+#             if product.brand_name.profile == request.user:
+#
+#                 current_saved_default = ProductImage.displayed.filter(item__brand_name__user=request.user,
+#                                                                       item=product)
+#                 # print('current', current_saved_default)
+#                 if current_saved_default.exists():
+#                     if in_display:
+#                         current_saved = current_saved_default[0]
+#                         current_saved.in_display = False
+#                         current_saved.save()
+#                         # print('current', current_saved.default)
+#
+#                 # obj.user = user
+#                 # obj.save()
+#             # obj.save()
+#             form.save()
+#         return redirect('me2ushop:product', slug)
+#     else:
+#         form = ProductImageCreate(slug)
+#         # form.fields['item'].widget.attrs['value'] = product
+#         context = {
+#             'object': product,
+#             'product_image': product_image,
+#             'form': form,
+#         }
+#
+#         return render(request, 'modelforms/product_image_form.html', context)
 
 
 class ProductImageCreateView(LoginRequiredMixin, CreateView):
@@ -1150,18 +1150,19 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
         })
         return context
 
-    def get_form_kwargs(self):
-        kwargs = super(ProductImageCreateView, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
-        kwargs['slug'] = self.kwargs['slug']
-        return kwargs
+    # def get_form_kwargs(self):
+    #     kwargs = super(ProductImageCreateView, self).get_form_kwargs()
+    #     kwargs['user'] = self.request.user
+    #     kwargs['slug'] = self.kwargs['slug']
+    #     return kwargs
 
     def form_valid(self, form):
         print('In Add Image Form')
         obj = form.save(commit=False)
-        print('obj:', obj)
-        item = form.cleaned_data.get('item')
-        image = form.cleaned_data.get('image')
+        # slug = form.data['slug']
+        # image = form.cleaned_data.get('image')
+        item = Product.objects.get(slug=self.kwargs.get('slug'))
+        obj.item = item
 
         user = self.request.user
 

@@ -833,14 +833,36 @@
 							<form action="{{ object.get_add_cart_url }}" method="POST">
 								{% csrf_token %}
 
-								{% if not object.brand_name.profile == request.user %}
+								{% if object.brand_name.profile == request.user %}
+									<div class="card card-body">
+										<a class="btn btn-outline-orange" href="{% url 'me2ushop:product-update' object.slug %}">UPDATE Product</a>
+										<a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}">Product Detailed Information</a>
+										<a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}">ADD Attributes</a>
+
+										{% if object.productimage_set.all %}
+										<a class="btn btn-outline-purple" href="{% url 'me2ushop:product_images' object.slug %}">Product Images</a>
+										{% else %}
+										<a class="btn btn-outline-purple" href="{% url 'me2ushop:product_image_create' object.slug %}">Add Images</a>
+										{% endif %}
+
+										<a class="btn btn-outline-grey" href="{% url 'sellers:seller_products' object.brand_name.id %}">My Products</a>
+										<a class="btn btn-outline-green " href="{% url 'me2ushop:product-create' object.brand_name.id  %}">New Product</a>
+
+
+										{% if pending_item %}
+										<a class="btn text-muted disabled red-text" href="#">Delete</a>
+										{% else %}
+										<a class="btn" href="{% url 'me2ushop:product-delete' object.slug %}">Delete</a>
+										{% endif %}
+									</div>
+								{% else %}
 									<!--ADD TO CART OPTIONS-->
 									{% if object.brand_name.valid_payment_method and object.price > 0 %}
 										<div class="clearfix" style="z-index: 1000;">
 										{% if object.stock > 0 %}
 										<p>Stock: {{ object.stock }}</p>
 										{% else %}
-										<p>Stock:Product Not in Stock</p>
+										<p style="color: red">Stock:Product Not in Stock</p>
 										{% endif %}
 
 										<!-- Product Quantity -->
@@ -940,29 +962,6 @@
 									</div>
 									{% endif %}
 									<!--ADD TO CART OPTIONS-->
-								{% else %}
-								<div class="card card-body">
-
-									<a class="btn btn-outline-orange" href="{% url 'me2ushop:product-update' object.slug %}">UPDATE Product</a>
-									<a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}">Product Detailed Information</a>
-									<a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}">ADD Attributes</a>
-
-									{% if object.productimage_set.all %}
-									<a class="btn btn-outline-purple" href="{% url 'me2ushop:product_images' object.slug %}">Product Images</a>
-									{% else %}
-									<a class="btn btn-outline-purple" href="{% url 'me2ushop:product_image_create' object.slug %}">Add Images</a>
-									{% endif %}
-
-									<a class="btn btn-outline-grey" href="{% url 'sellers:seller_products' object.brand_name.id %}">My Products</a>
-									<a class="btn btn-outline-green " href="{% url 'me2ushop:product-create' object.brand_name.id  %}">New Product</a>
-
-
-									{% if pending_item %}
-									<a class="btn text-muted disabled red-text" href="#">Delete Product</a>
-									{% else %}
-									<a class="btn" href="{% url 'me2ushop:product-delete' object.slug %}">Delete</a>
-									{% endif %}
-								</div>
 								{% endif%}
 
 							</form>
@@ -972,10 +971,10 @@
 						<!--SELLER INFO-->
 						{% if object.brand_name %}
 							<div class="mt-2">
-									<button class="button cart_button quick-contact" id="contact_seller"><i class="fas fa-phone-square">Contact Seller</i></button>
+								<button class="button cart_button quick-contact" id="contact_seller"><i class="fas fa-phone-square">Contact Seller</i></button>
 
-									<a href="{{ object.brand_name.get_frontstore_url }}" role="button" class="button cart_button quick-contact"><i class="fas fa-store"> Visit Store</i></a>
-								</div>
+								<a href="{{ object.brand_name.get_frontstore_url }}" role="button" class="button cart_button quick-contact"><i class="fas fa-store"> Visit Store</i></a>
+							</div>
 						{% endif %}
 						<!--SELLER INFO-->
 
@@ -1167,93 +1166,140 @@
 		<!-- Classic tabs -->
 
 		{% if object.cross_sellers or object.cross_sells_hybrid %}
-		<!-- Best Sellers -->
-		<div class="best_sellers mt-5">
-			<div class="container">
-				<div class="row">
-					<div class="col">
-						<div class="tabbed_container">
-							<div class="tabs clearfix tabs-right">
-								<div class="new_arrivals_title">Recommeded</div>
-								<ul class="clearfix">
-									<li class="active">Similar Products</li>
-									<li>Mostly Ordered With</li>
-								</ul>
-								<div class="tabs_line"><span></span></div>
-							</div>
+			<!-- Best Sellers -->
+			<div class="best_sellers mt-5">
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<div class="tabbed_container">
+								<div class="tabs clearfix tabs-right">
+									<div class="new_arrivals_title">Recommeded</div>
+									<ul class="clearfix">
+										<li class="active">Similar Products</li>
+										<li>Mostly Ordered With</li>
+									</ul>
+									<div class="tabs_line"><span></span></div>
+								</div>
 
-							<div class="bestsellers_panel panel active">
+								<div class="bestsellers_panel panel active">
 
-								<!-- Best Sellers Slider -->
+									<!-- Best Sellers Slider -->
 
-								<div class="bestsellers_slider slider">
+									<div class="bestsellers_slider slider">
 
-									{% for product in object.cross_sells_sellers %}
-									{% if product.discount_price %}
-									<!-- Best Sellers Item -->
-									<div class="bestsellers_item discount">
-										<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
+										{% for product in object.cross_sells_sellers %}
+											{% if product.discount_price %}
+												<!-- Best Sellers Item -->
+												<div class="bestsellers_item discount">
+													<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
 
-											{% for image in product.get_images %}
-											{% if image.in_display %}
+														{% for image in product.get_images %}
+														{% if image.in_display %}
 
-											<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
+														<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
+
+														{% endif %}
+														{% endfor %}
+														<div class="bestsellers_content">
+															<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
+															<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+															<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
+															{% if CURRENCY.code %}
+																{% if product.price > 0 %}
+																	<div class="bestsellers_price discount">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }}<span>{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }}</span></div>
+																{% endif %}
+															{% endif %}
+
+														</div>
+													</div>
+													<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
+														<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+														{% for wish in wish_list %}
+														{% if wish.product.slug == product.slug %}
+														<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+														{% endif %}
+														{% endfor %}
+
+													</a>
+													<ul class="bestsellers_marks">
+														<li class="bestsellers_mark bestsellers_discount">-{{ product.total_discount }}%</li>
+														<li class="bestsellers_mark bestsellers_new">new</li>
+													</ul>
+												</div>
+											{% else %}
+												<!-- Best Sellers Item -->
+												<div class="bestsellers_item">
+													<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
+														{% for image in product.get_images %}
+															{% if image.in_display %}
+																<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
+															{% endif %}
+														{% endfor %}
+
+														<div class="bestsellers_content">
+															<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
+															<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+															<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
+															{% if CURRENCY.code %}
+																{% if product.price > 0 %}
+																	<div class="bestsellers_price">{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }}</div>
+																{% endif %}
+															{% endif %}
+														</div>
+													</div>
+
+														<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
+															<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+															{% for wish in wish_list %}
+																{% if wish.product.slug == product.slug %}
+																	<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+																{% endif %}
+															{% endfor %}
+
+														</a>
+													<ul class="bestsellers_marks">
+														<li class="bestsellers_mark bestsellers_new">new</li>
+													</ul>
+												</div>
 
 											{% endif %}
-											{% endfor %}
-											<div class="bestsellers_content">
-												<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
-												<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
-												<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-												{% if CURRENCY.code %}
-													{% if product.price > 0 %}
-														<div class="bestsellers_price discount">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }}<span>{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }}</span></div>
-													{% endif %}
-												{% endif %}
+										{% endfor %}
 
-											</div>
-										</div>
-										<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
-											<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
-
-											{% for wish in wish_list %}
-											{% if wish.product.slug == product.slug %}
-											<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
-											{% endif %}
-											{% endfor %}
-
-										</a>
-										<ul class="bestsellers_marks">
-											<li class="bestsellers_mark bestsellers_discount">-{{ product.total_discount }}%</li>
-											<li class="bestsellers_mark bestsellers_new">new</li>
-										</ul>
 									</div>
+								</div>
 
-									{% else %}
+								<div class="bestsellers_panel panel">
 
-									<!-- Best Sellers Item -->
-									<div class="bestsellers_item">
-										<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
-											{% for image in product.get_images %}
-											{% if image.in_display %}
+									<!-- Best Sellers Slider -->
 
-											<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
+									<div class="bestsellers_slider slider">
 
-											{% endif %}
-											{% endfor %}
+										{% for product in object.cross_sells_hybrid %}
+										{% if product.discount_price %}
+										<!-- Best Sellers Item -->
+										<div class="bestsellers_item discount">
+											<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
 
-											<div class="bestsellers_content">
-												<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
-												<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
-												<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-												{% if CURRENCY.code %}
-													{% if product.price > 0 %}
-														<div class="bestsellers_price">{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }}</div>
-													{% endif %}
+												{% for image in product.get_images %}
+												{% if image.in_display %}
+
+												<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
+
 												{% endif %}
+												{% endfor %}
+												<div class="bestsellers_content">
+													<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
+													<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+													<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
+													{% if CURRENCY.code %}
+														{% if product.price > 0 %}
+															<div class="bestsellers_price discount">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }}<span>{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }} </span></div>
+														{% endif %}
+													{% endif %}
+												</div>
 											</div>
-										</div>
-
 											<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
 												<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
 
@@ -1264,116 +1310,65 @@
 												{% endfor %}
 
 											</a>
-										<ul class="bestsellers_marks">
-											<li class="bestsellers_mark bestsellers_new">new</li>
-										</ul>
-									</div>
-
-									{% endif %}
-									{% endfor %}
-
-								</div>
-							</div>
-
-							<div class="bestsellers_panel panel">
-
-								<!-- Best Sellers Slider -->
-
-								<div class="bestsellers_slider slider">
-
-									{% for product in object.cross_sells_hybrid %}
-									{% if product.discount_price %}
-									<!-- Best Sellers Item -->
-									<div class="bestsellers_item discount">
-										<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
-
-											{% for image in product.get_images %}
-											{% if image.in_display %}
-
-											<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
-
-											{% endif %}
-											{% endfor %}
-											<div class="bestsellers_content">
-												<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
-												<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
-												<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-												{% if CURRENCY.code %}
-													{% if product.price > 0 %}
-														<div class="bestsellers_price discount">{{ CURRENCY.symbol }}{{ product.discount_price|currency:CURRENCY.code }}<span>{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }} </span></div>
-													{% endif %}
-												{% endif %}
-											</div>
-										</div>
-										<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
-											<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
-
-											{% for wish in wish_list %}
-											{% if wish.product.slug == product.slug %}
-											<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
-											{% endif %}
-											{% endfor %}
-
-										</a>
-										<ul class="bestsellers_marks">
-											<li class="bestsellers_mark bestsellers_discount">-{{ product.total_discount }}%</li>
-											<li class="bestsellers_mark bestsellers_new">new</li>
-										</ul>
-									</div>
-
-									{% else %}
-
-									<!-- Best Sellers Item -->
-									<div class="bestsellers_item">
-										<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
-											{% for image in product.get_images %}
-											{% if image.in_display %}
-
-											<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
-
-											{% endif %}
-											{% endfor %}
-
-											<div class="bestsellers_content">
-												<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
-												<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
-												<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
-												{% if CURRENCY.code %}
-													{% if product.price > 0 %}
-														<div class="bestsellers_price">{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }} </div>
-													{% endif %}
-												{% endif %}
-											</div>
+											<ul class="bestsellers_marks">
+												<li class="bestsellers_mark bestsellers_discount">-{{ product.total_discount }}%</li>
+												<li class="bestsellers_mark bestsellers_new">new</li>
+											</ul>
 										</div>
 
-											<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
-												<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+										{% else %}
 
-												{% for wish in wish_list %}
-												{% if wish.product.slug == product.slug %}
-												<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+										<!-- Best Sellers Item -->
+										<div class="bestsellers_item">
+											<div class="bestsellers_item_container d-flex flex-row align-items-center justify-content-start">
+												{% for image in product.get_images %}
+												{% if image.in_display %}
+
+												<div class="bestsellers_image"><a href="{{ product.get_absolute_url }}"> <img src="{{ image.image.thumbnail.url }}" alt="{{ product.title }}"></a></div>
+
 												{% endif %}
 												{% endfor %}
 
-											</a>
-										<ul class="bestsellers_marks">
-											<li class="bestsellers_mark bestsellers_new">new</li>
-										</ul>
+												<div class="bestsellers_content">
+													<div class="bestsellers_category"><a href="#">{{ product.get_category_choice_display }}</a></div>
+													<div class="bestsellers_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+													<div class="rating_r rating_r_4 bestsellers_rating"><i></i><i></i><i></i><i></i><i></i></div>
+													{% if CURRENCY.code %}
+														{% if product.price > 0 %}
+															<div class="bestsellers_price">{{ CURRENCY.symbol }}{{ product.price|currency:CURRENCY.code }} </div>
+														{% endif %}
+													{% endif %}
+												</div>
+											</div>
+
+												<a href="{% url 'me2ushop:add_wishlist' product.slug %}">
+													<div class="bestsellers_fav" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+
+													{% for wish in wish_list %}
+													{% if wish.product.slug == product.slug %}
+													<div class="bestsellers_fav active" id="{{ product.slug}}"><i class="fas fa-heart"></i></div>
+													{% endif %}
+													{% endfor %}
+
+												</a>
+											<ul class="bestsellers_marks">
+												<li class="bestsellers_mark bestsellers_new">new</li>
+											</ul>
+										</div>
+
+										{% endif %}
+										{% endfor %}
+
 									</div>
-
-									{% endif %}
-									{% endfor %}
-
 								</div>
+
 							</div>
 
 						</div>
-
 					</div>
 				</div>
 			</div>
-		</div>
-		<!-- Best Sellers -->
+			<!-- Best Sellers -->
 		{% endif %}
 
 		<!--reviews-->
@@ -3011,7 +3006,7 @@
     $(".title-contact, .contact-email").fadeIn("slow");
     document.getElementById("contact_seller").addEventListener("click",
 		function () {
-    		window.scrollBy(0, 100);
+    		window.scrollBy(0, 130);
 		}
 	)
 

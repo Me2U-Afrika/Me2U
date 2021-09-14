@@ -304,22 +304,15 @@
 								{% for deal in deals %}
 
 								<div class="owl-item deals_item">
-									{% if deal.image %}
+									{% for image in deal.product.get_images %}
+									{% if image.in_display %}
+
 										<div class="deals_image">
-											<a href="{{ deal.product.get_absolute_url }}"><img src="{{ deal.image.deal_size.url }}" alt="{{ product.title }}"></a>
+											<a href="{{ deal.product.get_absolute_url }}"><img src="{{ image.image.large.url }}" alt="{{ product.title }}"></a>
 										</div>
 
-									{% else %}
-										{% for image in deal.product.get_images %}
-										{% if image.in_display %}
-
-											<div class="deals_image">
-												<a href="{{ deal.product.get_absolute_url }}"><img src="{{ image.image.large.url }}" alt="{{ product.title }}"></a>
-											</div>
-
-										{% endif %}
-										{% endfor %}
 									{% endif %}
+									{% endfor %}
 
 									<div class="deals_content">
 										<div class="deals_info_line d-flex flex-row justify-content-start">
@@ -865,7 +858,7 @@
 
 							</div>
 
-							{% if best_dea_banner %}
+							{% if best_seller_banner %}
 							<div class="col-lg-3">
 								<div class="arrivals_single clearfix">
 									<div class="d-flex flex-column align-items-center justify-content-center">
@@ -875,7 +868,7 @@
 											{% for image in best_seller_banner.product.get_images %}
 											{% if image.in_display %}
 
-												<div class="arrivals_single_image"><img src="{{ image.image.medium.url }}" alt=""></div>
+												<div class="arrivals_single_image"><img src="{{ image.image.large.url }}" alt=""></div>
 
 											{% endif %}
 											{% endfor %}
