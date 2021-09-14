@@ -475,6 +475,8 @@ class ProductImage(CreationModificationDateMixin):
         ordering = ('-in_display',)
 
     def __str__(self):
+        if self.title:
+            return str(self.title)
         return str(self.item)
 
     def natural_key(self):
@@ -482,6 +484,14 @@ class ProductImage(CreationModificationDateMixin):
 
     def get_absolute_url(self):
         return reverse('me2ushop:product_images', kwargs={'slug': self.item.slug})
+
+    def image_tag(self):
+        if self.image:
+            return mark_safe('<img src="%s" height="80"/>' % self.image.thumbnail.url)
+        else:
+            return ""
+
+    # thumbnail_tag.short_description = "Thumbnail"
 
     def save(self, *args, **kwargs):
         cache.delete('productimage-%s' % self.pk)

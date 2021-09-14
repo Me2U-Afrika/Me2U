@@ -71,23 +71,14 @@ make_inactive.short_description = "Mark selected items as inactive"
 
 class ProductVariationInlineAdmin(admin.TabularInline):
     model = ProductVariations
+    readonly_fields = ('image_tag',)
     extra = 1
 
 
 class ProductImageInlineAdmin(admin.TabularInline):
-    list_display = ('item', 'in_display', 'pk', 'preview')
-
     model = ProductImage
+    readonly_fields = ('id', 'image_tag')
     extra = 1
-
-    def preview(self, obj):
-        if obj.image:
-            return format_html(
-                '<img src="%s"/>' % obj.image.thumbnail.url
-            )
-        return "-"
-
-    preview.short_description = "preview"
 
 
 class OrderItemInline(admin.TabularInline):
@@ -224,7 +215,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 
 class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ('item', 'thumbnail_tag', 'in_display',)
+    list_display = ('item', 'id', 'thumbnail_tag', 'in_display',)
     search_fields = ('item__title',)
 
     def thumbnail_tag(self, obj):
