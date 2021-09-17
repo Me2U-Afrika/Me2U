@@ -759,32 +759,113 @@ from utils.views import CachedDetailView
 class ProductDetailedView(CachedDetailView):
     model = Product
     # template_name = 'home/products_detailed_page.html'
-    # template_name = 'home/product_detail.html'
-    template_name = 'home/product_page_test.html'
+    template_name = 'home/product_detail.html'
+    # template_name = 'home/product_page_test.html'
     query_pk_and_slug = False
+
+    def post(self, *args, **kwargs):
+        print('we came to post method')
+        context = {}
+
+        product_slug = self.request.POST.get('product_slug')
+        print('product_slug:', product_slug)
+        product = get_object_or_404(Product, slug=product_slug)
+        print('productid', product.id)
+
+        query = self.request.GET.get('size_q')
+        print('q get:', query)
+        variant_id = self.request.POST.get('variantid')
+        print('varinatid', variant_id)
+
+        variant = ProductVariations.objects.get(id=variant_id)
+        print('variant:', variant.size.id)
+
+        colors = ProductVariations.objects.filter(product=product, size__id=variant.size.id)
+        print('post colors:', colors)
+        # sizes = ProductVariations.objects.filter(product=product)
+        sizes = ProductVariations.objects.raw(
+            'SELECT %s as id, me2ushop_productvariations.size_id FROM me2ushop_productvariations '
+            'WHERE product_id=%s GROUP BY me2ushop_productvariations.size_id;', (product.id, product.id))
+        print('post sizes:', sizes)
+        query += variant.title + 'Size:' + str(variant.size) + ' Color:' + str(variant.color)
+        print('query:', query)
+
+        context.update({
+            'sizes': sizes,
+            'colors': colors,
+            'query': query,
+            'variant': variant,
+
+        })
+
+        formset = CartAddFormSet()
+
+        product = self.get_object()
+        pending_item = product.orderitem_set.filter(status=10)
+
+        product_reviews = ProductReview.approved.filter(product=product).order_by('-date')
+        # print('productreviews:', product_reviews)
+
+        review_form = ProductReviewForm()
+
+        if self.request.user.is_authenticated:
+            try:
+                approved = OrderItem.objects.filter(user=self.request.user, ordered=True, item=product)
+                context.update({'approved': approved})
+
+            except Exception:
+                return 0
+        # tags_product =
+        context.update({
+            'product': product,
+            'object': product,
+            'pending_item': pending_item,
+            'review_form': review_form,
+            'product_reviews': product_reviews,
+            'page_title': product.title,
+            'formset': formset
+        })
+        from stats import stats
+
+        stats.log_product_view(self.request, product)
+
+        product_views = ProductView.objects.filter(product=product).count()
+        # print('Views:', product_views)
+        context.update({
+            'product_views': product_views
+        })
+
+        return render(self.request, 'home/product_page_test.html', context)
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetailedView, self).get_context_data(**kwargs)
         # cart_product_form = CartAddProductForm()
         formset = CartAddFormSet()
 
-        product = Product.objects.filter(title=kwargs['object']).select_related('brand_name')[0]
+        product = self.get_object()
         pending_item = product.orderitem_set.filter(status=10)
 
         product_reviews = ProductReview.approved.filter(product=product).order_by('-date')
         # print('productreviews:', product_reviews)
+
         product_variations = ProductVariations.objects.filter(product=product)
-        print('productv', product_variations)
-        color_code = {}
-        other_variants = {}
-        for variation in product_variations:
-            print(variation.color)
-            if variation.color.code not in color_code:
-                color_code[variation.color] = variation.color.code
+        # print('productv', product_variations)
+        if product_variations:
+            colors = ProductVariations.objects.filter(product=product, size__id=product_variations[0].size.id)
+            # print('colors:', colors)
+            sizes = ProductVariations.objects.raw(
+                'SELECT %s as id, me2ushop_productvariations.size_id FROM me2ushop_productvariations '
+                'WHERE product_id=%s GROUP BY me2ushop_productvariations.size_id;', (product.id, product.id))
+            # print('sizes:', sizes)
 
+            variant = ProductVariations.objects.get(id=product_variations[0].id)
+            # print('variant:', variant)
 
-        print('color+code:', color_code)
-
+            context.update({
+                'sizes': sizes,
+                'colors': colors,
+                'variant': variant
+            })
 
         review_form = ProductReviewForm()
 
@@ -802,8 +883,7 @@ class ProductDetailedView(CachedDetailView):
             'review_form': review_form,
             'product_reviews': product_reviews,
             'page_title': str(self.get_object()),
-            'formset': formset,
-            'color_codes': color_code,
+            'formset': formset
         })
         from stats import stats
 
@@ -824,6 +904,23 @@ class ProductDetailedView(CachedDetailView):
     #     stats.log_product_view(self.request, product)
     #
     #     return render(self.request, template_name='product-page.html')
+
+
+def colorAjax(request):
+    print('we came to color ajax')
+    data = {}
+    if request.POST.get('action') == 'post':
+        size_id = request.POST.get('size')
+        productid = request.POST.get('productid')
+        colors = ProductVariations.objects.filter(product__id=productid, size__id=size_id)
+        context = {
+            'size_id': size_id,
+            'productid': productid,
+            'colors': colors,
+        }
+        data = {'rendered_table': render_to_string('color_list.html', context=context)}
+        return JsonResponse(data)
+    return JsonResponse(data)
 
 
 class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -1022,7 +1119,8 @@ class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeUpdateView, self).get_context_data(**kwargs)
 
-        product_detail = ProductVariations.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
+        product_detail = \
+            ProductVariations.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
         print('productdetail:', product_detail)
 
         context.update({
@@ -1046,7 +1144,8 @@ class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeDeleteView, self).get_context_data(**kwargs)
 
-        product_detail = ProductVariations.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
+        product_detail = \
+            ProductVariations.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
 
         context.update({
 
@@ -1076,52 +1175,52 @@ def show_product_image(request, slug):
 
 
 # ___PRODUCT IMAGE CREATE UPDATE DELETE VIEWS___
-def product_image_create(request, slug):
-    product = get_object_or_404(Product, slug=slug)
-    # print('slug:', slug)
-
-    product_image = ProductImage.objects.filter(item__brand_name__user=request.user, item=product)
-    if request.method == 'POST':
-        # print('we came to post')
-        form = ProductImageCreate(request.POST, request.FILES, instance=request.user)
-        # print('form', form)
-        if form.is_valid():
-            print(form.is_valid())
-            # obj = form.save(commit=False)
-            in_display = form.cleaned_data.get('in_display')
-            image = form.cleaned_data.get('image')
-            item = form.cleaned_data.get('item')
-            # print('item:', item)
-            # print('indisplay', in_display)
-            # print('image:', image)
-
-            if product.brand_name.profile == request.user:
-
-                current_saved_default = ProductImage.displayed.filter(item__brand_name__user=request.user,
-                                                                      item=product)
-                # print('current', current_saved_default)
-                if current_saved_default.exists():
-                    if in_display:
-                        current_saved = current_saved_default[0]
-                        current_saved.in_display = False
-                        current_saved.save()
-                        # print('current', current_saved.default)
-
-                # obj.user = user
-                # obj.save()
-            # obj.save()
-            form.save()
-        return redirect('me2ushop:product', slug)
-    else:
-        form = ProductImageCreate(slug)
-        # form.fields['item'].widget.attrs['value'] = product
-        context = {
-            'object': product,
-            'product_image': product_image,
-            'form': form,
-        }
-
-        return render(request, 'modelforms/product_image_form.html', context)
+# def product_image_create(request, slug):
+#     product = get_object_or_404(Product, slug=slug)
+#     # print('slug:', slug)
+#
+#     product_image = ProductImage.objects.filter(item__brand_name__user=request.user, item=product)
+#     if request.method == 'POST':
+#         # print('we came to post')
+#         form = ProductImageCreate(request.POST, request.FILES, instance=request.user)
+#         # print('form', form)
+#         if form.is_valid():
+#             print(form.is_valid())
+#             # obj = form.save(commit=False)
+#             in_display = form.cleaned_data.get('in_display')
+#             image = form.cleaned_data.get('image')
+#             item = form.cleaned_data.get('item')
+#             # print('item:', item)
+#             # print('indisplay', in_display)
+#             # print('image:', image)
+#
+#             if product.brand_name.profile == request.user:
+#
+#                 current_saved_default = ProductImage.displayed.filter(item__brand_name__user=request.user,
+#                                                                       item=product)
+#                 # print('current', current_saved_default)
+#                 if current_saved_default.exists():
+#                     if in_display:
+#                         current_saved = current_saved_default[0]
+#                         current_saved.in_display = False
+#                         current_saved.save()
+#                         # print('current', current_saved.default)
+#
+#                 # obj.user = user
+#                 # obj.save()
+#             # obj.save()
+#             form.save()
+#         return redirect('me2ushop:product', slug)
+#     else:
+#         form = ProductImageCreate(slug)
+#         # form.fields['item'].widget.attrs['value'] = product
+#         context = {
+#             'object': product,
+#             'product_image': product_image,
+#             'form': form,
+#         }
+#
+#         return render(request, 'modelforms/product_image_form.html', context)
 
 
 class ProductImageCreateView(LoginRequiredMixin, CreateView):
@@ -1150,18 +1249,19 @@ class ProductImageCreateView(LoginRequiredMixin, CreateView):
         })
         return context
 
-    def get_form_kwargs(self):
-        kwargs = super(ProductImageCreateView, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
-        kwargs['slug'] = self.kwargs['slug']
-        return kwargs
+    # def get_form_kwargs(self):
+    #     kwargs = super(ProductImageCreateView, self).get_form_kwargs()
+    #     kwargs['user'] = self.request.user
+    #     kwargs['slug'] = self.kwargs['slug']
+    #     return kwargs
 
     def form_valid(self, form):
         print('In Add Image Form')
         obj = form.save(commit=False)
-        print('obj:', obj)
-        item = form.cleaned_data.get('item')
-        image = form.cleaned_data.get('image')
+        # slug = form.data['slug']
+        # image = form.cleaned_data.get('image')
+        item = Product.objects.get(slug=self.kwargs.get('slug'))
+        obj.item = item
 
         user = self.request.user
 
@@ -1314,7 +1414,7 @@ def add_tag(request):
 
         for tags in product.tags:
             html += render_to_string(template, {'tag': tags})
-            response = json.dumps({'success': 'True', 'html': html})
+        response = json.dumps({'success': 'True', 'html': html})
     else:
         response = json.dumps({'success': 'False'})
     return HttpResponse(response, content_type='Application/javascript, charset=utf8')

@@ -14,8 +14,8 @@
                             <span class="custom_dropdown_placeholder clc">All Categories</span>
                             <select class="custom_list clc all_cat" name="category_searched" id="id_category_searched">
                                 <option class="clc" value="All Categories">----------</option>
-                                {% for category,structure in departments|tree_info %}
-                                {% if structure.new_level %}
+                                    {% for category,structure in departments|tree_info %}
+                                    {% if structure.new_level %}
                                 <option class="clc" value="{{ category.category_name }}">{% else %}</option>
 
                                 <option class="clc" value="{{ category.category_name }}">{% endif %}

@@ -272,14 +272,7 @@ class PaymentForm(forms.Form):
 class ProductImageCreate(forms.ModelForm):
     class Meta:
         model = ProductImage
-        fields = ['item', 'image', 'in_display']
-
-    def __init__(self, user, slug, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # queryset_item = Product.objects.filter(brand_name__user__user=user)
-        queryset_item = Product.objects.filter(slug=slug)
-
-        self.fields['item'].queryset = queryset_item
+        fields = ['title', 'image', 'in_display']
 
 # class ProductAddToCartForm(forms.Form):
 #     quantity = forms.IntegerField(widget=forms.TextInput(attrs={

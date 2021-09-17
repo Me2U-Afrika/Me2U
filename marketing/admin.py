@@ -4,7 +4,7 @@ from .models import *
 
 # Register your models here.
 class FAQAdmin(admin.ModelAdmin):
-    list_display = ['category','question', 'status']
+    list_display = ['category', 'question', 'status']
 
 
 class FAQCategoryAdmin(admin.ModelAdmin):
@@ -24,7 +24,8 @@ class MarketingEmailsAdmin(admin.ModelAdmin):
 
 
 class BannerAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'end_date', 'is_deal', 'active', 'created', 'modified']
+    list_display = ['__str__', 'end_date', 'is_deal', 'bestselling', 'is_trending', 'top_display', 'active', 'created',
+                    'modified']
 
 
 class TrendAdmin(admin.ModelAdmin):
