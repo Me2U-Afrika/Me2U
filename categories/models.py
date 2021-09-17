@@ -131,8 +131,16 @@ class Department(MPTTModel, CreationModificationDateMixin):
         verbose_name = _("Department")
         verbose_name_plural = _("Departments")
 
+    # def __str__(self):
+    #     return str(self.category_name)
+
     def __str__(self):
-        return str(self.category_name)
+        full_path = [self.category_name]
+        k = self.parent
+        while k is not None:
+            full_path.append(k.category_name)
+            k = k.parent
+        return ' / '.join(full_path[::-1])
 
     # The natural_key method should return a tuple, not a string.
     def natural_key(self):

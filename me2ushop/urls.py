@@ -22,7 +22,8 @@ urlpatterns = [
     url(r'^add_cart/(?P<slug>[\w-]+)/$', views.add_cart, name='add_cart'),
     url(r'^add-wishlist/(?P<slug>[\w-]+)/$', views.add_wishlist, name='add_wishlist'),
     url(r'^add/review', views.add_review),
-    url(r'^add/tag', views.add_tag),
+    url(r'^add/tag/', views.add_tag),
+    url(r'^color/ajax/', views.colorAjax, name='color_ajax'),
     url(r'^add_coupon/', views.add_coupon, name='add_coupon'),
     url(r'^address_select/', views.AddressSelectionView.as_view(), name='address_select'),
 
@@ -38,6 +39,7 @@ urlpatterns = [
     url(r'^checkout-done/', views.checkout_done, name='checkout-done'),
     url(r'complete/', views.paypal_payment_complete, name='complete'),
     url(r'complete-cart/', views.paypal_payment_complete_cart, name='complete-cart'),
+
 
     path("flutter-payment/<str:reference>/", views.flutterCompleteTrans, name="flutter_checkout"),
     url(r'^full-catalog/', views.ProductListView.as_view(), name='full_catalog'),
