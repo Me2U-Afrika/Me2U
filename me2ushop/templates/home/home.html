@@ -862,6 +862,7 @@
 							<div class="col-lg-3">
 								<div class="arrivals_single clearfix">
 									<div class="d-flex flex-column align-items-center justify-content-center">
+										<a href="{{best_seller_banner.product.get_absolute_url}}">
 										{% if best_seller_banner.image %}
 											<div class="arrivals_single_image"><img src="{{ best_seller_banner.image.best_size.url }}" alt=""></div>
 										{% else %}
@@ -873,6 +874,7 @@
 											{% endif %}
 											{% endfor %}
 										{% endif %}
+										</a>
 
 										<div class="arrivals_single_content">
 											<div class="arrivals_single_category"><a href="#">{{ best_seller_banner.product.get_category_choice_display }}</a></div>

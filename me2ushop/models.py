@@ -597,7 +597,7 @@ class ProductVariations(CreationModificationDateMixin):
     stock = models.IntegerField(default=1, blank=True, null=True)
 
     def __str__(self):
-        return u'%s: %s - %s' % (self.product, self.color, self.size,)
+        return u'%s - %s - %s' % (self.product, self.color, self.size,)
 
     def get_absolute_url(self):
         return reverse('me2ushop:product', kwargs={'slug': self.product.slug})

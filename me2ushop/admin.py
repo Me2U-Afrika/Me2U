@@ -179,7 +179,8 @@ class DispatchersProductAdmin(ProductAdmin):
 class SellersProductAdmin(ProductAdmin):
     # form = SellerForm
 
-    list_display = ['title',
+    list_display = ['id',
+        'title',
                     'brand_name',
                     'in_stock',
                     'stock',
@@ -190,7 +191,7 @@ class SellersProductAdmin(ProductAdmin):
                     'meta_description',
                     ]
     list_editable = ('stock',)
-    readonly_fields = ("brand_name", "is_bestseller", "is_featured", "is_bestrated")
+    readonly_fields = ("id", "brand_name", "is_bestseller", "is_featured", "is_bestrated")
     autocomplete_fields = ()
 
     def get_queryset(self, request):
@@ -285,6 +286,17 @@ class WishListAdmin(admin.ModelAdmin):
 
 class ProductVariationAdmin(admin.ModelAdmin):
     list_display = ('product', 'color', 'size', 'stock', 'image_tag')
+
+
+class SellerProductVariationAdmin(admin.ModelAdmin):
+    list_display = ('product', 'color', 'size', 'stock', 'image_tag')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        brands = Brand.objects.filter(profile=request.user)
+        if brands:
+            for brand in brands:
+                return qs.filter(product__brand_name=brand)
 
 
 class ProductAttributeAdmin(admin.ModelAdmin):
@@ -383,12 +395,14 @@ class CentralOfficeOrderAdmin(admin.ModelAdmin):
 class SellersOrderAdmin(admin.ModelAdmin):
     list_display = (
         'user',
-        'created',
-        'modified',
-        'order_date',
+        'name',
+        'phone',
         'status',
+        'order_date',
         'being_delivered',
         'received',
+        'created',
+        'modified',
     )
     # list_editable = ['being_delivered', 'received']
     readonly_fields = (
@@ -452,27 +466,29 @@ class SellersOrderAdmin(admin.ModelAdmin):
 
 class SellersOrderItemAdmin(admin.ModelAdmin):
     list_display = (
-        'customer_order',
-        'user',
         'item',
         'quantity',
+        'ordered',
         'status',
+        'user',
+        'name',
         'created',
         'modified',
-        'ordered',
         'delivered_by'
     )
-    # list_editable = ['being_delivered', 'received']
+    list_editable = ['status', ]
     list_display_links = ('item', 'user',)
     # inlines = (OrderInline,)
 
     readonly_fields = (
-        'user',
         'item',
-        'status',
-        'ordered',
-        'delivered_by',
         'quantity',
+        'ordered',
+        'ordered',
+        'user',
+        'name',
+        'delivered_by',
+        'status_code'
     )
 
     list_filter = ("status", "ordered", "item",)
@@ -485,12 +501,47 @@ class SellersOrderItemAdmin(admin.ModelAdmin):
             for brand in brands:
                 return qs.filter(item__brand_name=brand)
 
+    def name(self, obj):
+        if obj.customer_order:
+            return obj.customer_order.name
+        return "-"
+
+    name.short_description = "Customer Name"
+
+
+class SellersProductImageAdmin(admin.ModelAdmin):
+    list_display = (
+        'item',
+        'in_display',
+        'thumbnail_tag',
+    )
+    list_display_links = ('item',)
+
+    list_filter = ("item",)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        brands = Brand.objects.filter(profile=request.user)
+        # images = ProductImage.objects.filter(item__brand_name=brand)
+        if brands:
+            for brand in brands:
+                return qs.filter(item__brand_name=brand)
+
+    def thumbnail_tag(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="%s"/>' % obj.image.thumbnail.url
+            )
+        return "-"
+
+    thumbnail_tag.short_description = "Thumbnail"
+
 
 class DispatchersOrderAdmin(admin.ModelAdmin):
     list_display = (
         'user',
-        'order_date',
         'status',
+        'order_date',
         'being_delivered',
         'received',
     )
@@ -796,3 +847,5 @@ sellers_admin = SellersAdminSite("sellers-admin")
 sellers_admin.register(Product, SellersProductAdmin)
 sellers_admin.register(Order, SellersOrderAdmin)
 sellers_admin.register(OrderItem, SellersOrderItemAdmin)
+sellers_admin.register(ProductImage, SellersProductImageAdmin)
+sellers_admin.register(ProductVariations, SellerProductVariationAdmin)

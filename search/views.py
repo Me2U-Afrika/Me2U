@@ -1,3 +1,5 @@
+import json
+
 from django.http import JsonResponse
 from tagging.models import TaggedItem
 
@@ -85,8 +87,9 @@ def search_results(request, template_name="home/search_results.html"):
 
 def autocomplete(request):
     if 'term' in request.GET:
-        qs = Product.objects.filter(title__icontains=request.GET.get('term'))
-        brands = Brand.objects.filter(title__icontains=request.GET.get('term'))
+        word = request.GET.get('term', '')
+        qs = Product.objects.filter(title__icontains=word)
+        brands = Brand.objects.filter(title__icontains=word)
 
         titles = list()
         for product in qs:
@@ -96,5 +99,10 @@ def autocomplete(request):
         for brand in brands:
             if not brand.title in titles:
                 titles.append(brand.title)
+
+        products_tags = TaggedItem.objects.get_by_model(Product.active, word.lower())
+        # print('product_tags:', products_tags)
+        if products_tags:
+            titles.append(products_tags)
 
         return JsonResponse(titles, safe=False)
