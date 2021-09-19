@@ -175,4 +175,7 @@ except Exception as ex:
 certbot certonly -d me2uafrika.com -a certbot-django:auth  --certbot-django:auth-username=Me2UAfrika --certbot-django:auth-public-ip-logging-ok
 --certbot-django-auth-key-directory=C:\Users\Danie\Desktop\Makori\django\CodingMosh\me2udev\Me2U\.ssh\certbot
 
-from django.contrib.sessions.models import Session
+# clear django_session table
+DJANGO_SETTINGS_MODULE="myproj.settings" \
+  python -c 'from django.contrib.sessions.models import Session; \
+    Session.objects.all().delete()'
