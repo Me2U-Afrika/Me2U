@@ -20,7 +20,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import ListView, View, CreateView, UpdateView, DeleteView, FormView, TemplateView
+from django.views.generic import ListView, View, CreateView, UpdateView, DeleteView, FormView, TemplateView, DetailView
 from django_filters.views import FilterView
 from djangorave.models import DRPaymentTypeModel, DRTransactionModel
 from tagging.models import TaggedItem, Tag
@@ -754,9 +754,11 @@ class ProductListView(ListView):
 
 # ___PRODUCT DETAILED CREATE, UPDATE, DELETE VIEWS___
 from utils.views import CachedDetailView
+from django.views.decorators.cache import never_cache
 
 
-class ProductDetailedView(CachedDetailView):
+@never_cache
+class ProductDetailedView(DetailView):
     model = Product
     # template_name = 'home/products_detailed_page.html'
     template_name = 'home/product_detail.html'
