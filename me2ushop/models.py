@@ -297,8 +297,9 @@ class Product(CreationModificationDateMixin):
 
     def total_discount(self):
         # orders = self.orderitem_set.all()
-        diff = ((self.price - self.discount_price) / self.price) * 100
-        return round(diff)
+        if self.discount_price and self.price > 0:
+            diff = ((self.price - self.discount_price) / self.price) * 100
+            return round(diff)
 
     def get_absolute_url(self):
 
@@ -438,10 +439,14 @@ class Product(CreationModificationDateMixin):
 
         # print('image', image.exists())
 
-        if image.exists() and self.in_stock and self.price > 0:
+        if image.exists() and self.in_stock:
             self.is_active = True
         else:
             self.is_active = False
+
+        if self.discount_price and self.price < 1 or self.discount_price == self.price:
+            self.price = self.discount_price
+            self.discount_price = None
 
         cache.delete('product-%s' % self.slug)
 
@@ -461,7 +466,7 @@ class ProductImage(CreationModificationDateMixin):
     item = models.ForeignKey(Product, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=True, null=True, help_text="Image title")
     image = StdImageField(upload_to='images/products', variations={
-        'thumbnail': (180, 150),
+        'thumbnail': (150, 150),
         'large': (585, 585),
 
     }, delete_orphans=True)
