@@ -851,19 +851,22 @@ class ProductDetailedView(CachedDetailView):
         product_variations = ProductVariations.objects.filter(product=product)
         # print('productv', product_variations)
         if product_variations:
-            colors = ProductVariations.objects.filter(product=product, size__id=product_variations[0].size.id)
-            # print('colors:', colors)
-            sizes = ProductVariations.objects.raw(
-                'SELECT %s as id, me2ushop_productvariations.size_id FROM me2ushop_productvariations '
-                'WHERE product_id=%s GROUP BY me2ushop_productvariations.size_id;', (product.id, product.id))
-            # print('sizes:', sizes)
+            if product_variations.size.id:
+                colors = ProductVariations.objects.filter(product=product, size__id=product_variations[0].size.id)
+                # print('colors:', colors)
+                sizes = ProductVariations.objects.raw(
+                    'SELECT %s as id, me2ushop_productvariations.size_id FROM me2ushop_productvariations '
+                    'WHERE product_id=%s GROUP BY me2ushop_productvariations.size_id;', (product.id, product.id))
+                # print('sizes:', sizes)
+                context.update({
+                    'sizes': sizes,
+                    'colors': colors,
+                })
 
             variant = ProductVariations.objects.get(id=product_variations[0].id)
             # print('variant:', variant)
 
             context.update({
-                'sizes': sizes,
-                'colors': colors,
                 'variant': variant
             })
 
