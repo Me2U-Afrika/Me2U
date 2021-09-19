@@ -16,6 +16,10 @@ def robots(request):
     return HttpResponse(open(ROBOTS_PATH).read(), 'text/plain')
 
 
+from django.views.decorators.cache import never_cache
+
+
+@never_cache
 def email_signup(request):
     if request.method == "POST":
         postdata = request.POST.copy()
