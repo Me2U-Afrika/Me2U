@@ -849,9 +849,9 @@ class ProductDetailedView(CachedDetailView):
         # print('productreviews:', product_reviews)
 
         product_variations = ProductVariations.objects.filter(product=product)
-        # print('productv', product_variations)
+        print('productv', product_variations)
         if product_variations:
-            if product_variations.size.id:
+            if product_variations[0].size:
                 colors = ProductVariations.objects.filter(product=product, size__id=product_variations[0].size.id)
                 # print('colors:', colors)
                 sizes = ProductVariations.objects.raw(
