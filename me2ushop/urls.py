@@ -18,7 +18,8 @@ app_name = 'me2ushop'
 urlpatterns = [
 
     # url(r'^$', cache_page(60 * 4)(views.HomeView.as_view()), name='home'),
-    url(r'^$', cache_page(60 * 4)(views.HomeViewTemplateView.as_view()), name='home'),
+    url(r'^$', views.HomeViewTemplateView.as_view(), name='home'),
+    # url(r'^$', cache_page(60 * 4)(views.HomeViewTemplateView.as_view()), name='home'),
     url(r'^add_cart/(?P<slug>[\w-]+)/$', views.add_cart, name='add_cart'),
     url(r'^add-wishlist/(?P<slug>[\w-]+)/$', views.add_wishlist, name='add_wishlist'),
     url(r'^add/review', views.add_review),
@@ -56,7 +57,8 @@ urlpatterns = [
     url(r'^order_dashboard/', views.OrderView.as_view(), name='order_dashboard'),
     # url('order-details/(?P<order_id>[-\w]+)/$', views.refund_status, name='order-details'),
 
-    url(r'^product/(?P<slug>[\w-]+)/$', cache_page(60 * 8)(views.ProductDetailedView.as_view()), name='product'),
+    # url(r'^product/(?P<slug>[\w-]+)/$', cache_page(60 * 8)(views.ProductDetailedView.as_view()), name='product'),
+    url(r'^product/(?P<slug>[\w-]+)/$', views.ProductDetailedView.as_view(), name='product'),
     url(r'^product-attributes/(?P<slug>[\w-]+)/create$', views.ProductAttributesCreateView.as_view(),
         name='product_attributes_create'),
     url(r'^product-attribute-(?P<pk>[\w-]+)/update/$', views.ProductAttributeUpdateView.as_view(),

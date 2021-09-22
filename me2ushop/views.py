@@ -757,8 +757,7 @@ from utils.views import CachedDetailView
 from django.views.decorators.cache import never_cache
 
 
-@never_cache
-class ProductDetailedView(DetailView):
+class ProductDetailedView(CachedDetailView):
     model = Product
     # template_name = 'home/products_detailed_page.html'
     template_name = 'home/product_detail.html'
