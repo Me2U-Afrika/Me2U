@@ -14,7 +14,7 @@ def me2u(request):
     context = {
         'active_departments': Department.objects.filter(is_active=True),
         'reviews': ProductReview.objects.all().order_by('-date'),
-        'brands': Brand.objects.filter(is_active=True),
+        'brands': Brand.objects.filter(is_active=True)[:5],
         'site_name': settings.SITE_NAME,
         'LOGIN_URL': settings.LOGIN_URL,
         'meta_keywords': settings.META_KEYWORDS,

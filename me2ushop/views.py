@@ -1518,6 +1518,18 @@ def add_cart(request, slug):
                 # print("qty:", quantity)
                 item = get_object_or_404(Product, slug=slug)
                 # print("item we found:", item)
+                min_order = item.min_amount
+                max_order = item.max_amount
+
+                if quantity < min_order:
+                    quantity = min_order
+
+                if max_order:
+                    if quantity > max_order:
+                        quantity = max_order
+
+                if quantity > item.stock:
+                    quantity = item.stock
 
                 order_item, created = OrderItem.objects.get_or_create(
                     customer_order=cart,
@@ -1571,9 +1583,24 @@ def add_cart(request, slug):
                 ordered=False
             )
 
+            print('order_item:', order_item)
             # check if the order item is in the order
             if cart.items.filter(item__slug=item.slug).exists():
+
                 order_item.quantity += 1
+
+                min_order = item.min_amount
+                max_order = item.max_amount
+
+                if order_item.quantity < min_order:
+                    order_item.quantity = min_order
+                elif order_item.quantity >= item.stock:
+                    order_item.quantity = item.stock
+
+                if max_order:
+                    if order_item.quantity > max_order:
+                        order_item.quantity = max_order
+
                 # print('updated item:', order_item)
                 # print('cartid:', cart_id)
                 if request.user.is_authenticated:
@@ -1595,323 +1622,11 @@ def add_cart(request, slug):
             messages.info(request, 'ERROR.')
             return redirect("me2ushop:product", slug=slug)
 
-    # if request.user.is_authenticated:
-    #     # print('checking out this function')
-    #     if request.method == "POST":
-    #         form = CartAddFormSet(request.POST or None)
-    #         if form.is_valid():
-    #             # print('form:', form.is_valid())
-    #             try:
-    #                 # Get quantity from useronline
-    #                 quantity = form.cleaned_data.get('quantity')
-    #                 # print("qty:", quantity)
-    #                 item = get_object_or_404(Product, slug=slug)
-    #                 # print("item:", item)
-    #
-    #                 order_item, created = OrderItem.objects.get_or_create(
-    #                     item=item,
-    #                     user=request.user,
-    #                     ordered=False
-    #                 )
-    #                 # print("order_item:", order_item)
-    #                 # print("created:", created)
-    #
-    #                 order_query_set = Order.objects.filter(user=request.user, ordered=False)
-    #                 # print("user:", order_query_set)
-    #
-    #                 # This code returns the user who ordered an item
-    #                 if order_query_set.exists():
-    #                     order = order_query_set[0]
-    #                     # print('order user:', order)
-    #
-    #                     # check if the order item is in the order
-    #                     if order.items.filter(item__slug=item.slug).exists():
-    #                         if quantity > 1:
-    #                             order_item.quantity = quantity
-    #                         else:
-    #                             order_item.quantity += 1
-    #                         # print('updated item:', order_item)
-    #                         # print('cartid:', cart_id)
-    #                         order_item.save()
-    #                         # print(order.cart_id)
-    #
-    #                         messages.info(request, 'This item quantity was updated.')
-    #                         return redirect("me2ushop:order_summary")
-    #                     else:
-    #                         messages.info(request, 'This item has been added to your cart.')
-    #                         order.items.add(order_item)
-    #                         # order.items.add =order_item
-    #                         if quantity > 1:
-    #
-    #                             order_item.quantity = quantity
-    #                         else:
-    #                             order_item.quantity = 1
-    #                         order_item.save()
-    #                         return redirect("me2ushop:order_summary")
-    #                 else:
-    #                     # print("order not in cart")
-    #                     order_date = timezone.now()
-    #                     order = Order.objects.create(user=request.user, order_date=order_date)
-    #                     order.items.add(order_item)
-    #                     if quantity > 1:
-    #                         order_item.quantity = quantity
-    #                     else:
-    #                         order_item.quantity = 1
-    #
-    #                     order_item.save()
-    #                     messages.info(request, 'This item has been added to your cart.')
-    #                     return redirect("me2ushop:order_summary")
-    #
-    #             except Exception:
-    #                 messages.warning(request, 'error:')
-    #                 # add_cart_product(request, slug)
-    #                 return redirect("me2ushop:product", slug=slug)
-    #
-    #         messages.info(request, 'Invalid form')
-    #         return redirect("me2ushop:product", slug=slug)
-    #     else:
-    #         # print("user logged in adding qty without form")
-    #         # user is logged in but not using form to add quantity
-    #         try:
-    #             item = get_object_or_404(Product, slug=slug)
-    #             # print('item:', item)
-    #
-    #             order_item, created = OrderItem.objects.get_or_create(
-    #                 item=item,
-    #                 user=request.user,
-    #                 ordered=False
-    #             )
-    #             # print('order_item returned', order_item)
-    #             order_query_set = Order.objects.filter(user=request.user, ordered=False)
-    #             # print('qs:', order_query_set)
-    #
-    #             # This code returns the user who ordered an item
-    #             if order_query_set.exists():
-    #                 order = order_query_set[0]
-    #
-    #                 # check if the order item is in the order
-    #                 if order.items.filter(item__slug=item.slug).exists():
-    #                     order_item.quantity += 1
-    #                     order_item.save()
-    #                     messages.info(request, 'This item quantity was updated.')
-    #                     return redirect("me2ushop:order_summary")
-    #                 else:
-    #                     messages.info(request, 'This item has been added to your cart.')
-    #                     order.items.add(order_item)
-    #                     order_item.quantity = 1
-    #                     order_item.save()
-    #                     return redirect("me2ushop:order_summary")
-    #             else:
-    #                 print("order not in cart")
-    #                 order_date = timezone.now()
-    #                 # print('cart_id', cart_id)
-    #                 order = Order.objects.create(user=request.user, order_date=order_date)
-    #                 # print('order:', order)
-    #                 order.items.add(order_item)
-    #                 order_item.quantity = 1
-    #                 order_item.save()
-    #                 messages.info(request, 'This item has been added to your cart.')
-    #                 return redirect("me2ushop:order_summary")
-    #
-    #         except Exception:
-    #             messages.warning(request, 'error:')
-    #             return redirect("me2ushop:product", slug=slug)
-    # else:
-    #     print('user is anonymous')
-    #     if request.method == "POST":
-    #         form = CartAddFormSet(request.POST or None)
-    #         if form.is_valid():
-    #             try:
-    #                 # Get quantity from useronline
-    #                 quantity = form.cleaned_data.get('quantity')
-    #                 print("qty:", quantity)
-    #                 item = get_object_or_404(Product, slug=slug)
-    #                 print("item we found:", item)
-    #                 cart = request.cart
-    #                 print(cart)
-    #                 if not request.cart:
-    #                     print('true')
-    #                     if request.user.is_authenticated:
-    #                         user = request.user
-    #                     else:
-    #                         user = None
-    #
-    #                     order_date = timezone.now()
-    #                     cart = Order.objects.create(user=user, order_date=order_date)
-    #                     print('cart::', cart)
-    #                     print('cart Idz:', cart.id)
-    #                     request.session['cart_id'] = cart.id
-    #
-    #                 order_item, created = OrderItem.objects.get_or_create(
-    #                     order=cart,
-    #                     item=item,
-    #                     ordered=False
-    #                     )
-    #                 print("order_item:", order_item)
-    #                 print("created:", created)
-    #
-    #                 order_query_set = Order.objects.filter(id=cart.id)
-    #                 print("cart_id found:", order_query_set)
-    #
-    #                 if order_query_set.exists():
-    #                     order = order_query_set[0]
-    #                     # print('order user:', order)
-    #
-    #                     # check if the order item is in the order
-    #                     if order.items.filter(item__slug=item.slug).exists():
-    #                         if quantity > 1:
-    #                             order_item.quantity = quantity
-    #                         else:
-    #                             order_item.quantity = 1
-    #                         print('updated item:', order_item)
-    #                         # print('cartid:', cart_id)
-    #                         order_item.save()
-    #
-    #                         messages.info(request, 'This item quantity was updated.')
-    #                         return redirect("me2ushop:home")
-    #                     else:
-    #                         messages.info(request, 'This item has been added to your cart.')
-    #                         order.items.add(order_item)
-    #                         if quantity > 1:
-    #                             order_item.quantity = quantity
-    #                         else:
-    #                             order_item.quantity = 1
-    #                         order_item.save()
-    #                         print(order_item.quantity)
-    #                         return redirect("me2ushop:home")
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #                 # if request.cart_id:
-    #                 #     cart_id = request.cart_id
-    #                 #
-    #                 #     order_item, created = OrderItem.objects.get_or_create(
-    #                 #         item=item,
-    #                 #         cart_id=cart_id,
-    #                 #         ordered=False
-    #                 #     )
-    #                 #     print("order_item:", order_item)
-    #                 #     print("created:", created)
-    #                 #
-    #                 #     # if not created:
-    #                 #     #     order_item.quantity += 1
-    #                 #     #     order_item.save()
-    #                 #     #     return redirect("me2ushop:order_summary")
-    #                 #
-    #                 #     order_query_set = Order.objects.filter(cart_id=cart_id)
-    #                 #     # print("cart_id found:", order_query_set)
-    #                 #
-    #                 #     # This code returns the user who ordered an item
-    #                 #     if order_query_set.exists():
-    #                 #         order = order_query_set[0]
-    #                 #         # print('order user:', order)
-    #                 #
-    #                 #         # check if the order item is in the order
-    #                 #         if order.items.filter(item__slug=item.slug).exists():
-    #                 #             if quantity > 1:
-    #                 #                 order_item.quantity = quantity
-    #                 #             else:
-    #                 #                 order_item.quantity = 1
-    #                 #             # print('updated item:', order_item)
-    #                 #             # print('cartid:', cart_id)
-    #                 #             order_item.save()
-    #                 #
-    #                 #             messages.info(request, 'This item quantity was updated.')
-    #                 #             return redirect("me2ushop:order_summary")
-    #                 #         else:
-    #                 #             messages.info(request, 'This item has been added to your cart.')
-    #                 #             order.items.add(order_item)
-    #                 #             if quantity > 1:
-    #                 #                 order_item.quantity = quantity
-    #                 #             else:
-    #                 #                 order_item.quantity = 1
-    #                 #             order_item.save()
-    #                 #             return redirect("me2ushop:order_summary")
-    #                 #     else:
-    #                 #         print("order not in cart")
-    #                 #         order_date = timezone.now()
-    #                 #         order = Order.objects.create(cart_id=cart_id, order_date=order_date)
-    #                 #         # print('order:', order)
-    #                 #         order.items.add(order_item)
-    #                 #         if quantity > 1:
-    #                 #             order_item.quantity = quantity
-    #                 #         else:
-    #                 #             order_item.quantity = 1
-    #                 #
-    #                 #         order_item.save()
-    #                 #         messages.info(request, 'This item has been added to your cart.')
-    #                 #         return redirect("me2ushop:order_summary")
-    #             except Exception:
-    #                 messages.info(request, 'ERROR.')
-    #                 return redirect("me2ushop:product", slug=slug)
-    #
-    #     else:
-    #         if request.cart_id:
-    #             cart_id = request.cart_id
-    #             print('User is adding qty without form')
-    #             try:
-    #                 item = get_object_or_404(Product, slug=slug)
-    #                 # print("item we found:", item)
-    #
-    #                 order_item, created = OrderItem.objects.get_or_create(
-    #                     item=item,
-    #                     cart_id=cart_id,
-    #                     ordered=False
-    #                 )
-    #                 # print("order_item:", order_item)
-    #
-    #                 order_query_set = Order.objects.filter(cart_id=cart_id, ordered=False)
-    #                 # print("cart_id found:", order_query_set)
-    #
-    #                 # This code returns the user who ordered an item
-    #                 if order_query_set.exists():
-    #                     order = order_query_set[0]
-    #                     # print('order user:', order)
-    #
-    #                     # check if the order item is in the order
-    #                     if order.items.filter(item__slug=item.slug).exists():
-    #                         if order_item.quantity >= 1:
-    #                             order_item.quantity += 1
-    #                         else:
-    #                             order_item.quantity = 1
-    #                         # print('updated item:', order_item)
-    #                         # print('cartid:', cart_id)
-    #                         order_item.save()
-    #
-    #                         messages.info(request, 'This item quantity was updated.')
-    #                         return redirect("me2ushop:order_summary")
-    #                     else:
-    #                         messages.info(request, 'This item has been added to your cart.')
-    #                         order.items.add(order_item)
-    #                         order_item.quantity = 1
-    #                         order_item.save()
-    #                         return redirect("me2ushop:order_summary")
-    #                 else:
-    #                     print("order not in cart")
-    #                     order_date = timezone.now()
-    #                     order = Order.objects.create(cart_id=cart_id, order_date=order_date)
-    #                     print('order:', order)
-    #                     order.items.add(order_item)
-    #                     order_item.quantity = 1
-    #                     order_item.save()
-    #                     messages.info(request, 'This item has been added to your cart.')
-    #                     return redirect("me2ushop:order_summary")
-    #
-    #             except Exception:
-    #                 messages.warning(request, 'error:')
-    #                 return redirect("me2ushop:product", slug=slug)
-    #
-    #     messages.warning(request, "We unable to add item for some reason")
-    #     return redirect("me2ushop:product", slug=slug)
-
 
 @receiver(user_logged_in)
 def merge_cart(sender, user, request, **kwargs):
     cart = getattr(request, 'cart', None)
+    print('cart:', cart)
     print("we came here to merge")
     # print('user merge:', user)
     # print('cart:', cart)
@@ -1922,14 +1637,19 @@ def merge_cart(sender, user, request, **kwargs):
     if cart:
         cart_id = cart
         if qs.exists():
-            # print("before:", request.cart.id)
+            print('qs exists')
+            print("cart_id:", request.cart.id)
+            print("order_id:", qs[0].id)
             order = qs[0]
+
             if cart_id.id != order.id:
                 # order = Order.objects.filter(id=cart_id.id, ordered=False)
                 # print(order)
                 order_items = OrderItem.objects.filter(order=cart_id, ordered=False)
+                ordered_items = OrderItem.objects.filter(order=cart_id, ordered=True)
 
                 print('order_items:', order_items)
+                print('ordered_items:', ordered_items)
 
                 for order_item in order_items:
                     if order_item.user is None:
@@ -1940,12 +1660,26 @@ def merge_cart(sender, user, request, **kwargs):
                         product = Product.active.all()
                         item = get_object_or_404(product, slug=order_item.item.slug)
 
+                        # Checking product quantity restrictions
+                        min_order = item.min_amount
+                        max_order = item.max_amount
+
+                        if quantity < min_order:
+                            quantity = min_order
+                        elif quantity >= item.stock:
+                            quantity = item.stock
+
+                        if max_order:
+                            if quantity > max_order:
+                                quantity = max_order
+
                         # Delete and create a new instance of the product
                         order_item.delete()
+                        print('order_item deleted:', order_item)
                         order_anonymous_delete = Order.objects.filter(id=cart_id.id, ordered=False)
-                        # # print("anonymous_id:", order_anonymous_delete)
+                        print("anonymous to delete", order_anonymous_delete)
                         order_anonymous_delete.delete()
-                        # # print("anonymous_id:", order_anonymous_delete)
+                        print("anonymous_id:", order_anonymous_delete)
 
                         # # Add new product being ordered to database
                         order_item, created = OrderItem.objects.get_or_create(
@@ -1953,24 +1687,28 @@ def merge_cart(sender, user, request, **kwargs):
                             user=user,
                             ordered=False
                         )
-                        # print('created item:', created)
+                        print('created item:', created)
+                        print('order item found:', order_item)
 
                         if qs[0].items.filter(item__slug=item.slug).exists():
-                            if quantity > 1:
-                                order_item.quantity = quantity
-                            else:
-                                order_item.quantity += quantity
-                            # print('order saved:', order_item)
-                            order_item.save()
+                            order_item.quantity = quantity
+
                         else:
                             qs[0].items.add(order_item)
                             order_item.quantity = quantity
                             qs[0].save()
                         # print('order saved:', order_item)
+                        order_item.customer_order = qs[0].id
                         order_item.save()
                     request.session['cart_id'] = qs[0].id
+
         else:
             print('qs does not exist')
+            order = Order.objects.filter(id=cart_id.id, ordered=False)[0]
+
+            order.user = request.user
+            order.save()
+
             order_items = OrderItem.objects.filter(order=cart_id, ordered=False)
 
             print('order_items:', order_items)
@@ -1979,34 +1717,9 @@ def merge_cart(sender, user, request, **kwargs):
                 print('order user:', order_item.user)
                 if order_item.user is None:
                     # print('item_cart_id:', order_item.cart_id)
-                    quantity = order_item.quantity
-
-                    # Get product instances for each
-                    product = Product.active.all()
-                    item = get_object_or_404(product, slug=order_item.item.slug)
-
-                    # Delete and create a new instance of the product
-                    order_item.delete()
-                    order_anonymous_delete = Order.objects.filter(id=cart_id.id, ordered=False)
-                    # # print("anonymous_id:", order_anonymous_delete)
-                    order_anonymous_delete.delete()
-                    # # print("anonymous_id:", order_anonymous_delete)
-
-                    # # Add new product being ordered to database
-                    order_item, created = OrderItem.objects.get_or_create(
-                        item=item,
-                        user=user,
-                        ordered=False
-                    )
-                    # print('orderItem created:', order_item)
-
-                    order_date = timezone.now()
-                    order = Order.objects.create(user=user, order_date=order_date)
-                    order.items.add(order_item)
-                    order_item.quantity = quantity
+                    order_item.user = request.user
                     order_item.save()
-                    order.save()
-                    request.session['cart_id'] = order.id
+
     elif qs.exists():
         request.session['cart_id'] = qs[0].id
 
@@ -2084,6 +1797,8 @@ def remove_cart(request, slug):
 
 
 def remove_single_item_cart(request, slug):
+    print('removing single item from cart')
+
     if request.user.is_authenticated:
         item = get_object_or_404(Product, slug=slug)
 
@@ -2094,7 +1809,7 @@ def remove_single_item_cart(request, slug):
         if order_query_set.exists():
             order = order_query_set[0]
 
-            #         check if the order item is in the order
+            # check if the order item is in the order
             if order.items.filter(item__slug=item.slug).exists():
                 order_item = OrderItem.objects.filter(
                     item=item,
@@ -2102,17 +1817,18 @@ def remove_single_item_cart(request, slug):
                     ordered=False
                 )[0]
                 # print('order_item:', order_item)
+                min_order = item.min_amount
 
-                if order_item.quantity >= 1:
+                if order_item.quantity <= min_order:
+                    remove_cart(request, slug)
+                    messages.info(request, 'This item has been deleted from your cart.')
+                    return redirect("me2ushop:product", slug=slug)
+
+                else:
                     order_item.quantity -= 1
-                    order_item.save()
-                    messages.info(request, 'This item quantity has been reduced.')
-                    # redirect("me2ushop:order_summary")
 
-                    if order_item.quantity == 0:
-                        remove_cart(request, slug)
-                        messages.info(request, 'This item has been deleted from your cart.')
-                        return redirect("me2ushop:product", slug=slug)
+                order_item.save()
+                messages.info(request, 'This item quantity has been reduced.')
 
                 return redirect("me2ushop:order_summary")
 
@@ -2139,17 +1855,20 @@ def remove_single_item_cart(request, slug):
                         ordered=False
                     )[0]
                     # print('order_item:', order_item)
+                    min_order = item.min_amount
 
-                    if order_item.quantity > 1:
-                        order_item.quantity -= 1
-                        order_item.save()
-                        messages.info(request, 'This item quantity has been reduced.')
-                    else:
+                    if order_item.quantity <= min_order:
                         remove_cart(request, slug)
                         messages.info(request, 'This item has been deleted from your cart.')
                         return redirect("me2ushop:product", slug=slug)
 
-                    return redirect("me2ushop:order_summary")
+                    else:
+                        order_item.quantity -= 1
+
+                    order_item.save()
+                    messages.info(request, 'This item quantity has been reduced.')
+
+                return redirect("me2ushop:order_summary")
 
             return redirect("me2ushop:product", slug=slug)
 
