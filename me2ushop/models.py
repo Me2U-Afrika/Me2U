@@ -95,6 +95,11 @@ class AfrikanCountries(Countries):
     ]
 
 
+class ActiveBrandManager(models.Manager):
+    def all(self):
+        return super(ActiveBrandManager, self).all().filter(is_active=True)
+
+
 class Brand(CreationModificationDateMixin):
     profile = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     slug = models.SlugField(default='',
@@ -153,6 +158,7 @@ class Brand(CreationModificationDateMixin):
                          }, delete_orphans=True)
     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW, blank=True, null=True)
 
+
     def __str__(self):
         return str(self.title)
 
@@ -180,7 +186,7 @@ class Brand(CreationModificationDateMixin):
         if not self.pk or self.slug == '':
             self.slug = self._generate_slug()
 
-        if self.subscription_status:
+        if self.subscription_status and 10 < self.application_status < 40:
             self.is_active = True
         else:
             self.is_active = False
@@ -217,11 +223,16 @@ class Product(CreationModificationDateMixin):
     sku = models.CharField(max_length=120, default='',
                            editable=False, )
     in_stock = models.BooleanField(default=True, editable=False)
+    min_amount = models.IntegerField(default=1, blank=True, help_text="What is the minimum order units required for "
+                                                                      "this item?")
+    max_amount = models.IntegerField(blank=True, null=True, help_text="What is the maximum order units required for "
+                                                                      "this item?")
 
     price = models.DecimalField(max_digits=9, decimal_places=2, default=0,
-                                help_text="Please note that the default currency is "
+                                help_text="What is the price of one piece of this item?"
+                                          "Please note that the default currency is "
                                           "USD. Converty your product price to "
-                                          "US dollar before listing")
+                                          "US dollar before listing.")
     discount_price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(1)],
                                          blank=True, null=True,
                                          help_text="Please note that the default currency is "
@@ -423,9 +434,12 @@ class Product(CreationModificationDateMixin):
             self.slug = self._generate_slug()
             self.sku = self._generate_sku()
 
-        if self.stock < 1:
+        self.in_stock = True
+
+        if self.stock < self.min_amount:
             print('we came to check stock')
             self.in_stock = False
+            self.is_active = False
 
         image = self.productimage_set.filter(in_display=True)
 
