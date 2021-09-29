@@ -202,16 +202,6 @@ function preparedDocument(){
         };
     });
 
-    use_default_shipping.addEventListener('change', function(event) {
-      event.preventDefault();
-
-        if (use_default_shipping.checked) {
-          hideable_shipping_form.hide();
-        } else {
-          hideable_shipping_form.show();
-        };
-    });
-
     add_new_shipping.addEventListener('change', function(event) {
       event.preventDefault();
 
@@ -224,6 +214,16 @@ function preparedDocument(){
         };
     });
 
+
+    use_default_shipping.addEventListener('change', function(event) {
+      event.preventDefault();
+
+        if (use_default_shipping.checked) {
+          hideable_shipping_form.hide();
+        } else {
+          hideable_shipping_form.show();
+        };
+    });
 
     // var form = document.getElementById('use_default_billing');
     // form.addEventListener('change', function(event) {
