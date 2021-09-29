@@ -265,7 +265,7 @@ class ProductReviewAdmin(admin.ModelAdmin):
 
 
 class Items_Ordered(admin.ModelAdmin):
-    list_display = ('user', 'name', 'item', 'quantity', 'status', 'ordered', 'date_ordered')
+    list_display = ('user', 'name', 'item', 'quantity', 'get_final_price','status', 'ordered', 'date_ordered')
     search_fields = ['item', ]
     list_editable = ('status',)
     list_filter = ("status",)
@@ -309,6 +309,7 @@ class Ordered(admin.ModelAdmin):
         'name',
         'order_date',
         'ordered',
+        'get_total',
         "status_code",
         'payment',
         'coupon',
@@ -614,6 +615,13 @@ class RefundDisplay(admin.ModelAdmin):
     list_filter = ['accepted']
     list_display_links = ['order', 'ref_code']
 
+# class VariationCategoryAdmin(admin.ModelAdmin):
+#     list_display = ('variation_name',)
+#
+#
+# class VariationAdmin(admin.ModelAdmin):
+#     list_display = ('product', 'variation_category', 'variation_value', 'is_active')
+
 
 # The class below will pass to the Django admin templates a couple
 # of extra values that represent colors of headings
@@ -812,6 +820,7 @@ class SellersAdminSite(ColoredAdminSite):
         return request.user.is_active and request.user.is_seller
 
 
+
 main_admin = OwnersAdminSite()
 
 admin.site.register(Product, ProductAdmin)
@@ -832,6 +841,8 @@ admin.site.register(RequestRefund, RefundDisplay)
 admin.site.register(Address, AddressAdmin)
 admin.site.register(ProductVariations, ProductVariationAdmin)
 admin.site.register(ProductAttribute, ProductAttributeAdmin)
+# admin.site.register(Variation, VariationAdmin)
+# admin.site.register(VariationCategory, VariationCategoryAdmin)
 
 central_office_admin = CentralOfficeAdminSite("central-office-admin")
 central_office_admin.register(Product, ProductAdmin)
