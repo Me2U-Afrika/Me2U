@@ -59,13 +59,13 @@
 				<div class="col-lg-6 order-3">
 					<div class="">
 						<ul id="glasscase" class="gc-start">
-							{% if variant.image %}
-								<li><img src="{{ variant.image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>
-							{% else %}
-								{% for image in object.productimage_set.all %}
-									<li><img src="{{ image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>
-								{% endfor %}
-							{% endif %}
+<!--							{#% if variant.image %#}-->
+<!--								<li><img src="{{ variant.image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>-->
+<!--							{#% else %#}-->
+<!--								{% for image in object.productimage_set.all %}-->
+<!--									<li><img src="{{ image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>-->
+<!--								{% endfor %}-->
+<!--							{#% endif %#}-->
 
 							{% for image in object.productimage_set.all %}
 								<li><img src="{{ image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>
@@ -130,6 +130,9 @@
 								<div class="product_name red-text">Product is Inactive</div>
 							{% endif %}
 						{% endif %}
+						{% if not product.in_stock %}
+							<div class="product_name red-text">Product is out of Stock</div>
+						{% endif %}
 						<div class="product_name">{{ object.title }}</div>
 						<div class="rating_r rating_r_4 product_rating"><i></i><i></i><i></i><i></i><i></i></div>
 						{% if object.brand_name %}
@@ -160,7 +163,7 @@
 						<!--Variants-->
 						{% if variant %}
 							{% include 'snippets/size_variant.html' %}
-							{% include 'snippets/color_variant.html' %}
+							{#% include 'snippets/color_variant.html' %#}
 						{% endif %}
 						<!--End Variants-->
 
@@ -195,16 +198,24 @@
 									<!--ADD TO CART OPTIONS-->
 									{% if object.brand_name.valid_payment_method and object.price > 0 %}
 										<div class="clearfix" style="z-index: 1000;">
-											{% if object.stock > 0 %}
+											{% if object.stock == object.min_amount or object.stock > object.min_amount %}
 											<p>Stock: {{ object.stock }}</p>
 											{% else %}
-											<p style="color: red">Stock:Product Not in Stock</p>
+											<p style="color: red">Product Not in Stock</p>
 											{% endif %}
+
+											{% if object.min_amount > 1 %}
+											<p>minimum order: {{ object.min_amount }}</p>
+											{% endif %}
+											{% if object.max_amount %}
+											<p>maximum order: {{ object.max_amount }}</p>
+											{% endif %}
+
 
 											<!-- Product Quantity -->
 											<div class="product_quantity clearfix">
 												<span>Quantity: </span>
-												<input id="quantity_input" name="quantity" type="number" pattern="[0-9]*" value="1">
+												<input id="quantity_input" name="quantity" type="number" pattern="[0-9]*" value="{{ object.min_amount }}">
 												<div class="quantity_buttons">
 													<div id="quantity_inc_button" class="quantity_inc quantity_control"><i class="fas fa-chevron-up"></i></div>
 													<div id="quantity_dec_button" class="quantity_dec quantity_control"><i class="fas fa-chevron-down"></i></div>
@@ -829,6 +840,8 @@
 });
 </script>
 <!--end show seller contact script-->
+
+
 
 {% endblock %}
 

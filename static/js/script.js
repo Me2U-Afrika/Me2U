@@ -182,6 +182,7 @@ function preparedDocument(){
     var hideable_billing_form = $('.hideable_billing_form');
     var hideable_shipping_form = $('.hideable_shipping_form');
     var same_as_shipping = $('.same_as_shipping')
+    var hideable_form = $('.hideable_form')
 
 
     var use_default_shipping = document.querySelector("input[name='use_default_shipping']");
@@ -210,6 +211,19 @@ function preparedDocument(){
           hideable_shipping_form.show();
         };
     });
+
+    add_new_shipping.addEventListener('change', function(event) {
+      event.preventDefault();
+
+        if (add_new_shipping.checked) {
+          hideable_form.hide();
+        } else {
+          hideable_form.show();
+
+
+        };
+    });
+
 
     // var form = document.getElementById('use_default_billing');
     // form.addEventListener('change', function(event) {

@@ -33,20 +33,18 @@
 
 <div class="order_info d-flex flex-row">
     <form method="post" id="post-form-size">
-    <input type="hidden" name="productid" id="productid" value="{{ object.id }}">
-    <span class="text-uppercase">Size:</span>
-    {% csrf_token %}
-    <select class="form-control" name="size" id="size">
-        {% for rs in sizes %}
-            <option {% if variant.size.id == rs.size.id %} selected {% endif %} value="{{ rs.size.id }}">
-                {{ rs.size.name}}
-            </option>
-        {% endfor %}
-    </select>
-
+        <input type="hidden" name="productid" id="productid" value="{{ object.id }}">
+        <span class="text-uppercase">Size:</span>
+        {% csrf_token %}
+        <select class="form-control" name="size" id="size">
+            {% for rs in sizes %}
+                <option {% if variant.size.id == rs.size.id %} selected {% endif %} value="{{ rs.size.id }}">
+                    {{ rs.size.name}}
+                </option>
+            {% endfor %}
+        </select>
 </form>
 </div>
 
 {% block extra_scripts %}
-
 {% endblock %}
