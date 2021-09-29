@@ -158,7 +158,6 @@ class Brand(CreationModificationDateMixin):
                          }, delete_orphans=True)
     application_status = models.IntegerField(choices=STATUSES, default=UNDER_REVIEW, blank=True, null=True)
 
-
     def __str__(self):
         return str(self.title)
 
@@ -519,35 +518,37 @@ class ProductImage(CreationModificationDateMixin):
 
 
 #
-class VariationsManager(models.Manager):
-    def all(self):
-        return super(VariationsManager, self).filter(active=True)
+# class VariationsManager(models.Manager):
+#     def all(self):
+#         return super(VariationsManager, self).filter(is_active=True)
+#
+#     def sizes(self):
+#         return self.all().filter(variation_category='size')
+#
+#     def colors(self):
+#         return self.all().filter(variation_category='color')
+#
+#
+# VAR_CATEGORIES = (
+#     ('size', 'size'),
+#     ('color', 'color'),
+#     ('package', 'package'),
+# )
+#
 
-    def sizes(self):
-        return self.all().filter(category='size')
-
-    def colors(self):
-        return self.all().filter(category='color')
-
-
-VAR_CATEGORIES = (
-    ('size', 'size'),
-    ('color', 'color'),
-    ('package', 'package'),
-)
-
-
-# class Variation(CreationModificationDateMixin):
+# class VariationCategory(CreationModificationDateMixin):
 #     variation_name = models.CharField(max_length=200, unique=True)
 #
 #     def __str__(self):
 #         return self.variation_name
 #
 #
-# class ProductVariation(CreationModificationDateMixin):
+# class Variation(CreationModificationDateMixin):
 #     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
-#     variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
-#     value = models.CharField(max_length=200)
+#     title = models.CharField(max_length=100, blank=True, null=True,
+#                              help_text="Title for this product variant")
+#     variation_category = models.ForeignKey(VariationCategory, on_delete=models.CASCADE)
+#     variation_value = models.CharField(max_length=200)
 #     price = models.DecimalField(max_digits=9, null=True, blank=True, decimal_places=2, default=0,
 #                                 help_text="Please note that the default currency is "
 #                                           "USD. Converty your product price to "
@@ -558,15 +559,30 @@ VAR_CATEGORIES = (
 #                                          help_text="Please note that the default currency is "
 #                                                    "USD. Converty your product price to "
 #                                                    "US Dollar before listing")
-#     variation_images = models.ManyToManyField(ProductImage)
+#     image = models.ForeignKey(ProductImage, on_delete=models.SET_NULL, blank=True, null=True)
+#
+#     is_active = models.BooleanField(default=True)
+#
+#     stock = models.IntegerField(default=1, blank=True, null=True)
+#
+#     objects = VariationsManager()
 #
 #     class Meta:
 #         unique_together = (
-#             ('variation', 'value')
+#             ('variation_category', 'variation_value')
 #         )
 #
 #     def __str__(self):
-#         return self.value
+#         return u'%s - %s' % (self.variation_category, self.variation_value,)
+#
+#     def get_absolute_url(self):
+#         return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
+#
+#     def image_tag(self):
+#         if self.image:
+#             return mark_safe('<img src="{}" height="50"/>'.format(self.image.image.thumbnail.url))
+#         else:
+#             return ""
 
 
 class Color(CreationModificationDateMixin):

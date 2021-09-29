@@ -207,6 +207,20 @@ label {
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
 
+<script>
+    var form = document.getElementById('add_new_shipping');
+    form.addEventListener('change', function(event){
+      event.preventDefault();
+
+      if (form.checked) {
+          hideable_shipping_form.hide();
+        } else {
+          hideable_shipping_form.show();
+
+        };
+    });
+
+</script>
 {% endblock %}
 </body>
 
