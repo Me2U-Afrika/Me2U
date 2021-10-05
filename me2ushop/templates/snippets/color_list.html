@@ -1,16 +1,28 @@
 {% load currency %}
 <input type="hidden" name="size" id="size" value="{{ size_id }}">
+<input type="hidden" name="product_slug" id="product_slug" value="{{ product.slug }}">
 <ul class="color-option">
+    {% if variant.color %}
     <li><span class="text-uppercase">Color:</span></li>
-    {% for rs in colors %}
-        <input type="radio" {% if variant.id == rs.id %} checked {% endif %}
-               name="variantid" id="variantid" value="{{ rs.id }}" onchange="this.form.submit();">
-        <li {% if variant.id == rs.id %} class="active" {% endif %}>
-            <a style="background-color: {{ rs.color.code }}; color:#D9D9D9; text-shadow: 1px 1px #000000; width: 70px;">
-                {{ CURRENCY.symbol }}{{rs.price}} {{ rs.color }}
-            </a>
-        </li>
-        <img src="{{ rs.image.image.thumbnail.url }}" height="70px" style="object-fit: contain">
-
-    {% endfor %}
+    {% endif %}
+    <div class="row">
+        {% for rs in colors %}
+            <input class="ml-1" type="radio"
+                   name="variantid" id="variantid" value="{{ rs.id }}" onchange="this.form.submit();">
+            <li>
+                {% if rs.color %}
+                <span style="background-color: {{ rs.color.code }}; color:#D9D9D9; text-shadow: 1px 1px #000000; width: 65px;">
+                    {% if rs.price > 0 %} {{ CURRENCY.symbol }}{{rs.price}} {% endif %} {{ rs.color }}
+                </span>
+                {% else %}
+                <span style="color:#D9D9D9; text-shadow: 1px 1px #000000; width: 65px;">
+                    {% if rs.price > 0 %} {{ CURRENCY.symbol }}{{rs.price}} {% endif %}
+                </span>
+                {% endif %}
+                <div>
+                    <img src="{{ rs.image.image.thumbnail.url }}" height="65px" style="object-fit: contain">
+                </div>
+            </li>
+        {% endfor %}
+    </div>
 </ul>

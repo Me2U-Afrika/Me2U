@@ -1,0 +1,34 @@
+
+{% if variant.price > 0 %}
+    {% if variant.stock == variant.min_amount or variant.stock > variant.min_amount %}
+
+    <div class="clearfix" style="z-index: 1000;">
+    <!-- End PRODUCT PRICE-->
+        <p>Availability:<span class="green-text"> In stock</span></p>
+        {% if variant.min_amount > 1 %}
+        <p>minimum order: {{ variant.min_amount }}</p>
+        {% endif %}
+        {% if variant.max_amount %}
+        <p>maximum order: {{ variant.max_amount }}</p>
+        {% endif %}
+
+        <!-- Product Quantity -->
+        <div class="product_quantity clearfix">
+            <span>Quantity: </span>
+            <input id="quantity_input" name="quantity" type="number" pattern="[0-9]*" value="{{ variant.min_amount }}">
+            <div class="quantity_buttons">
+                <div id="quantity_inc_button" class="quantity_inc quantity_control"><i class="fas fa-chevron-up"></i></div>
+                <div id="quantity_dec_button" class="quantity_dec quantity_control"><i class="fas fa-chevron-down"></i></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="button_container">
+        <button type="submit" class="button cart_button" >Add to Cart</button>
+        <a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>
+    </div>
+ {% else %}
+        <p style="color: red">This Product Variant is out of stock</p>
+    {% endif %}
+
+{% endif %}

@@ -778,23 +778,31 @@ class ProductDetailedView(CachedDetailView):
         variant_id = self.request.POST.get('variantid')
         print('varinatid', variant_id)
 
-        variant = ProductVariations.objects.get(id=variant_id)
-        print('variant:', variant.size.id)
+        variant = ProductVariations.active.get(id=variant_id, is_active=True)
+        print('variant:', variant)
 
-        colors = ProductVariations.objects.filter(product=product, size__id=variant.size.id)
-        print('post colors:', colors)
-        # sizes = ProductVariations.objects.filter(product=product)
-        sizes = ProductVariations.objects.raw(
+        colors = None
+
+        # sizes = ProductVariations.active.filter(product=product)
+        sizes = ProductVariations.active.raw(
             'SELECT %s as id, me2ushop_productvariations.size_id FROM me2ushop_productvariations '
             'WHERE product_id=%s GROUP BY me2ushop_productvariations.size_id;', (product.id, product.id))
         print('post sizes:', sizes)
-        query += variant.title + 'Size:' + str(variant.size) + ' Color:' + str(variant.color)
-        print('query:', query)
+
+        if variant.size and variant.color:
+            colors = ProductVariations.active.filter(product=product, size__id=variant.size.id, is_active=True)
+            print('post colors:', colors)
+        elif variant.color:
+            colors = ProductVariations.active.filter(product=product, is_active=True)
+            print('post colors:', colors)
+
+        # query += variant.title + 'Size:' + str(variant.size) + ' Color:' + str(variant.color)
+        # print('query:', query)
 
         context.update({
             'sizes': sizes,
             'colors': colors,
-            'query': query,
+            # 'query': query,
             'variant': variant,
 
         })
@@ -849,23 +857,42 @@ class ProductDetailedView(CachedDetailView):
         product_reviews = ProductReview.approved.filter(product=product).order_by('-date')
         # print('productreviews:', product_reviews)
 
-        product_variations = ProductVariations.objects.filter(product=product)
+        product_variations = ProductVariations.active.filter(product=product)
         print('productv', product_variations)
         if product_variations:
             if product_variations[0].size:
-                colors = ProductVariations.objects.filter(product=product, size__id=product_variations[0].size.id)
+                colors = ProductVariations.active.filter(product=product, size__id=product_variations[0].size.id)
                 # print('colors:', colors)
-                sizes = ProductVariations.objects.raw(
+                sizes = ProductVariations.active.raw(
                     'SELECT %s as id, me2ushop_productvariations.size_id FROM me2ushop_productvariations '
-                    'WHERE product_id=%s GROUP BY me2ushop_productvariations.size_id;', (product.id, product.id))
+                    'WHERE product_id=%s AND me2ushop_productvariations.is_active=True GROUP BY me2ushop_productvariations.size_id;', (product.id, product.id))
                 # print('sizes:', sizes)
                 context.update({
                     'sizes': sizes,
                     'colors': colors,
                 })
+            elif product_variations[0].color and not product_variations[0].size:
+                colors = ProductVariations.active.filter(product=product, is_active=True)
+                # print('colors:', colors)
 
-            variant = ProductVariations.objects.get(id=product_variations[0].id)
+                context.update({
+
+                    'colors': colors,
+                })
+
+            variant = ProductVariations.active.get(id=product_variations[0].id)
             # print('variant:', variant)
+            if variant.image:
+                current_saved_default = ProductImage.displayed.filter(item=product, in_display=True)
+                if current_saved_default:
+                    for image in current_saved_default:
+                        image.in_display = False
+                        image.save()
+
+                print(variant.image.in_display)
+                variant.image.in_display = True
+                variant.image.save()
+                print(variant.image.in_display)
 
             context.update({
                 'variant': variant
@@ -916,13 +943,17 @@ def colorAjax(request):
     if request.POST.get('action') == 'post':
         size_id = request.POST.get('size')
         productid = request.POST.get('productid')
-        colors = ProductVariations.objects.filter(product__id=productid, size__id=size_id)
+        product = get_object_or_404(Product, id=productid)
+        print('product_id:', product.id)
+        colors = ProductVariations.active.filter(product__id=productid, size__id=size_id)
+
         context = {
             'size_id': size_id,
             'productid': productid,
             'colors': colors,
+            'product': product,
         }
-        data = {'rendered_table': render_to_string('color_list.html', context=context)}
+        data = {'rendered_table': render_to_string('snippets/color_list.html', context=context)}
         return JsonResponse(data)
     return JsonResponse(data)
 
@@ -1124,7 +1155,7 @@ class ProductAttributeUpdateView(LoginRequiredMixin, UpdateView):
         context = super(ProductAttributeUpdateView, self).get_context_data(**kwargs)
 
         product_detail = \
-            ProductVariations.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
+            ProductVariations.active.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
         print('productdetail:', product_detail)
 
         context.update({
@@ -1148,8 +1179,7 @@ class ProductAttributeDeleteView(LoginRequiredMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super(ProductAttributeDeleteView, self).get_context_data(**kwargs)
 
-        product_detail = \
-            ProductVariations.objects.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
+        product_detail = ProductVariations.active.filter(id=self.kwargs.get('pk')).select_related('product__brand_name')[0]
 
         context.update({
 

@@ -440,17 +440,17 @@ class Product(CreationModificationDateMixin):
             self.in_stock = False
             self.is_active = False
 
-        image = self.productimage_set.filter(in_display=True)
-
         if self.brand_name:
-            if self.brand_name.is_active:
+            if self.brand_name.is_active and self.in_stock:
                 self.is_active = True
             else:
                 self.is_active = False
         else:
             self.active = False
 
-        # print('image', image.exists())
+        image = self.productimage_set.filter(in_display=True)
+
+        print('image', image.exists())
 
         if image.exists() and self.in_stock:
             self.is_active = True
@@ -601,6 +601,24 @@ class Size(CreationModificationDateMixin):
         return self.name
 
 
+class ProductVariationsManager(models.Manager):
+    def all(self):
+        return super(ActiveBrandManager, self).all()
+
+    def active(self):
+        return self.all().filter(is_active=True)
+
+
+class ProductVariationsQueryset(models.query.QuerySet):
+    def active(self):
+        return self.filter(is_active=True)
+
+
+class ActiveProductVariationsManager(models.Manager):
+    def get_queryset(self):
+        return ProductVariationsQueryset(self.model, using=self._db).active()
+
+
 class ProductVariations(CreationModificationDateMixin):
     """    The ``ProductDetail`` model represents information unique to a
     specific product. This is a generic design that can be used
@@ -617,19 +635,34 @@ class ProductVariations(CreationModificationDateMixin):
     size = models.ForeignKey(Size, on_delete=models.CASCADE, blank=True, null=True,
                              help_text="Add if your product comes in different colors")
 
+    sku = models.CharField(max_length=120, default='',
+                           editable=False, )
+    in_stock = models.BooleanField(default=True, editable=False)
+    min_amount = models.IntegerField(default=1, blank=True, help_text="What is the minimum order units required for "
+                                                                      "this item?")
+    max_amount = models.IntegerField(blank=True, null=True, help_text="What is the maximum order units required for "
+                                                                      "this item?")
+
     price = models.DecimalField(max_digits=9, null=True, blank=True, decimal_places=2, default=0,
-                                help_text="If the above variables affect your original price, you can say how much "
-                                          "this variant costs.Please note that the default currency is "
-                                          "USD. Converty your product price to US dollar before listing")
+                                help_text="If the above variables affect your original price, update price"
+                                          "Note that the default currency is "
+                                          "USD. Convert your product price to US dollar before listing")
 
     discount_price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(1)],
                                          blank=True, null=True,
-                                         help_text="Please note that the default currency is "
-                                                   "USD. Converty your product price to "
+                                         help_text="Note that the default currency is "
+                                                   "USD. Convert your product price to "
                                                    "US Dollar before listing")
     image = models.ForeignKey(ProductImage, on_delete=models.SET_NULL, blank=True, null=True)
 
     stock = models.IntegerField(default=1, blank=True, null=True)
+    is_active = models.BooleanField(default=True, editable=False)
+
+    objects = ProductVariationsManager()
+    active = ActiveProductVariationsManager()
+
+    class Meta:
+        unique_together = ('product', 'size', 'color')
 
     def __str__(self):
         return u'%s - %s - %s' % (self.product, self.color, self.size,)
@@ -642,6 +675,55 @@ class ProductVariations(CreationModificationDateMixin):
             return mark_safe('<img src="{}" height="50"/>'.format(self.image.image.thumbnail.url))
         else:
             return ""
+
+    def sale_price(self):
+        if self.discount_price:
+            return self.discount_price
+        else:
+            return self.price
+
+    def _generate_sku(self):
+
+        variant = None
+        brand = str(self.product.brand_name)[:3]
+        title = str(self.product.title)[:3]
+        created = str(self.created)
+
+        if self.size and self.color:
+            variant = '{}-{}'.format(self.size, self.color)
+        elif self.size:
+            variant = '{}'.format(self.size)
+        elif self.color:
+            variant = '{}'.format(self.color)
+
+        sku = '{}-{}-{}-{}'.format(brand, title, created, variant)
+
+        for i in itertools.count(1):
+            if not ProductVariations.objects.filter(sku=sku).exists():
+                break
+            sku = '{}-{}-{}-{}'.format(brand, title, created, variant, i)
+        return sku
+
+    def save(self, *args, **kwargs):
+        if not self.pk or self.sku:
+            self.sku = self._generate_sku()
+
+        self.in_stock = True
+        if self.stock:
+            if self.stock < self.min_amount:
+                print('we came to check stock on product variant')
+                self.in_stock = False
+                self.is_active = False
+            else:
+                self.is_active = True
+
+        if self.discount_price and self.price < 1 or self.discount_price == self.price:
+            self.price = self.discount_price
+            self.discount_price = None
+
+        cache.delete('product-%s' % self.product.slug)
+
+        super().save(*args, **kwargs)
 
 
 class ProductAttribute(CreationModificationDateMixin):
