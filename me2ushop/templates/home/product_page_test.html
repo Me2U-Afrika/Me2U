@@ -59,13 +59,13 @@
 				<div class="col-lg-6 order-3">
 					<div class="">
 						<ul id="glasscase" class="gc-start">
-<!--							{#% if variant.image %#}-->
-<!--								<li><img src="{{ variant.image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>-->
-<!--							{#% else %#}-->
-<!--								{% for image in object.productimage_set.all %}-->
-<!--									<li><img src="{{ image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>-->
-<!--								{% endfor %}-->
-<!--							{#% endif %#}-->
+							{% if variant.image %}
+								<li><img src="{{ variant.image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>
+							{% else %}
+								{% for image in object.productimage_set.all %}
+									<li><img src="{{ image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>
+								{% endfor %}
+							{% endif %}
 
 							{% for image in object.productimage_set.all %}
 								<li><img src="{{ image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>
@@ -128,11 +128,12 @@
 								<div class="product_name green-text">Product is Active</div>
 							{% else %}
 								<div class="product_name red-text">Product is Inactive</div>
+								{% if not product.in_stock %}
+									<div class="product_name red-text">Product is out of Stock</div>
+								{% endif %}
 							{% endif %}
 						{% endif %}
-						{% if not product.in_stock %}
-							<div class="product_name red-text">Product is out of Stock</div>
-						{% endif %}
+
 						<div class="product_name">{{ object.title }}</div>
 						<div class="rating_r rating_r_4 product_rating"><i></i><i></i><i></i><i></i><i></i></div>
 						{% if object.brand_name %}
@@ -148,22 +149,16 @@
 						<!--PRODUCT DESCRIPTION-->
 
 						<!--PRODUCT PRICE-->
-						{% if CURRENCY.code %}
-							{% if object.price > 0 %}
-								{% if object.discount_price %}
-									<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
-									<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
-								{% else %}
-									<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
-								{% endif %}
-							{% endif %}
-						{% endif %}
+
 						<!-- End PRODUCT PRICE-->
 
 						<!--Variants-->
 						{% if variant %}
-							{% include 'snippets/size_variant.html' %}
-							{#% include 'snippets/color_variant.html' %#}
+							{% if variant.size %}
+								{% include 'snippets/size_variant.html' %}
+							{% endif %}
+
+							{% include 'snippets/color_variant.html' %}
 						{% endif %}
 						<!--End Variants-->
 
@@ -173,33 +168,24 @@
 								{% csrf_token %}
 
 								{% if object.brand_name.profile == request.user %}
-									<div class="card card-body">
-										<a class="btn btn-outline-orange" href="{% url 'me2ushop:product-update' object.slug %}">UPDATE Product</a>
-										<a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}">Product Detailed Information</a>
-										<a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}">ADD Attributes</a>
-
-										{% if object.productimage_set.all %}
-										<a class="btn btn-outline-purple" href="{% url 'me2ushop:product_images' object.slug %}">Product Images</a>
-										{% else %}
-										<a class="btn btn-outline-purple" href="{% url 'me2ushop:product_image_create' object.slug %}">Add Images</a>
-										{% endif %}
-
-										<a class="btn btn-outline-grey" href="{% url 'sellers:seller_products' object.brand_name.id %}">My Products</a>
-										<a class="btn btn-outline-green " href="{% url 'me2ushop:product-create' object.brand_name.id  %}">New Product</a>
-
-
-										{% if pending_item %}
-										<a class="btn text-muted disabled red-text" href="#">Delete</a>
-										{% else %}
-										<a class="btn" href="{% url 'me2ushop:product-delete' object.slug %}">Delete</a>
-										{% endif %}
-									</div>
-								{% else %}
+									{% include 'snippets/product_edit.html' %}
+								{% endif %}
 									<!--ADD TO CART OPTIONS-->
+								{% if variant %}
+									{% include 'snippets/variant_add_cart.html' %}
+								{% else %}
+
 									{% if object.brand_name.valid_payment_method and object.price > 0 %}
+										{% if object.discount_price %}
+											<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
+											<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
+										{% else %}
+											<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
+										{% endif %}
 										<div class="clearfix" style="z-index: 1000;">
 											{% if object.stock == object.min_amount or object.stock > object.min_amount %}
-											<p>Stock: {{ object.stock }}</p>
+											<p>Availability:<span class="green-text"> In-stock : {{ object.stock }}</span></p>
+
 											{% else %}
 											<p style="color: red">Product Not in Stock</p>
 											{% endif %}
@@ -210,8 +196,6 @@
 											{% if object.max_amount %}
 											<p>maximum order: {{ object.max_amount }}</p>
 											{% endif %}
-
-
 											<!-- Product Quantity -->
 											<div class="product_quantity clearfix">
 												<span>Quantity: </span>
@@ -278,7 +262,7 @@
 
 							<div class="col-md-4 contact-email">
 								<h2><a href="mailto:{{ object.brand_name.business_email }}" target="_blank"><i class="fas fa-envelope-square" style="color:#20639B;"> Email</i></a></h2>
-								<h3>{{ object.brand_name.business_phone }}</h3>
+								<h3>{{ object.brand_name.business_phone|truncatechars:6 }}</h3>
 							</div>
 							<div class="col-md-4">
 								<div class="row contact row-first">

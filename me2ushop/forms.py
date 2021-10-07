@@ -183,17 +183,18 @@ class CartAddProductForm(forms.Form):
         'aria-label': 'Recipient\'s username',
         'aria-describedby': 'basic-addon2'
     }))
+    variant = forms.IntegerField(required=False)
 
-    def __init__(self, request=None, *args, **kwargs):
-        self.request = request
-        super().__init__(*args, **kwargs)
+    # def __init__(self, request=None, *args, **kwargs):
+    #     self.request = request
+    #     super().__init__(*args, **kwargs)
 
-    def clean(self):
-        if self.request:
-            if not self.request.session.test_cookie_worked():
-                raise forms.ValidationError('Cookies must be enabled')
-
-            return self.cleaned_data
+    # def clean(self):
+    #     if self.request:
+    #         if not self.request.session.test_cookie_worked():
+    #             raise forms.ValidationError('Cookies must be enabled')
+    #
+    #         return self.cleaned_data
 
 
 CartAddFormSet = modelform_factory(

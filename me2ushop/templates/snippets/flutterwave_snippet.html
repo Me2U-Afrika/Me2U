@@ -18,7 +18,7 @@
       tx_ref: pay_button_params.txref,
       amount: {{ order.get_total|currency:CURRENCY.code }},
       currency: "{{ CURRENCY.code }}",
-      country: "{{ order.billing_country }}",
+      country: "",
       payment_options: "",
       redirect_url: // specified redirect URL
         pay_button_params.redirect_url,

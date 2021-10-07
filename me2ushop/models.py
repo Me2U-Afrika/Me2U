@@ -440,17 +440,17 @@ class Product(CreationModificationDateMixin):
             self.in_stock = False
             self.is_active = False
 
-        image = self.productimage_set.filter(in_display=True)
-
         if self.brand_name:
-            if self.brand_name.is_active:
+            if self.brand_name.is_active and self.in_stock:
                 self.is_active = True
             else:
                 self.is_active = False
         else:
             self.active = False
 
-        # print('image', image.exists())
+        image = self.productimage_set.filter(in_display=True)
+
+        print('image', image.exists())
 
         if image.exists() and self.in_stock:
             self.is_active = True
@@ -601,6 +601,24 @@ class Size(CreationModificationDateMixin):
         return self.name
 
 
+class ProductVariationsManager(models.Manager):
+    def all(self):
+        return super(ProductVariationsManager, self).all()
+
+    def active(self):
+        return self.all().filter(is_active=True)
+
+
+class ProductVariationsQueryset(models.query.QuerySet):
+    def active(self):
+        return self.filter(is_active=True)
+
+
+class ActiveProductVariationsManager(models.Manager):
+    def get_queryset(self):
+        return ProductVariationsQueryset(self.model, using=self._db).active()
+
+
 class ProductVariations(CreationModificationDateMixin):
     """    The ``ProductDetail`` model represents information unique to a
     specific product. This is a generic design that can be used
@@ -609,6 +627,13 @@ class ProductVariations(CreationModificationDateMixin):
     """
 
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
+    slug = models.SlugField(unique=True,
+                            default='',
+                            blank=True,
+                            null=True,
+                            editable=False,
+                            max_length=300
+                            )
     title = models.CharField(max_length=100, blank=True, null=True,
                              help_text="Title for this product variant")
     color = models.ForeignKey(Color, on_delete=models.CASCADE, blank=True, null=True,
@@ -617,19 +642,34 @@ class ProductVariations(CreationModificationDateMixin):
     size = models.ForeignKey(Size, on_delete=models.CASCADE, blank=True, null=True,
                              help_text="Add if your product comes in different colors")
 
+    sku = models.CharField(max_length=120, default='',
+                           editable=False, )
+    in_stock = models.BooleanField(default=True, editable=False)
+    min_amount = models.IntegerField(default=1, blank=True, help_text="What is the minimum order units required for "
+                                                                      "this item?")
+    max_amount = models.IntegerField(blank=True, null=True, help_text="What is the maximum order units required for "
+                                                                      "this item?")
+
     price = models.DecimalField(max_digits=9, null=True, blank=True, decimal_places=2, default=0,
-                                help_text="If the above variables affect your original price, you can say how much "
-                                          "this variant costs.Please note that the default currency is "
-                                          "USD. Converty your product price to US dollar before listing")
+                                help_text="If the above variables affect your original price, update price"
+                                          "Note that the default currency is "
+                                          "USD. Convert your product price to US dollar before listing")
 
     discount_price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(1)],
                                          blank=True, null=True,
-                                         help_text="Please note that the default currency is "
-                                                   "USD. Converty your product price to "
+                                         help_text="Note that the default currency is "
+                                                   "USD. Convert your product price to "
                                                    "US Dollar before listing")
     image = models.ForeignKey(ProductImage, on_delete=models.SET_NULL, blank=True, null=True)
 
     stock = models.IntegerField(default=1, blank=True, null=True)
+    is_active = models.BooleanField(default=True, editable=False)
+
+    objects = ProductVariationsManager()
+    active = ActiveProductVariationsManager()
+
+    class Meta:
+        unique_together = ('product', 'size', 'color')
 
     def __str__(self):
         return u'%s - %s - %s' % (self.product, self.color, self.size,)
@@ -637,11 +677,88 @@ class ProductVariations(CreationModificationDateMixin):
     def get_absolute_url(self):
         return reverse('me2ushop:product', kwargs={'slug': self.product.slug})
 
+    # def get_remove_cart_url(self):
+    #     return reverse('me2ushop:remove_cart', kwargs={'slug': self.slug})
+
+    # def get_add_cart_url(self):
+    #     return reverse('me2ushop:add_cart', kwargs={'slug': self.slug})
+
+    def get_image(self):
+        return self.image.image.thumbnail.url
+
     def image_tag(self):
         if self.image:
             return mark_safe('<img src="{}" height="50"/>'.format(self.image.image.thumbnail.url))
         else:
             return ""
+
+    def sale_price(self):
+        if self.discount_price:
+            return self.discount_price
+        else:
+            return self.price
+
+    def _generate_sku(self):
+
+        variant = None
+        brand = str(self.product.brand_name)[:3]
+        title = str(self.product.title)[:3]
+        created = str(self.created)
+
+        if self.size and self.color:
+            variant = '{}-{}'.format(self.size, self.color)
+        elif self.size:
+            variant = '{}'.format(self.size)
+        elif self.color:
+            variant = '{}'.format(self.color)
+
+        sku = '{}-{}-{}-{}'.format(brand, title, created, variant)
+
+        for i in itertools.count(1):
+            if not ProductVariations.objects.filter(sku=sku).exists():
+                break
+            sku = '{}-{}-{}-{}'.format(brand, title, created, variant, i)
+        return sku
+
+    def _generate_slug(self):
+        variant = self.product.title
+        if self.size and self.color:
+            variant = '{}-{}-{}'.format(self.product.title, self.size, self.color)
+        elif self.size:
+            variant = '{}-{}'.format(self.product.title, self.size)
+        elif self.color:
+            variant = '{}-{}'.format(self.product.title, self.color)
+        value = variant
+
+        slug_candidate = slug_original = slugify(value, allow_unicode=True)
+        for i in itertools.count(1):
+            if not Product.objects.filter(slug=slug_candidate).exists():
+                break
+            slug_candidate = '{}-{}'.format(slug_original, i)
+
+        return slug_candidate
+
+    def save(self, *args, **kwargs):
+        if not self.pk or self.sku or self.slug:
+            self.sku = self._generate_sku()
+            self.slug = self._generate_slug()
+
+        self.in_stock = True
+        if self.stock:
+            if self.stock < self.min_amount:
+                print('we came to check stock on product variant')
+                self.in_stock = False
+                self.is_active = False
+            else:
+                self.is_active = True
+
+        if self.discount_price and self.price < 1 or self.discount_price == self.price:
+            self.price = self.discount_price
+            self.discount_price = None
+
+        cache.delete('product-%s' % self.product.slug)
+
+        super().save(*args, **kwargs)
 
 
 class ProductAttribute(CreationModificationDateMixin):
@@ -711,14 +828,14 @@ class StatusCode(CreationModificationDateMixin):
 
 class OrderItem(CreationModificationDateMixin):
     NEW = 10
-    PROCESSING = 20
+    ACCEPTED = 20
     SENT = 30
     CANCELLED = 40
     IN_TRANSIT = 45
     DELIVERED = 50
 
     STATUSES = ((NEW, "New"),
-                (PROCESSING, "Processing"),
+                (ACCEPTED, "Accepted"),
                 (SENT, "Sent"),
                 (CANCELLED, "Cancelled"),
                 (IN_TRANSIT, "in_transit"),
@@ -735,6 +852,7 @@ class OrderItem(CreationModificationDateMixin):
     order_received = models.BooleanField(default=False)
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Product, on_delete=models.PROTECT, unique=False, blank=True, null=True)
+    variant = models.ForeignKey(ProductVariations, blank=True, null=True, on_delete=models.SET_NULL)
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
     comments = models.TextField(blank=True)
     delivered_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='dispatcher', on_delete=models.SET_NULL,
@@ -750,19 +868,31 @@ class OrderItem(CreationModificationDateMixin):
         return reverse('users:order-details', kwargs={'order_id': self.id})
 
     def get_total_price(self):
-        return self.quantity * self.item.price
+        if self.variant:
+            return self.quantity * self.variant.price
+        else:
+            return self.quantity * self.item.price
 
     def get_total_discount_price(self):
-        return self.quantity * self.item.discount_price
+        if self.variant:
+            return self.quantity * self.variant.discount_price
+        else:
+            return self.quantity * self.item.discount_price
 
     def get_total_saved(self):
         return self.get_total_price() - self.get_total_discount_price()
 
     def get_final_price(self):
-        if self.item.discount_price:
-            return self.get_total_discount_price()
+        if self.variant:
+            if self.variant.discount_price:
+                return self.get_total_discount_price()
+            else:
+                return self.get_total_price()
         else:
-            return self.get_total_price()
+            if self.item.discount_price:
+                return self.get_total_discount_price()
+            else:
+                return self.get_total_price()
 
     def total_items_ordered(self):
         # total = self.orderitem_set.all().count()
