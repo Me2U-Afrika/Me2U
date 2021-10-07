@@ -36,6 +36,55 @@
 
 								{% for order_item in object.items.all %}
 								<li class="cart_item clearfix">
+								{% if order_item.variant %}
+									{% if order_item.variant.image %}
+										<div class="cart_item_image"><a href="{% url 'me2ushop:product' order_item.item.slug %}"><img src="{{ order_item.variant.image.image.thumbnail.url }}" alt=""></a></div>
+									{% else %}
+										{% for image in order_item.item.productimage_set.all %}
+										{% if image.in_display %}
+										<div class="cart_item_image"><a href="{% url 'me2ushop:product' order_item.item.slug %}"><img src="{{ image.image.thumbnail.url }}" alt=""></a></div>
+										{% endif %}
+										{% endfor %}
+									{% endif %}
+									<div class="cart_item_info d-flex flex-md-row flex-column justify-content-around">
+										<div class="cart_item_name cart_info_col">
+											<div class="cart_item_title">Name</div>
+											<div class="cart_item_text"><a href="{% url 'me2ushop:product' order_item.item.slug %}">{{ order_item.variant }}</a></div>
+										</div>
+<!--										<div class="cart_item_color cart_info_col">-->
+<!--											<div class="cart_item_title">Min order</div>-->
+<!--											<div class="cart_item_text">{{order_item.variant.min_amount}}</div>-->
+<!--										</div>-->
+										<div class="cart_item_quantity cart_info_col">
+											<div class="cart_item_title">Quantity</div>
+											<div class="cart_item_text">
+												<a href="{% url 'me2ushop:remove_single_item_cart' order_item.variant.slug %}"><i class="fas fa-minus-circle mr-2"></i></a>
+												{{ order_item.quantity }}
+												<a href="{% url 'me2ushop:add_cart' order_item.variant.slug %}"><i class="fas fa-plus-circle ml-2"></i></a>
+											</div>
+										</div>
+										<div class="cart_item_price cart_info_col">
+											<div class="cart_item_title">Price</div>
+											<div class="cart_item_text">{{ CURRENCY.symbol }}{{ order_item.variant.price|currency:CURRENCY.code }}</div>
+										</div>
+										<div class="cart_item_total cart_info_col">
+											<div class="cart_item_title">Total</div>
+											<div class="cart_item_text">{{ CURRENCY.symbol }}{{order_item.get_total_price|currency:CURRENCY.code }}</div>
+										</div>
+
+										<div class="cart_item_total cart_info_col">
+											<div class="cart_item_title"></div>
+											<div class="cart_item_text">
+												<a style="color:orange" href="{% url 'me2ushop:remove_cart' order_item.item.slug %}">
+													Delete
+                                                    <i class="fas fa-toilet-paper ml-3"></i>
+												</a>
+											</div>
+										</div>
+
+
+									</div>
+								{% else %}
 									{% for image in order_item.item.productimage_set.all %}
 									{% if image.in_display %}
 									<div class="cart_item_image"><a href="{% url 'me2ushop:product' order_item.item.slug %}"><img src="{{ image.image.thumbnail.url }}" alt=""></a></div>
@@ -46,10 +95,7 @@
 											<div class="cart_item_title">Name</div>
 											<div class="cart_item_text"><a href="{% url 'me2ushop:product' order_item.item.slug %}">{{ order_item.item.title|truncatechars:19 }}</a></div>
 										</div>
-										<div class="cart_item_color cart_info_col">
-											<div class="cart_item_title">Color</div>
-											<div class="cart_item_text"><span style="background-color:#999999;"></span>Silver</div>
-										</div>
+
 										<div class="cart_item_quantity cart_info_col">
 											<div class="cart_item_title">Quantity</div>
 											<div class="cart_item_text">
@@ -79,7 +125,11 @@
 
 
 									</div>
+								{% endif %}
+
+
 								</li>
+
 								{% endfor %}
 							</ul>
 						</div>

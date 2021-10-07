@@ -149,27 +149,7 @@
 						<!--PRODUCT DESCRIPTION-->
 
 						<!--PRODUCT PRICE-->
-						{% if CURRENCY.code %}
-							{% if variant %}
-								 {% if variant.price > 0 %}
-									{% if variant.discount_price %}
-										<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ variant.price|currency:CURRENCY.code }}</del></span>
-										<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ variant.discount_price|currency:CURRENCY.code }}</h3></span>
-									{% else %}
-										<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ variant.price|currency:CURRENCY.code }}</h3></span>
-									{% endif %}
-								{% endif %}
-							{% else %}
-								{% if object.price > 0 %}
-									{% if object.discount_price %}
-										<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
-										<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
-									{% else %}
-										<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
-									{% endif %}
-								{% endif %}
-							{% endif %}
-						{% endif %}
+
 						<!-- End PRODUCT PRICE-->
 
 						<!--Variants-->
@@ -187,18 +167,25 @@
 							<form action="{{ object.get_add_cart_url }}" method="POST">
 								{% csrf_token %}
 
-								{% if object.brand_name.profile != request.user %}
+								{% if object.brand_name.profile == request.user %}
 									{% include 'snippets/product_edit.html' %}
 								{% endif %}
 									<!--ADD TO CART OPTIONS-->
 								{% if variant %}
 									{% include 'snippets/variant_add_cart.html' %}
 								{% else %}
-									{% if object.brand_name.valid_payment_method and object.price > 0 %}
 
+									{% if object.brand_name.valid_payment_method and object.price > 0 %}
+										{% if object.discount_price %}
+											<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
+											<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
+										{% else %}
+											<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
+										{% endif %}
 										<div class="clearfix" style="z-index: 1000;">
 											{% if object.stock == object.min_amount or object.stock > object.min_amount %}
-											<p>Availability: In stock</p>
+											<p>Availability:<span class="green-text"> In-stock : {{ object.stock }}</span></p>
+
 											{% else %}
 											<p style="color: red">Product Not in Stock</p>
 											{% endif %}
@@ -209,7 +196,6 @@
 											{% if object.max_amount %}
 											<p>maximum order: {{ object.max_amount }}</p>
 											{% endif %}
-
 											<!-- Product Quantity -->
 											<div class="product_quantity clearfix">
 												<span>Quantity: </span>

@@ -285,7 +285,7 @@ class WishListAdmin(admin.ModelAdmin):
 
 
 class ProductVariationAdmin(admin.ModelAdmin):
-    list_display = ('product', 'is_active','color', 'size', 'stock', 'image_tag')
+    list_display = ('product', 'slug','is_active','color',  'size', 'stock', 'image_tag')
 
 
 class SellerProductVariationAdmin(admin.ModelAdmin):

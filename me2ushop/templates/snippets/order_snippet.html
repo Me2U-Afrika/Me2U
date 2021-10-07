@@ -11,21 +11,34 @@
       <ul class="list-group mb-3 z-depth-1">
         <li class="list-group-item d-flex justify-content-between lh-condensed">
           <div>
-              {% if order.billing_country %}
-            <h6 class="my-0"><a href="{{ order_item.item.get_absolute_url }}">{{ order_item.item.title }} * {{ order_item.quantity }}</a></h6>
+              {% if order_item.variant %}
+            <h6 class="my-0"><a href="{{ order_item.item.get_absolute_url }}">{{ order_item.variant }} * {{ order_item.quantity }}</a></h6>
             {% else %}
               <h6 class="my-0"><a href="{{ order_item.item.get_absolute_url }}">{{ order_item.item.title|truncatechars:13 }} * {{ order_item.quantity }}</a></h6>
           {% endif %}
           </div>
-            {% if order_item.item.discount_price %}
-              <span class="text-muted">{{CURRENCY.symbol}}{{ order_item.get_total_discount_price|currency:CURRENCY.code }}</span>
-              <span class="text-muted"><a class="btn btn-green btn-sm my-0 p">
-                 - {{CURRENCY.symbol}}{{ order_item.get_total_saved|currency:CURRENCY.code }}
-                </a></span>
+            {% if order_item.variant %}
+                {% if order_item.variant.discount_price %}
+                      <span class="text-muted">{{CURRENCY.symbol}}{{ order_item.get_total_discount_price|currency:CURRENCY.code }}</span>
+                      <span class="text-muted"><a class="btn btn-green btn-sm my-0 p">
+                         - {{CURRENCY.symbol}}{{ order_item.get_total_saved|currency:CURRENCY.code }}
+                        </a></span>
 
+                    {% else %}
+                      <span class="text-muted">{{CURRENCY.symbol}}{{ order_item.get_total_price|currency:CURRENCY.code }}</span>
+                    {% endif %}
             {% else %}
-              <span class="text-muted">{{CURRENCY.symbol}}{{ order_item.get_total_price|currency:CURRENCY.code }}</span>
+                {% if order_item.item.discount_price %}
+                  <span class="text-muted">{{CURRENCY.symbol}}{{ order_item.get_total_discount_price|currency:CURRENCY.code }}</span>
+                  <span class="text-muted"><a class="btn btn-green btn-sm my-0 p">
+                     - {{CURRENCY.symbol}}{{ order_item.get_total_saved|currency:CURRENCY.code }}
+                    </a></span>
+
+                {% else %}
+                  <span class="text-muted">{{CURRENCY.symbol}}{{ order_item.get_total_price|currency:CURRENCY.code }}</span>
+                {% endif %}
             {% endif %}
+
             {% if not order.ordered %}
             <a style="color:orange" href="{% url 'me2ushop:remove_cart' order_item.item.slug %}">
                 Delete
