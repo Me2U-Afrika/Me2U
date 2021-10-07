@@ -2045,8 +2045,8 @@ def remove_single_item_cart(request, slug):
     except Exception:
         variant = get_object_or_404(ProductVariations, slug=slug)
         item = Product.active.get(slug=variant.product.slug)
-        print('variant_item to remove:', variant)
-        print('item:', item)
+        # print('variant_item to remove:', variant)
+        # print('item:', item)
 
     if request.user.is_authenticated:
         order_query_set = Order.objects.filter(
@@ -2328,7 +2328,7 @@ class Checkout_page(View):
             if self.request.user.is_authenticated:
 
                 order = Order.objects.get(user=self.request.user, ordered=False)
-                print('order:', order)
+                # print('order:', order)
                 # print('order.biling:', order.billing_address1)
 
                 order_items = order.total_items()
@@ -2368,18 +2368,18 @@ class Checkout_page(View):
 
             else:
                 print('Trying to checkout someone not signed in.')
-                print("cart_to_checkout:", self.request.cart)
+                # print("cart_to_checkout:", self.request.cart)
 
                 if self.request.cart:
-                    print("cart_to_checkout_id:", self.request.cart.id)
-                    print("cart_items:", self.request.cart.items.all())
+                    # print("cart_to_checkout_id:", self.request.cart.id)
+                    # print("cart_items:", self.request.cart.items.all())
 
                     cart = self.request.cart
 
                     order_items = cart.total_items()
 
                     if order_items > 0:
-                        print("total Ordered:", order_items)
+                        # print("total Ordered:", order_items)
 
                         context = {
                             'order': cart,
@@ -2412,14 +2412,14 @@ class Checkout_page(View):
                 order = Order.objects.get(user=self.request.user, ordered=False)
 
                 if form.is_valid():
-                    print(form.is_valid())
+                    # print(form.is_valid())
                     # if not order.billing_address1:
                     use_default_shipping = form.cleaned_data.get('use_default_shipping')
 
                     use_default_billing = form.cleaned_data.get('use_default_billing')
                     add_new_shipping = form.cleaned_data.get('add_new_shipping')
                     payment_option = form.cleaned_data.get('payment_option')
-                    print('payment_option:', payment_option)
+                    # print('payment_option:', payment_option)
 
                     if add_new_shipping:
                         payment_option = order.payment
