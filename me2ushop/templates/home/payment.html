@@ -174,6 +174,17 @@ label {
                     <div class="new-card-form center">
                         {% include 'snippets/flutterwave_snippet.html' %}
                     </div>
+                    {% currency_context %}
+                     <div class="new-card-form center">
+                          <ul class="standard_dropdown top_bar_dropdown ">
+                          <li>
+                            {% with dropdown_extra_class="collapsed-nav red-text" %}
+                              {% include "currencies/navbar/currency-chooser-bs3fa.html" %}
+                            {% endwith %}
+                          </li>
+                        </ul>
+                     </div>
+
                 {% endif %}
 
           </div>
