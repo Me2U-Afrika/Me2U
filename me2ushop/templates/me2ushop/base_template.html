@@ -506,6 +506,7 @@
 
     <!-- my scripts-->
     <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
 
 
 
@@ -555,8 +556,32 @@
             {% endif %}
         });
 
+        $(document).on('change', '#post-form-size', function (e){
+       e.preventDefault();
+       $.ajax({
+           type: 'POST',
+           url: "{% url 'me2ushop:color_ajax' %}",
+           data:{
+               productid:$('#productid').val(),
+               size:$('#size').val(),
+               csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+               action:'post'
+           },
+           data_type : 'html',
+           success: function (data){
+               console.log('success');
+               $('#appendHere').html(data.rendered_table);
+           },
+           error: function (data){
+               alert('something is a miss ' + data);
+           }
+       });
+    });
+
     </script>
     <!-- marketing modal-->
+
+
 
     <!-- Newsletter modal-->
     <script>

@@ -53,7 +53,11 @@
                     </tr>
                     {% for line in order.items.all %}
                     <tr>
+                        {% if line.variant %}
+                        <td>{{ line.variant }}</td>
+                        {% else %}
                         <td>{{ line.item.title }}</td>
+                        {% endif %}
                         <td>{{ line.quantity }}</td>
                         <td>${{ line.get_final_price|currency:"USD" }}</td>
 

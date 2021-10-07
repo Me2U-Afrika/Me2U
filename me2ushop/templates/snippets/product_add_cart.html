@@ -1,0 +1,32 @@
+{% if variant %}
+{% else %}
+  <div class="clearfix" style="z-index: 1000;">
+      {% if object.stock == object.min_amount or object.stock > object.min_amount %}
+      <p>Availability: In stock</p>
+      {% else %}
+      <p style="color: red">Product Not in Stock</p>
+      {% endif %}
+
+      {% if object.min_amount > 1 %}
+      <p>minimum order: {{ object.min_amount }}</p>
+      {% endif %}
+      {% if object.max_amount %}
+      <p>maximum order: {{ object.max_amount }}</p>
+      {% endif %}
+
+      <!-- Product Quantity -->
+      <div class="product_quantity clearfix">
+          <span>Quantity: </span>
+          <input id="quantity_input" name="quantity" type="number" pattern="[0-9]*" value="{{ object.min_amount }}">
+          <div class="quantity_buttons">
+              <div id="quantity_inc_button" class="quantity_inc quantity_control"><i class="fas fa-chevron-up"></i></div>
+              <div id="quantity_dec_button" class="quantity_dec quantity_control"><i class="fas fa-chevron-down"></i></div>
+          </div>
+      </div>
+  </div>
+
+  <div class="button_container">
+      <button type="submit" class="button cart_button" >Add to Cart</button>
+      <a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>
+  </div>
+{% endif %}

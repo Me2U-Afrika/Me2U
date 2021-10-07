@@ -116,6 +116,15 @@ function preparedDocument(){
 
     }
 
+    jQuery("#edit-option").click(slideToggleEditOptions);
+    jQuery("#hideable-edit-options").hide();
+
+
+    function slideToggleEditOptions(){
+        jQuery("#hideable-edit-options").slideToggle();
+
+    }
+
 
 //    PRODUCT TAGS
     jQuery("#tag_product").click(slideToggleAddTag);

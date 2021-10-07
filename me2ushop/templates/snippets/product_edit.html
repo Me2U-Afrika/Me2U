@@ -1,0 +1,24 @@
+<div class="card card-body" id="edit-option">
+    <a class="btn btn-outline-green">Edit Product</a>
+    <div class="card card-body" id="hideable-edit-options">
+    <a class="btn btn-outline-orange" href="{% url 'me2ushop:product-update' object.slug %}">UPDATE Product</a>
+    <a class="btn btn-outline-red" href="{% url 'me2ushop:product-update-additional-info' object.slug %}">ADD Detailed Information</a>
+    <a class="btn btn-outline-blue" href="{% url 'me2ushop:product_attributes_create' object.slug %}">ADD Variations</a>
+
+    {% if object.productimage_set.all %}
+    <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_images' object.slug %}">Images</a>
+    {% else %}
+    <a class="btn btn-outline-purple" href="{% url 'me2ushop:product_image_create' object.slug %}">Add Images</a>
+    {% endif %}
+
+    <a class="btn btn-outline-grey" href="{% url 'sellers:seller_products' object.brand_name.id %}">All My Products</a>
+    <a class="btn btn-outline-green " href="{% url 'me2ushop:product-create' object.brand_name.id  %}">ADD New Product</a>
+
+
+    {% if pending_item %}
+    <a class="btn text-muted disabled red-text" href="#">Delete</a>
+    {% else %}
+    <a class="btn" href="{% url 'me2ushop:product-delete' object.slug %}">Delete</a>
+    {% endif %}
+    </div>
+</div>

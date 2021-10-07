@@ -1,3 +1,5 @@
+{% load currency %}
+
 <div class="mt-3">
     <form method="post" action="?size_q=selectvariant" id="post-color">
 		{% csrf_token %}
@@ -6,16 +8,24 @@
 			<input type="hidden" name="product_slug" id="product_slug" value="{{ object.slug }}">
 
 			<ul class="color-option">
+				{% if variant.color %}
 				<li><span class="text-uppercase">Color:</span></li>
+				{% endif %}
 				<div class="row">
 					{% for rs in colors %}
 						<input class="ml-1" type="radio" {% if variant.id == rs.id %} checked {% endif %}
 							   name="variantid" id="variantid" value="{{ rs.id }}" onchange="this.form.submit();">
 
-						<li {% if variant.id == rs.id %} class="active" {% endif %}>
+						<li {% if variant.id == rs.id %} class="active ml-1" {% endif %}>
+							{% if rs.color %}
 							<span style="background-color: {{ rs.color.code }}; color:#D9D9D9; text-shadow: 1px 1px #000000; width: 65px;">
-								{{ CURRENCY.symbol }}{{rs.price}} {{ rs.color }}
+								{% if rs.price > 0 %} {{ CURRENCY.symbol }}{{rs.price}}{% endif %} {{ rs.color }}
 							</span>
+							{% else %}
+							<span style="color:#D9D9D9; text-shadow: 1px 1px #000000; width: 65px;">
+								{% if rs.price > 0 %} {{ CURRENCY.symbol }}{{rs.price}} {% endif %}
+							</span>
+							{% endif %}
 							<div>
 								<img src="{{ rs.image.image.thumbnail.url }}" height="65px" style="object-fit: contain">
 							</div>
