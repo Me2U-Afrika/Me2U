@@ -1,9 +1,21 @@
 {% load static %}
 {% load me2u_djangorave_tags %}
 {% load currency %}
+{% currency_context %}
 <form>
   <script src="https://checkout.flutterwave.com/v3.js"></script>
   <button type="button" id="stripeBtn" onClick="makePayment()">Pay Now</button>
+
+    <div>
+      <ul class="standard_dropdown top_bar_dropdown">
+      <li>
+        {% with dropdown_extra_class="collapsed-nav red-text" %}
+          {% include "currencies/navbar/currency-chooser-bs3fa.html" %}
+        {% endwith %}
+      </li>
+    </ul>
+    </div>
+
 </form>
 
 <script>
