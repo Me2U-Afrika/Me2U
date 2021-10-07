@@ -174,7 +174,8 @@ label {
                     <div class="new-card-form center">
                         {% include 'snippets/flutterwave_snippet.html' %}
                     </div>
-                    {% currency_context %}
+                {% endif %}
+              {% currency_context %}
                      <div class="new-card-form center">
                           <ul class="standard_dropdown top_bar_dropdown ">
                           <li>
@@ -184,8 +185,6 @@ label {
                           </li>
                         </ul>
                      </div>
-
-                {% endif %}
 
           </div>
                 <!--Call to action-->
