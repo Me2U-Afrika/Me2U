@@ -123,17 +123,33 @@ INSTALLED_APPS = [
 
 ]
 
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    }
+}
+
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
         'extraPlugins': ','.join(
-                    [
-                        'codesnippet',
-                        'youtube'
-                    ]
-                ),
+            [
+                'codesnippet',
+                'youtube'
+            ]
+        ),
     },
 
     'Special': {
@@ -378,8 +394,8 @@ RAVE_SANDBOX = False
 
 ACCOUNT_EMAIL_REQUIRED = True
 # ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = None
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 
 SOCIALACCOUNT_ADAPTER = 'users.adapter.MySocialAccountAdapter'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -443,23 +459,26 @@ else:
 # EMAIL_HOST = "smtp.gmail.com"
 # EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 # EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+
+# EMAIL_BACKEND = "sgbackend.SendGridBackend"
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 # SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 #
-# EMAIL_HOST = 'smtp.sendgrid.net'
-# EMAIL_HOST_USER = 'apikey'
-# EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-# EMAIL_PORT = 587
-MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_ACCESS_KEY', '')
-MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY', '')
-MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN', '')
-EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER', '')
-EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT', '')
-EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN', '')
-EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD', '')
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+
+# MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_ACCESS_KEY', '')
+# MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY', '')
+# MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN', '')
+# EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER', '')
+# EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT', '')
+# EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN', '')
+# EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD', '')
 
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
@@ -476,7 +495,6 @@ if DEBUG:
         pass
 
 print('Rave Sandbox:', RAVE_SANDBOX)
-
 
 # print(e.message)
 # Activate Django-Heroku.

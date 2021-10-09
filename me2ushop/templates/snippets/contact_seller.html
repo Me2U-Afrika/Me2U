@@ -1,0 +1,46 @@
+<!--Contact details-->
+<div class="well well-sm quick-contact" id="seller_contact" style="margin-top: 20px">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4">
+                    <h1 class="title-contact">
+                        {{ object.brand_name|truncatechars:12 }}</h1>
+                </div>
+
+                <div class="col-md-4 contact-email">
+                    <h2><a href="mailto:{{ object.brand_name.business_email }}" target="_blank"><i class="fas fa-envelope-square" style="color:#20639B;"> Email</i></a></h2>
+                    <h3>{{ object.brand_name.business_phone|truncatechars:6 }}</h3>
+                </div>
+                <div class="col-md-4">
+                    <div class="row contact row-first">
+                        {% if object.brand_name.facebook %}
+                        <div class="col-md-6">
+                            <a href="{{ object.brand_name.facebook }}" class="facebook" target="_blank"><i class="fa fa-facebook"></i>Facebook</a>
+                        </div>
+                        {% endif %}
+
+                        {% if object.brand_name.instagram %}
+                        <div class="col-md-6">
+                            <a href="{{ object.brand_name.instagram }}" class="instagram" target="_blank"><i class="fa fa-instagram"></i>instagram</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="row contact">
+
+                        <div class="col-md-6">
+                            <a href="{{ object.brand_name.get_frontstore_url }}" class="email" target="_blank"><i class="fa fa-globe"></i>Website</a>
+                        </div>
+
+                        {% if object.brand_name.twitter %}
+                        <div class="col-md-6">
+                            <a href="{{ object.brand_name.twitter }}" class="telegram" target="_blank"><i class="far fa-paper-plane"></i>Twitter</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End contact details-->
