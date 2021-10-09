@@ -109,18 +109,19 @@
 				<div class="col-xs-12 col-sm-6">
 					<form class="omb_loginForm" action="" autocomplete="off" method="POST">
 						{% csrf_token %}
-						<div class="input-group" id="div_id_email">
-							<span class="input-group-addon"><i class="fa fa-user"></i></span>
-							<input type="email" class="form-control" name="email" placeholder="email address" autocomplete="email" required id="id_email">
-						</div>
-						<br>
-
 						<div class="input-group" id="div_id_username">
 							<span class="input-group-addon"><i class="fa fa-user"></i></span>
 							<input type="text" class="form-control" name="username" placeholder="Username" autocomplete="username" minlength="1" maxlength="30" required id="id_username">
 						</div>
 
 						<br>
+						<div class="input-group" id="div_id_email">
+							<span class="input-group-addon"><i class="fa fa-user"></i></span>
+							<input type="email" class="form-control" name="email" placeholder="email address" autocomplete="email" required id="id_email">
+						</div>
+						<br>
+
+
 
 						<div class="input-group" id="div_id_password1">
 							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
