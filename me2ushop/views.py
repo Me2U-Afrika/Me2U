@@ -856,6 +856,8 @@ class ProductDetailedView(CachedDetailView):
         formset = CartAddFormSet()
 
         product = self.get_object()
+        # print('product subscriptions', product.brand_name.subscription_plan.payment_plan == 0)
+
         pending_item = product.orderitem_set.filter(status=10)
 
         product_reviews = ProductReview.approved.filter(product=product).order_by('-date')
