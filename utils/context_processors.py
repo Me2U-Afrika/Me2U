@@ -6,11 +6,14 @@ from categories.models import Department
 from marketing.models import *
 from me2ushop.models import ProductReview, Brand, WishList
 from stats import stats
+from .views import user_location
 
 timeout = 600  # 10 min
 
 
 def me2u(request):
+    user_loc = user_location(request)
+
     context = {
         'active_departments': Department.objects.filter(is_active=True),
         'reviews': ProductReview.objects.all().order_by('-date'),
@@ -19,7 +22,8 @@ def me2u(request):
         'LOGIN_URL': settings.LOGIN_URL,
         'meta_keywords': settings.META_KEYWORDS,
         'meta_description': settings.META_DESCRIPTION,
-        'request': request
+        'request': request,
+        'user_location': user_loc
 
     }
 
