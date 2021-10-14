@@ -151,6 +151,11 @@
                         <div class="top_bar_content ml-auto">
                             <div class="top_bar_menu">
                                 <ul class="standard_dropdown top_bar_dropdown">
+                                    {% if user_location %}
+                                    <li>
+                                        <a href="{% url 'marketing:faqs' %}">Deliver to: {{user_location}}</a>
+                                    </li>
+                                    {% endif %}
                                     <li>
                                         <a href="{% url 'me2ushop:home' %}">Home</a>
                                     </li>
