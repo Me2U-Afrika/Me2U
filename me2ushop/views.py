@@ -36,6 +36,7 @@ from .forms import *
 from .models import *
 import datetime
 from django.utils.timezone import utc
+from utils.views import CachedDetailView, user_location
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -757,7 +758,7 @@ class ProductListView(ListView):
 
 
 # ___PRODUCT DETAILED CREATE, UPDATE, DELETE VIEWS___
-from utils.views import CachedDetailView
+from utils.views import CachedDetailView, user_location
 from django.views.decorators.cache import never_cache
 
 

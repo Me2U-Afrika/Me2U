@@ -120,8 +120,10 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'payments',
+    'geoip2',
 
 ]
+GEOIP_PATH =os.path.join('geoip')
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {

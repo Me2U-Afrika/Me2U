@@ -62,3 +62,7 @@ def cart_middleware(get_response):
         return response
 
     return middleware
+
+
+
+
