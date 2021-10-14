@@ -135,7 +135,6 @@ python-utils==2.4.0
 python3-memcached==1.51
 python3-openid==3.2.0
 pytz==2020.1
-pywin32==301
 PyYAML==5.4.1
 rave-python==1.2.10
 redis==2.10.6
