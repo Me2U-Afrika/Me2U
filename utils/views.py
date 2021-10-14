@@ -39,11 +39,16 @@ def user_location(request):
         ip = request.META.get('REMOTE_ADDR')
 
     g = GeoIP2()
-    location = g.city(ip)
-    location_country = location['country_name']
-    location_city = location['city']
+    try:
+        location = g.city(ip)
+        location_country = location['country_name']
+        location_city = location['city']
+        print(location_city)
+        print(location_country)
+        return '{}-{}'.format(location_country, location_city)
 
-    print(location_city)
-    print(location_country)
+    except Exception as e:
+        print(e)
 
-    return '{}-{}'.format(location_country, location_city)
+
+
