@@ -139,9 +139,9 @@ class Brand(CreationModificationDateMixin):
     #                                      help_text='Select a monthly recurring subscription fees')
     subscription_reference = models.CharField(max_length=200, blank=True, null=True)
     subscription_status = models.BooleanField(default=True, blank=True, null=True)
-    shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
-                                       help_text='Is Your company able to ship or deliver your products once they '
-                                                 'buyers order online?')
+    # shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, default='Cd', blank=True, null=True,
+    #                                    help_text='Is Your company able to ship or deliver your products once they '
+    #                                              'buyers order online?')
     valid_payment_method = models.BooleanField(default=False, null=True, blank=True)
     is_active = models.BooleanField(editable=False, default=True)
     is_featured = models.BooleanField(default=False, blank=True, null=True)
@@ -250,8 +250,8 @@ class Product(CreationModificationDateMixin):
                                                               'your product. Buyers mostly buy from'
                                                               ' well detailed products and '
                                                               'specifications')
-    shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
-                                       help_text='Is Your company able to ship or deliver your products once they '
+    shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, default='Cd', blank=True, null=True,
+                                       help_text='Is Your company able to ship or deliver this product once they '
                                                  'buyers order online?')
     meta_keywords = models.CharField("Meta Keywords",
                                      max_length=100,
