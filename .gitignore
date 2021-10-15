@@ -15,7 +15,6 @@ latest.dump
 .vs
 .vscode
 media/
-geoip/
 nginx/
 email_test.py/
 staticfiles/
