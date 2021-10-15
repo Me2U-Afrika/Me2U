@@ -42,24 +42,26 @@ def user_location(request):
         if is_routable:
             print('ip is routable')
             print(client_ip)
+            import geoip2.webservice
+
+            # to "geolite.info"
+            try:
+                client = geoip2.webservice.Client(settings.GEO_ACCOUNT_ID, settings.GEO_LICENCE_KEY,
+                                                  host='geolite.info')
+                response = client.city(client_ip)
+                country = response.country.name
+                print('response city:', response)
+                print('country:', country)
+
+                return country
+            except Exception as e:
+                print("Error IP: ", e)
         else:
             print(client_ip)
             print('it is private')
 
     # Order of precedence is (Public, Private, Loopback, None)
-    import geoip2.webservice
 
-    # to "geolite.info"
-    try:
-        client = geoip2.webservice.Client(settings.GEO_ACCOUNT_ID, settings.GEO_LICENCE_KEY, host='geolite.info')
-        response = client.city('203.0.113.0')
-        country = response.country.name
-        print('response city:', response)
-        print('country:', country)
-
-        return country
-    except Exception as e:
-        print("Error IP: ", e)
 
     # x_forwarded_for = request.META.get('HTTP_X_FORWARED_FOR')
     # ip = '203.0.113.0'
