@@ -110,6 +110,8 @@ python manage.py makemigrations users --empty
 
 from django.db import migrations
 
+
+
 def migrate_seller_profile_user_relations(apps, schema_editor):
     SellerProfile = apps.get_model('users', 'SellerProfile')
     Profile = apps.get_model('users', 'Profile')
