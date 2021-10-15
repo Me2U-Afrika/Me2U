@@ -15,7 +15,11 @@ latest.dump
 .vs
 .vscode
 media/
+geoip/
+GeoLite2-City.mmdb
+GeoLite2-Country.mmdb
 nginx/
+email_test.py
 staticfiles/
 discrete.py/
 #bundles/

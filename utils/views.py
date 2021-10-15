@@ -4,6 +4,8 @@ from django.views.generic import DetailView
 
 
 # Create your views here.
+from Me2U import settings
+
 
 class CachedDetailView(DetailView):
     def get_queryset(self):
@@ -31,24 +33,54 @@ from django.contrib.gis.geoip2 import GeoIP2
 
 
 def user_location(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARED_FOR')
-
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
+    from ipware import get_client_ip
+    client_ip, is_routable = get_client_ip(request)
+    if client_ip is None:
+        print('Unable to get the client\'s IP address')
     else:
-        ip = request.META.get('REMOTE_ADDR')
+        # We got the client's IP address
+        if is_routable:
+            print('ip is routable')
+            print(client_ip)
+        else:
+            print(client_ip)
+            print('it is private')
 
-    g = GeoIP2()
+    # Order of precedence is (Public, Private, Loopback, None)
+    import geoip2.webservice
+
+    # to "geolite.info"
     try:
-        location = g.city(ip)
-        location_country = location['country_name']
-        location_city = location['city']
-        print(location_city)
-        print(location_country)
-        return '{}-{}'.format(location_country, location_city)
+        client = geoip2.webservice.Client(settings.GEO_ACCOUNT_ID, settings.GEO_LICENCE_KEY, host='geolite.info')
+        response = client.city('203.0.113.0')
+        country = response.country.name
+        print('response city:', response)
+        print('country:', country)
 
+        return country
     except Exception as e:
-        print(e)
+        print("Error IP: ", e)
+
+    # x_forwarded_for = request.META.get('HTTP_X_FORWARED_FOR')
+    # ip = '203.0.113.0'
+
+    # if x_forwarded_for:
+    #     ip = x_forwarded_for.split(',')[0]
+    # else:
+    #     ip = request.META.get('REMOTE_ADDR')
+
+    # g = GeoIP2()
+    # try:
+    #     location = g.city(ip)
+    #     location_country = location['country_name']
+    #     location_city = location['city']
+    #     print(location_city)
+    #     print(location_country)
+    #     return '{}-{}'.format(location_country, location_city)
+    #
+    # except Exception as e:
+    #     print(e)
+
 
 
 
