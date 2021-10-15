@@ -118,6 +118,15 @@ class ProductAttributeCreate(forms.ModelForm):
         self.fields['product'].queryset = queryset_item
 
 
+class DelivertoForm(forms.Form):
+    # city = forms.CharField(required=False)
+    country = CountryField(blank_label='(select country)').formfield(
+        required=False,
+        widget=CountrySelectWidget(attrs={
+            'class': 'custom-select d-block w-50'
+        }))
+
+
 class CheckoutForm(forms.Form):
     name = forms.CharField(required=False)
     email = forms.EmailField(required=False)

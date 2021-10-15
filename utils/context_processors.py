@@ -4,6 +4,7 @@ from django.conf import settings
 
 from categories.models import Department
 from marketing.models import *
+from me2ushop.forms import DelivertoForm
 from me2ushop.models import ProductReview, Brand, WishList
 from stats import stats
 from .views import user_location
@@ -12,9 +13,17 @@ timeout = 600  # 10 min
 
 
 def me2u(request):
+    context = {}
     user_loc = user_location(request)
+    print('user location:', user_loc)
+    if user_loc:
+        context['country_code'] = user_loc['country_code']
+        context['country'] = user_loc['country']
 
-    context = {
+    country_form = DelivertoForm()
+    context.update({'country_form': country_form})
+
+    context.update({
         'active_departments': Department.objects.filter(is_active=True),
         'reviews': ProductReview.objects.all().order_by('-date'),
         'brands': Brand.objects.filter(is_active=True)[:5],
@@ -25,7 +34,7 @@ def me2u(request):
         'request': request,
         'user_location': user_loc
 
-    }
+    })
 
     if request.user.is_authenticated and request.user.is_seller:
         try:
