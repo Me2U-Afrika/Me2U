@@ -52,9 +52,9 @@ def user_location(request):
                                                   host='geolite.info')
                 response = client.city(client_ip)
                 country = response.country.name
-                # print('response city:', response)
+                print('response city:', response)
                 context.update({'country': country,
-                                'country_code': response.country.code})
+                                'country_code': response.country.iso_code})
                 print('country:', country)
 
             except Exception as e:
