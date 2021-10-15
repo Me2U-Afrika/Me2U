@@ -490,6 +490,9 @@ PRODUCTS_PER_ROW = 12
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
+GEO_ACCOUNT_ID = os.environ.get("GEO_ACCOUNT_ID")
+GEO_LICENCE_KEY = os.environ.get("GEO_LICENCE_KEY")
+
 if DEBUG:
     try:
         from settings_local import *
