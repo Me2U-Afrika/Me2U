@@ -123,7 +123,7 @@ INSTALLED_APPS = [
     'geoip2',
 
 ]
-GEOIP_PATH =os.path.join('geoip')
+
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
@@ -489,6 +489,10 @@ PRODUCTS_PER_PAGE = 12
 PRODUCTS_PER_ROW = 12
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+GEOIP_PATH = os.environ['GEOIP_GEOLITE2_PATH']
+GEOIP_CITY = os.environ['GEOIP_GEOLITE2_CITY_FILENAME']
+GEOIP_COUNTRY = os.environ['GEOIP_GEOLITE2_COUNTRY_FILENAME']
 
 GEO_ACCOUNT_ID = os.environ.get("GEO_ACCOUNT_ID")
 GEO_LICENCE_KEY = os.environ.get("GEO_LICENCE_KEY")
