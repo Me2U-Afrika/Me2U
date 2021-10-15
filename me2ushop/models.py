@@ -78,7 +78,7 @@ CONDITION_CHOICES = {
 }
 SHIPPING_CAPABILITY = (
     ('Cd', 'Can Ship Abroad and Deliver Locally'),
-    ('Cl', 'Can Deliver Locally'),
+    ('Cl', 'Can Deliver Locally(Within your country)'),
     ('Co', 'Not Able to Deliver')
 )
 from django_countries import Countries
