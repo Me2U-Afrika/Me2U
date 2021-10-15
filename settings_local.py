@@ -61,4 +61,4 @@ MIDDLEWARE = [
 ]
 RAVE_SANDBOX = True
 
-GEOIP_PATH = os.path.join('geoip')
+GEOIP_PATH = os.path.join('media/geoip')
