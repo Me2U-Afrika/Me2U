@@ -145,17 +145,27 @@
         <div class="nav_bar top_bar navbar-fixed-top">
             <div class="container">
                 <div class="row">
-                    <div class="col d-flex flex-row">
+                    <div class="col d-flex flex-row justify-content-between">
                         <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/phone.png" alt=""></div><strong>+250 785 011 413</strong> </div>
                         <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">Email</a></div>
                         <div class="top_bar_content ml-auto">
                             <div class="top_bar_menu">
                                 <ul class="standard_dropdown top_bar_dropdown">
-                                    {% if user_location %}
+                                    {% if country %}
                                     <li>
-                                        <a href="{% url 'marketing:faqs' %}">Deliver to: {{user_location}}</a>
+                                        <a href="#">Deliver to: {{country}}</a>
                                     </li>
                                     {% endif %}
+                                    {#% load countries %#}
+                                        {#% get_countries as countries %#}
+                                        <select>
+                                        {#% for country in countries %#}
+<!--                                            <option value="{{ country.code }}">{{ country.name }}</option>-->
+                                        {#% endfor %#}
+                                        </select>
+<!--                                     <li>-->
+<!--                                        <a href="#">{{country_form}}</a>-->
+<!--                                    </li>-->
                                     <li>
                                         <a href="{% url 'me2ushop:home' %}">Home</a>
                                     </li>

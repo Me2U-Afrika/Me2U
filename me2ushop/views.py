@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import (LoginRequiredMixin, UserPassesTestMixin)
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models as django_models
+from django.db.models import Q
 from django.dispatch import receiver
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
@@ -506,8 +507,21 @@ class HomeViewTemplateView(TemplateView):
         super(HomeViewTemplateView, self).get_context_data(**kwargs)
 
         context = {}
+        country = None
+        user_loc = user_location(self.request)
+        if user_loc:
+            country = user_loc['country']
+            print('country:', country)
 
-        active_products = Product.active.all().select_related()
+        if country:
+            print('we got country:', country)
+            active_products = Product.active.filter(
+                (Q(brand_name__country__iexact=country) and (Q(shipping_status__iexact='Cl') | Q(shipping_status__iexact='Co'))) |
+                Q(shipping_status__iexact='Cd')).distinct()
+            print('active produce:', active_products)
+        else:
+            active_products = Product.active.filter(shipping_status='Cd').select_related()
+
         RAVE_SANDBOX = getattr(settings, "RAVE_SANDBOX", True)
         print('sandbox', RAVE_SANDBOX)
 

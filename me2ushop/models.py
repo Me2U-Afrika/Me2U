@@ -79,7 +79,7 @@ CONDITION_CHOICES = {
 SHIPPING_CAPABILITY = (
     ('Cd', 'Can Ship Abroad and Deliver Locally'),
     ('Cl', 'Can Deliver Locally'),
-    ('CO', 'Not Able to Deliver')
+    ('Co', 'Not Able to Deliver')
 )
 from django_countries import Countries
 
@@ -244,11 +244,15 @@ class Product(CreationModificationDateMixin):
     is_bestrated = models.BooleanField(default=False)
 
     description = RichTextField(max_length=400, config_name='Special')
+
     additional_information = RichTextUploadingField(blank=True, null=True,
                                                     help_text='Provide additional information about '
                                                               'your product. Buyers mostly buy from'
                                                               ' well detailed products and '
                                                               'specifications')
+    shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
+                                       help_text='Is Your company able to ship or deliver your products once they '
+                                                 'buyers order online?')
     meta_keywords = models.CharField("Meta Keywords",
                                      max_length=100,
                                      help_text='Comma-delimited set of SEO keywords that summarize the type of '
