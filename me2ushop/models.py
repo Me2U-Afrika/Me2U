@@ -437,6 +437,9 @@ class Product(CreationModificationDateMixin):
             self.slug = self._generate_slug()
             self.sku = self._generate_sku()
 
+        if self.shipping_status == '':
+            self.shipping_status = 'Cd'
+
         self.in_stock = True
 
         if self.stock < self.min_amount:
