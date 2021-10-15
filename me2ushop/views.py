@@ -516,10 +516,9 @@ class HomeViewTemplateView(TemplateView):
         if country:
             print('we got country:', country)
             active_products = Product.active.filter(
-                (Q(brand_name__country__iexact=country) and (Q(shipping_status__iexact='Cl') | Q(shipping_status__iexact='Co'))) |
+                (Q(brand_name__country__iexact=country) & (Q(shipping_status__iexact='Cl') | Q(shipping_status__iexact='Co'))) |
                 Q(shipping_status__iexact='Cd')).distinct()
             print('active produce:', active_products)
-
         else:
             active_products = Product.active.filter(shipping_status='Cd').select_related()
 
