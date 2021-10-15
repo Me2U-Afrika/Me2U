@@ -16,6 +16,7 @@ latest.dump
 .vscode
 media/
 nginx/
+email_test.py/
 staticfiles/
 discrete.py/
 #bundles/

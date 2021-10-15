@@ -78,8 +78,8 @@ CONDITION_CHOICES = {
 }
 SHIPPING_CAPABILITY = (
     ('Cd', 'Can Ship Abroad and Deliver Locally'),
-    ('Cl', 'Can Deliver Locally'),
-    ('CO', 'Not Able to Deliver')
+    ('Cl', 'Can Deliver Locally(Within your country)'),
+    ('Co', 'Not Able to Deliver')
 )
 from django_countries import Countries
 
@@ -139,9 +139,9 @@ class Brand(CreationModificationDateMixin):
     #                                      help_text='Select a monthly recurring subscription fees')
     subscription_reference = models.CharField(max_length=200, blank=True, null=True)
     subscription_status = models.BooleanField(default=True, blank=True, null=True)
-    shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, blank=True, null=True,
-                                       help_text='Is Your company able to ship or deliver your products once they '
-                                                 'buyers order online?')
+    # shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, default='Cd', blank=True, null=True,
+    #                                    help_text='Is Your company able to ship or deliver your products once they '
+    #                                              'buyers order online?')
     valid_payment_method = models.BooleanField(default=False, null=True, blank=True)
     is_active = models.BooleanField(editable=False, default=True)
     is_featured = models.BooleanField(default=False, blank=True, null=True)
@@ -244,11 +244,15 @@ class Product(CreationModificationDateMixin):
     is_bestrated = models.BooleanField(default=False)
 
     description = RichTextField(max_length=400, config_name='Special')
+
     additional_information = RichTextUploadingField(blank=True, null=True,
                                                     help_text='Provide additional information about '
                                                               'your product. Buyers mostly buy from'
                                                               ' well detailed products and '
                                                               'specifications')
+    shipping_status = models.CharField(choices=SHIPPING_CAPABILITY, max_length=2, default='Cd', blank=True, null=True,
+                                       help_text='Is Your company able to ship or deliver this product once they '
+                                                 'buyers order online?')
     meta_keywords = models.CharField("Meta Keywords",
                                      max_length=100,
                                      help_text='Comma-delimited set of SEO keywords that summarize the type of '
@@ -432,6 +436,9 @@ class Product(CreationModificationDateMixin):
         if not self.pk:
             self.slug = self._generate_slug()
             self.sku = self._generate_sku()
+
+        if self.shipping_status == '':
+            self.shipping_status = 'Cd'
 
         self.in_stock = True
 
