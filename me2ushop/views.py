@@ -675,13 +675,15 @@ class HomeViewTemplateView(TemplateView):
                     # print('In_country_deals:', country_deals)
                     if country_deals:
                         for deal in country_deals:
-                            if len(deals) < 10:
+                            if len(deals) < 5:
                                 deals.append(deal)
-                    if len(deals) < 10:
+                    if len(deals) < 5:
                         if active_products:
                             for product in active_products:
                                 if product.discount_price:
-                                    deal, created = Banner.objects.get_or_create(product=product, is_deal=True)
+                                    deal, created = Banner.objects.get_or_create(product=product)
+                                    deal.is_deal = True
+                                    deal.save()
                                     # print('deal created:', created)
                                     deals.append(deal)
                 else:
@@ -690,13 +692,15 @@ class HomeViewTemplateView(TemplateView):
                     # print('in deals, no country')
                     if no_country_deals:
                         for deal in no_country_deals:
-                            if len(deals) < 10:
+                            if len(deals) < 5:
                                 deals.append(deal)
-                    if len(deals) < 10:
+                    if len(deals) < 5:
                         if active_products:
                             for product in active_products:
                                 if product.discount_price:
-                                    deal, created = Banner.objects.get_or_create(product=product, is_deal=True)
+                                    deal, created = Banner.objects.get_or_create(product=product)
+                                    deal.is_deal = True
+                                    deal.save()
                                     # print('deal created:', created)
                                     deals.append(deal)
                 context.update({'deals': deals})
