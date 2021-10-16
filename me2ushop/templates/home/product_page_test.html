@@ -174,8 +174,7 @@
 								{% if variant %}
 									{% include 'snippets/variant_add_cart.html' %}
 								{% else %}
-
-									{% if object.brand_name.valid_payment_method and object.price > 0 %}
+									{% if object.brand_name.valid_payment_method and object.stock >= object.min_amount and object.price > 0 %}
 										{% if object.discount_price %}
 											<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
 											<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
@@ -183,7 +182,7 @@
 											<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
 										{% endif %}
 										<div class="clearfix" style="z-index: 1000;">
-											{% if object.stock == object.min_amount or object.stock > object.min_amount %}
+											{% if object.stock >= object.min_amount %}
 											<p>Availability:<span class="green-text"> In-stock : {{ object.stock }}</span></p>
 
 											{% else %}
@@ -226,8 +225,11 @@
 						<!--SELLER INFO-->
 						{% if object.brand_name %}
 							<div class="mt-2">
+								{% if request.user.is_authenticated %}
 								<button class="button cart_button quick-contact" id="contact_seller"><i class="fas fa-phone-square">Send Inquiry</i></button>
-
+								{% else %}
+								<a href="{% url LOGIN_URL %}?next={{ request.path }}" class="button cart_button quick-contact"><i class="fas fa-phone-square">Send Inquiry</i></a>
+								{% endif %}
 								<a href="{{ object.brand_name.get_frontstore_url }}" role="button" class="button cart_button quick-contact"><i class="fas fa-store"> Visit Store</i></a>
 							</div>
 						{% endif %}
@@ -251,48 +253,10 @@
 			<br>
 
 			<!--Contact details-->
-			{% if object.brand_name.subscription_plan.payment_plan > 0 %}
+			{% if object.brand_name.subscription_plan.payment_plan >= 0 %}
 				{% include 'snippets/contact_seller.html' %}
 			{% else %}
-				<div class="well well-sm quick-contact" id="seller_contact" style="margin-top: 20px">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="row">
-							<div class="col-md-4">
-								<h1 class="title-contact">
-									{{ object.brand_name|truncatechars:12 }}</h1>
-							</div>
-
-							<div class="col-md-4 contact-email">
-								<h2><a href="mailto:me2uafrika@gmail.com" target="_blank"><i class="fas fa-envelope-square" style="color:#20639B;"> Email</i></a></h2>
-								<h3>+250785011413</h3>
-							</div>
-							<div class="col-md-4">
-								<div class="row contact row-first">
-									<div class="col-md-6">
-										<a href="https://www.facebook.com/Me2UAfrika" class="facebook" target="_blank"><i class="fa fa-facebook"></i>Facebook</a>
-									</div>
-
-									<div class="col-md-6">
-										<a href="https://www.instagram.com/me2uafrika" class="instagram" target="_blank"><i class="fa fa-instagram"></i>instagram</a>
-									</div>
-
-								</div>
-								<div class="row contact">
-
-									<div class="col-md-6">
-										<a href="{{ object.brand_name.get_frontstore_url }}" class="email" target="_blank"><i class="fa fa-globe"></i>Website</a>
-									</div>
-
-									<div class="col-md-6">
-										<a href="https://twitter.com/me2uafrika" class="telegram" target="_blank"><i class="far fa-paper-plane"></i>Twitter</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+				{% include 'snippets/contact_default.html' %}
 			{% endif %}
 			<!--End contact details-->
 

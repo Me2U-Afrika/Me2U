@@ -57,11 +57,11 @@ def me2u(request):
         pass
 
     banners = Banner.objects.filter(active=True)
-    try:
-        context.update({'trends': banners.filter(is_trending=True).select_related('product'),
-                        'deals': banners.filter(is_deal=True).select_related('product')})
-    except:
-        pass
+    # try:
+    #     context.update({'trends': banners.filter(is_trending=True).select_related('product'),
+    #                     'deals': banners.filter(is_deal=True).select_related('product')})
+    # except:
+    #     pass
     return context
 
 
