@@ -146,26 +146,18 @@
             <div class="container">
                 <div class="row">
                     <div class="col d-flex flex-row justify-content-between">
-                        <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/phone.png" alt=""></div><strong>+250 785 011 413</strong> </div>
+                        <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/phone.png" alt=""></div><strong><a href="tel:+250785011413">
+                       Order</a></strong> </div>
                         <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">Email</a></div>
+                           {% if country %}
+                        <div class="top_bar_contact_item"><div class="top_bar_icon"></div>
+                            <a><i class="fas fa-map-marker-alt"></i> {{country|truncatechars:13}}</a>
+                        </div>
+                        {% endif %}
                         <div class="top_bar_content ml-auto">
                             <div class="top_bar_menu">
                                 <ul class="standard_dropdown top_bar_dropdown">
-                                    {% if country %}
-                                    <li>
-                                        <a href="#">Deliver to: {{country}}</a>
-                                    </li>
-                                    {% endif %}
-                                    {#% load countries %#}
-                                        {#% get_countries as countries %#}
-                                        <select>
-                                        {#% for country in countries %#}
-<!--                                            <option value="{{ country.code }}">{{ country.name }}</option>-->
-                                        {#% endfor %#}
-                                        </select>
-<!--                                     <li>-->
-<!--                                        <a href="#">{{country_form}}</a>-->
-<!--                                    </li>-->
+
                                     <li>
                                         <a href="{% url 'me2ushop:home' %}">Home</a>
                                     </li>
@@ -177,10 +169,6 @@
                                             <li><a href="#">French</a></li>
                                         </ul>
                                     </li>
-                                    <li>
-                                        <a href="{% url 'marketing:faqs' %}">FAQs</a>
-                                    </li>
-
                                         {% with dropdown_extra_class="collapsed-nav red-text" %}
                                             {% include "currencies/navbar/currency-chooser-bs3fa.html" %}
                                         {% endwith %}
@@ -218,7 +206,7 @@
                             <div class="top_bar_user">
                                 {% if request.user.is_authenticated %}
                                 <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
-                                <div><a href="{% url 'users:profile' %}">Karibu {{ request.user.username|title|truncatechars:12 }}</a></div>
+                                <div><a href="{% url 'users:profile' %}">Karibu {{ request.user.username|title|truncatechars:7 }}</a></div>
                                 <div><a href="{% url 'account_logout' %}">LogOut</a></div>
                                 {% else %}
                                 <div class="user_icon"><img src="{{ STATIC_URL }}images/user.svg" alt=""></div>
