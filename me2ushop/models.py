@@ -219,6 +219,7 @@ class Product(CreationModificationDateMixin):
     brand_name = models.ForeignKey('Brand', on_delete=models.SET_NULL, blank=True, null=True,
                                    help_text='Your store name')
     stock = models.IntegerField(default=1)
+    view_count = models.IntegerField(default=0, editable=False)
     sku = models.CharField(max_length=120, default='',
                            editable=False, )
     in_stock = models.BooleanField(default=True, editable=False)
@@ -288,7 +289,7 @@ class Product(CreationModificationDateMixin):
 
     class Meta:
         db_table = 'Products'
-        ordering = ['-created']
+        ordering = ['-modified']
         verbose_name_plural = 'Products'
 
     def get_category(self):
