@@ -17,16 +17,16 @@ now = datetime.datetime.now().replace(tzinfo=utc)
 
 class MarketingQueryset(models.query.QuerySet):
     def active(self):
-        return self.filter(active=True)
+        return self.filter(active=True, product__is_active=True)
 
     def bestselling(self):
-        return self.filter(bestselling=True)
+        return self.active().filter(bestselling=True)
 
     def featured(self):
-        return self.filter(featured=True).filter(end_date__gte=now)
+        return self.active().filter(featured=True).filter(end_date__gte=now)
 
     def deals(self):
-        return self.filter(active=True).filter(is_deal=True)
+        return self.active().filter(active=True).filter(is_deal=True)
 
 
 class MarketingManager(models.Manager):
@@ -131,11 +131,14 @@ class SliderImages(CreationModificationDateMixin):
 
 
 class Banner(CreationModificationDateMixin):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     is_deal = models.BooleanField(default=False)
     bestselling = models.BooleanField(default=False)
+    is_bestseller = models.BooleanField(default=False)
+    is_featured = models.BooleanField(default=False)
+    is_bestrated = models.BooleanField(default=False)
     is_trending = models.BooleanField(default=False)
     top_display = models.BooleanField(default=False)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     banner_header = models.CharField(max_length=120, null=True, blank=True)
     banner_text = models.CharField(max_length=200, null=True, blank=True)
     start_date = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
@@ -194,6 +197,11 @@ class Banner(CreationModificationDateMixin):
 
             elif timediff.total_seconds() > 0:
                 self.active = True
+        if self.product.shipping_status == 'Cd':
+            self.active = True
+        else:
+            self.active = False
+
 
         super().save(*args, **kwargs)
 

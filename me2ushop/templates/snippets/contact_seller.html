@@ -10,7 +10,9 @@
 
                 <div class="col-md-4 contact-email">
                     <h2><a href="mailto:{{ object.brand_name.business_email }}" target="_blank"><i class="fas fa-envelope-square" style="color:#20639B;"> Email</i></a></h2>
-                    <h3>{{ object.brand_name.business_phone|truncatechars:6 }}</h3>
+                    <h3><a href="tel:{{object.brand_name.business_phone}}" style="color:white">
+                        <i class="fas fa-phone-square"></i>Call US</a>
+                    </h3>
                 </div>
                 <div class="col-md-4">
                     <div class="row contact row-first">

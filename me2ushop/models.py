@@ -243,6 +243,8 @@ class Product(CreationModificationDateMixin):
     is_featured = models.BooleanField(default=False)
     is_bestrated = models.BooleanField(default=False)
 
+
+
     description = RichTextField(max_length=400, config_name='Special')
 
     additional_information = RichTextUploadingField(blank=True, null=True,

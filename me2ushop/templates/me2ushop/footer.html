@@ -226,9 +226,22 @@
 
                   </p>
               </div>
-
-            <div>
-
+            <div class="col-lg-6 col-md-12 col-12 mb-5 d-block">
+                {% if country %}
+                <div>
+                    <a><i class="fas fa-map-marker-alt"></i> Deliver to : {{country}}</a>
+                </div>
+                {% endif %}
+                {#% load countries %#}
+                    {#% get_countries as countries %#}
+                    <select>
+                    {#% for country in countries %#}
+                        <option value="{{ country.code }}">{{ country.name }}</option>
+                    {#% endfor %#}
+                    </select>
+<!--                 <li>-->
+<!--                    <a href="#">{{country_form}}</a>-->
+<!--                </li>-->
             </div>
 
         </div>
