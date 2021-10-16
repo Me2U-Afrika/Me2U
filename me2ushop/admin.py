@@ -110,7 +110,7 @@ class StatusCodeAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     # form = ProductAdminForm()
     list_display = (
-        'title', 'price', 'brand_name', 'is_active', 'in_stock', 'stock', 'sku', 'created',
+        'title', 'price', 'brand_name', 'is_active', 'in_stock', 'stock', 'sku', 'view_count',
         'modified', "image_tag")
     list_display_links = ('title',)
     list_per_page = 50
