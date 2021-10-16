@@ -243,8 +243,6 @@ class Product(CreationModificationDateMixin):
     is_featured = models.BooleanField(default=False)
     is_bestrated = models.BooleanField(default=False)
 
-
-
     description = RichTextField(max_length=400, config_name='Special')
 
     additional_information = RichTextUploadingField(blank=True, null=True,
@@ -469,6 +467,11 @@ class Product(CreationModificationDateMixin):
         if self.discount_price and self.price < 1 or self.discount_price == self.price:
             self.price = self.discount_price
             self.discount_price = None
+
+        if not self.is_active:
+            if self.banner_set.all():
+                for banner in self.banner_set.all():
+                    banner.save()
 
         cache.delete('product-%s' % self.slug)
 

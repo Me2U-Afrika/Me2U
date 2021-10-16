@@ -197,11 +197,10 @@ class Banner(CreationModificationDateMixin):
 
             elif timediff.total_seconds() > 0:
                 self.active = True
-        if self.product.shipping_status == 'Cd':
+        if self.product.is_active == True:
             self.active = True
         else:
             self.active = False
-
 
         super().save(*args, **kwargs)
 
