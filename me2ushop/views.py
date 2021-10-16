@@ -516,14 +516,14 @@ class HomeViewTemplateView(TemplateView):
             country_code = user_loc['country_code']
             # print('country:', country)
         if country:
-            print('we got country:', country)
+            # print('we got country:', country)
             active_products = Product.active.filter(
                 (Q(brand_name__country__iexact=country_code) & (
                         Q(shipping_status__iexact='Cl') |
                         Q(shipping_status__iexact='Co') |
                         Q(shipping_status__iexact='Cd'))) |
                 Q(shipping_status__iexact='Cd')).distinct()
-            print('active produce:', active_products)
+            # print('active produce:', active_products)
         else:
             active_products = Product.active.filter(shipping_status='Cd').select_related()
 
@@ -532,6 +532,7 @@ class HomeViewTemplateView(TemplateView):
 
         # TOP BANNER
         try:
+            top_banner_text = "Sourcing African Goods and Services Made Easier."
             current_top_banners = banners.filter(top_display=True)
 
             # print('current', current_top_banners)
@@ -542,44 +543,45 @@ class HomeViewTemplateView(TemplateView):
                         (Q(product__brand_name__country__iexact=country_code) &
                          (Q(product__shipping_status__iexact='Cl') |
                           Q(product__shipping_status__iexact='Co') |
-                          Q(product__shipping_status__iexact='Cd')))).filter(top_display=True).exclude(is_deal=True
-                        ).exclude(product__is_featured=True).distinct()
-                    print('universal current top banners based on country:', universal_top_banners)
+                          Q(product__shipping_status__iexact='Cd')))).filter(top_display=True).distinct()
+                    # print('universal current top banners based on country:', universal_top_banners)
                 else:
                     universal_top_banners = banners.filter(
                         Q(product__shipping_status__iexact='Cd')
-                        ).filter(top_display=True
-                        ).exclude(is_deal=True
-                        ).exclude(product__is_featured=True).distinct()
+                        ).filter(top_display=True).distinct()
 
-                    print('universal current top banners without country:', universal_top_banners)
+                    # print('universal current top banners without country:', universal_top_banners)
 
                 if universal_top_banners:
                     if universal_top_banners:
                         top_banner = universal_top_banners[0]
-                        print('top_banner:', top_banner)
+                        # print('top_banner:', top_banner)
+                        if not top_banner.banner_text:
+                            top_banner.banner_text = top_banner_text
+                            top_banner.save()
                         context.update({'top_banner': top_banner})
                 else:
-                    print('no universal top banners')
+                    # print('no universal top banners')
                     if country:
                         universal_products = active_products.filter(brand_name__country=country_code).select_related()
                         print('products based on country:', universal_products)
 
                         if not universal_products:
-                            print('No universal products based on country')
+                            # print('No universal products based on country')
                             universal_products = active_products.filter(shipping_status='Cd').select_related()
                     else:
                         universal_products = active_products.filter(shipping_status='Cd').select_related()
 
-                    print('universal_products', universal_products)
+                    # print('universal_products', universal_products)
                     if universal_products:
                         top_product = universal_products[0]
-                        print('top product country', top_product.brand_name.country)
+                        # print('top product country', top_product.brand_name.country)
                         top_banner, created = Banner.objects.get_or_create(product=top_product)
                         top_banner.top_display = True
+                        if not top_banner.banner_text:
+                            top_banner.banner_text = top_banner_text
+                            top_banner.save()
                         top_banner.save()
-                        if created:
-                            print('top_banner created:', created)
                         context.update({'top_banner': top_banner})
             else:
                 # print('no current top banners')

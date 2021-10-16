@@ -42,8 +42,8 @@ def user_location(request):
     else:
         # We got the client's IP address
         if is_routable:
-            print('ip is routable')
-            print(client_ip)
+            # print('ip is routable')
+            # print(client_ip)
             import geoip2.webservice
 
             # to "geolite.info"
@@ -52,16 +52,16 @@ def user_location(request):
                                                   host='geolite.info')
                 response = client.city(client_ip)
                 country = response.country.name
-                print('response city:', response)
+                # print('response city:', response)
                 context.update({'country': country,
                                 'country_code': response.country.iso_code})
-                print('country:', country)
+                # print('country:', country)
 
             except Exception as e:
                 print("Error IP: ", e)
         else:
             print(client_ip)
-            print('it is private')
+            # print('it is private')
 
         if request.method == 'POST':
             country_form = DelivertoForm(request)
