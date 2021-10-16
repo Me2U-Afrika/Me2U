@@ -602,9 +602,9 @@ class HomeViewTemplateView(TemplateView):
             if featuring:
                 for product in featuring:
                     print('featured product:', product)
-                    if len(featured_results) < 20:
+                    if len(featured_results) < 10:
                         featured_results.append(product)
-                if len(featured_results) < 20:
+                if len(featured_results) < 10:
                     print('featured<20')
                     try:
                         product_views = ProductView.objects.all()[:10]
@@ -632,7 +632,7 @@ class HomeViewTemplateView(TemplateView):
                     product_views = ProductView.objects.all().distinct()[:10]
                     # print('product_views:', product_views)
                     for productview in product_views:
-                        if len(featured_results) < 20:
+                        if len(featured_results) < 10:
                             if not productview.product in featured_results and productview.product in active_products:
                                 featured_results.append(productview.product)
                                 productview.product.is_featured = True
