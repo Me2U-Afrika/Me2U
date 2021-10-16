@@ -542,11 +542,16 @@ class HomeViewTemplateView(TemplateView):
                         (Q(product__brand_name__country__iexact=country_code) &
                          (Q(product__shipping_status__iexact='Cl') |
                           Q(product__shipping_status__iexact='Co') |
-                          Q(product__shipping_status__iexact='Cd')))).filter(top_display=True).distinct()
+                          Q(product__shipping_status__iexact='Cd')))).filter(top_display=True).exclude(is_deal=True
+                        ).exclude(product__is_featured=True).distinct()
                     print('universal current top banners based on country:', universal_top_banners)
                 else:
                     universal_top_banners = banners.filter(
-                        Q(product__shipping_status__iexact='Cd')).filter(top_display=True).distinct()
+                        Q(product__shipping_status__iexact='Cd')
+                        ).filter(top_display=True
+                        ).exclude(is_deal=True
+                        ).exclude(product__is_featured=True).distinct()
+
                     print('universal current top banners without country:', universal_top_banners)
 
                 if universal_top_banners:
@@ -710,9 +715,12 @@ class HomeViewTemplateView(TemplateView):
 
         try:
             # RECENT PRODUCTS
-            recent_products = active_products.order_by('-created').exclude(is_featured=True, is_bestseller=True,
-                                                                           is_bestrated=True)
-            context.update({'recent_products': recent_products[:20]})
+            recent_products = active_products.exclude(is_featured=True
+                                                      ).exclude(is_bestseller=True
+                                                                ).exclude(is_bestrated=True).order_by('-created')
+            if recent_products:
+                print('recent_products:', recent_products)
+                context.update({'recent_products': recent_products[:20]})
 
         except:
             pass
