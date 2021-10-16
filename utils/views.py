@@ -78,9 +78,9 @@ def user_location(request):
     #     ip = request.META.get('REMOTE_ADDR')
 
     # ip = '78.31.205.137'
-    # # ip = '41.206.127.0'
-    # ip = '102.22.187.72'
-    #
+    # ip = '41.206.127.0'
+    # ip = '41.206.127.0'
+
     # g = GeoIP2()
     # try:
     #     location = g.city(ip)
