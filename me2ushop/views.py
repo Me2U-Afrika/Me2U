@@ -613,7 +613,7 @@ class HomeViewTemplateView(TemplateView):
         # FEATURING PRODUCTS
         try:
             featured_results = []
-            featuring = active_products.filter(is_featured=True).order_by('view_count')
+            featuring = active_products.filter(is_featured=True).order_by('-view_count')
             # print('featuring:', featuring)
             if featuring:
                 for product in featuring:
