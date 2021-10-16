@@ -618,13 +618,13 @@ class HomeViewTemplateView(TemplateView):
             if featuring:
                 for product in featuring:
                     # print('featured product:', product)
-                    if len(featured_results) < 8:
+                    if len(featured_results) < 10:
                         featured_results.append(product)
-                if len(featured_results) < 16:
+                if len(featured_results) < 20:
                     try:
                         for product_active in active_products:
                             if product_active not in featured_results:
-                                if len(featured_results) < 16:
+                                if len(featured_results) < 20:
                                     featured_results.append(product_active)
                                     product_active.is_featured = True
                                     product_active.save()
@@ -635,7 +635,7 @@ class HomeViewTemplateView(TemplateView):
                 try:
                     for product_active in active_products:
                         if product_active not in featured_results:
-                            if len(featured_results) < 16:
+                            if len(featured_results) < 20:
                                 featured_results.append(product_active)
                                 product_active.is_featured = True
                                 product_active.save()
@@ -721,7 +721,7 @@ class HomeViewTemplateView(TemplateView):
 
         try:
             # RECENT PRODUCTS
-            recent_products = active_products.order_by('is_featured')
+            recent_products = active_products.order_by('view_count')
             if recent_products:
                 # print('recent_products:', recent_products)
                 context.update({'recent_products': recent_products[:20]})
