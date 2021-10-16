@@ -522,10 +522,10 @@ class HomeViewTemplateView(TemplateView):
                         Q(shipping_status__iexact='Cl') |
                         Q(shipping_status__iexact='Co') |
                         Q(shipping_status__iexact='Cd'))) |
-                Q(shipping_status__iexact='Cd')).filter(is_active=True).distinct()
+                Q(shipping_status__iexact='Cd')).filter(is_active=True).distinct().order_by('-view_count')
             # print('active produce:', active_products)
         else:
-            active_products = Product.active.filter(shipping_status='Cd').filter(is_active=True).select_related()
+            active_products = Product.active.filter(shipping_status='Cd').filter(is_active=True).select_related().order_by('-view_count')
 
         print('active Products:', active_products)
 
@@ -613,46 +613,32 @@ class HomeViewTemplateView(TemplateView):
         # FEATURING PRODUCTS
         try:
             featured_results = []
-            featuring = active_products.filter(is_featured=True)
+            featuring = active_products.filter(is_featured=True).order_by('view_count')
             # print('featuring:', featuring)
             if featuring:
                 for product in featuring:
                     # print('featured product:', product)
-                    if len(featured_results) < 10:
+                    if len(featured_results) < 8:
                         featured_results.append(product)
-                if len(featured_results) < 10:
-                    # print('featured<20')
+                if len(featured_results) < 16:
                     try:
-                        product_views = ProductView.objects.all()[:10]
-
-                        for productview in product_views:
-                            if productview.product not in featured_results and productview.product in active_products:
-                                # print('adding from view:', productview.product)
-                                featured_results.append(productview.product)
-                                productview.product.is_featured = True
-                                productview.product.save()
-
                         for product_active in active_products:
                             if product_active not in featured_results:
-                                # print('adding from active products:', product_active)
-
-                                featured_results.append(product_active)
-                                product_active.is_featured = True
-                                product_active.save()
-
+                                if len(featured_results) < 16:
+                                    featured_results.append(product_active)
+                                    product_active.is_featured = True
+                                    product_active.save()
                     except Exception as e:
                         print(e)
             else:
                 # print('No featured products')
                 try:
-                    product_views = ProductView.objects.all().distinct()[:10]
-                    # print('product_views:', product_views)
-                    for productview in product_views:
-                        if len(featured_results) < 10:
-                            if not productview.product in featured_results and productview.product in active_products:
-                                featured_results.append(productview.product)
-                                productview.product.is_featured = True
-                                productview.product.save()
+                    for product_active in active_products:
+                        if product_active not in featured_results:
+                            if len(featured_results) < 16:
+                                featured_results.append(product_active)
+                                product_active.is_featured = True
+                                product_active.save()
                 except Exception as e:
                     print(e)
             # print('feautred_results:', featured_results)
@@ -684,7 +670,7 @@ class HomeViewTemplateView(TemplateView):
                                     deal, created = Banner.objects.get_or_create(product=product)
                                     deal.is_deal = True
                                     deal.save()
-                                    # print('deal created:', created)
+                                    print('deal created:', created)
                                     deals.append(deal)
                 else:
                     no_country_deals = product_deals.filter(Q(product__shipping_status__iexact='Cd')).distinct()
@@ -735,7 +721,7 @@ class HomeViewTemplateView(TemplateView):
 
         try:
             # RECENT PRODUCTS
-            recent_products = active_products.exclude().order_by('is_featured')
+            recent_products = active_products.order_by('is_featured')
             if recent_products:
                 # print('recent_products:', recent_products)
                 context.update({'recent_products': recent_products[:20]})
@@ -1022,24 +1008,28 @@ class ProductDetailedView(CachedDetailView):
             'page_title': product.title,
             'formset': formset
         })
-        from stats import stats
-
-        stats.log_product_view(self.request, product)
-
-        product_views = ProductView.objects.filter(product=product).count()
-        # print('Views:', product_views)
-        context.update({
-            'product_views': product_views
-        })
 
         return render(self.request, 'home/product_page_test.html', context)
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetailedView, self).get_context_data(**kwargs)
+        product = self.get_object()
+
+        from stats import stats
+
+        stats.log_product_view(self.request, product)
+
+        product_views = ProductView.objects.filter(product=product).count()
+        product.view_count = product_views
+        print('product view:', product.view_count)
+        product.save()
+        # print('Views:', product_views)
+        context.update({
+            'product_views': product_views
+        })
         cart_product_form = CartAddProductForm()
         formset = CartAddFormSet()
 
-        product = self.get_object()
         # print('product subscriptions', product.brand_name.subscription_plan.payment_plan == 0)
 
         pending_item = product.orderitem_set.filter(status=10)
@@ -1107,15 +1097,6 @@ class ProductDetailedView(CachedDetailView):
             'page_title': str(self.get_object()),
             'formset': formset,
             'cart_form': cart_product_form
-        })
-        from stats import stats
-
-        stats.log_product_view(self.request, product)
-
-        product_views = ProductView.objects.filter(product=product).count()
-        # print('Views:', product_views)
-        context.update({
-            'product_views': product_views
         })
 
         return context
