@@ -54,7 +54,7 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['title', 'min_amount', 'max_amount', 'price', 'discount_price', 'stock', 'description','shipping_status'
+        fields = ['title', 'min_amount', 'max_amount', 'price', 'discount_price', 'stock', 'description','shipping_status',
                   'product_categories']
 
     def __int__(self, *args, **kwargs):
