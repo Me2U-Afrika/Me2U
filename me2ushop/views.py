@@ -516,14 +516,14 @@ class HomeViewTemplateView(TemplateView):
             country_code = user_loc['country_code']
             # print('country:', country)
         if country:
-            print('we got country:', country)
+            # print('we got country:', country)
             active_products = Product.active.filter(
                 (Q(brand_name__country__iexact=country_code) & (
                         Q(shipping_status__iexact='Cl') |
                         Q(shipping_status__iexact='Co') |
                         Q(shipping_status__iexact='Cd'))) |
                 Q(shipping_status__iexact='Cd')).distinct()
-            print('active produce:', active_products)
+            # print('active produce:', active_products)
         else:
             active_products = Product.active.filter(shipping_status='Cd').select_related()
 
@@ -532,9 +532,10 @@ class HomeViewTemplateView(TemplateView):
 
         # TOP BANNER
         try:
+            top_banner_text = "Sourcing African Goods and Services Made Easier."
             current_top_banners = banners.filter(top_display=True)
 
-            # print('banners', banners)
+            # print('current', current_top_banners)
             if current_top_banners:
                 if country:
                     # check for universal status
@@ -542,83 +543,91 @@ class HomeViewTemplateView(TemplateView):
                         (Q(product__brand_name__country__iexact=country_code) &
                          (Q(product__shipping_status__iexact='Cl') |
                           Q(product__shipping_status__iexact='Co') |
-                          Q(product__shipping_status__iexact='Cd')))).filter(top_display=True).exclude(is_deal=True
-                        ).exclude(product__is_featured=True).distinct()
-                    print('universal current top banners based on country:', universal_top_banners)
+                          Q(product__shipping_status__iexact='Cd')))).filter(top_display=True).distinct()
+                    # print('universal current top banners based on country:', universal_top_banners)
                 else:
                     universal_top_banners = banners.filter(
                         Q(product__shipping_status__iexact='Cd')
-                        ).filter(top_display=True
-                        ).exclude(is_deal=True
-                        ).exclude(product__is_featured=True).distinct()
+                        ).filter(top_display=True).distinct()
 
-                    print('universal current top banners without country:', universal_top_banners)
+                    # print('universal current top banners without country:', universal_top_banners)
 
                 if universal_top_banners:
                     if universal_top_banners:
                         top_banner = universal_top_banners[0]
-                        print('top_banner:', top_banner)
+                        # print('top_banner:', top_banner)
+                        if not top_banner.banner_text:
+                            top_banner.banner_text = top_banner_text
+                            top_banner.save()
                         context.update({'top_banner': top_banner})
                 else:
-                    print('no universal top banners')
+                    # print('no universal top banners')
                     if country:
                         universal_products = active_products.filter(brand_name__country=country_code).select_related()
                         print('products based on country:', universal_products)
 
                         if not universal_products:
-                            print('No universal products based on country')
+                            # print('No universal products based on country')
                             universal_products = active_products.filter(shipping_status='Cd').select_related()
                     else:
                         universal_products = active_products.filter(shipping_status='Cd').select_related()
 
-                    print('universal_products', universal_products)
+                    # print('universal_products', universal_products)
                     if universal_products:
                         top_product = universal_products[0]
-                        print('top product country', top_product.brand_name.country)
-                        top_banner, created = Banner.objects.get_or_create(product=top_product, top_display=True)
-                        if created:
-                            print('top_banner created:', created)
+                        # print('top product country', top_product.brand_name.country)
+                        top_banner, created = Banner.objects.get_or_create(product=top_product)
+                        top_banner.top_display = True
+                        if not top_banner.banner_text:
+                            top_banner.banner_text = top_banner_text
+                            top_banner.save()
+                        top_banner.save()
                         context.update({'top_banner': top_banner})
             else:
+                # print('no current top banners')
                 if country:
-                    universal_products = active_products.filter(brand_name__country=country_code).select_related()
+                    universal_products = active_products.filter(brand_name__country=country_code)
+                    if not universal_products:
+                        universal_products = active_products
                 else:
-                    universal_products = active_products.filter(shipping_status='Cd').select_related()
-
+                    universal_products = active_products
+                # print('universal product:', universal_products)
                 if universal_products:
+                    # print('we came to create top bannr:', universal_products)
                     top_product = universal_products[0]
-                    top_banner, created = Banner.objects.get_or_create(product=top_product, top_display=True)
-                    if created:
-                        print('top_banner created:', created)
+                    top_banner, created = Banner.objects.get_or_create(product=top_product)
+                    top_banner.top_display = True
+                    top_banner.save()
+                    # print('top_banner created:', created)
                     context.update({'top_banner': top_banner})
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
         # FEATURING PRODUCTS
         try:
             featured_results = []
             featuring = active_products.filter(is_featured=True)
-            print('featuring:', featuring)
+            # print('featuring:', featuring)
             if featuring:
                 for product in featuring:
-                    print('featured product:', product)
+                    # print('featured product:', product)
                     if len(featured_results) < 10:
                         featured_results.append(product)
                 if len(featured_results) < 10:
-                    print('featured<20')
+                    # print('featured<20')
                     try:
                         product_views = ProductView.objects.all()[:10]
 
                         for productview in product_views:
                             if productview.product not in featured_results and productview.product in active_products:
-                                print('adding from view:', productview.product)
+                                # print('adding from view:', productview.product)
                                 featured_results.append(productview.product)
                                 productview.product.is_featured = True
                                 productview.product.save()
 
                         for product_active in active_products:
                             if product_active not in featured_results:
-                                print('adding from active products:', product_active)
+                                # print('adding from active products:', product_active)
 
                                 featured_results.append(product_active)
                                 product_active.is_featured = True
@@ -627,7 +636,7 @@ class HomeViewTemplateView(TemplateView):
                     except Exception as e:
                         print(e)
             else:
-                print('No featured products')
+                # print('No featured products')
                 try:
                     product_views = ProductView.objects.all().distinct()[:10]
                     # print('product_views:', product_views)
@@ -639,7 +648,7 @@ class HomeViewTemplateView(TemplateView):
                                 productview.product.save()
                 except Exception as e:
                     print(e)
-            print('feautred_results:', featured_results)
+            # print('feautred_results:', featured_results)
             context.update({'featuring': featured_results})
         except:
             pass
@@ -650,13 +659,13 @@ class HomeViewTemplateView(TemplateView):
             deals = []
             try:
                 if country:
-                    print('we got country in deals:', country)
+                    # print('we got country in deals:', country)
                     country_deals = product_deals.filter(
                         (Q(product__brand_name__country__iexact=country) &
                          (Q(product__shipping_status__iexact='Cl') |
                           Q(product__shipping_status__iexact='Co') |
                           Q(product__shipping_status__iexact='Cd')))).distinct()
-                    print('In_country_deals:', country_deals)
+                    # print('In_country_deals:', country_deals)
                     if country_deals:
                         for deal in country_deals:
                             if len(deals) < 10:
@@ -666,12 +675,12 @@ class HomeViewTemplateView(TemplateView):
                             for product in active_products:
                                 if product.discount_price:
                                     deal, created = Banner.objects.get_or_create(product=product, is_deal=True)
-                                    print('deal created:', created)
+                                    # print('deal created:', created)
                                     deals.append(deal)
                 else:
                     no_country_deals = product_deals.filter(Q(product__shipping_status__iexact='Cd')).distinct()
-                    print('out_country_deals:', no_country_deals)
-                    print('in deals, no country')
+                    # print('out_country_deals:', no_country_deals)
+                    # print('in deals, no country')
                     if no_country_deals:
                         for deal in no_country_deals:
                             if len(deals) < 10:
@@ -681,7 +690,7 @@ class HomeViewTemplateView(TemplateView):
                             for product in active_products:
                                 if product.discount_price:
                                     deal, created = Banner.objects.get_or_create(product=product, is_deal=True)
-                                    print('deal created:', created)
+                                    # print('deal created:', created)
                                     deals.append(deal)
                 context.update({'deals': deals})
             except:
@@ -715,11 +724,9 @@ class HomeViewTemplateView(TemplateView):
 
         try:
             # RECENT PRODUCTS
-            recent_products = active_products.exclude(is_featured=True
-                                                      ).exclude(is_bestseller=True
-                                                                ).exclude(is_bestrated=True).order_by('-created')
+            recent_products = active_products.exclude().order_by('is_featured')
             if recent_products:
-                print('recent_products:', recent_products)
+                # print('recent_products:', recent_products)
                 context.update({'recent_products': recent_products[:20]})
 
         except:
