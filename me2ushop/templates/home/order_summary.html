@@ -65,7 +65,12 @@
 										</div>
 										<div class="cart_item_price cart_info_col">
 											<div class="cart_item_title">Price</div>
-											<div class="cart_item_text">{{ CURRENCY.symbol }}{{ order_item.variant.price|currency:CURRENCY.code }}</div>
+											<div class="cart_item_text">{{ CURRENCY.symbol }}{{ order_item.get_final_price|currency:CURRENCY.code }}</div>
+											{% if order_item.variant.discount_price %}
+											<span class="text-muted"><a class="btn btn-green btn-sm my-0 p">
+											 saving {{CURRENCY.symbol}}{{ order_item.get_total_saved|currency:CURRENCY.code }}
+											</a></span>
+											{% endif %}
 										</div>
 										<div class="cart_item_total cart_info_col">
 											<div class="cart_item_title">Total</div>
@@ -106,11 +111,16 @@
 										</div>
 										<div class="cart_item_price cart_info_col">
 											<div class="cart_item_title">Price</div>
-											<div class="cart_item_text">{{ CURRENCY.symbol }}{{ order_item.item.price|currency:CURRENCY.code }}</div>
+											<div class="cart_item_text">{{ CURRENCY.symbol }}{{ order_item.item.sale_price|currency:CURRENCY.code }}</div>
+											{% if order_item.item.discount_price %}
+											<span class="text-muted"><a class="btn btn-green btn-sm my-0 p">
+											 saving {{CURRENCY.symbol}}{{ order_item.get_total_saved|currency:CURRENCY.code }}
+											</a></span>
+											{% endif %}
 										</div>
 										<div class="cart_item_total cart_info_col">
 											<div class="cart_item_title">Total</div>
-											<div class="cart_item_text">{{ CURRENCY.symbol }}{{order_item.get_total_price|currency:CURRENCY.code }}</div>
+											<div class="cart_item_text">{{ CURRENCY.symbol }}{{order_item.get_final_price|currency:CURRENCY.code }}</div>
 										</div>
 
 										<div class="cart_item_total cart_info_col">

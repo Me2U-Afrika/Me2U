@@ -531,6 +531,7 @@ class HomeViewTemplateView(TemplateView):
 
         # BANNERS
         banners = Banner.objects.filter(active=True).select_related()
+        top_banner = None
 
         # TOP BANNER
         try:
@@ -707,6 +708,8 @@ class HomeViewTemplateView(TemplateView):
         # BESTSELLING BANNER
         try:
             bestselling_banner = Banner.objects.bestselling()
+
+            print('bestNb:', bestselling_banner)
             if bestselling_banner:
                 top_bestselling = bestselling_banner.order_by('-product__view_count')[0]
                 top_bestselling_view_count = top_bestselling.product.view_count
@@ -715,7 +718,7 @@ class HomeViewTemplateView(TemplateView):
                 current_top_viewed = active_products.order_by('-view_count')[0]
                 if current_top_viewed:
                     current_top_viewed_count = current_top_viewed.view_count
-                    # print('current_top_viewed_count:', current_top_viewed_count)
+                    print('current_top_viewed_count:', current_top_viewed_count)
                     if current_top_viewed_count >= top_bestselling_view_count:
                         current_top_banner, created = Banner.objects.get_or_create(product=current_top_viewed)
                         # print('current bannr', current_top_banner)

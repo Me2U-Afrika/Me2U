@@ -180,7 +180,7 @@ class SellersProductAdmin(ProductAdmin):
     # form = SellerForm
 
     list_display = ['id',
-        'title',
+                    'title',
                     'brand_name',
                     'in_stock',
                     'stock',
@@ -265,7 +265,7 @@ class ProductReviewAdmin(admin.ModelAdmin):
 
 
 class Items_Ordered(admin.ModelAdmin):
-    list_display = ('user', 'name', 'item', 'quantity', 'get_final_price','status', 'ordered', 'date_ordered')
+    list_display = ('user', 'name', 'item', 'ordered', 'quantity', 'get_final_price', 'status', 'date_ordered')
     search_fields = ['item', ]
     list_editable = ('status',)
     list_filter = ("status",)
@@ -285,7 +285,7 @@ class WishListAdmin(admin.ModelAdmin):
 
 
 class ProductVariationAdmin(admin.ModelAdmin):
-    list_display = ('product', 'slug','is_active','color',  'size', 'stock', 'image_tag')
+    list_display = ('product', 'slug', 'is_active', 'color', 'size', 'stock', 'image_tag')
 
 
 class SellerProductVariationAdmin(admin.ModelAdmin):
@@ -307,8 +307,8 @@ class Ordered(admin.ModelAdmin):
     list_display = (
         'user',
         'name',
-        'order_date',
         'ordered',
+        'order_date',
         'get_total',
         "status_code",
         'payment',
@@ -615,6 +615,7 @@ class RefundDisplay(admin.ModelAdmin):
     list_filter = ['accepted']
     list_display_links = ['order', 'ref_code']
 
+
 # class VariationCategoryAdmin(admin.ModelAdmin):
 #     list_display = ('variation_name',)
 #
@@ -818,7 +819,6 @@ class SellersAdminSite(ColoredAdminSite):
 
     def has_permission(self, request):
         return request.user.is_active and request.user.is_seller
-
 
 
 main_admin = OwnersAdminSite()
