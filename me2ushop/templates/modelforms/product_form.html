@@ -26,6 +26,20 @@
 				<div class="col-lg-10 offset-lg-1">
 					<div class="contact_form_container">
 						<div class="contact_form_title">Create Form</div>
+						 {% for field in form %}
+								  <p>
+									{% for error in field.errors %}
+									  <p style="color: red">{{field.label}} : {{ error }}</p>
+									{% endfor %}
+								  </p>
+								  {% endfor %}
+								  {% if form.non_field_errors %}
+									<div style="color: red">
+									  <p>{{form.non_field_errors}}</p>
+									</div>
+
+								{% endif %}
+
 
 						<form action="#" method="POST" id="contact_form" enctype="multipart/form-data">
 							{% csrf_token %}
