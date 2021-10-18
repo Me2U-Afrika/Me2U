@@ -126,6 +126,8 @@ class Brand(CreationModificationDateMixin):
                                       help_text='Business Phone Number . i.e +250785....')
     business_email = models.EmailField(blank=True, null=True, max_length=254,
                                        help_text='Business Phone Number . i.e +250785....')
+    contact_person = models.CharField(max_length=255, blank=True, null=True,
+                                      help_text="Contact person name who will receive inquiries")
     business_description = models.TextField(help_text="Tell us what you do and the kind of products you sell")
 
     business_type = models.CharField(choices=BUSINESS_TYPE_CHOICE, max_length=4)
@@ -209,6 +211,14 @@ class ProductManager(models.Manager):
         return self.get(slug=slug)
 
 
+class Unitofmeasure(CreationModificationDateMixin):
+    name = models.CharField(max_length=50)
+
+
+    def __str__(self):
+        return self.name
+
+
 class Product(CreationModificationDateMixin):
     title = models.CharField(max_length=300)
     slug = models.SlugField(unique=True,
@@ -219,6 +229,7 @@ class Product(CreationModificationDateMixin):
     brand_name = models.ForeignKey('Brand', on_delete=models.SET_NULL, blank=True, null=True,
                                    help_text='Your store name')
     stock = models.IntegerField(default=1)
+    unit_measure = models.ForeignKey(Unitofmeasure, blank=True, null=True, on_delete=models.SET_NULL)
     view_count = models.IntegerField(default=0, editable=False)
     sku = models.CharField(max_length=120, default='',
                            editable=False, )
@@ -460,7 +471,7 @@ class Product(CreationModificationDateMixin):
 
         print('image', image.exists())
 
-        if image.exists() and self.in_stock:
+        if image.exists() and self.in_stock and self.brand_name.is_active:
             self.is_active = True
         else:
             self.is_active = False
@@ -481,6 +492,18 @@ class Product(CreationModificationDateMixin):
 
 # REGISTER PRODUCT MODEL AS A TAG
 register(Product)
+
+
+class ProductCustomizations(CreationModificationDateMixin):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    min_order = models.IntegerField(default=1)
+    max_order = models.IntegerField(blank=True, null=True)
+    customization_price = models.DecimalField(max_digits=9, blank=True, null=True, decimal_places=2)
+    customization_discount_price = models.DecimalField(max_digits=9, blank=True, null=True, decimal_places=2)
+
+    def __str__(self):
+        return self.name
 
 
 class DisplayImageManager(models.Manager):

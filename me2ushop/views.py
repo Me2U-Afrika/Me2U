@@ -709,7 +709,7 @@ class HomeViewTemplateView(TemplateView):
         try:
             bestselling_banner = Banner.objects.bestselling()
 
-            print('bestNb:', bestselling_banner)
+            # print('bestNb:', bestselling_banner)
             if bestselling_banner:
                 top_bestselling = bestselling_banner.order_by('-product__view_count')[0]
                 top_bestselling_view_count = top_bestselling.product.view_count
@@ -718,7 +718,7 @@ class HomeViewTemplateView(TemplateView):
                 current_top_viewed = active_products.order_by('-view_count')[0]
                 if current_top_viewed:
                     current_top_viewed_count = current_top_viewed.view_count
-                    print('current_top_viewed_count:', current_top_viewed_count)
+                    # print('current_top_viewed_count:', current_top_viewed_count)
                     if current_top_viewed_count >= top_bestselling_view_count:
                         current_top_banner, created = Banner.objects.get_or_create(product=current_top_viewed)
                         # print('current bannr', current_top_banner)
@@ -732,50 +732,43 @@ class HomeViewTemplateView(TemplateView):
                 bestselling_banner, created = Banner.objects.get_or_create(product=most_viewed)
                 bestselling_banner.bestselling = True
                 bestselling_banner.save()
-                print('bestselling banner created:', created)
+                # print('bestselling banner created:', created)
                 context.update({'best_seller_banner': bestselling_banner})
-
-
-
         except:
             pass
 
+        # BESTRATED
         try:
-            # BESTRATED
             bestrated = active_products.filter(is_bestrated=True)
             context.update({'bestrated': bestrated})
-
         except:
             pass
 
+        # MARKETING MESSAGES
         try:
-            # MARKETING MESSAGES
             marketing_messages = MarketingMessage.objects.get_featured_item()
             context.update({'marketing_messages': marketing_messages})
-
         except:
             pass
 
+        # RECENT PRODUCTS
         try:
-            # RECENT PRODUCTS
             recent_products = active_products
             if recent_products:
                 # print('recent_products:', recent_products)
                 context.update({'recent_products': recent_products[:20]})
-
         except:
             pass
 
+        # BESTSELLING PRODUCTS
         try:
-            # BESTSELLING PRODUCTS
             bestselling = active_products.filter(is_bestseller=True)
             context.update({'bestselling': bestselling})
-
         except:
             pass
 
+        # CATEGORIES RANDOM
         try:
-            # CATEGORIES RANDOM
             categories = Department.objects.filter(is_active=True)
             # categories = context_processors.me2u(self.request)['active_departments']
             # categories = context_processors.me2u(self.request)['active_departments'].prefetch_related("product_set")
@@ -789,35 +782,31 @@ class HomeViewTemplateView(TemplateView):
         except:
             pass
 
+        # SLIDERS
         try:
-            # SLIDERS
             sliders = Slider.objects.featured().select_related('product')
             context.update({'sliders': sliders, })
-
         except:
             pass
 
+        # TRENDS INFORMATION
         try:
-            # TRENDS INFORMATION
             trend_info = TrendInfo.objects.all()
             context.update({'trend_info': trend_info})
-
         except:
             pass
 
+        # RECOMMENDATION FROM VIEWS
         try:
-            # RECOMMENDATION FROM VIEWS
             view_recommendation = stats.recommended_from_views(self.request)
             context.update({'view_recomms': view_recommendation})
-
         except:
             pass
 
+        # SEARCH RECOMMENDATIONS
         try:
-            # SEARCH RECOMMENDATIONS
             search_recored = stats.recommended_from_search(self.request)
             context.update({'search_recomms': search_recored})
-
         except:
             pass
 

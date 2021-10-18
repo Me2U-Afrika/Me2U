@@ -264,9 +264,24 @@ class ProductReviewAdmin(admin.ModelAdmin):
     ]
 
 
+class UnitofmeasureAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
+admin.site.register(Unitofmeasure, UnitofmeasureAdmin)
+
+
+class ProductCustomizationsAdmin(admin.ModelAdmin):
+    list_display = ('product', 'name')
+
+
+admin.site.register(ProductCustomizations, ProductCustomizationsAdmin)
+
+
 class Items_Ordered(admin.ModelAdmin):
     list_display = ('user', 'name', 'item', 'ordered', 'quantity', 'get_final_price', 'status', 'date_ordered')
     search_fields = ['item', ]
+
     list_editable = ('status',)
     list_filter = ("status",)
 

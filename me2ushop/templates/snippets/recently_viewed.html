@@ -28,12 +28,12 @@
                                     <div class="viewed_item discount d-flex flex-column align-items-center justify-content-center text-center">
                                         {% for image in product.get_images %}
                                         {% if image.in_display %}
-                                        <div class="viewed_image"><img src="{{ image.image.url }}" alt="{{ product.title }}"></div>
+                                        <div class="viewed_image"><a href="{{ product.get_absolute_url }}" target="_blank"><img src="{{ image.image.url }}" alt="{{ product.title }}"></a></div>
                                         {% endif %}
                                         {% endfor %}
                                         <div class="viewed_content text-center">
-                                            <div class="viewed_price">${{ product.discount_price }}<span>${{ product.price }}</span></div>
-                                            <div class="viewed_name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+                                            <div class="viewed_price"><a href="{{ product.get_absolute_url }}" target="_blank">{{ CURRENCY.symbol }}{{ product.discount_price }}<span>{{ CURRENCY.symbol }}{{ product.price }}</span></a></div>
+                                            <div class="viewed_name"><a href="{{ product.get_absolute_url }}" target="_blank">{{ product.title }}</a></div>
                                         </div>
                                         <ul class="item_marks">
                                             <li class="item_mark item_discount">-{{ product.total_discount }}%</li>
