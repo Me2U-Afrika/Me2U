@@ -110,12 +110,12 @@ class StatusCodeAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     # form = ProductAdminForm()
     list_display = (
-        'title', 'price', 'brand_name', 'is_active', 'in_stock', 'stock', 'sku', 'view_count',
+        'title', 'price', 'brand_name', 'is_active', 'not_active', 'in_stock', 'stock', 'sku', 'view_count',
         'modified', "image_tag")
     list_display_links = ('title',)
     list_per_page = 50
     ordering = ['-created']
-    list_editable = ('stock',)
+    list_editable = ('stock', 'not_active')
     list_filter = ('brand_name', 'product_categories')
     readonly_fields = ['image_tag']
 
@@ -264,9 +264,24 @@ class ProductReviewAdmin(admin.ModelAdmin):
     ]
 
 
+class UnitofmeasureAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
+admin.site.register(Unitofmeasure, UnitofmeasureAdmin)
+
+
+class ProductCustomizationsAdmin(admin.ModelAdmin):
+    list_display = ('product', 'name')
+
+
+admin.site.register(ProductCustomizations, ProductCustomizationsAdmin)
+
+
 class Items_Ordered(admin.ModelAdmin):
     list_display = ('user', 'name', 'item', 'ordered', 'quantity', 'get_final_price', 'status', 'date_ordered')
     search_fields = ['item', ]
+
     list_editable = ('status',)
     list_filter = ("status",)
 

@@ -174,46 +174,60 @@
 								{% if variant %}
 									{% include 'snippets/variant_add_cart.html' %}
 								{% else %}
-									{% if object.brand_name.valid_payment_method and object.stock >= object.min_amount and object.price > 0 %}
+									{% if object.unit_measure and object.min_amount > 1 %}
+										{% if object.discount_price %}
+											<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
+											<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} /<span style="font-size:15px; margin-left:5px;">{{object.unit_measure}}</span></h3></span>
+										{% else %}
+											<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} /<span>{{object.unit_measure}}</span></h3></span>
+										{% endif %}
+									{% else %}
 										{% if object.discount_price %}
 											<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
 											<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
 										{% else %}
 											<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
 										{% endif %}
-										<div class="clearfix" style="z-index: 1000;">
-											{% if object.stock >= object.min_amount %}
-											<p>Availability:<span class="green-text"> In-stock : {{ object.stock }}</span></p>
+									{% endif %}
+									<div class="clearfix" style="z-index: 1000;">
+										{% if object.stock >= object.min_amount %}
+										<p>Availability:<span class="green-text"> In-stock </span></p>
 
-											{% else %}
+										{% else %}
 											<p style="color: red">Product Not in Stock</p>
-											{% endif %}
+										{% endif %}
+										{% if not object.is_active %}
+											<p style="color: red">Product is Inactive</p>
+										{% endif %}
 
-											{% if object.min_amount > 1 %}
-											<p>minimum order: {{ object.min_amount }}</p>
-											{% endif %}
-											{% if object.max_amount %}
-											<p>maximum order: {{ object.max_amount }}</p>
-											{% endif %}
-											<!-- Product Quantity -->
-											<div class="product_quantity clearfix">
-												<span>Quantity: </span>
-												<input id="quantity_input" name="quantity" type="number" pattern="[0-9]*" value="{{ object.min_amount }}">
-												<div class="quantity_buttons">
-													<div id="quantity_inc_button" class="quantity_inc quantity_control"><i class="fas fa-chevron-up"></i></div>
-													<div id="quantity_dec_button" class="quantity_dec quantity_control"><i class="fas fa-chevron-down"></i></div>
-												</div>
+
+
+										{% if object.min_amount > 1 %}
+										<p>minimum order: {{ object.min_amount }} {{ object.unit_measure }}{{ object.min_amount|pluralize }}</p>
+										{% endif %}
+										{% if object.max_amount %}
+										<p>maximum order: {{ object.max_amount }} {{ object.unit_measure }}{{ object.min_amount|pluralize }}</p>
+										{% endif %}
+										<!-- Product Quantity -->
+										<div class="product_quantity clearfix">
+											<span>Quantity: </span>
+											<input id="quantity_input" name="quantity" type="number" pattern="[0-9]*" value="{{ object.min_amount }}">
+											<div class="quantity_buttons">
+												<div id="quantity_inc_button" class="quantity_inc quantity_control"><i class="fas fa-chevron-up"></i></div>
+												<div id="quantity_dec_button" class="quantity_dec quantity_control"><i class="fas fa-chevron-down"></i></div>
 											</div>
 										</div>
+									</div>
 
-										<div class="button_container">
-											<button type="submit" class="button cart_button" >Add to Cart</button>
-											<a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>
-										</div>
+									{% if object.is_active and object.brand_name.valid_payment_method and object.stock >= object.min_amount and object.price > 0 %}
+									<div class="button_container">
+										<button type="submit" class="button cart_button" >Add to Cart</button>
+										<a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>
+									</div>
 
-										<div class="clearfix mt-2" style="z-index: 1000;">
-											{#% include 'snippets/buy_now_paypal.html' %#}
-										</div>
+									<div class="clearfix mt-2" style="z-index: 1000;">
+										{#% include 'snippets/buy_now_paypal.html' %#}
+									</div>
 									{% endif %}
 									<!--ADD TO CART OPTIONS-->
 								{% endif%}
