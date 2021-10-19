@@ -798,8 +798,13 @@ class HomeViewTemplateView(TemplateView):
 
         # RECOMMENDATION FROM VIEWS
         try:
+            view_recomms = []
             view_recommendation = stats.recommended_from_views(self.request)
-            context.update({'view_recomms': view_recommendation})
+            for product in view_recommendation:
+                if product in active_products:
+                    view_recomms.append(product)
+
+            context.update({'view_recomms': view_recomms})
         except:
             pass
 

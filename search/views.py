@@ -88,7 +88,7 @@ def search_results(request, template_name="home/search_results.html"):
 def autocomplete(request):
     if 'term' in request.GET:
         word = request.GET.get('term', '')
-        qs = Product.objects.filter(title__icontains=word)
+        qs = Product.active.filter(title__icontains=word)
         brands = Brand.objects.filter(title__icontains=word)
 
         titles = list()

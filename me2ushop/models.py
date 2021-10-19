@@ -203,7 +203,8 @@ class Brand(CreationModificationDateMixin):
 
 class ActiveProductManager(models.Manager):
     def all(self):
-        return super(ActiveProductManager, self).all().filter(is_active=True).prefetch_related('productimage_set')
+        return super(ActiveProductManager, self).all().filter(is_active=True, not_active=False).prefetch_related(
+            'productimage_set')
 
 
 class ProductManager(models.Manager):
@@ -213,7 +214,6 @@ class ProductManager(models.Manager):
 
 class Unitofmeasure(CreationModificationDateMixin):
     name = models.CharField(max_length=50)
-
 
     def __str__(self):
         return self.name
@@ -251,6 +251,7 @@ class Product(CreationModificationDateMixin):
                                                    "US Dollar before listing")
 
     is_active = models.BooleanField(default=True, editable=False)
+    not_active = models.BooleanField(default=False)
     is_bestseller = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
     is_bestrated = models.BooleanField(default=False)
@@ -471,10 +472,11 @@ class Product(CreationModificationDateMixin):
 
         print('image', image.exists())
 
-        if image.exists() and self.in_stock and self.brand_name.is_active:
+        if image.exists() and self.in_stock and self.brand_name.is_active and not self.not_active:
             self.is_active = True
         else:
             self.is_active = False
+            self.not_active = True
 
         if self.discount_price and self.price < 1 or self.discount_price == self.price:
             self.price = self.discount_price
