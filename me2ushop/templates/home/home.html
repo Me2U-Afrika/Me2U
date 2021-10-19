@@ -233,8 +233,9 @@
 							{% endif %}
 						{% endif %}
 						<div class="banner_product_name">{{ top_banner.product.title }}</div>
-						<div class="small">{{ top_banner.product.min_amount }} {{ top_banner.product.unit_measure }}{{ top_banner.product.min_amount |pluralize }} (Min. Order)</div>
-
+						{% if top_banner.product.min_amount > 1 %}
+							<div class="small">{{ top_banner.product.min_amount }} {{ top_banner.product.unit_measure }}{{ top_banner.product.min_amount |pluralize }} (Min. Order)</div>
+						{% endif %}
 						<div class="button banner_button"><a href="{{ top_banner.get_absolute_url }}" target="_blank">Shop Now</a></div>
 					</div>
 				</div>
