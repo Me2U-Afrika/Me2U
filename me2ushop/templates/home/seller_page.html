@@ -85,7 +85,7 @@
 							<div class="sidebar_subtitle brands_subtitle">Brands</div>
 							<ul class="brands_list">
 								{% for brand_name in brands %}
-								<li class="brand"><a href="{% url 'me2ushop:seller_page' brand_name.id %}">{{ brand_name.title }}</a></li>
+								<li class="brand"><a href="{{ brand_name.get_frontstore_url }}">{{ brand_name.title }}</a></li>
 								{% endfor %}
 							</ul>
 						</div>
