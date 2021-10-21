@@ -148,10 +148,6 @@
 						</div>
 						<!--PRODUCT DESCRIPTION-->
 
-						<!--PRODUCT PRICE-->
-
-						<!-- End PRODUCT PRICE-->
-
 						<!--Variants-->
 						{% if variant %}
 							{% if variant.size %}
@@ -174,6 +170,7 @@
 								{% if variant %}
 									{% include 'snippets/variant_add_cart.html' %}
 								{% else %}
+									<!--PRODUCT PRICE-->
 									{% if object.price > 0 %}
 										{% if object.unit_measure and object.min_amount > 1 %}
 											{% if object.discount_price %}
@@ -191,6 +188,7 @@
 											{% endif %}
 										{% endif %}
 									{% endif %}
+									<!-- End PRODUCT PRICE-->
 									<div class="clearfix" style="z-index: 1000;">
 										{% if object.stock >= object.min_amount %}
 										<p>Availability:<span class="green-text"> In-stock </span></p>
@@ -201,8 +199,6 @@
 										{% if not object.is_active %}
 											<p style="color: red">Product is Inactive</p>
 										{% endif %}
-
-
 
 										{% if object.min_amount > 1 %}
 										<p>minimum order: {{ object.min_amount }} {{ object.unit_measure }}{{ object.min_amount|pluralize }}</p>
@@ -219,7 +215,9 @@
 												<div id="quantity_dec_button" class="quantity_dec quantity_control"><i class="fas fa-chevron-down"></i></div>
 											</div>
 										</div>
+										<!-- End Product Quantity -->
 									</div>
+
 
 									{% if object.is_active and object.brand_name.valid_payment_method and object.stock >= object.min_amount and object.price > 0 %}
 									<div class="button_container">
