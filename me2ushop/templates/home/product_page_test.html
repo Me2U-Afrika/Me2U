@@ -174,19 +174,21 @@
 								{% if variant %}
 									{% include 'snippets/variant_add_cart.html' %}
 								{% else %}
-									{% if object.unit_measure and object.min_amount > 1 %}
-										{% if object.discount_price %}
-											<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
-											<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} /<span style="font-size:15px; margin-left:5px;">{{object.unit_measure}}</span></h3></span>
+									{% if object.price > 0 %}
+										{% if object.unit_measure and object.min_amount > 1 %}
+											{% if object.discount_price %}
+												<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
+												<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }} /<span style="font-size:15px; margin-left:5px;">{{object.unit_measure}}</span></h3></span>
+											{% else %}
+												<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} /<span>{{object.unit_measure}}</span></h3></span>
+											{% endif %}
 										{% else %}
-											<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }} /<span>{{object.unit_measure}}</span></h3></span>
-										{% endif %}
-									{% else %}
-										{% if object.discount_price %}
-											<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
-											<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
-										{% else %}
-											<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
+											{% if object.discount_price %}
+												<span class="product_price grey-text"><del>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</del></span>
+												<span class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.discount_price|currency:CURRENCY.code }}</h3></span>
+											{% else %}
+												<span  class="product_price red-text"><h3>{{ CURRENCY.symbol }} {{ product.price|currency:CURRENCY.code }}</h3></span>
+											{% endif %}
 										{% endif %}
 									{% endif %}
 									<div class="clearfix" style="z-index: 1000;">
