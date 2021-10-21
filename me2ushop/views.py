@@ -498,6 +498,29 @@ class HomeView(ListView):
         return context
 
 
+def filtered_products(request):
+    country = None
+    country_code = None
+    user_loc = user_location(request)
+    if user_loc:
+        country = user_loc['country']
+        country_code = user_loc['country_code']
+        # print('country:', country)
+    if country:
+        # print('we got country:', country)
+        active_products = Product.active.filter(
+            (Q(brand_name__country__iexact=country_code) & (
+                    Q(shipping_status__iexact='Cl') |
+                    Q(shipping_status__iexact='Co') |
+                    Q(shipping_status__iexact='Cd'))) |
+            Q(shipping_status__iexact='Cd')).filter(is_active=True).distinct()
+        # print('active produce:', active_products)
+    else:
+        active_products = Product.active.filter(shipping_status='Cd').filter(is_active=True).filter(
+            not_active=False).select_related()
+
+    return active_products
+
 class HomeViewTemplateView(TemplateView):
     site_name = 'Me2U|Market'
     # template_name = 'trialTemplates/home.html'
@@ -515,17 +538,7 @@ class HomeViewTemplateView(TemplateView):
             country = user_loc['country']
             country_code = user_loc['country_code']
             # print('country:', country)
-        if country:
-            # print('we got country:', country)
-            active_products = Product.active.filter(
-                (Q(brand_name__country__iexact=country_code) & (
-                        Q(shipping_status__iexact='Cl') |
-                        Q(shipping_status__iexact='Co') |
-                        Q(shipping_status__iexact='Cd'))) |
-                Q(shipping_status__iexact='Cd')).filter(is_active=True).distinct()
-            # print('active produce:', active_products)
-        else:
-            active_products = Product.active.filter(shipping_status='Cd').filter(is_active=True).select_related()
+        active_products = filtered_products(self.request)
 
         # print('active Products:', active_products)
 
@@ -773,11 +786,26 @@ class HomeViewTemplateView(TemplateView):
             # categories = context_processors.me2u(self.request)['active_departments']
             # categories = context_processors.me2u(self.request)['active_departments'].prefetch_related("product_set")
 
-            rand_department = random.choices(categories, k=3)
+            rand_department = random.choices(categories, k=2)
+            rand_1_products = []
+            rand_2_products = []
+            if rand_department:
+                rand_1_products = rand_department[0].product_set.filter(is_active=True)
+                for product in rand_1_products:
+                    if product in active_products and product not in rand_1_products:
+                        rand_1_products.append(product)
+
+                rand_1_products = rand_department[1].product_set.filter(is_active=True)
+                for product in rand_2_products:
+                    if product in active_products and product not in rand_2_products:
+                        rand_2_products.append(product)
+
+            # print('rand 2 p:', rand_1_products)
             context.update({
                 'rand_department_1': rand_department[0],
+                'rand_1_products': rand_1_products,
                 'rand_department_2': rand_department[1],
-                'rand_department_3': rand_department[2]
+                'rand_2_products': rand_1_products,
             })
         except:
             pass

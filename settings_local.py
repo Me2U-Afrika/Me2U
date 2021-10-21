@@ -62,3 +62,11 @@ MIDDLEWARE = [
 RAVE_SANDBOX = True
 
 GEOIP_PATH = os.path.join('media/geoip')
+
+# Email Config
+# Email server
+
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
