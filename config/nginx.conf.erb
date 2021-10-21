@@ -48,6 +48,10 @@ http {
     client_body_timeout <%= ENV['NGINX_CLIENT_BODY_TIMEOUT'] || 5 %>;
 
 
+    upstream app_server {
+		server unix:/tmp/nginx.socket fail_timeout=0;
+	}
+
 	##
 	# Virtual Host Configs
 	##
@@ -60,7 +64,7 @@ http {
 
 		large_client_header_buffers 4 16k;
 
-		root /var/www/me2uafrica.herokuapp.com;
+		root /app/public; # path to your app
 
 		location /media {
 		    root /media;
@@ -73,14 +77,15 @@ http {
 
 		location / {
 			# Uncomment this if statement to force SSL/redirect http -> https
-			# if ($http_x_forwarded_proto != "https") {
-			#   return 301 https://$host$request_uri;
-			# }
+			if ($http_x_forwarded_proto != "https") {
+			  return 301 https://$host$request_uri;
+			}
 
-# 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-# 			proxy_set_header Host $http_host;
-# 			proxy_redirect off;
-# 			proxy_pass http://me2uafrica.herokuapp.com;
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			# proxy_set_header X-Forwarded-Proto $scheme;
+			proxy_set_header Host $http_host;
+			proxy_redirect off;
+			proxy_pass http://app_server;
 		}
 
 

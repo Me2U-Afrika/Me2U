@@ -47,8 +47,7 @@ CANON_URLS_TO_REWRITE = ['me2uafrika.com', 'me2uafrica.herokuapp.com']
 # SECURITY WARNING: don't run with debug turned on in production!
 # False if not in os.environ
 DEBUG = env('DEBUG')
-#
-# DEBUG = False
+
 # print('debug:', DEBUG)
 
 SITE_URL = 'https://www.me2uafrika.com'
@@ -138,6 +137,9 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+SOCIALACCOUNT_ADAPTER = 'users.adapter.MySocialAccountAdapter'
+
 
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 
@@ -395,11 +397,9 @@ RAVE_SANDBOX_SECRET_KEY = os.environ.get('RAVE_SANDBOX_SECRET_KEY')
 RAVE_SANDBOX = False
 
 ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 
-SOCIALACCOUNT_ADAPTER = 'users.adapter.MySocialAccountAdapter'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -434,8 +434,10 @@ else:
 
     # CORS_REPLACE_HTTPS_REFERER = True
     # HOST_SCHEME = 'https://'
-    # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    # SECURE_SSL_REDIRECT = True
+
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
     # SESSION_COOKIE_SECURE = True
     # CSRF_COOKIE_SECURE = True
     # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -466,10 +468,6 @@ PRODUCTS_PER_PAGE = 12
 PRODUCTS_PER_ROW = 12
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
-
-# GEOIP_PATH = os.environ['GEOIP_GEOLITE2_PATH']
-# GEOIP_CITY = os.environ['GEOIP_GEOLITE2_CITY_FILENAME']
-# GEOIP_COUNTRY = os.environ['GEOIP_GEOLITE2_COUNTRY_FILENAME']
 
 GEO_ACCOUNT_ID = os.environ.get("GEO_ACCOUNT_ID")
 GEO_LICENCE_KEY = os.environ.get("GEO_LICENCE_KEY")
@@ -523,7 +521,9 @@ LOGGING = {
         },
     }
 }
-
+"""
+END LOGGERS.
+"""
 
 if DEBUG:
     try:
@@ -531,9 +531,6 @@ if DEBUG:
     except ImportError:
         pass
 
-# print('Rave Sandbox:', RAVE_SANDBOX)
-
-# print(e.message)
 # Activate Django-Heroku.
 django_heroku.settings(locals())
 
