@@ -445,42 +445,19 @@ else:
     # turn to true during production
     # ENABLE_SSL = False
 
-# Email Config
-# Email server
-
-# MAILGUM SMTP WORKING
-# MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_ACCESS_KEY', '')
-# MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY', '')
-# MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN', '')
-# EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER', '')
-# EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT', '')
-# EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN', '')
-# EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD', '')
-
-
-# EMAIL_HOST = "smtp.gmail.com"
-# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-# EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
-# EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-
-# EMAIL_BACKEND = "sgbackend.SendGridBackend"
+"""
+SENDGRID SETTINGS
+"""
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
-# SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-#
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 EMAIL_PORT = 587
-
-# MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_ACCESS_KEY', '')
-# MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY', '')
-# MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN', '')
-# EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER', '')
-# EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT', '')
-# EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN', '')
-# EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD', '')
+"""
+END SENDGRID___SETTINGS
+"""
 
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
@@ -497,13 +474,64 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 GEO_ACCOUNT_ID = os.environ.get("GEO_ACCOUNT_ID")
 GEO_LICENCE_KEY = os.environ.get("GEO_LICENCE_KEY")
 
+"""
+Necessary for error reporting to email address.
+"""
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+        },
+        "null": {
+            "class": "django.utils.log.NullHandler",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+            "include_html": True,
+        }
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+        },
+        "django.request": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django.security": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "py.warnings": {
+            "handlers": ["console"],
+        },
+    }
+}
+
+
 if DEBUG:
     try:
         from settings_local import *
     except ImportError:
         pass
 
-print('Rave Sandbox:', RAVE_SANDBOX)
+# print('Rave Sandbox:', RAVE_SANDBOX)
 
 # print(e.message)
 # Activate Django-Heroku.

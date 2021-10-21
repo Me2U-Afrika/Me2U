@@ -4,7 +4,7 @@ from django.views.generic import DetailView
 
 # Create your views here.
 from Me2U import settings
-from me2ushop.forms import DelivertoForm
+# from me2ushop.forms import DelivertoForm
 
 
 class CachedDetailView(DetailView):
@@ -63,8 +63,8 @@ def user_location(request):
         # print(client_ip)
         # print('it is private')
 
-        if request.method == 'POST':
-            country_form = DelivertoForm(request)
+        # if request.method == 'POST':
+        #     country_form = DelivertoForm(request)
 
         return context
 
