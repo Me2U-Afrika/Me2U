@@ -35,7 +35,11 @@
 							<div class="contact_info_image"><img src="images/contact_2.png" alt=""></div>
 							<div class="contact_info_content">
 								<div class="contact_info_title">Email</div>
-                                <div class="contact_info_text"><a href="mailto:me2uafrika@gmail.com">me2uafrika@gmail.com</a></div>
+								{% if request.user.is_authenticated %}
+                                <div class="contact_info_text"><a href="mailto:contact@me2uafrika.com">contact@me2uafrika.com</a></div>
+								{% else %}
+								<div class="contact_info_text"><a href="{% url LOGIN_URL %}?next={{ request.path }}">Login to View</a></div>
+								{% endif %}
 							</div>
 						</div>
 
@@ -78,7 +82,8 @@
 							<div class="contact_form_text">
 								<textarea id="message" class="text_field contact_form_message" name="message" rows="4"
 								          placeholder="Max length is 600 characters. Make your inquiry brief and to the point"
-								          required="required" data-error="Please, write us a message."></textarea>
+								          required="required" data-error="Please, write us a message.">
+								</textarea>
 							</div>
 							<div class="contact_form_button">
 								<button type="submit" class="button contact_submit_button">Send Message</button>

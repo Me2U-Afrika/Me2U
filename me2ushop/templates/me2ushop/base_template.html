@@ -148,13 +148,13 @@
                     <div class="col d-flex flex-row justify-content-between">
                         {% if request.user.is_authenticated %}
                         <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/phone.png" alt=""></div><strong><a href="tel:+250785011413">Order</a></strong> </div>
-                        <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="mailto:me2uafrika@gmail.com">Email</a></div>
+                        <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="mailto:contact@me2uafrika.com">Email</a></div>
                         {% else %}
                         <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/phone.png" alt=""></div><strong><a href="{%  url LOGIN_URL %}?next={{ request.path }}">Order</a></strong> </div>
                         <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="{%  url LOGIN_URL %}?next={{ request.path }}">Email</a></div>
                         {% endif %}
 
-                           {% if country %}
+                        {% if country %}
                         <div class="top_bar_contact_item"><div class="top_bar_icon"></div>
                             <a><i class="fas fa-map-marker-alt"></i> {{country|truncatechars:13}}</a>
                         </div>
