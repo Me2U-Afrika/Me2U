@@ -1,6 +1,8 @@
 from django.core.mail import send_mail
 from django import forms
 import logging
+
+from me2ushop.models import ContactSupplier, Product
 from .models import ContactUs
 
 logger = logging.getLogger(__name__)
@@ -25,3 +27,6 @@ class ContactForm(forms.ModelForm):
             ["danielmakori0@gmail.com"],
             fail_silently=False,
         )
+
+
+

@@ -95,6 +95,16 @@ class AfrikanCountries(Countries):
     ]
 
 
+class ContactSupplier(CreationModificationDateMixin):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    brand = models.ForeignKey('Brand', on_delete=models.SET_NULL, blank=True, null=True)
+    product = models.ForeignKey('Product', on_delete=models.SET_NULL, blank=True, null=True)
+    message = models.TextField()
+
+    def __str__(self):
+        return self.user
+
+
 class ActiveBrandManager(models.Manager):
     def all(self):
         return super(ActiveBrandManager, self).all().filter(is_active=True)
@@ -342,6 +352,8 @@ class Product(CreationModificationDateMixin):
         image = self.productimage_set.filter(in_display=True)
         if image:
             return image[0]
+        else:
+            return self.get_images()[0]
 
     def image_tag(self):
         image = self.get_image_in_display()

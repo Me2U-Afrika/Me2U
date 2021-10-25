@@ -1,0 +1,75 @@
+
+<!-- Large modal -->
+<div class="modal fade" id="seller_contact">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Contact Supplier</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1">
+                <div class="contact_info_container flex-lg-row flex-column justify-content-between align-items-between">
+                    <!-- Contact Item -->
+                    <div class="contact_info_content">
+                        <div class="contact_info_title">TO: <span class="contact_info_text">{{object.brand_name}}</span></div>
+                    </div>
+                    <hr>
+                    <!-- Contact Item -->
+                    <div class="contact_info_content">
+                        <div class="contact_info_title"><img class="contact_info_image" src="{{ object.get_image_in_display.image.url }}" alt="">
+                            <span class="contact_info_text">{{ object }}</span></div>
+                    </div>
+                    <hr>
+                    <!-- Contact Item -->
+                    <div class="contact_info_content">
+                        <div class="contact_info_title">Business Address: <span class="contact_info_text">
+                            {% if object.brand_name.address1 %}{{object.brand_name.address1}}{% endif %}
+                            {{object.brand_name.get_country_display}}</span>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                <div class="contact_form_container">
+                        <div class="contact_info_text">Enter product details such as color, size, materials etc.
+                            and other specification requirements to receive an accurate quote.</div>
+                        <form method="POST"  action="{% url 'me2ushop:seller_contact_ajax' %}" id="contact_inquiry_form">
+                        {% csrf_token %}
+                            <div class="contact_form_inputs d-flex flex-md-row flex-column justify-content-between align-items-between">
+                                    <input type="hidden" name="productid" id="id_productid" class="contact_form_name input_field" value="{{ object.id }}">
+    <!--                                    <input type="text" name="email" id="id_email" class="contact_form_email input_field" placeholder="Your email" required="required" data-error="Email is required.">-->
+    <!--                                    <input type="text" name="phone" id="id_phone" class="contact_form_phone input_field" placeholder="Your phone number">-->
+                                </div>
+                            <div class="contact_form_text">
+                                <textarea id="message" class="text_field contact_form_message" name="message" rows="4"
+                                          required="required" placeholder="Write your Message Here">
+                                </textarea>
+                            </div>
+                            <div class="contact_form_inputs d-flex flex-md-row flex-column justify-content-between align-items-between">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="include_business_card" id="include_business_card">
+                                    <label class="custom-control form-check-label" for="include_business_card">Share my contact details with supplier</label>
+<!--                                    <div class="hideable_Inquiry_form">-->
+<!--                                        <input type="text" class="form-control" id="recipient-name" placeholder="Previous Inquiry ID">-->
+<!--                                    </div>-->
+                                </div>
+                            </div>
+                           <div class="contact_form_button">
+                              <button type="submit" class="button contact_submit_button float-right" id="sendSupplierForm">Send Inquiry Now</button>
+                            </div>
+                        </form>
+                        <div id="modalInquiryMessage"></div>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer contact_form_button">
+        <button type="button" class="button contact_submit_button btn-danger float-right" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
