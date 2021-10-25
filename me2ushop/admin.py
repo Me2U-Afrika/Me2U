@@ -18,20 +18,25 @@ logger = logging.getLogger(__name__)
 from .models import *
 
 
+class ContactSupplierAdmin(admin.ModelAdmin):
+    list_display = ('user', 'brand', 'product', 'created')
+
+
+admin.site.register(ContactSupplier, ContactSupplierAdmin)
+
+
+class Payment(admin.ModelAdmin):
+    list_display = ('user', 'stripe_charge_id', 'amount', 'timestamp')
+
+
 # This mixin will be used for the invoice functionality, which is
 # only available to owners and employees, but not dispatchers
-
-
 # Viewing the most bought products
 class PeriodsSelectForm(forms.Form):
     PERIODS = ((30, "30 Days"),
                (60, "60 Days"),
                (90, "90 Days"))
     period = forms.TypedChoiceField(choices=PERIODS, coerce=int, required=True)
-
-
-class Payment(admin.ModelAdmin):
-    list_display = ('user', 'stripe_charge_id', 'amount', 'timestamp')
 
 
 def make_refund_accepted(modelAdmin, request, queryset):
