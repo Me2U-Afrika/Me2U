@@ -10,10 +10,14 @@
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main_styles.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/responsive.css">
-<!--product styles-->
+	<!--product styles-->
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_styles.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_responsive.css">
 	<link rel="stylesheet" type="text/css" href="css/zoom.css">
+
+	<!--Contact styles-->
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
 
 <style>
 	@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
@@ -62,9 +66,7 @@
 							{% if variant.image %}
 								<li><img src="{{ variant.image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>
 							{% else %}
-								{% for image in object.productimage_set.all %}
-									<li><img src="{{ image.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>
-								{% endfor %}
+								<li><img src="{{ object.get_image_in_display.image.url }}" alt="Text" data-gc-caption="{{ object.title }}"/></li>
 							{% endif %}
 
 							{% for image in object.productimage_set.all %}
@@ -268,7 +270,7 @@
 
 			<!--Contact details-->
 			{% if object.brand_name.subscription_plan.payment_plan >= 0 %}
-				{% include 'snippets/contact_seller.html' %}
+				{% include 'snippets/contact_supplier.html' %}
 			{% else %}
 				{% include 'snippets/contact_default.html' %}
 			{% endif %}
@@ -770,6 +772,11 @@
 <script src="{{ STATIC_URL }}js/product_custom.js"></script>
 <!--end product scripts-->
 
+<!--Contact script-->
+<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
+<!--End contact-->
+
+
 
 <!--images react script -->
 {#% include 'snippets/image_switcher_react.html' %#}
@@ -793,6 +800,7 @@
     document.getElementById("contact_seller").addEventListener("click",
 		function () {
     		window.scrollBy(0, 130);
+    		$("#seller_contact").modal("show")
 		}
 	)
 

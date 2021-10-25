@@ -128,7 +128,7 @@ class EmailConfirmed(models.Model):
         send_mail(
             email_subject,
             message,
-            settings.EMAIL_HOST_USER,
+            settings.DEFAULT_FROM_EMAIL,
             [self.user.email], fail_silently=True,
         )
 

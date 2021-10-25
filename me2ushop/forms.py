@@ -13,6 +13,8 @@ from categories.models import Department
 from crispy_forms.helper import FormHelper
 from crispy_forms import layout, bootstrap
 from mptt.forms import TreeNodeMultipleChoiceField, TreeNodePositionField
+import logging
+from django.core.mail import send_mail
 
 PAYMENT_CHOICES = {
 
@@ -23,6 +25,16 @@ PAYMENT_CHOICES = {
     ('Fw', "Flutterwave"),
 
 }
+logger = logging.getLogger(__name__)
+
+
+class ContactSupplierForm(forms.ModelForm):
+    productid = forms.IntegerField(required=False)
+    include_business_card = forms.BooleanField(required=False)
+
+    class Meta:
+        model = ContactSupplier
+        fields = ['message']
 
 
 class BrandForm(forms.ModelForm):

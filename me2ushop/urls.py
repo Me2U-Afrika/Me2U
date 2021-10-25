@@ -89,6 +89,7 @@ urlpatterns = [
 
     url(r'^wishlist/', views.WishListView.as_view(), name='wish_list'),
     url(r'^wishlist-summary/', views.WishList_Summary.as_view(), name='wishlist_summary'),
+    url(r'^supplier/contact/', views.seller_contact_ajax, name="seller_contact_ajax"),
 
 ]
 

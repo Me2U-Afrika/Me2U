@@ -564,6 +564,45 @@
             {% endif %}
         });
 
+        $(document).ready(function(){
+
+            $("#sendSupplierForm").click(slideToggleSellerContact);
+            jQuery("#contact_inquiry_form").show();
+
+            function slideToggleSellerContact(){
+                $("#contact_inquiry_form").slideToggle();
+            }
+
+            $("#sendSupplierForm").click(function(e){
+                e.preventDefault()
+
+                var mform = $("#contact_inquiry_form").serialize()
+                console.log(mform)
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'me2ushop:seller_contact_ajax' %}",
+                    data: mform,
+                    success: function(data){
+                    console.log(data)
+                    $("#modalInquiryMessage").html("<p style='color:green'>" + data + "</p>")
+                    // $("#seller_contact").modal("hide");
+                    },
+                    error: function(data){
+                    console.log('error!')
+                    console.log(data)
+                    console.log(data.responseJSON)
+                    var obj = data.responseJSON
+                    $("#modalInquiryMessage").html("<p style='color:red'>" + obj.message + "</p>")
+
+                    },
+                });
+            });
+
+        });
+
+
+
         $(document).on('change', '#post-form-size', function (e){
        e.preventDefault();
        $.ajax({

@@ -16,7 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models as django_models
 from django.db.models import Q
 from django.dispatch import receiver
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
@@ -44,6 +44,91 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
+
+
+from django.views.decorators.cache import never_cache
+
+
+@never_cache
+def seller_contact_ajax(request):
+    print('we came to seller contact')
+    if request.method == "POST":
+        postdata = request.POST.copy()
+        form = ContactSupplierForm(postdata)
+        # print(form)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            user = request.user
+            product_id = form.cleaned_data['productid']
+            product = Product.active.get(id=product_id)
+            obj.product = product
+            message = form.cleaned_data['message']
+            include_bs_card = form.cleaned_data['include_business_card']
+            obj.message = message
+            obj.brand = product.brand_name
+            obj.user = user
+            obj.save()
+            # form.send_mail()
+            form.save()
+
+            receiver_email = product.brand_name.business_email
+            if user.profile.phone and user.profile.first_name:
+                sender_details = 'From: {0}-{1} \n {2}\n {3}\n\n Dear {4},'.format(
+                       user.profile.first_name,
+                       user.profile.last_name,
+                       user.email,
+                       user.profile.phone,
+                        product.brand_name
+
+                    )
+            elif user.profile.phone:
+                sender_details = 'From: {0}\n {1}\n {2}\n\n Dear {3},'.format(
+                    user.username,
+                    user.email,
+                    user.profile.phone,
+                    product.brand_name
+                )
+            else:
+                sender_details = 'From: {0}\n {1}\n\n Dear {2},'.format(
+                    user.username,
+                    user.email,
+                    product.brand_name
+                )
+
+            email_subject = settings.EMAIL_SUBJECT_PREFIX + ' New ' + str(product.title) + ' Inquiry '
+            if include_bs_card:
+                message = "{0}\n\n{1}".format(
+                   sender_details,
+                   message
+                )
+            else:
+                message = "Dear {0}\n\n{1}".format(
+                    product.brand_name,
+                    message
+                )
+
+            send_mail(
+                email_subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [receiver_email],
+                fail_silently=False,
+            )
+            messages.info(request, 'Your Message has been sent successfully! Thank you!')
+            return HttpResponse('Your Inquiry has been sent to %s successfully! Thank you!' % product.brand_name)
+        if form.errors:
+            json_data = json.dumps(form.errors)
+            return HttpResponseBadRequest(json_data, content_type='application/json')
+
+    elif request.method == "GET":
+        form = ContactSupplierForm
+        context = {
+            'contact_supplier_form': form
+        }
+        return render(request, "snippets/contact_supplier.html", context)
+
+    else:
+        raise Http404
 
 
 # ___BRAND CREATE VIEWS___
@@ -520,6 +605,7 @@ def filtered_products(request):
             not_active=False).select_related()
 
     return active_products
+
 
 class HomeViewTemplateView(TemplateView):
     site_name = 'Me2U|Market'
