@@ -1,0 +1,48 @@
+{% extends 'me2ushop/base_template.html' %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block site_wrapper %}
+<body>
+    {% block body %}
+      {% if messages %}
+      <div>
+        <strong>Messages:</strong>
+        <ul>
+          {% for message in messages %}
+          <li>{{message}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% block changeEmail %}
+      <div>
+        <strong>Menu:</strong>
+        <ul>
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
+          <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
+          {% else %}
+          <li><a href="{% url 'account_login' %}">Sign In</a></li>
+          <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    {% endblock %}
+
+      {% block content %}
+      {% endblock %}
+
+    {% endblock %}
+
+    {% block extra_body %}
+    {% endblock %}
+
+  </body>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
