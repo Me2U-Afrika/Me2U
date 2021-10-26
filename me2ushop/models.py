@@ -102,7 +102,7 @@ class ContactSupplier(CreationModificationDateMixin):
     message = models.TextField()
 
     def __str__(self):
-        return self.user
+        return self.user.username
 
 
 class ActiveBrandManager(models.Manager):
@@ -466,9 +466,10 @@ class Product(CreationModificationDateMixin):
             self.shipping_status = 'Cd'
 
         self.in_stock = True
+        self.is_active = True
 
         if self.stock < self.min_amount:
-            print('we came to check stock')
+            # print('we came to check stock')
             self.in_stock = False
             self.is_active = False
 
@@ -478,17 +479,20 @@ class Product(CreationModificationDateMixin):
             else:
                 self.is_active = False
         else:
-            self.active = False
+            self.is_active = False
 
         image = self.productimage_set.filter(in_display=True)
 
-        print('image', image.exists())
+        # print('image', image.exists())
 
-        if image.exists() and self.in_stock and self.brand_name.is_active and not self.not_active:
+        if image.exists() and self.is_active:
             self.is_active = True
+
         else:
             self.is_active = False
-            self.not_active = True
+
+        if self.not_active:
+            self.is_active = False
 
         if self.discount_price and self.price < 1 or self.discount_price == self.price:
             self.price = self.discount_price

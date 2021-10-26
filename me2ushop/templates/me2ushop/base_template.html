@@ -133,9 +133,7 @@
 </head>
 
 <body>
-
     {% include "tags/modal.html" %}
-
 
     {% block navbar %}
     <!-- Header -->
@@ -315,7 +313,7 @@
 
                                 <div class="main_nav_menu ml-auto">
                                     <ul class="standard_dropdown main_nav_dropdown">
-                                        <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>
+<!--                                        <li><a href="{% url 'me2ushop:home' %}">Home<i class="fas fa-chevron-down"></i></a></li>-->
                                         <li class="hassubs">
                                             <a href="#">Deals</a>
                                             <ul>
@@ -526,160 +524,19 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179027185-1"></script>
 
-    <!-- marketing modal-->
-    <script>
-        $(document).ready(function(){
-            {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path and not "blog" in request.get_full_path and not "accounts" in request.get_full_path and not "checkout" in request.get_full_path and not "payment" in request.get_full_path %}
-
-                function showModal(){
-                    $("#marketingModal").modal("show").setTimeout(showModal, 50000);
-                }
-                setTimeout(showModal, 30000);
-
-                $("#sendMarketingForm").click(function(e){
-                    e.preventDefault()
-                    var mform = $("#sendForm").serialize()
-                    console.log(mform)
-
-                    $.ajax({
-                        type: "POST",
-                        url: "{% url 'marketing:ajax_email_signup' %}",
-                        data: mform,
-                        success: function(data){
-                        console.log(data)
-                        $("#modalMessage").html("<p style='color:green'>" + data + "</p>")
-                        $("#marketingModal").modal("hide");
-                        },
-                        error: function(data){
-                        console.log('error!')
-                        console.log(data)
-                        console.log(data.responseJSON)
-                        var obj = data.responseJSON
-                        $("#modalMessage").html("<p style='color:red'>" + obj.email + "</p>")
-
-                        },
-                    });
-                });
-
-            {% endif %}
-        });
-
-        $(document).ready(function(){
-
-            $("#sendSupplierForm").click(slideToggleSellerContact);
-            jQuery("#contact_inquiry_form").show();
-
-            function slideToggleSellerContact(){
-                $("#contact_inquiry_form").slideToggle();
-            }
-
-            $("#sendSupplierForm").click(function(e){
-                e.preventDefault()
-
-                var mform = $("#contact_inquiry_form").serialize()
-                console.log(mform)
-
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'me2ushop:seller_contact_ajax' %}",
-                    data: mform,
-                    success: function(data){
-                    console.log(data)
-                    $("#modalInquiryMessage").html("<p style='color:green'>" + data + "</p>")
-                    // $("#seller_contact").modal("hide");
-                    },
-                    error: function(data){
-                    console.log('error!')
-                    console.log(data)
-                    console.log(data.responseJSON)
-                    var obj = data.responseJSON
-                    $("#modalInquiryMessage").html("<p style='color:red'>" + obj.message + "</p>")
-
-                    },
-                });
-            });
-
-        });
-
-
-
-        $(document).on('change', '#post-form-size', function (e){
-       e.preventDefault();
-       $.ajax({
-           type: 'POST',
-           url: "{% url 'me2ushop:color_ajax' %}",
-           data:{
-               productid:$('#productid').val(),
-               size:$('#size').val(),
-               csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-               action:'post'
-           },
-           data_type : 'html',
-           success: function (data){
-               console.log('success');
-               $('#appendHere').html(data.rendered_table);
-           },
-           error: function (data){
-               alert('something is a miss ' + data);
-           }
-       });
-    });
-
-    </script>
-    <!-- marketing modal-->
-
-
-
-    <!-- Newsletter modal-->
-    <script>
-            $(document).ready(function(){
-            {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path %}
-
-                function showModal(){
-                    $("#newsletterSign").("show")
-                }
-
-                $("#sendFormNewsSubmit").click(function(e){
-                    e.preventDefault()
-                    var mform = $("#sendFormNews").serialize()
-                    console.log(mform)
-
-                    $.ajax({
-                        type: "POST",
-                        url: "{% url 'marketing:ajax_email_signup' %}",
-                        data: mform,
-                        success: function(data){
-                        console.log(data)
-                        $("#newsletterMessage").html("<p style='color:green'>" + data + "</p>")
-                        $("#newsletterSign").("hide");
-                        },
-                        error: function(data){
-                        console.log('error!')
-                        console.log(data)
-                        console.log(data.responseJSON)
-                        var obj = data.responseJSON
-                        $("#newsletterMessage").html("<p style='color:green'>" + data + "</p>")
-
-                        },
-                    });
-                });
-
-            {% endif %}
-        });
-
-    </script>
-    <!-- Newsletter modal-->
-
+    <!--modals-->
+    {% include "snippets/js/subscribe_modal_js.html" %}
+    {% include "snippets/js/product_variant_color_js.html" %}
+    {% include "snippets/js/contact_supplier_js.html" %}
+    {#% include "snippets/js/newsletter_modal_js.html" %#}
+    <!-- End modals-->
 
     <script>
         document.getElementById("main_hide").style.display = "none";
-
     </script>
-
 
 <!--autocomplete-->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
 
 <script>
   $( function() {

@@ -1,0 +1,40 @@
+<!-- marketing modal-->
+<script>
+    $(document).ready(function(){
+        {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path and not "blog" in request.get_full_path and not "accounts" in request.get_full_path and not "checkout" in request.get_full_path and not "payment" in request.get_full_path %}
+
+            function showModal(){
+                $("#marketingModal").modal("show").setTimeout(showModal, 50000);
+            }
+            setTimeout(showModal, 30000);
+
+            $("#sendMarketingForm").click(function(e){
+                e.preventDefault()
+                var mform = $("#sendForm").serialize()
+                console.log(mform)
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'marketing:ajax_email_signup' %}",
+                    data: mform,
+                    success: function(data){
+                    console.log(data)
+                    $("#modalMessage").html("<p style='color:green'>" + data + "</p>")
+                    $("#marketingModal").modal("hide");
+                    },
+                    error: function(data){
+                    console.log('error!')
+                    console.log(data)
+                    console.log(data.responseJSON)
+                    var obj = data.responseJSON
+                    $("#modalMessage").html("<p style='color:red'>" + obj.email + "</p>")
+
+                    },
+                });
+            });
+
+        {% endif %}
+    });
+
+</script>
+<!-- marketing modal-->
