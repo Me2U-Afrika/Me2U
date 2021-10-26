@@ -1,0 +1,39 @@
+<!-- Newsletter modal-->
+<script>
+        $(document).ready(function(){
+        {% if not request.user.is_authenticated and not request.session.marketing_email_added and not "users" in request.get_full_path %}
+
+            function showModal(){
+                $("#newsletterSign").("show")
+            }
+
+            $("#sendFormNewsSubmit").click(function(e){
+                e.preventDefault()
+                var mform = $("#sendFormNews").serialize()
+                console.log(mform)
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'marketing:ajax_email_signup' %}",
+                    data: mform,
+                    success: function(data){
+                    console.log(data)
+                    $("#newsletterMessage").html("<p style='color:green'>" + data + "</p>")
+                    $("#newsletterSign").("hide");
+                    },
+                    error: function(data){
+                    console.log('error!')
+                    console.log(data)
+                    console.log(data.responseJSON)
+                    var obj = data.responseJSON
+                    $("#newsletterMessage").html("<p style='color:green'>" + data + "</p>")
+
+                    },
+                });
+            });
+
+        {% endif %}
+    });
+
+</script>
+<!-- Newsletter modal-->

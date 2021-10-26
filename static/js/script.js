@@ -106,6 +106,15 @@ function preparedDocument(){
           }, "json");
     }
 
+    // CONTACT SELLER
+    // jQuery("#contact_seller").click(slideToggleSellerContact);
+    // jQuery("#seller_contact").hide();
+    //
+    //
+    // function slideToggleSellerContact(){
+    //     jQuery("#seller_contact").slideToggle();
+    //
+    // }
 
     jQuery("#edit-option").click(slideToggleEditOptions);
     jQuery("#hideable-edit-options").hide();
