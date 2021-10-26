@@ -15,6 +15,7 @@
         "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
 <html lang="en">
 <head>
+
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
@@ -23,23 +24,19 @@
         gtag('config', 'UA-179027185-1');
     </script>
 
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-TP8GCZH');</script>
-    <!-- End Google Tag Manager -->
-
     <script data-ad-client="ca-pub-9937747327642501" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Me2U Afrika Shopping Mall">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% if page_title %}{{ page_title }} - {% endif %} {{ site_name }}{% endblock %}</title>
+
+    <!--Search console head tae verification-->
     <meta name="google-site-verification" content="8yQvHHowVaukGoa5cajMgBsd76sWWYAsiciwIVLE_ec" />
+    <!--End Search console head tae verification-->
 
 
-    <!--autocomplete-->
+    <!--search autocomplete-->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!--autocomplete-->
 
@@ -142,10 +139,6 @@
 </head>
 
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TP8GCZH"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
 
     {% include "tags/modal.html" %}
 
@@ -489,9 +482,6 @@
         {% include "me2ushop/footer.html" %}
     {% endblock %}
 
-
-
-
     <!--common scripts oneteh-->
     <script src="{{ STATIC_URL }}js/jquery-3.3.1.min.js"></script>
     <script src="{{ STATIC_URL }}css/bootstrap4/popper.js"></script>
@@ -513,7 +503,6 @@
     <!-- extra scritpts-->
 
 
-
     <!-- Bootstrap core JavaScript -->
     <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
 
@@ -526,18 +515,15 @@
 
     <!-- my scripts-->
     <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
-<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179027185-1"></script>
-
-
+    <!-- Global site tag (gtag.js) - Google Analytics -->
 
 	 <script type="text/javascript">
         $('.alert').alert()
         $(".alert").alert('close')
     </script>
-
 
     <!--modals-->
     {% include "snippets/js/subscribe_modal_js.html" %}
@@ -546,21 +532,24 @@
     {#% include "snippets/js/newsletter_modal_js.html" %#}
     <!-- End modals-->
 
+    <!--Hide header navbar_seller_page -->
     <script>
         document.getElementById("main_hide").style.display = "none";
     </script>
+    <!--Hide header navbar_seller_page -->
 
-<!--autocomplete-->
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!--autocomplete Script-->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!--autocomplete-->
 
-<script>
-  $( function() {
-    $( "#id_q" ).autocomplete({
-        source: '{% url 'search:autocomplete' %}',
-        // minLength: 2
-    });
-  });
-</script>
+    <script>
+      $( function() {
+        $( "#id_q" ).autocomplete({
+            source: '{% url 'search:autocomplete' %}',
+            // minLength: 2
+        });
+      });
+    </script>
 
 
 </body>
