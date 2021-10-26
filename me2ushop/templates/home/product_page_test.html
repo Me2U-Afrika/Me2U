@@ -7,19 +7,21 @@
 {% load social_share %}
 
 {% block headblock %}
+
+<!--standstyles-->
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/plugins/slick-1.8.0/slick.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main_styles.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/responsive.css">
+<!--standstyles-->
+
+
 	<!--product styles-->
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_styles.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/product_responsive.css">
 	<link rel="stylesheet" type="text/css" href="css/zoom.css">
+	<!--product styles-->
 
-	<!--Contact styles-->
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_styles.css">
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/contact_responsive.css">
-
-<style>
+	<style>
 	@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
 
 	.fa{font-size:24px;margin-right:5px}
@@ -772,12 +774,6 @@
 <script src="{{ STATIC_URL }}js/product_custom.js"></script>
 <!--end product scripts-->
 
-<!--Contact script-->
-<script src="{{ STATIC_URL }}js/contact_custom.js"></script>
-<!--End contact-->
-
-
-
 <!--images react script -->
 {#% include 'snippets/image_switcher_react.html' %#}
 <!--end of images react script-->
@@ -787,7 +783,6 @@
     {{ formset.media }}
 {% endif %}
 <!--end add to quantity product form-->
-
 
 <!--Zoom Script-->
 {% include 'snippets/zoom_script.html' %}
@@ -807,8 +802,6 @@
 });
 </script>
 <!--end show seller contact script-->
-
-
 
 {% endblock %}
 
