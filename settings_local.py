@@ -70,3 +70,5 @@ GEOIP_PATH = os.path.join('media/geoip')
 # EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 # EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+SITE_ID=2
