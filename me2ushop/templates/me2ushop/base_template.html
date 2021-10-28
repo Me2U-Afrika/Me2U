@@ -165,7 +165,7 @@
                             {% if country %}
                             <a id="id_user_location"><i class="fas fa-map-marker-alt"></i> {{country|truncatechars:13}}</a>
                             {% else %}
-                            <a id="id_user_location"><i class="fas fa-map-marker-alt"></i>Delivery?</a>
+                            <a id="id_user_location"><i class="fas fa-map-marker-alt"></i>Deliver to?</a>
                             {% endif %}
 
                         </div>
@@ -431,8 +431,13 @@
                                             </li>
                                         {% endif %}
 
-                                        <li class="page_menu_item"><a href="{% url 'blog:blog_home' %}">blog<i class="fa fa-angle-down"></i></a></li>
-                                        <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact<i class="fa fa-angle-down"></i></a></li>
+                                        <li class="page_menu_item"><a href="{% url 'blog:blog_home' %}">blog</a></li>
+                                        <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact</a></li>
+                                         {% if country %}
+                                        <li class="page_menu_item"><a class="btn" id="id_user_mobile_location"><i class="fas fa-map-marker-alt"></i>Deliver to:{{country|truncatechars:13}}</a></li>
+                                        {% else %}
+                                        <li class="page_menu_item"><a class="btn" id="id_user_mobile_location"><i class="fas fa-map-marker-alt"></i> Deliver to?</a></li>
+                                        {% endif %}
                                     </ul>
 
                                     <div class="menu_contact">
@@ -541,6 +546,12 @@
     <script>
         $(document).ready(function(){
                 $("#id_user_location").click(function(e){
+                    $("#CountryModal").modal("show");
+                });
+                 $("#id_user_mobile_location").click(function(e){
+                    $("#CountryModal").modal("show");
+                });
+                 $("#id_user_footer_location").click(function(e){
                     $("#CountryModal").modal("show");
                 });
 
