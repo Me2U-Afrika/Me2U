@@ -227,9 +227,9 @@
                   </p>
               </div>
             <div class="col-lg-6 col-md-12 col-12 mb-5 d-block">
-                {% if country %}
+                {% if request.country %}
                 <div>
-                    <a class="btn black-text" id="id_user_footer_location"><i class="fas fa-map-marker-alt" style="color: green"></i> Deliver to : {{country}}</a>
+                    <a class="btn black-text" id="id_user_footer_location"><i class="fas fa-map-marker-alt" style="color: green"></i> Deliver to : {{ request.country}}</a>
                 </div>
                 {% else %}
                  <div>

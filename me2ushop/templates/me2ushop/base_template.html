@@ -433,8 +433,8 @@
 
                                         <li class="page_menu_item"><a href="{% url 'blog:blog_home' %}">blog</a></li>
                                         <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact</a></li>
-                                         {% if country %}
-                                        <li class="page_menu_item"><a class="btn" id="id_user_mobile_location"><i class="fas fa-map-marker-alt"></i>Deliver to:{{country|truncatechars:13}}</a></li>
+                                         {% if request.country %}
+                                        <li class="page_menu_item"><a class="btn" id="id_user_mobile_location"><i class="fas fa-map-marker-alt"></i>Deliver to:{{ request.country|truncatechars:13}}</a></li>
                                         {% else %}
                                         <li class="page_menu_item"><a class="btn" id="id_user_mobile_location"><i class="fas fa-map-marker-alt"></i> Deliver to?</a></li>
                                         {% endif %}
