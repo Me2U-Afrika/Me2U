@@ -590,7 +590,8 @@ def filtered_products(request):
         country = request.session['country']
         country_code = request.session['country_code']
     except Exception as e:
-        print(e)
+        pass
+
     if country:
         # print('we got country:', country)
         active_products = Product.active.filter(
@@ -624,9 +625,8 @@ class HomeViewTemplateView(TemplateView):
             country = self.request.session['country']
             country_code = self.request.session['country_code']
         except Exception as e:
-            print(e)
+            pass
 
-        country = country
         active_products = filtered_products(self.request)
 
         # print('active Products:', active_products)
@@ -2095,37 +2095,29 @@ def add_cart(request, slug):
 
 @receiver(user_logged_in)
 def merge_cart(sender, user, request, **kwargs):
+    print("we came here to merge after login")
     cart = getattr(request, 'cart', None)
-    print('cart:', cart)
-    print("we came here to merge")
-    # print('user merge:', user)
-    # print('cart:', cart)
-    # print('cart:', request.cart)
 
     qs = Order.objects.filter(user=user, ordered=False)
 
     if cart:
         cart_id = cart
         if qs.exists():
-            print('qs exists')
-            print("cart_id:", request.cart.id)
-            print("order_id:", qs[0].id)
+            # print('qs exists')
             order = qs[0]
 
             if cart_id.id != order.id:
-                # order = Order.objects.filter(id=cart_id.id, ordered=False)
-                # print(order)
                 order_items = OrderItem.objects.filter(order=cart_id, ordered=False)
                 ordered_items = OrderItem.objects.filter(order=cart_id, ordered=True)
 
-                print('order_items:', order_items)
-                print('ordered_items:', ordered_items)
+                # print('order_items:', order_items)
+                # print('ordered_items:', ordered_items)
 
                 for order_item_anonymous in order_items:
                     if order_item_anonymous.user is None:
                         # print('item_cart_id:', order_item.cart_id)
                         quantity = order_item_anonymous.quantity
-                        print('anonymous quantity:', quantity)
+                        # print('anonymous quantity:', quantity)
 
                         # Get product instances for each
                         product = Product.active.all()
@@ -2142,11 +2134,11 @@ def merge_cart(sender, user, request, **kwargs):
                             min_order = variant.min_amount
                             max_order = variant.max_amount
                             if quantity > variant.stock:
-                                print('qty is greater than stock')
+                                # print('qty is greater than stock')
                                 quantity = variant.stock
                         else:
                             if quantity > item.stock:
-                                print('qty greater than stock')
+                                # print('qty greater than stock')
                                 quantity = item.stock
 
                         if quantity < min_order:
@@ -2157,13 +2149,13 @@ def merge_cart(sender, user, request, **kwargs):
                                 quantity = max_order
 
                         # Delete and create a new instance of the product
-                        print('order_item anonmymous qty:', quantity)
+                        # print('order_item anonmymous qty:', quantity)
                         order_item_anonymous.delete()
-                        print('order_item deleted:', order_item_anonymous)
+                        # print('order_item deleted:', order_item_anonymous)
                         order_anonymous_delete = Order.objects.filter(id=cart_id.id, ordered=False)
-                        print("anonymous to delete", order_anonymous_delete)
+                        # print("anonymous to delete", order_anonymous_delete)
                         order_anonymous_delete.delete()
-                        print("anonymous_id:", order_anonymous_delete)
+                        # print("anonymous_id:", order_anonymous_delete)
 
                         # # Add new product being ordered to database
                         if variant:
@@ -2173,20 +2165,20 @@ def merge_cart(sender, user, request, **kwargs):
                                 variant=variant,
                                 ordered=False
                             )
-                            print("variant_order_item:", order_item)
-                            print("created:", created)
+                            # print("variant_order_item:", order_item)
+                            # print("created:", created)
                         else:
                             order_item, created = OrderItem.objects.get_or_create(
                                 item=item,
                                 user=user,
                                 ordered=False
                             )
-                            print('created item:', created)
-                            print('order item found:', order_item)
+                            # print('created item:', created)
+                            # print('order item found:', order_item)
 
                         if variant:
                             if qs[0].items.filter(item__slug=item.slug, variant=variant).exists():
-                                print('variant quantity:', quantity)
+                                # print('variant quantity:', quantity)
                                 order_item.quantity = quantity
                             else:
                                 qs[0].items.add(order_item)
@@ -2220,10 +2212,10 @@ def merge_cart(sender, user, request, **kwargs):
 
             order_items = OrderItem.objects.filter(order=cart_id, ordered=False)
 
-            print('order_items:', order_items)
+            # print('order_items:', order_items)
 
             for order_item in order_items:
-                print('order user:', order_item.user)
+                # print('order user:', order_item.user)
                 if order_item.user is None:
                     # print('item_cart_id:', order_item.cart_id)
                     order_item.user = request.user

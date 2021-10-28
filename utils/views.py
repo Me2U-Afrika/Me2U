@@ -36,7 +36,7 @@ from django.contrib.gis.geoip2 import GeoIP2
 
 
 def user_location(request):
-    print('we got to location from url')
+    # print('we got to location from url')
 
     from ipware import get_client_ip
     context = {}
@@ -67,19 +67,19 @@ def user_location(request):
     if request.method == 'POST':
         try:
             session_country = request.session['country']
-            print('session_country_start:', session_country)
+            # print('session_country_start:', session_country)
         except Exception as e:
             print(e)
 
         form = UserLocationForm(request.POST or None)
         if form.is_valid():
             country_code = form.cleaned_data.get('country')
-            print('country_code', country_code)
+            # print('country_code', country_code)
             from django_countries import countries
             country = countries.name(country_code)
             request.session['country'] = country
             request.session['country_code'] = country_code
-            print('session_country_end:', request.session['country'])
+            # print('session_country_end:', request.session['country'])
 
         referer = request.META['HTTP_REFERER']
 

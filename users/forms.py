@@ -54,7 +54,8 @@ class AutomobileRegisterForm(forms.ModelForm):
 class BrandForm(forms.ModelForm):
     class Meta:
         model = Brand
-        exclude = ['user', 'profile', 'valid_payment_method', 'active','is_featured', 'application_status']
+        exclude = ['user', 'profile', 'valid_payment_method', 'active', 'is_featured', 'application_status']
+
 
 class AddressForm(forms.ModelForm):
     pass
@@ -72,4 +73,4 @@ class PersonalInfoForm(forms.ModelForm):
 class ProfilePicForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['phone', 'image']
+        fields = ['phone', 'image_url', 'image']

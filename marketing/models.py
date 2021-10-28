@@ -185,7 +185,7 @@ class Banner(CreationModificationDateMixin):
         return ""
 
     def save(self, *args, **kwargs):
-        print('saving banner model')
+        # print('saving banner model')
         import datetime
         from django.utils.timezone import utc
         # Format: "Apr 11 2021 14:19:23"
