@@ -229,15 +229,17 @@
 									</div>
 
 
-									{% if object.is_active and object.brand_name.valid_payment_method and object.stock >= object.min_amount and object.price > 0 and object.brand_name.country == request.country_code or object.shipping_status == 'Cd' %}
-									<div class="button_container">
-										<button type="submit" class="button cart_button" >Add to Cart</button>
-										<a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>
-									</div>
+									{% if object.is_active and object.brand_name.valid_payment_method and object.stock >= object.min_amount and object.price > 0 %}
+										{% if object.brand_name.country == request.country_code or object.shipping_status == 'Cd' %}
+											<div class="button_container">
+												<button type="submit" class="button cart_button" >Add to Cart</button>
+												<a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>
+											</div>
 
-									<div class="clearfix mt-2" style="z-index: 1000;">
-										{#% include 'snippets/buy_now_paypal.html' %#}
-									</div>
+											<div class="clearfix mt-2" style="z-index: 1000;">
+												{#% include 'snippets/buy_now_paypal.html' %#}
+											</div>
+											{% endif %}
 									{% endif %}
 									<!--ADD TO CART OPTIONS-->
 								{% endif%}
