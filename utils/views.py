@@ -36,7 +36,7 @@ from django.contrib.gis.geoip2 import GeoIP2
 
 
 def user_location(request):
-    # print('we got to location from url')
+    print('we got to location')
 
     from ipware import get_client_ip
     context = {}
@@ -57,9 +57,12 @@ def user_location(request):
                                                   host='geolite.info')
                 response = client.city(client_ip)
                 country = response.country.name
+                country_code = response.country.iso_code
                 # print('response city:', response)
                 request.session['country'] = country
-                request.session['country_code'] = response.country.iso_code
+                context['country'] = country
+                context['country_code'] = country_code
+                request.session['country_code'] = country_code
 
             except Exception as e:
                 print("Error IP: ", e)
@@ -78,6 +81,8 @@ def user_location(request):
             from django_countries import countries
             country = countries.name(country_code)
             request.session['country'] = country
+            request.country = country
+            request.country_code = country_code
             request.session['country_code'] = country_code
             # print('session_country_end:', request.session['country'])
 
@@ -97,18 +102,24 @@ def user_location(request):
     # ip = '78.31.205.137'
     # ip = '102.22.187.72'
     # ip = '41.206.127.0'
-
+    #
     # g = GeoIP2()
     # try:
     #     location = g.city(ip)
     #     # print('location:', location)
-    #     location_country = location['country_name']
+    #     country = location['country_name']
+    #     country_code = location['country_code']
     #     location_city = location['city']
     #     print(location_city)
-    #     print(location_country)
-    #     context.update({'country': location_country,
-    #                     'country_code': location['country_code']})
+    #
+    #     request.session['country'] = country
+    #     context['country'] = country
+    #     context['country_code'] = country_code
+    #     request.session['country_code'] = country_code
+    #
     #     return context
     #
     # except Exception as e:
     #     print(e)
+    #
+    # return context

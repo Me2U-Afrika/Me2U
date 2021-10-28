@@ -15,14 +15,6 @@ timeout = 600  # 10 min
 def me2u(request):
     context = {}
 
-    session_country = None
-    try:
-        session_country = request.session['country']
-    except Exception as e:
-        pass
-
-    context['country'] = session_country
-
     user_location_form = UserLocationForm()
     context.update({'user_location_form': user_location_form})
 

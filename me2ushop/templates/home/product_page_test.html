@@ -207,7 +207,7 @@
 										{% if not object.brand_name.country == request.country_code and object.shipping_status != 'Cd' %}
 											<p style="color: red">Supplier Unable to deliver to the selected country. <br>
 												Do you have your own means?!</p>
-													<p class="green-text">Send an Inquiry with the details or change delivery country.</p>
+													<p class="green-text">Send an Inquiry with the details or change delivery country to {{ object.brand_name.country.name }}.</p>
 										{% endif %}
 
 										{% if object.min_amount > 1 %}
