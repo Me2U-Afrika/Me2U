@@ -8,6 +8,7 @@ from django.views.generic import DetailView
 from Me2U import settings
 # from me2ushop.forms import DelivertoForm
 from me2ushop.forms import UserLocationForm
+from ipware import get_client_ip
 
 
 class CachedDetailView(DetailView):
@@ -38,7 +39,29 @@ from django.contrib.gis.geoip2 import GeoIP2
 def user_location(request):
     print('we got to location')
 
-    from ipware import get_client_ip
+    if request.method == 'POST':
+        try:
+            session_country = request.session['country']
+            # print('session_country_start:', session_country)
+        except Exception as e:
+            print(e)
+
+        form = UserLocationForm(request.POST or None)
+        if form.is_valid():
+            country_code = form.cleaned_data.get('country')
+            # print('country_code', country_code)
+            from django_countries import countries
+            country = countries.name(country_code)
+            request.session['country'] = country
+            request.country = country
+            request.country_code = country_code
+            request.session['country_code'] = country_code
+            # print('session_country_end:', request.session['country'])
+
+        referer = request.META['HTTP_REFERER']
+
+        return HttpResponseRedirect(referer)
+
     context = {}
 
     client_ip, is_routable = get_client_ip(request)
@@ -63,33 +86,11 @@ def user_location(request):
                 context['country'] = country
                 context['country_code'] = country_code
                 request.session['country_code'] = country_code
-                return context
 
             except Exception as e:
                 print("Error IP: ", e)
 
-    if request.method == 'POST':
-        try:
-            session_country = request.session['country']
-            # print('session_country_start:', session_country)
-        except Exception as e:
-            print(e)
 
-        form = UserLocationForm(request.POST or None)
-        if form.is_valid():
-            country_code = form.cleaned_data.get('country')
-            # print('country_code', country_code)
-            from django_countries import countries
-            country = countries.name(country_code)
-            request.session['country'] = country
-            request.country = country
-            request.country_code = country_code
-            request.session['country_code'] = country_code
-            # print('session_country_end:', request.session['country'])
-
-        referer = request.META['HTTP_REFERER']
-
-        return HttpResponseRedirect(referer)
 
     # Order of precedence is (Public, Private, Loopback, None)
 
@@ -122,4 +123,7 @@ def user_location(request):
     #
     # except Exception as e:
     #     print(e)
+
+    return context
+
 
