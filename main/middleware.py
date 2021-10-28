@@ -1,3 +1,4 @@
+from utils.views import user_location
 from .models import *
 from me2ushop.models import OrderItem, Order
 from django.db import close_old_connections
@@ -48,6 +49,8 @@ import string
 
 def cart_middleware(get_response):
     def middleware(request):
+        # print('we came to cart middleware')
+
         if 'cart_id' in request.session:
             cart_id = request.session['cart_id']
             if cart_id:
@@ -58,24 +61,16 @@ def cart_middleware(get_response):
                     request.cart = None
         else:
             request.cart = None
-        response = get_response(request)
-        return response
 
-    return middleware
-
-
-from django.shortcuts import render, HttpResponse
-from django.contrib.gis.geoip2 import GeoIP2
-
-
-def country_middleware(get_response):
-    def middleware(request):
-        print('we came to middleware location')
         if 'country' in request.session:
             request.country = request.session['country']
         else:
+            # print('no country')
             request.country = None
+            user_location(request)
         response = get_response(request)
         return response
 
     return middleware
+
+
