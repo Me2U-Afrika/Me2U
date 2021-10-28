@@ -533,7 +533,7 @@ class ProductImage(CreationModificationDateMixin):
     item = models.ForeignKey(Product, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=True, null=True, help_text="Image title")
     image = StdImageField(upload_to='images/products', variations={
-        'thumbnail': (150, 150),
+        'thumbnail': (180, 180),
         'large': (585, 585),
 
     }, delete_orphans=True)

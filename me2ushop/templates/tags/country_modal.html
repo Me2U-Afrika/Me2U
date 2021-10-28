@@ -1,0 +1,27 @@
+<div class="modal fade " id="CountryModal">
+    <form method="POST" action="{% url 'me2ushop:user_location' %}">
+        {% csrf_token %}
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><h3>Choose your location</h3></div>
+
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Delivery options and fees may vary based on your location</p>
+               {{ user_location_form }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-success" id="SendCountryModal"/>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+

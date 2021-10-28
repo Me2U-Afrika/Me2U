@@ -1,10 +1,13 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.cache import cache
+from django.urls import reverse
 from django.views.generic import DetailView
 
 # Create your views here.
 from Me2U import settings
 # from me2ushop.forms import DelivertoForm
+from me2ushop.forms import UserLocationForm
 
 
 class CachedDetailView(DetailView):
@@ -33,6 +36,8 @@ from django.contrib.gis.geoip2 import GeoIP2
 
 
 def user_location(request):
+    print('we got to location from url')
+
     from ipware import get_client_ip
     context = {}
 
@@ -53,20 +58,32 @@ def user_location(request):
                 response = client.city(client_ip)
                 country = response.country.name
                 # print('response city:', response)
-                context.update({'country': country,
-                                'country_code': response.country.iso_code})
-                # print('country:', country)
+                request.session['country'] = country
+                request.session['country_code'] = response.country.iso_code
 
             except Exception as e:
                 print("Error IP: ", e)
 
-        # print(client_ip)
-        # print('it is private')
+    if request.method == 'POST':
+        try:
+            session_country = request.session['country']
+            print('session_country_start:', session_country)
+        except Exception as e:
+            print(e)
 
-        # if request.method == 'POST':
-        #     country_form = DelivertoForm(request)
+        form = UserLocationForm(request.POST or None)
+        if form.is_valid():
+            country_code = form.cleaned_data.get('country')
+            print('country_code', country_code)
+            from django_countries import countries
+            country = countries.name(country_code)
+            request.session['country'] = country
+            request.session['country_code'] = country_code
+            print('session_country_end:', request.session['country'])
 
-        return context
+        referer = request.META['HTTP_REFERER']
+
+        return HttpResponseRedirect(referer)
 
     # Order of precedence is (Public, Private, Loopback, None)
 

@@ -28,6 +28,14 @@ PAYMENT_CHOICES = {
 logger = logging.getLogger(__name__)
 
 
+class UserLocationForm(forms.Form):
+    country = CountryField(blank_label='(select country)').formfield(
+        required=False,
+        widget=CountrySelectWidget(attrs={
+            'class': 'custom-select d-block w-100'
+        }))
+
+
 class ContactSupplierForm(forms.ModelForm):
     productid = forms.IntegerField(required=False)
     include_business_card = forms.BooleanField(required=False)
@@ -129,15 +137,6 @@ class ProductAttributeCreate(forms.ModelForm):
         queryset_item = Product.objects.filter(slug=slug)
 
         self.fields['product'].queryset = queryset_item
-
-
-class DelivertoForm(forms.Form):
-    # city = forms.CharField(required=False)
-    country = CountryField(blank_label='(select country)').formfield(
-        required=False,
-        widget=CountrySelectWidget(attrs={
-            'class': 'custom-select d-block w-50'
-        }))
 
 
 class CheckoutForm(forms.Form):
