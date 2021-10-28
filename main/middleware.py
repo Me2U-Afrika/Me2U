@@ -64,5 +64,18 @@ def cart_middleware(get_response):
     return middleware
 
 
+from django.shortcuts import render, HttpResponse
+from django.contrib.gis.geoip2 import GeoIP2
 
 
+def country_middleware(get_response):
+    def middleware(request):
+        print('we came to middleware location')
+        if 'country' in request.session:
+            request.country = request.session['country']
+        else:
+            request.country = None
+        response = get_response(request)
+        return response
+
+    return middleware

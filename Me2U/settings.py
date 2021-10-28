@@ -212,6 +212,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'Me2U.SSLMiddleware.SSLRedirect',
     'main.middleware.cart_middleware',
+    'main.middleware.country_middleware',
     # 'marketing.urlcanon.URLCanonicalizationMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'asymmetric_jwt_auth.middleware.JWTAuthMiddleware',

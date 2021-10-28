@@ -7,6 +7,7 @@ from rest_framework import routers
 from me2ushop import endpoints
 from rest_framework.authtoken import views as authtoken_views
 from . import views
+from utils.views import user_location
 from django.views.decorators.cache import cache_page
 
 router = routers.DefaultRouter()
@@ -90,6 +91,7 @@ urlpatterns = [
     url(r'^wishlist/', views.WishListView.as_view(), name='wish_list'),
     url(r'^wishlist-summary/', views.WishList_Summary.as_view(), name='wishlist_summary'),
     url(r'^supplier/contact/', views.seller_contact_ajax, name="seller_contact_ajax"),
+    url(r'^country/selection/', user_location, name="user_location"),
 
 ]
 

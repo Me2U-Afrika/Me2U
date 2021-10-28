@@ -586,11 +586,11 @@ class HomeView(ListView):
 def filtered_products(request):
     country = None
     country_code = None
-    user_loc = user_location(request)
-    if user_loc:
-        country = user_loc['country']
-        country_code = user_loc['country_code']
-        # print('country:', country)
+    try:
+        country = request.session['country']
+        country_code = request.session['country_code']
+    except Exception as e:
+        print(e)
     if country:
         # print('we got country:', country)
         active_products = Product.active.filter(
@@ -617,13 +617,16 @@ class HomeViewTemplateView(TemplateView):
         # RAVE_SANDBOX = getattr(settings, "RAVE_SANDBOX", True)
         # print('sandbox', RAVE_SANDBOX)
         context = {}
+
         country = None
         country_code = None
-        user_loc = user_location(self.request)
-        if user_loc:
-            country = user_loc['country']
-            country_code = user_loc['country_code']
-            # print('country:', country)
+        try:
+            country = self.request.session['country']
+            country_code = self.request.session['country_code']
+        except Exception as e:
+            print(e)
+
+        country = country
         active_products = filtered_products(self.request)
 
         # print('active Products:', active_products)
@@ -2089,7 +2092,6 @@ def add_cart(request, slug):
         except Exception:
             messages.info(request, 'ERROR.')
             return redirect("me2ushop:product", slug=slug)
-
 
 @receiver(user_logged_in)
 def merge_cart(sender, user, request, **kwargs):
