@@ -64,10 +64,11 @@ def cart_middleware(get_response):
 
         if 'country' in request.session:
             request.country = request.session['country']
+            request.country_code = request.session['country_code']
         else:
             # print('no country')
-            request.country = None
-            user_location(request)
+            request.country = user_location(request)['country']
+            request.country_code = user_location(request)['country_code']
         response = get_response(request)
         return response
 
