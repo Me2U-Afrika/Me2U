@@ -142,6 +142,7 @@
 <body>
 
     {% include "tags/modal.html" %}
+    {% include "tags/country_modal.html" %}
 
     {% block navbar %}
     <!-- Header -->
@@ -160,11 +161,15 @@
                         <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{{ STATIC_URL }}images/mail.png" alt=""></div><a href="{%  url LOGIN_URL %}?next={{ request.path }}">Email</a></div>
                         {% endif %}
 
-                        {% if country %}
                         <div class="top_bar_contact_item"><div class="top_bar_icon"></div>
-                            <a><i class="fas fa-map-marker-alt"></i> {{country|truncatechars:13}}</a>
+                            {% if country %}
+                            <a id="id_user_location"><i class="fas fa-map-marker-alt"></i> {{country|truncatechars:13}}</a>
+                            {% else %}
+                            <a id="id_user_location"><i class="fas fa-map-marker-alt"></i>Deliver to?</a>
+                            {% endif %}
+
                         </div>
-                        {% endif %}
+
                         <div class="top_bar_content ml-auto">
                             <div class="top_bar_menu">
                                 <ul class="standard_dropdown top_bar_dropdown">
@@ -426,8 +431,13 @@
                                             </li>
                                         {% endif %}
 
-                                        <li class="page_menu_item"><a href="{% url 'blog:blog_home' %}">blog<i class="fa fa-angle-down"></i></a></li>
-                                        <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact<i class="fa fa-angle-down"></i></a></li>
+                                        <li class="page_menu_item"><a href="{% url 'blog:blog_home' %}">blog</a></li>
+                                        <li class="page_menu_item"><a href="{% url 'main:contact_us' %}">contact</a></li>
+                                         {% if country %}
+                                        <li class="page_menu_item"><a class="btn" id="id_user_mobile_location"><i class="fas fa-map-marker-alt"></i>Deliver to:{{country|truncatechars:13}}</a></li>
+                                        {% else %}
+                                        <li class="page_menu_item"><a class="btn" id="id_user_mobile_location"><i class="fas fa-map-marker-alt"></i> Deliver to?</a></li>
+                                        {% endif %}
                                     </ul>
 
                                     <div class="menu_contact">
@@ -531,6 +541,25 @@
     {% include "snippets/js/product_variant_color_js.html" %}
     {% include "snippets/js/contact_supplier_js.html" %}
     {#% include "snippets/js/newsletter_modal_js.html" %#}
+
+    <!-- country modal-->
+    <script>
+        $(document).ready(function(){
+                $("#id_user_location").click(function(e){
+                    $("#CountryModal").modal("show");
+                });
+                 $("#id_user_mobile_location").click(function(e){
+                    $("#CountryModal").modal("show");
+                });
+                 $("#id_user_footer_location").click(function(e){
+                    $("#CountryModal").modal("show");
+                });
+
+        });
+
+    </script>
+    <!-- End countrymodal-->
+
     <!-- End modals-->
 
     <!--Hide header navbar_seller_page -->

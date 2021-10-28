@@ -31,7 +31,11 @@
 		<div class="home_content d-flex flex-column align-items-center justify-content-center">
 
             <div class="logo_container">
+                {% if user.profile.image_url %}
+                <div class="logo mr-0"><img src="{{ user.profile.image_url }}"></div>
+                {% else %}
                 <div class="logo mr-0"><img src="{{ user.profile.image.thumbnail.url }}"></div>
+                {% endif %}
             </div>
 
 			<h2 class="home_title">Welcome {{ name|capfirst }}!</h2>

@@ -139,6 +139,7 @@ class Profile(models.Model):
         'thumbnail': (150, 150),
         'medium': (200, 200),
     }, delete_orphans=True)
+    image_url = models.CharField(max_length=500, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     first_name = models.CharField(max_length=15, null=True, blank=True,
                                   help_text="Provide official First name on passport or ID")

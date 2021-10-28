@@ -3,16 +3,34 @@
 # adapter.py
 
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-
 from users.models import User
+from allauth.account.models import EmailAddress
 
 
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
-
-        print("we came to pre_social login")
+        print("we came to pre_social login on users/adapter.py ")
         user = sociallogin.user
-        print('user:', user)
+        # print('user:', user)
+        provider = sociallogin.account.provider
+        # print('provider:', provider)
+        if not user.first_name:
+            if provider.lower() == 'google':
+                # print('account:', sociallogin.account.extra_data)
+                user.first_name = sociallogin.account.extra_data['given_name']
+                user.last_name = sociallogin.account.extra_data['family_name']
+                user.profile.image_url = sociallogin.account.extra_data['picture']
+                user.profile.save()
+                user.save()
+                try:
+                    unverified_email = EmailAddress.objects.get(email__iexact=user.email, verified=False)
+                    verified_email = sociallogin.account.extra_data['verified_email']
+                    if verified_email:
+                        unverified_email.verified = verified_email
+                        unverified_email.save()
+                except EmailAddress.DoesNotExist:
+                    pass
+
         if user.id:
             return
         if not user.email:
