@@ -63,6 +63,7 @@ def user_location(request):
                 context['country'] = country
                 context['country_code'] = country_code
                 request.session['country_code'] = country_code
+                return context
 
             except Exception as e:
                 print("Error IP: ", e)
@@ -121,5 +122,4 @@ def user_location(request):
     #
     # except Exception as e:
     #     print(e)
-    #
-    # return context
+

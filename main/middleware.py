@@ -67,8 +67,11 @@ def cart_middleware(get_response):
             request.country_code = request.session['country_code']
         else:
             # print('no country')
-            request.country = user_location(request)['country']
-            request.country_code = user_location(request)['country_code']
+            try:
+                request.country = user_location(request)['country']
+                request.country_code = user_location(request)['country_code']
+            except Exception as e:
+                pass
         response = get_response(request)
         return response
 
