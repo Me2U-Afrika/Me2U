@@ -163,9 +163,9 @@
 
                         <div class="top_bar_contact_item"><div class="top_bar_icon"></div>
                             {% if request.country %}
-                            <a id="id_user_location"><i class="fas fa-map-marker-alt"></i> {{request.country|truncatechars:13}}</a>
+                            <a id="id_user_location"><i class="fas fa-map-marker-alt" style="color: green"></i> {{request.country|truncatechars:13}}</a>
                             {% else %}
-                            <a id="id_user_location"><i class="fas fa-map-marker-alt"></i>Deliver to?</a>
+                            <a id="id_user_location"><i class="fas fa-map-marker-alt" style="color: red"></i> Deliver to?</a>
                             {% endif %}
 
                         </div>
