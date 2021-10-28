@@ -19,7 +19,7 @@ def me2u(request):
     try:
         session_country = request.session['country']
     except Exception as e:
-        print(e)
+        pass
 
     context['country'] = session_country
 
