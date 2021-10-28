@@ -196,12 +196,18 @@
 									<div class="clearfix" style="z-index: 1000;">
 										{% if object.stock >= object.min_amount %}
 										<p>Availability:<span class="green-text"> In-stock </span></p>
-
 										{% else %}
-											<p style="color: red">Product Not in Stock</p>
+										<p >Availability:<span class="red-text"> Product Not in Stock</span></p>
 										{% endif %}
+
 										{% if not object.is_active %}
 											<p style="color: red">Product is Inactive</p>
+										{% endif %}
+
+										{% if not object.brand_name.country == request.country_code and object.shipping_status != 'Cd' %}
+											<p style="color: red">Supplier Unable to deliver to the selected country. <br>
+												Do you have your own means?!</p>
+													<p class="green-text">Send an Inquiry with the details or change delivery country.</p>
 										{% endif %}
 
 										{% if object.min_amount > 1 %}
@@ -223,7 +229,7 @@
 									</div>
 
 
-									{% if object.is_active and object.brand_name.valid_payment_method and object.stock >= object.min_amount and object.price > 0 %}
+									{% if object.is_active and object.brand_name.valid_payment_method and object.stock >= object.min_amount and object.price > 0 and object.brand_name.country == request.country_code or object.shipping_status == 'Cd' %}
 									<div class="button_container">
 										<button type="submit" class="button cart_button" >Add to Cart</button>
 										<a href="{% url 'me2ushop:order_summary' %}" role="button" class="button cart_button">Order Summary</a>
