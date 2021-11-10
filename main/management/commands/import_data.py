@@ -5,7 +5,7 @@ from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
 from me2ushop import models
-from categories.models import Category
+from categories.models import Category, Department
 
 
 class Command(BaseCommand):
@@ -28,7 +28,7 @@ class Command(BaseCommand):
             product.slug = slugify(row['title'])
 
             for import_category in row['product_categories'].split("|"):
-                category, category_created = Category.objects.get_or_create(
+                category, category_created = Department.objects.get_or_create(
                     category_name=import_category
                 )
                 category.slug = slugify(import_category)

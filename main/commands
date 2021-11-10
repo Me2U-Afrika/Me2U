@@ -183,3 +183,6 @@ DJANGO_SETTINGS_MODULE="myproj.settings" \
     Session.objects.all().delete()'
 
 git reset --hard 1babd48dbfcc03f2d0e7fdd17238fccdd2200cdd
+
+
+curl -o static/js/reconnecting-eventsource.js https://cdn.jsdelivr.net/npm/reconnecting-eventsource@1.0.1/dist/ReconnectingEventSource.js

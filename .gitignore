@@ -17,6 +17,7 @@ latest.dump
 media/
 nginx/
 email_test.py/
+mit/
 staticfiles/
 discrete.py/
 #bundles/

@@ -21,10 +21,10 @@ class ContactForm(forms.ModelForm):
         )
 
         send_mail(
-            "Site Message",
+            "Me2UAfrika Site Message",
             message,
             self.cleaned_data['email'],
-            ["danielmakori0@gmail.com"],
+            ["contact@me2uafrika.com"],
             fail_silently=False,
         )
 
