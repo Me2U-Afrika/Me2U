@@ -4,7 +4,7 @@ from . import consumers
 from Me2U.auth import TokenGetAuthMiddlewareStack
 
 websocket_urlpatterns = [
-    re_path('ws/customer-service/(?P<order_id>[-\w]+)/$', consumers.ChatConsumer),
+    re_path('wss/customer-service/(?P<order_id>[-\w]+)/$', consumers.ChatConsumer),
 
 ]
 
