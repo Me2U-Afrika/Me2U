@@ -37,7 +37,6 @@ CACHES = {
     }
 }
 
-
 MIDDLEWARE = [
     # "sslify.middleware.SSLifyMiddleware",
     'django.middleware.security.SecurityMiddleware',
@@ -71,4 +70,15 @@ GEOIP_PATH = os.path.join('media/geoip')
 # EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD')
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-SITE_ID=2
+SITE_ID = 2
+
+REDIS_URL = 'redis://localhost'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}

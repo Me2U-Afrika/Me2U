@@ -378,7 +378,8 @@ class BrandUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 # ___CHAT ROOM VIEWS___
 def room(request, order_id):
-    return render(request, 'chat_room.html', {'room_name_json': str(order_id)}, )
+    # print('we came to room')
+    return render(request, 'archives/chat_room.html', {'room_name_json': str(order_id)}, )
 
 
 # ___ORDER VIEW___

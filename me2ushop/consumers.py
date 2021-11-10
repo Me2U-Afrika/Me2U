@@ -20,8 +20,6 @@ logger = logging.getLogger(__name__)
 from django.views.decorators.cache import never_cache
 
 
-
-
 # class ChatConsumer(AsyncConsumer):
 #     async def websocket_connect(self, event):
 #         self.accept()
@@ -39,9 +37,9 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     CLIENT = 1
 
     def get_user_type(self, user, order_id):
-        print('user:', user)
+        # print('user:', user)
         order = get_object_or_404(models.Order, pk=order_id)
-        print('order:', order)
+        # print('order:', order)
 
         if user.is_employee:
             print('employee:', user.is_employee)
@@ -102,10 +100,10 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             print('connection created')
 
             await self.channel_layer.group_send(self.room_group_name, {
-                    'type': 'chat_join',
-                    'username': self.scope['user'].get_username(),
-                },
-            )
+                'type': 'chat_join',
+                'username': self.scope['user'].get_username(),
+            },
+                                                )
 
     async def disconnect(self, close_code):
         print('we came to disconnect')
@@ -156,8 +154,9 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def chat_leave(self, event):
         await self.send_json(event)
 
+
 class ChatNotifyConsumer(AsyncHttpConsumer):
-    # print("we came to notify customer service")
+    print("we came to notify customer service")
 
     def is_employee_func(self, user):
         # print('acertain employee status')
@@ -165,7 +164,6 @@ class ChatNotifyConsumer(AsyncHttpConsumer):
 
     async def handle(self, body):
         print('we handling the requests')
-        close_old_connections()
         is_employee = await database_sync_to_async(self.is_employee_func)(self.scope["user"])
         if is_employee:
             print('is_employee:', is_employee)
@@ -175,7 +173,7 @@ class ChatNotifyConsumer(AsyncHttpConsumer):
                 self.scope.get('query_string'),
             )
             print('available user:', self.scope.get('user'))
-            print('available chats:', self.scope.get('query_string'))
+            # print('scope:', self.scope)
             await self.send_headers(
                 headers=[
                     ("Cache-Control", "no-cache"),
@@ -183,12 +181,16 @@ class ChatNotifyConsumer(AsyncHttpConsumer):
                     ('Transfer-Encoding', 'chunked'),
                 ]
             )
-            # print('headers:', self.send_headers())
+            print('headers:', self.send_headers())
             self.is_streaming = True
-            # print('headers:', self.is_streaming)
+            print('streaming:', self.is_streaming)
 
-            self.no_poll = (self.scope.get('query_string') == "nopoll")
+            self.no_poll = (
+                    self.scope.get('query_string') == "nopoll"
+            )
+
             asyncio.get_event_loop().create_task(self.stream())
+
         else:
             logger.info(
                 "Unauthorized notify stream for user %s and  params %s",
@@ -202,7 +204,6 @@ class ChatNotifyConsumer(AsyncHttpConsumer):
         print('We came to stream:', self.is_streaming)
         r_conn = await aioredis.create_redis(settings.REDIS_URL)
         print('r_conn:', r_conn)
-        print('r_conn:', self.is_streaming)
         while self.is_streaming:
             print('streaming true:', self.is_streaming)
             active_chats = await r_conn.keys(
@@ -228,25 +229,29 @@ class ChatNotifyConsumer(AsyncHttpConsumer):
                         'text': "%s (%s)" % (order_id, ", ".join(emails)),
                     }
                 )
-                payload = "data: %s\n\n" % json.dumps(data)
-                logger.info(
-                    'Broadcasting presence info to user %s', self.scope['user'],
+            payload = "data: %s\n\n" % json.dumps(data)
+            print('payload:', payload)
+            logger.info(
+                'Broadcasting presence info to user %s', self.scope['user'],
+            )
+            if self.no_poll:
+                await self.send_body(payload.encode('utf-8'))
+                self.is_streaming = False
+            else:
+                print('streaming: sending payload')
+                await self.send_body(
+                    payload.encode('utf-8'),
+                    more_body=self.is_streaming,
                 )
-                if self.no_poll:
-                    await self.send_body(payload.encode('utf-8'))
-                    self.is_streaming = False
-                else:
-                    await self.send_body(
-                        payload.encode('utf-8'),
-                        more_body=self.is_streaming,
-                    )
-                    await asyncio.sleep(5)
+                await asyncio.sleep(5)
 
     async def disconnect(self):
+        print('we came to disconnect')
         logger.info(
             "Closing notify stream for user %s", self.scope.get("user"),
         )
         self.is_streaming = False
+
 
 class OrderTrackerConsumer(AsyncHttpConsumer):
     # print('we came here to check')

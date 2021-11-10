@@ -15,6 +15,6 @@ urlpatterns = [
     url('ourdrivers/', views.our_drivers, name='ourdrivers'),
     # url('add_to_cart/', views.add_to_cart, name='add_to_cart'),
     # path('', views.index, name='index'),
-    path('<str:room_name>/', views.room, name='room'),
+    # path('<str:room_name>/', views.room, name='room'),
 
 ]

@@ -14,7 +14,7 @@ class TestPage(TestCase):
         response = self.client.get(reverse("me2ushop:home"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home/home.html')
-        self.assertContains(response, 'Me2U|Africa')
+        self.assertContains(response, 'Me2U|Afrika')
 
     def test_about_us_page_works(self):
         response = self.client.get(reverse("main:aboutus"))

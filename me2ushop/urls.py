@@ -35,8 +35,9 @@ urlpatterns = [
     path('brand-pay/<int:brand_id>/', views.brand_subscription, name="brand_payment"),
 
     url(r'^customer-service/(?P<order_id>[-\w]+)/$', views.room, name="cs_chat"),
-    url(r'^customer-service/', TemplateView.as_view(template_name='customer_service.html'),
+    url(r'^customer-service/', TemplateView.as_view(template_name='archives/customer_service.html'),
         name="cs_main"),
+
     url(r'^checkout/', views.Checkout_page.as_view(), {'SSL': True}, name='checkout'),
     url(r'^checkout-done/', views.checkout_done, name='checkout-done'),
     url(r'complete/', views.paypal_payment_complete, name='complete'),

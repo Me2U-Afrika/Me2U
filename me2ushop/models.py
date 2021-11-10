@@ -512,6 +512,30 @@ class Product(CreationModificationDateMixin):
 register(Product)
 
 
+class DiscountTier(CreationModificationDateMixin):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    title = models.CharField(max_length=50, blank=True, null=True)
+    min_quantity = models.IntegerField(default=1)
+    max_quantity = models.IntegerField(blank=True, null=True)
+    discount_price = models.DecimalField(max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return '{}-{}'.format(self.product, self.title)
+
+
+class NameYourPrice(CreationModificationDateMixin):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    buyer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    suggested_price = models.DecimalField(max_digits=9, decimal_places=2)
+    counter_price = models.DecimalField(blank=True, null=True, max_digits=9, decimal_places=2)
+    quantity = models.IntegerField()
+    accepted = models.BooleanField(blank=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return '{}-{}-{}'.format(self.product, self.buyer, self.suggested_price)
+
+
 class ProductCustomizations(CreationModificationDateMixin):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
