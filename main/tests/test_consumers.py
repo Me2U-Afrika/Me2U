@@ -15,7 +15,7 @@ from django.test import tag
 class TestConsumers(TestCase):
     def test_chat_between_two_users_works(self):
         def init_db():
-            user = factories.UserFactory(email='dddd@gmail.com',
+            user = factories.UserFactory(email='me2uafrika@gmail.com',
                                          username='dogechi')
             order = factories.OrderFactory(user=user)
             cs_user = factories.UserFactory(email='customerservice@me2u.domain',
@@ -61,12 +61,12 @@ class TestConsumers(TestCase):
                 {"type": "message", "message": "hello user"}
             )
             self.assertEquals(await communicator.receive_json_from(),
-                              {"type": "chat_join", "username": "dddd@gmail.com"}, )
+                              {"type": "chat_join", "username": "me2uafrika@gmail.com"}, )
             self.assertEquals(await communicator.receive_json_from(),
                               {"type": "chat_join", "username": "customerservice@me2u.domain"}, )
             self.assertEquals(await communicator.receive_json_from(),
                               {"type": "chat_message",
-                               "username": "dddd@gmail.com",
+                               "username": "me2uafrika@gmail.com",
                                "message": "hello customer service",
                                }, )
             self.assertEquals(await communicator.receive_json_from(),
@@ -126,7 +126,7 @@ class TestConsumers(TestCase):
             user, order, cs_user = await database_sync_to_async(init_db)()
             communicator = WebsocketCommunicator(
                 consumers.ChatConsumer,
-                "/ws/me2ushop/customer-service/%d/" % order.id,
+                "/ws/customer-service/%d/" % order.id,
             )
             communicator.scope['user'] = user
             communicator.scope['url_route'] = {'kwargs': {'order_id': order.id}}
@@ -139,7 +139,7 @@ class TestConsumers(TestCase):
             communicator = HttpCommunicator(
                 consumers.ChatNotifyConsumer,
                 'GET',
-                'me2ushop/customer-service/notify/'
+                'customer-service/notify/'
             )
             communicator.scope['user'] = cs_user
             communicator.scope['query_string'] = 'nopoll'
@@ -153,7 +153,7 @@ class TestConsumers(TestCase):
             self.assertEquals(
                 data,
                 [
-                    {"link": "/me2ushop/customer-service/%d/" % order.id,
+                    {"link": "/customer-service/%d/" % order.id,
                      "text": "%d (user@gmail.com)" % order.id, }
                 ],
                 'expecting someone in the room but on one found'
@@ -162,7 +162,7 @@ class TestConsumers(TestCase):
             communicator = HttpCommunicator(
                 consumers.ChatNotifyConsumer,
                 'GET',
-                'me2ushop/customer-service/notify/'
+                'customer-service/notify/'
             )
             communicator.scope['user'] = cs_user
             communicator.scope['query_string'] = 'nopoll'

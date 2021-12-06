@@ -78,7 +78,7 @@ class User(AbstractUser):
     def is_employee(self):
         return self.is_active and (
                 self.is_superuser
-                # or self.is_staff
+                or self.is_staff
                 or self.groups.filter(name='Employees').exists()
         )
 

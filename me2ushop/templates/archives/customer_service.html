@@ -10,7 +10,8 @@
 <h1>Customer chats</h1>
 <div id="notification-area"></div>
     <script>
-        var source = new ReconnectingEventSource('/me2ushop/customer-service/notify/');
+        var source = new ReconnectingEventSource('/customer-service/notify/');
+
         source.addEventListener('message', function (e) {
             document.getElementById('notification-area').innerHTML="";
             var data = JSON.parse(e.data);

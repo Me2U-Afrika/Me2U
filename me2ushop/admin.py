@@ -18,6 +18,20 @@ logger = logging.getLogger(__name__)
 from .models import *
 
 
+class NameYourPriceAdmin(admin.ModelAdmin):
+    list_display = ('product', 'buyer', 'suggested_price', 'counter_price', 'accepted', 'active')
+
+
+admin.site.register(NameYourPrice, NameYourPriceAdmin)
+
+
+class DiscountTierAdmin(admin.ModelAdmin):
+    list_display = ('product', 'title', 'min_quantity', 'max_quantity', 'discount_price')
+
+
+admin.site.register(DiscountTier, DiscountTierAdmin)
+
+
 class ContactSupplierAdmin(admin.ModelAdmin):
     list_display = ('user', 'brand', 'product', 'created')
 
@@ -327,6 +341,7 @@ class Ordered(admin.ModelAdmin):
     list_display = (
         'user',
         'name',
+        'id',
         'ordered',
         'order_date',
         'get_total',
