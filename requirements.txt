@@ -16,7 +16,7 @@ boto3==1.16.55
 botocore==1.19.55
 bs4==0.0.1
 cairocffi==1.1.0
-CairoSVG==2.4.2
+CairoSVG==2.5.1
 certbot==1.14.0
 certbot-django==0.2.0
 certifi==2020.4.5.2
