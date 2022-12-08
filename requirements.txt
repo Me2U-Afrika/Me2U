@@ -19,7 +19,7 @@ cairocffi==1.1.0
 CairoSVG==2.4.2
 certbot==1.14.0
 certbot-django==0.2.0
-certifi==2020.4.5.2
+certifi==2022.12.7
 cffi==1.14.2
 channels==2.4.0
 channels-redis==2.4.2
